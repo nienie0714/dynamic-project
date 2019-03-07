@@ -41,6 +41,8 @@ import {idReg, sevDotTwoDigit, sixDotSixDigit, degreePos} from '../../../util/ru
 import {queryAll, postData} from '../../../api/base.js'
 import _ from 'lodash'
 
+// const tableHeight = ''
+
 export default {
   components: {
     QueryView,
@@ -75,9 +77,9 @@ export default {
           {key: 'taskCn', label: '任务', type: 'input', disabled: true},
           {key: 'operationNo', label: '任务操作编号', type: 'input', isHidden: true},
           {key: 'operationCn', label: '任务操作', type: 'input', disabled: true},
-          {key: 'warning1', label: '预警阈值1', type: 'number', position: 'right', step: 1, change: this.changeNo1},
-          {key: 'warning2', label: '预警阈值2', type: 'number', position: 'right', step: 1, change: this.changeNo2},
-          {key: 'warning3', label: '预警阈值3', type: 'number', position: 'right', step: 1, change: this.changeNo3},
+          {key: 'warning1', label: '预警阈值1', type: 'number', position: 'right', step: 1, change: this.changeNo1, max: 0},
+          {key: 'warning2', label: '预警阈值2', type: 'number', position: 'right', step: 1, change: this.changeNo2, min: 0, max: 0},
+          {key: 'warning3', label: '预警阈值3', type: 'number', position: 'right', step: 1, change: this.changeNo3, min: 0},
           {key: 'remark', label: '备注', type: 'textarea', autosize: true, maxlength: 100}
         ],
         rules: {
@@ -131,59 +133,107 @@ export default {
     }
   },
   methods: {
-    customSaveBefore (data) {
-      let {warning1, warning2, warning3} = data
-      // 0 0 0
-      if (warning1 === 0 && warning2 === 0 && warning3 === 0) {
-        return data
+    // 编辑
+    handleEdit (row) {
+      for (let i = 0; i < this.formData.formData.length; i++) {
+        switch (this.formData.formData[i].key) {
+          case 'warning1': this.$set(this.formData.formData[i], 'max', row['warning2'] === 0 ? 0 : (row['warning2'] - 1))
+          break
+          case 'warning2': this.$set(this.formData.formData[i], 'min', row['warning1'] === 0 ? 0 : (row['warning1'] + 1))
+          this.$set(this.formData.formData[i], 'max', row['warning3'] === 0 ? 0 : (row['warning3'] - 1))
+          break
+          case 'warning3': this.$set(this.formData.formData[i], 'min', row['warning2'] === 0 ? 0 : (row['warning2'] + 1))
+          break
+        }
+        this.$set(this.formData.formData[i], 'value', row[this.formData.formData[i].key])
       }
-      // 6 7 8
-      if (warning1 !== 0 && warning2 !== 0 && warning3 !== 0) {
-        if (warning1 < warning2) {
-          if (warning2 < warning3) {
-            return data
-          } else {
-            this.showError('错误', '预警阈值 2 必须小于阈值预警 3 !')
-            return null
-          }
-        } else {
-          this.showError('错误', '预警阈值 1 必须小于阈值预警 2 !')
-          return null
+      this.formData.title = '编辑'
+      this.formData.visible = true
+    },
+    changeNo1 (value, callback) {
+      // for (let i = 0; i < this.formData.formData.length; i++) {
+      //   if (this.formData.formData[i].key == 'warning1') {
+      //     if (value == undefined || value == null) {
+      //       // 填了空值
+      //       if (this.formData.formData[i].max >= 0) {
+      //         // 填0
+      //         let obj = {
+      //           key: 'warning1',
+      //           value: 0
+      //         }
+      //         callback(obj)
+      //       } else {
+      //         alert('请输入值')
+      //         callback()
+      //       }
+      //     } else {
+      //       // 判断是否合法
+      //       if (value <= this.formData.formData[i].max) {
+      //         // 合法
+      //         // 设置2的最小值
+      //         for (let i = 0; i < this.formData.formData.length; i++) {
+      //           if (this.formData.formData[i].key == 'warning2') {
+      //             console.log(this.formData.formData[i])
+      //             this.$set(this.formData.formData[i], 'min', value + 1)
+      //           }
+      //         }
+      //         callback()
+      //       } else {
+      //         // 不合法，消掉，提示
+      //         let obj = {
+      //           key: 'warning1',
+      //           value: undefined
+      //         }
+      //         callback(obj)
+      //       }
+      //     }
+      //     // if (value > this.formData.formData[i].max) {
+
+      //     // }
+      //     // this.$set(this.formData.formData[i], 'min', value + 1)
+      //   }
+      // }
+
+      for (let i = 0; i < this.formData.formData.length; i++) {
+        if (this.formData.formData[i].key == 'warning2') {
+          console.log(this.formData.formData[i])
+          this.$set(this.formData.formData[i], 'min', value == 0 ? 0 : value + 1)
         }
       }
-      if (warning1 <= warning2 && warning2 <= warning3) {
-        // 7 7 x
-        if (warning1 !== 0 && warning1 == warning2) {
-          this.showError('错误', '预警阈值 1 必须小于阈值预警 2 !')
-          return null
-        } else if (warning1 == 0 && warning2 == 0 && warning3 >= 0) {
-          return data
-        }
-        // x 7 7
-        if (warning2 !== 0 && warning2 == warning3) {
-          this.showError('错误', '预警阈值 2 必须小于阈值预警 3 !')
-          return null
-        }
-        if (warning3 <= warning1) {
-          this.showError('错误', `预警阈值 3 必须大于预警阈值 2，且预警阈值 2 必须大于预警阈值 1`)
-          return null
-        }
-      }
-      if (warning2 <= warning1) {
-        if (warning2 >= warning3) {
-          if (warning3 >= warning1) {
-            this.showError('错误', `预警阈值 2 必须在 ${warning1} 和 ${warning3} 之间!`)
-            return null
-          } else {
-            this.showError('错误', `预警阈值 3 必须大于预警阈值 2，且预警阈值 2 必须大于预警阈值 1`)
-            return null
-          }
-        } else {
-          this.showError('错误', '预警阈值 1 必须小于阈值预警 2 !')
-          return null
+      // 456 123
+      // console.log(this.formData.formData[5])
+
+      // if (value == null || value == undefined) { // || warning2 > 0
+      //   let obj = {
+      //     key: 'warning1',
+      //     value: 0
+      //   }
+      //   callback(obj)
+      // } else {
+      //   callback()
+      // }
+      callback()
+      return null
+    },
+    changeNo2 (value, callback) {
+      for (let i = 0; i < this.formData.formData.length; i++) {
+        if (this.formData.formData[i].key == 'warning1') {
+          this.$set(this.formData.formData[i], 'max', value == 0 ? 0 : value - 1)
+        } else if (this.formData.formData[i].key == 'warning3') {
+          this.$set(this.formData.formData[i], 'min', value == 0 ? 0 : value + 1)
         }
       }
-      return data
+      callback()
+      return null
+    },
+    changeNo3 (value, callback) {
+      for (let i = 0; i < this.formData.formData.length; i++) {
+        if (this.formData.formData[i].key == 'warning2') {
+          this.$set(this.formData.formData[i], 'max', value == 0 ? 0 : value - 1)
+        }
+      }
+      callback()
+      return null
     },
     handleDefault (row) {
       var data = []
