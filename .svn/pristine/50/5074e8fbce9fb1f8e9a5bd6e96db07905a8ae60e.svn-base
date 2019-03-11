@@ -27,13 +27,13 @@
       <div class="msg-cont-ul">
         <ul v-if="filterMsgData.length > 0">
           <li v-for="(item, index) in filterMsgData" :key="index" :class="msgType.rowSelect == index ? 'row-select' : ''" @click="rowSelectClick(index)">
-            <div v-if="[msgTypeButton[1].key, msgTypeButton[2].key, msgTypeButton[3].key].includes(msgType.type)" class="li-img">
+            <div v-if="[msgTypeButton[2].key, msgTypeButton[3].key].includes(msgType.type)" class="li-img">
               <img :src="'/static/airline/l_' + item.airline.toLowerCase() + '.png'" width="100%"/>
             </div>
             <div :class="msgType.type == msgTypeButton[0].key ? 'li-font-notice li-font' : 'li-font'">
               <div>
                 <div>{{msgType.type == msgTypeButton[0].key ? item.msgTopic : item.flightNo}}</div>
-                <div v-if="[msgTypeButton[1].key, msgTypeButton[2].key].includes(msgType.type)" class="li-font-task">{{item.taskName}}</div>
+                <div v-if="msgType.type == msgTypeButton[2].key" class="li-font-task">{{item.taskName}}</div>
                 <div v-if="!item.msgConfirmTime" class="dot-red"></div>
                 <div v-if="msgType.type == msgTypeButton[0].key && ~item.type" class="li-font-show">{{item.type == 0 ? '全部' : (item.type == 1 ? '部门':'科室')}}可见</div>
               </div>
@@ -52,16 +52,15 @@
       </div>
       <div v-if="msgType.rowSelect != null && ~msgType.rowSelect" class="msg-cont-info">
         <div class="info-flex">
-          <div class="li-img" v-if="[msgTypeButton[1].key, msgTypeButton[2].key, msgTypeButton[3].key].includes(msgType.type)">
+          <div class="li-img" v-if="[msgTypeButton[2].key, msgTypeButton[3].key].includes(msgType.type)">
             <img :src="'/static/airline/l_' + filterMsgData[msgType.rowSelect].airline.toLowerCase() + '.png'" width="100%"/>
           </div>
           <div :class="msgType.type == msgTypeButton[0].key ? 'li-font-notice li-font' : 'li-font'">
             <div>
               <div>{{ msgType.type == msgTypeButton[0].key ? filterMsgData[msgType.rowSelect].msgTopic : filterMsgData[msgType.rowSelect].flightNo}}</div>
-              <div v-if="[msgTypeButton[1].key, msgTypeButton[2].key].includes(msgType.type)" class="li-font-task">{{filterMsgData[msgType.rowSelect].taskName}}</div>
+              <div v-if="msgType.type == msgTypeButton[2].key" class="li-font-task">{{filterMsgData[msgType.rowSelect].taskName}}</div>
             </div>
-            <div v-if="[msgTypeButton[1].key, msgTypeButton[2].key, msgTypeButton[3].key].includes(msgType.type)">
-              <div v-if="msgType.type == msgTypeButton[1].key" class="li-font-gray">{{filterMsgData[msgType.rowSelect].msgSenderName}}</div>
+            <div v-if="[msgTypeButton[2].key, msgTypeButton[3].key].includes(msgType.type)">
               <div v-if="msgType.type == msgTypeButton[2].key" class="li-font-gray">{{`来自：${filterMsgData[msgType.rowSelect].empName}`}}</div>
               <div v-if="msgType.type == msgTypeButton[3].key" class="li-font-gray">{{filterMsgData[msgType.rowSelect].msgSenderName}}</div>
             </div>
@@ -80,7 +79,7 @@
       </div>
     </div>
     <div class="msg-cont-footer">
-      <el-button v-if="[msgTypeButton[1].key, msgTypeButton[2].key, msgTypeButton[3].key].includes(msgType.type)" type="primary" @click="batchRead()">全部已读</el-button>
+      <el-button v-if="[msgTypeButton[2].key, msgTypeButton[3].key].includes(msgType.type)" type="primary" @click="batchRead()">全部已读</el-button>
       <el-button type="danger" @click="batchClear()">一键清空</el-button>
       <el-button v-if="[msgTypeButton[0].key].includes(msgType.type)" type="primary" @click="newTopic()">写通告</el-button>
     </div>
@@ -746,42 +745,17 @@ export default {
               msgUuid: data['msg_id']
             }
             break
-            case this.msgTypeButton[1].key:
-            let arr = data['msg_subtype'].split('.')
-            this.$store.commit('setOption', 'taskTmp')
-            let tmp = _.find(this.$store.getters.getOption, ['key', `${arr[0]}.${arr[1]}`])
-            let reg = new RegExp('{([^}]+)}', 'g')
-            let res = null
-            let result = []
-            while ((res = reg.exec(tmp.remark)) != null) {
-              result.push(res)
-            }
-            let remark = tmp.remark
-            _.forEach(result, (rst) => {
-              remark = remark.replace(rst[0], msg[rst[1]])
-            })
-            temp = {
-              airline: msg.flt_no.substr(0, 2),
-              flightNo: msg.flt_no,
-              time: `${this.latestDate.replace(/\//g, '-')} ${this.latestTime}`,
-              msgCont: remark,
-              msgSenderName: data['msg_sender'],
-              taskName: msg.task_cn,
-              msgConfirmTime: null,
-              msgUuid: data['msg_id']
-            }
-            break
             case this.msgTypeButton[2].key:
-            arr = data['msg_subtype'].split('.')
+            var arr = data['msg_subtype'].split('.')
             this.$store.commit('setOption', 'taskTmp')
-            tmp = _.find(this.$store.getters.getOption, ['key', `${arr[0]}.${arr[1]}`])
-            reg = new RegExp('{([^}]+)}', 'g')
-            res = null
-            result = []
+            var tmp = _.find(this.$store.getters.getOption, ['key', `${arr[0]}.${arr[1]}`])
+            var reg = new RegExp('{([^}]+)}', 'g')
+            var res = null
+            var result = []
             while ((res = reg.exec(tmp.remark)) != null) {
               result.push(res)
             }
-            remark = tmp.remark
+            var remark = tmp.remark
             _.forEach(result, (rst) => {
               remark = remark.replace(rst[0], msg[rst[1]])
             })

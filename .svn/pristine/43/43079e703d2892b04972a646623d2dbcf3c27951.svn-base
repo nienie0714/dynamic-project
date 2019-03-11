@@ -12,18 +12,17 @@
         <div class="page-table-title">查询结果</div>
         <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleDownload="handleDownload">
           <template slot="button-slot-scope">
-            <div v-if="permissions.defaultAll" class="tool-div-button tool-default" @click="handleDefault(null)">
-              <div class="defaultall-tooltip">一键恢复默认</div>
-            </div>
+            <!-- <div v-if="permissions.defaultAll" class="tool-div-button tool-default" @click="handleDefault(null)"></div> -->
+             <el-tooltip class="item" effect="dark" content="Bottom Center 提示文字" placement="bottom">
+              <div v-if="permissions.defaultAll" class="tool-div-button tool-default" @click="handleDefault(null)"></div>
+            </el-tooltip>
           </template>
         </Tool-button-view>
         <Pagination-view :pageData="pageData" @sizeChange="handleSizeChange" @currentChange="handleCurrentChange"></Pagination-view>
       </div>
       <Table-view :permissions="permissions" :tableData="tableData" ref="basicTable" @handleDetail="handleDetail" @handleEdit="handleEdit">
         <template slot="button-slot-scope" slot-scope="scopeData">
-          <div v-if="permissions.default" class="tool-div-button button-default" @click="handleDefault(scopeData.data)">
-            <div class="default-tooltip">恢复默认</div>
-          </div>
+          <div v-if="permissions.default" class="tool-div-button button-default" @click="handleDefault(scopeData.data)"></div>
         </template>
       </Table-view>
     </el-main>
@@ -210,37 +209,5 @@ export default {
 }
 </script>
 
-<style>
-.tool-default>.defaultall-tooltip {
-  color: transparent;
-}
-.tool-default:hover>.defaultall-tooltip {
-    line-height: 26px;
-    position: absolute;
-    top: 33px;
-    right: -28px;
-    width: 76px;
-    padding-left: 5px;
-    height: 26px;
-    border-radius: 10px;
-    background-color: #19526c;
-    color: cadetblue;
-    font-size: 12px;
-    border: 1px solid #0d2230;
-}
-.page-table-view>.el-table .button-default>.default-tooltip {
-  color: transparent;
-}
-.page-table-view>.el-table .button-default:hover>.default-tooltip {
-    line-height: 14px;
-    position: absolute;
-    top: 24px;
-    right: 3px;
-    padding: 0;
-    border-radius: 4px;
-    background-color: #19526c;
-    color: cadetblue;
-    font-size: 8px;
-    border: 1px solid #447385;
-}
+<style scope>
 </style>

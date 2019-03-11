@@ -216,7 +216,6 @@ input[type="number"] {
   background-color: rgba(3, 167, 134, 0.4);
   box-shadow: 0 0 12px rgba(3, 167, 134, 0.7) inset;
   border: 1px solid #03a786 !important;
-  position: relative;
 }
 .tool-delete {
   background-image: url('../assets/img/basic/icon_btn_delete.png');
@@ -233,7 +232,6 @@ input[type="number"] {
   border-color: #32aaff !important;
   box-shadow: 0 0 10px rgba(50, 170, 255, 0.4) inset;
 }
-
 /* *************************自定义按钮div样式开始**************************** */
 .div-button {
   height: 30px;
@@ -243,17 +241,6 @@ input[type="number"] {
   border-radius: 8px;
   text-align: center;
   cursor: pointer;
-}
-.div-button-usabled {
-  height: 30px;
-  line-height: 30px;
-  color: #fff;
-  border-radius: 8px;
-  text-align: center;
-  cursor: pointer;
-  background-color: rgba(10, 35, 50, 0.4);
-  border: 1px solid rgba(60, 166, 200, 0.6);
-  box-shadow: 0 0 12px rgba(60, 166, 200, 0.4) inset, 0 0 12px rgba(60, 166, 200, 0.2);
 }
 .div-button-select {
   background-color: rgba(56, 195, 245, 0.1);
