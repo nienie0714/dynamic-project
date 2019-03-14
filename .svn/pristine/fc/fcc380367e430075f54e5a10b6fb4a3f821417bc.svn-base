@@ -13,7 +13,7 @@
       <div class="left-button">
         <el-button type="info" plain @click="cleanQueryData()">清空</el-button>
         <el-button type="primary" @click="queryDataReq()">查询</el-button>
-        <el-button type="success" @click="openPreDia()">预分配</el-button>
+        <el-button type="success" @click="preAllocation()">预分配</el-button>
         <el-popover placement="bottom" trigger="manual" v-model="ctrlFVisible" popper-class="ctrl-f-popover" width="274">
           <Query-view :data="ctrlF" @change="changeHandleOfCtrlF" class="right" @keyupEnter="findCtrlF()"></Query-view>
           <div class="ctrl-f-query" @click="findCtrlF()"></div>
@@ -518,8 +518,8 @@
         </el-dialog> -->
       </el-dialog>
     </div>
-    <div class="dialog-form-edit task-pre-dialog" v-if="preData.visible">
-      <el-dialog v-if="preData.visible" :visible.sync="preData.visible" :close-on-click-modal="false" width="740px" @close="handlePreClose">
+    <div class="dialog-form-edit" v-if="preAllocationData.visible">
+      <el-dialog v-if="preAllocationData.visible" :visible.sync="preAllocationData.visible" :close-on-click-modal="false" width="751px" @close="clearAllocationData">
         <div slot="title" class="dialog-header">
           <img :src="require('@img/title_deco.png')"/>
           <span class="header-title">预分配</span>
@@ -527,80 +527,37 @@
         <div class="dialog-body">
           <div class="el-dialog-twrapper">
             <div class="dialog-twrapper-tl">
-              <div v-for="(item, index) in preData.data" :key="index">
-                <div class="twrapper-tl-item" :class="item.type == 1  ? '' : (item.type == 2 ? 'disabled' : 'actived')" @click="chosePreItem(index)">
-                  <div class="tl-item-img">
-                    <img :src="item.imgSrc" width="100%"/>
-                  </div>
-                  <div class="tl-item-font">
-                    <div>{{`${item.index+1}.选择${item.title}`}}</div>
-                    <div>{{item.cn}}</div>
-                  </div>
-                </div>
-                <img v-if="item.index !== 3" :src="require('@img/icon_step_arrow.png')">
-              </div>
+              <div class="twrapper-tl-item active"></div>
+              <div class="twrapper-tl-item"></div>
+              <div class="twrapper-tl-item"></div>
+              <div class="twrapper-tl-item"></div>
             </div>
-            <div class="dialog-twrapper-tr" v-if="preData.step == 0">
-              <div class="twrapper-tr-item">
-                <div class="tr-item-title">选择任务(单选)</div>
-                <div>
-                  <el-input type="input" v-model.trim.lazy="preData.filterValue" auto-complete="off" placeholder="搜索" @keyup.enter.native="filterDataEnter()">
-                    <i slot="prefix" class="el-input__icon el-icon-search"></i>
-                  </el-input>
-                </div>
-                <div>
-                  <div class="tr-item-ul">
-                    <div v-for="(item, index) in preData.filterArr" :key="index" class="tr-item-list el-radio" @click="handleClick(item)">
-                      <div :class="preData.tempObj && preData.tempObj.TASK_NO == item.TASK_NO ? 'radio-button el-radio__input is-checked' : 'radio-button el-radio__input'"><div class="el-radio__inner"></div></div>
-                      <div>{{item.TASK_CN}}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div class="dialog-twrapper-tr">
+              <div class="twrapper-tr-item"></div>
               <div class="twrapper-tr-btn">
-                <el-button class="tr-btn-lhalf" type="info" @click="handlePreClear()">全部清空</el-button>
-                <el-button class="tr-btn-rhalf" type="primary" @click="handleStep()">下一步</el-button>
-              </div>
-            </div>
-            <div class="dialog-twrapper-tr" v-if="preData.step == 1">
-              <div class="twrapper-tr-item">
-                <div class="tr-item-title">选择保障单元/人员(多选)</div>
-                <div>
-                  <div class="tr-item-ul">
-                    <div v-for="(item, index) in preData.tempArr" :key="index" class="tr-item-list el-radio" @click="handleClick(item)">
-                      <div :class="preData.tempObj && preData.tempObj.TASK_NO == item.TASK_NO ? 'radio-button el-radio__input is-checked' : 'radio-button el-radio__input'"><div class="el-radio__inner"></div></div>
-                      <div>{{item.TASK_CN}}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="twrapper-tr-btn">
-                <el-button class="tr-btn-lhalf" type="info" @click="handlePreClear()">全部清空</el-button>
-                <el-button class="tr-btn-rhalf" type="primary" @click="handleStep()">下一步</el-button>
+                <el-button class="tr-btn-half" type="danger" @click="batchClear()">全部清空</el-button>
+                <el-button class="tr-btn-half" type="primary" @click="newTopic()">下一步</el-button>
               </div>
             </div>
           </div>
           <div class="el-dialog-bwrapper">
             <el-main class="page-table-view">
-              <div class="pretable-name">分配预览</div>
-              <el-row class="pre-info-normal">
-                <el-col :span="4" v-for="(item, index) in preData.data" :key="index">
-                  <div class="pre-info-title">{{item.title}}</div>
-                </el-col>
-              </el-row>
-              <el-row class="pre-info-cont" v-for="(item, index) in preData.data" :key="index">
-                <el-col :span="4"></el-col>
-                <el-col :span="4"></el-col>
-                <el-col :span="4">
-                  <el-button>a</el-button>
-                </el-col>
-              </el-row>
+              <div class="page-table-header">
+                分配预览
+              </div>
+              <Table-view :tableData="preAllocationData.data" ref="basicTable" @handleDetail="handleDetail" @handleEdit="handleEdit" @handleDelete="handleDelete"></Table-view>
             </el-main>
           </div>
         </div>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="handlePreClose">取 消</el-button>
-          <el-button type="primary" @click="handlePreCommit()">提交</el-button>
+          <el-button @click="handleTaskButtonClose">取 消</el-button>
+          <el-button v-if="taskButtonData.type==1" type="primary" @click="handleTaskButtonSave"
+          :disabled="(taskButtonData.formData.button=='other'&&!taskButtonData.formData.textarea)||taskButtonData.formData.button==''">确 定</el-button>
+          <el-tooltip v-if="taskButtonData.type==2" content="提示：提交时间后任务将切换至完成状态，且不可修改！" placement="top-end" popper-class="tasksched dialog-footer-tooltip">
+            <el-button type="primary" @click="handleTaskButtonSave" :loading="taskButtonData.outLoading"
+            :disabled="!((!taskButtonData.data.beginTimeA&&!taskButtonData.data.endTimeA&&taskButtonData.timeData.startTime)||
+            (taskButtonData.data.beginTimeA&&!taskButtonData.data.endTimeA&&taskButtonData.timeData.endTime))">{{taskButtonData.outLoading?'确定中':'确 定'}}</el-button>
+          </el-tooltip>
         </div>
         <Warning-box-view :data="taskButtonData" @handleConfirm="handleCancelButtonSave"></Warning-box-view>
       </el-dialog>
@@ -676,7 +633,7 @@ import basicTableMixin from '../../components/mixin/basicTableMixin'
 import wholeTableMixin from '../../components/mixin/wholeTableMixin'
 import basicMsgMixin from '../../components/mixin/basicMsgMixin'
 import webSocketMixin from '../../components/mixin/webSocketMixin'
-import {postDataOther, queryAll, postData, getQueryAll} from '../../api/base.js'
+import {postDataOther, queryAll, postData} from '../../api/base.js'
 import {compareSort} from '../../util/util.js'
 import colResizable1 from '../../../static/colResizable-1.6.js'
 import _ from 'lodash'
@@ -875,57 +832,25 @@ export default {
       },
       showImg: false,
       imgSrc: null,
-      preData: {
-        visible: false,
-        loading: false,
-        title: '预分配',
-        taskUrl: 'taskscheduling/taskPredistribution/queryDispatchTask',
-        step: 0,
-        tempObj: {}, // 存放选中的task
-        tempArr: [], // 接口返回的数组
-        filerValue: '',
-        preArr: [], // 全部数据
-        preFilterArr: [], // 过滤后的数据
+      preAllocationData: {
+        visible: true,
         data: {
-          task: {
-            index: 0,
-            type: 1,
-            imgSrc: require('@img/icon_step_task.png'),
-            ltitle: '1.选择任务',
-            title: '任务',
-            no: '',
-            cn: ''
-          },
-          unit: {
-            index: 1,
-            type: 2,
-            imgSrc: require('@img/icon_step_person.png'),
-            ltitle: '2.选择保障单元/人员',
-            title: '保障单元/人员',
-            no: '',
-            cn: ''
-          },
-          stand: {
-            index: 2,
-            type: 2,
-            imgSrc: require('@img/icon_step_location.png'),
-            ltitle: '3.选择机位',
-            title: '机位',
-            no: '',
-            cn: ''
-          },
-          flight: {
-            index: 3,
-            type: 2,
-            imgSrc: require('@img/icon_step_flight.png'),
-            ltitle: '4.选择时间区间及航班',
-            title: '航班号',
-            no: '',
-            cn: '',
-            taskNo: [],
-            sTime: '',
-            eTime: ''
-          }
+          loading: false,
+          data: [],
+          stripe: true,
+          height: window.innerHeight,
+          highlight: true,
+          headerCellClass: 'tableHeaderCell-Center',
+          rowClassName: this.tableRowClassName,
+          key: 'apronAreaNo',
+          multipleSelection: [],
+          fields: [
+            {prop: 'apronAreaNo', label: '任务', fixed: true, hidden: false},
+            {prop: 'attr', label: '保障单元/人员', fixed: false, hidden: false, optionKey: 'attr'},
+            {prop: 'name', label: '时间区域', fixed: false, hidden: false},
+            {prop: 'terminalName', label: '航班号', fixed: false, hidden: false},
+            {prop: 'isUseable', label: '机位', fixed: false, hidden: false, optionKey: 'isYOrN'}
+          ]
         }
       }
     }
@@ -1430,57 +1355,11 @@ export default {
       this.imgSrc = src
     },
     // 预分配
-    openPreDia () {
-      this.preData.visible = true
-      postData(this.preData.taskUrl, {}).then(res => {
-        if (res.data.code == 0) {
-          this.preData.tempArr = res.data.data
-          this.filterDataEnter()
-        } else {
-          this.showError('获取任务列表', '请重试 !')
-        }
-      })
+    preAllocation () {
+      this.preAllocationData.visible = true
     },
-    // 筛选列表
-    filterDataEnter () {
-      if (!this.preData.filterValue) {
-        this.preData.filterArr = this.preData.tempArr
-      } else {
-        // this.preData.filterArr = _.filter(this.preData.preArr, (item) => {
-        //   return ~item.task.indexOf(this.preData.filterValue)
-        // })
-        this.preData.filterArr = _.filter(this.preData.tempArr, ['TASK_CN', this.preData.filterValue])
-      }
-    },
-    handleClick (data) {
-      this.preData.tempObj = data
-      // this.preData.taskArr = _.filter(this.preData.taskArr, ['taskCn', value])
-    },
-    // 弹窗关闭
-    handlePreClose () {
-      this.preData.visible = false
-    },
-    // 全部清空
-    handlePreClear () {
-      console.log()
-    },
-    handleStep () {
-      // type 0 actived 已填过type 1 '' 当前step type 2 disabled 未填过
-      if (this.preData.step === 0) {
-        this.preData.data.unit.type = 1
-        this.preData.data.task.type = 0
-        this.preData.step = 1
-        this.preData.data.task.no = this.preData.tempObj.TASK_NO
-        this.preData.data.task.cn = this.preData.tempObj.TASK_CN
-      }
-    },
-    // 选中左侧步骤1234
-    chosePreItem (index) {
-      console.log(index)
-    },
-    // 提交
-    handlePreCommit () {
-      console.log('1')
+    clearAllocationData () {
+      this.preAllocationData.visible = false
     }
   },
   computed: {
@@ -2063,199 +1942,43 @@ export default {
 }
 .el-dialog-twrapper {
   display: flex;
-  height: 478px;
+  height: 400px;
   margin-bottom: 20px;
 }
 .dialog-twrapper-tl {
-  width: 51%;
-  margin-right: 20px;
-}
-.dialog-twrapper-tl>div {
-  width: 100%;
+  width: 48%;
+  margin-right: 30px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-}
-.dialog-twrapper-tl>div>img {
-  width: 20px;
-  height: 10px;
-  margin: 15px auto;
 }
 .dialog-twrapper-tr {
   flex: 1;
 }
 .twrapper-tl-item, .twrapper-tr-item {
   box-sizing: border-box;
-  height: 90px;
-  border-radius: 10px;
-  padding-left: 20px;
-}
-/* 当前项*/
-.twrapper-tl-item{
-  background-color: rgba(54, 140, 180, 0.4) !important;
+  height: 80px;
+  -webkit-box-shadow: 0px 0px 6px rgba(60, 166, 200, 0.7) inset !important;
+  box-shadow: 0px 0px 6px rgba(60, 166, 200, 0.7) inset !important;
   border: 1px solid rgba(60, 166, 200, 0.7);
-  box-shadow: 0px 0px 30px rgba(60, 166, 200, 0.4) inset, 0 0 20px rgba(60, 166, 200, 0.2) !important;
-  -webkit-box-shadow: 0px 0px 30px rgba(60, 166, 200, 0.4) inset, 0 0 20px rgba(60, 166, 200, 0.2) !important;
-  display: flex;
-  align-items: center;
-  box-sizing: border-box;
-  padding: 14px 4px 14px 20px;
-  cursor: pointer;
+  border-radius: 6px;
+  padding: 7px;
 }
-/* 已添项*/
-.twrapper-tl-item.actived{
-  background-color: rgba(54, 140, 180, 0.2) !important;
-  border: none;
-  box-shadow: none;
-}
-/* 未添项*/
-.twrapper-tl-item.disabled{
-  opacity: 0.4;
-  border: none;
-  box-shadow: none;
-  cursor: not-allowed;
-}
-.tl-item-img {
-  height: 30px;
-  width: 30px;
-  margin-right: 20px;
-}
-.tl-item-font {
-  width: calc(100% - 98px);
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  position: relative;
-}
-.tl-item-font>div:first-of-type:not(:last-of-type) {
-  margin-bottom: 12px;
-  color: #7a939e;
-  font-size: 16px;
-  height: 16px;
-  line-height: 16px;
-  display: flex;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.tl-item-font>div:last-of-type {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  width: 100%;
-  color: #fff;
-  font-size: 18px;
-  height: 18px;
-  line-height: 18px;
+.twrapper-tl-item.active{
+  background-color: rgba(56, 195, 245, 0.2) !important;
 }
 .twrapper-tr-item {
-  height: 430px;
-  padding: 0 10px;
-  white-space:nowrap;
-  text-overflow:ellipsis;
-  background-color: rgba(10, 35, 50, 0.4) !important;
-  border: 1px solid rgba(60, 166, 200, 0.6) !important;
-  box-shadow: 0 0 12px rgba(60, 166, 200, 0.4) inset, 0 0 12px rgba(60, 166, 200, 0.2) !important;
-  border-radius: 10px;
-}
-.twrapper-tr-item>.tr-item-ul {
-  margin: 0 6px;
-  display: flex;
-  flex-direction: column;
-  color: #fff;
-  font-size: 16px;
-}
-.tr-item-title {
-  color: #7a939e;
-  font-size: 16px;
-  height: 50px;
-  line-height: 50px;
-}
-.tr-item-list {
-  height: 32px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.tr-item-list:hover {
-  background-color: rgba(60, 166, 200, 0.4);
-  border-radius: 6px;
+  height: 90%;
 }
 .twrapper-tr-btn {
   display: flex;
-  margin-top: 20px;
+  margin-top: 9px;
 }
-.tr-btn-lhalf {
+.tr-btn-half {
   width: 50%;
-  margin-right: 16px;
-}
-.tr-btn-rhalf {
-  width: 50%;
-  margin-right: 0px;
 }
 .el-dialog-bwrapper {
   height: 100%;
-}
-.pretable-name {
-  font-size: 16px;
-  color: #7a939e;
-  height: 16px;
-  line-height: 16px;
-  margin-bottom: 16px;
-}
-.pre-info-normal {
-  border-top: 1px solid rgba(60,166,200,0.4);
-}
-.pre-info-title {
-  height: 50px;
-  line-height: 50px;
-  font-size: 16px;
-  color: #73c7e6;
-}
-.pre-info-cont {
-  height: 50px;
-  line-height: 50px;
-  color: #fff;
-  font-size: 16px;
-}
-.start-time, .end-time {
-  height: 25px;
-  line-height: 25px;
-  font-size: 14px;
-}
-.page-table-view>.pre-info-cont:nth-child(1){
-  background:rgba(60,166,200,0.4) !important;
-}
-.page-table-view>.pre-info-cont:nth-child(2){
-  background:rgba(60,166,200,0.9) !important;
-}
-/* .single-row {
-  background:rgba(60,166,200,0.4) !important;
-}
-.current-row {
-  background: rgba(60,166,200,0.4) !important;
-} */
-.twrapper-tr-item>div:last-of-type {
-  overflow-x: hidden;
-  margin: 5px 0;
-  height: calc(100% - 90px);
-}
-.task-pre-dialog .tr-item-list {
-  padding: 0 5px;
-  display: flex;
-  align-items: center;
-  margin-left: 0px;
-}
-.task-pre-dialog .tr-item-list>div:first-of-type {
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
-  margin-right: 12px;
-}
-.task-pre-dialog .tr-item-list>div:last-of-type {
-  font-size: 16px;
-  color: #fff;
 }
 /* **************************弹出框设置结束************************** */
 </style>

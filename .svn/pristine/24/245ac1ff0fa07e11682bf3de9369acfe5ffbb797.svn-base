@@ -518,8 +518,8 @@
         </el-dialog> -->
       </el-dialog>
     </div>
-    <div class="dialog-form-edit task-pre-dialog" v-if="preData.visible">
-      <el-dialog v-if="preData.visible" :visible.sync="preData.visible" :close-on-click-modal="false" width="740px" @close="handlePreClose">
+    <div class="dialog-form-edit" v-if="preVisible">
+      <el-dialog v-if="preVisible" :visible.sync="preVisible" :close-on-click-modal="false" width="740px" @close="handlePreClose">
         <div slot="title" class="dialog-header">
           <img :src="require('@img/title_deco.png')"/>
           <span class="header-title">预分配</span>
@@ -527,53 +527,21 @@
         <div class="dialog-body">
           <div class="el-dialog-twrapper">
             <div class="dialog-twrapper-tl">
-              <div v-for="(item, index) in preData.data" :key="index">
-                <div class="twrapper-tl-item" :class="item.type == 1  ? '' : (item.type == 2 ? 'disabled' : 'actived')" @click="chosePreItem(index)">
+              <div v-for="(item, index) in preLData" :key="index">
+                <div class="twrapper-tl-item" :class="item.className" @click="chosePreItem(index)">
                   <div class="tl-item-img">
                     <img :src="item.imgSrc" width="100%"/>
                   </div>
                   <div class="tl-item-font">
-                    <div>{{`${item.index+1}.选择${item.title}`}}</div>
-                    <div>{{item.cn}}</div>
+                    <div>{{item.title}}</div>
+                    <div>{{item.content}}</div>
                   </div>
                 </div>
-                <img v-if="item.index !== 3" :src="require('@img/icon_step_arrow.png')">
+                <img v-if="index !== 3" :src="require('@img/icon_step_arrow.png')">
               </div>
             </div>
-            <div class="dialog-twrapper-tr" v-if="preData.step == 0">
-              <div class="twrapper-tr-item">
-                <div class="tr-item-title">选择任务(单选)</div>
-                <div>
-                  <el-input type="input" v-model.trim.lazy="preData.filterValue" auto-complete="off" placeholder="搜索" @keyup.enter.native="filterDataEnter()">
-                    <i slot="prefix" class="el-input__icon el-icon-search"></i>
-                  </el-input>
-                </div>
-                <div>
-                  <div class="tr-item-ul">
-                    <div v-for="(item, index) in preData.filterArr" :key="index" class="tr-item-list el-radio" @click="handleClick(item)">
-                      <div :class="preData.tempObj && preData.tempObj.TASK_NO == item.TASK_NO ? 'radio-button el-radio__input is-checked' : 'radio-button el-radio__input'"><div class="el-radio__inner"></div></div>
-                      <div>{{item.TASK_CN}}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="twrapper-tr-btn">
-                <el-button class="tr-btn-lhalf" type="info" @click="handlePreClear()">全部清空</el-button>
-                <el-button class="tr-btn-rhalf" type="primary" @click="handleStep()">下一步</el-button>
-              </div>
-            </div>
-            <div class="dialog-twrapper-tr" v-if="preData.step == 1">
-              <div class="twrapper-tr-item">
-                <div class="tr-item-title">选择保障单元/人员(多选)</div>
-                <div>
-                  <div class="tr-item-ul">
-                    <div v-for="(item, index) in preData.tempArr" :key="index" class="tr-item-list el-radio" @click="handleClick(item)">
-                      <div :class="preData.tempObj && preData.tempObj.TASK_NO == item.TASK_NO ? 'radio-button el-radio__input is-checked' : 'radio-button el-radio__input'"><div class="el-radio__inner"></div></div>
-                      <div>{{item.TASK_CN}}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            <div class="dialog-twrapper-tr">
+              <div class="twrapper-tr-item"></div>
               <div class="twrapper-tr-btn">
                 <el-button class="tr-btn-lhalf" type="info" @click="handlePreClear()">全部清空</el-button>
                 <el-button class="tr-btn-rhalf" type="primary" @click="handleStep()">下一步</el-button>
@@ -584,13 +552,19 @@
             <el-main class="page-table-view">
               <div class="pretable-name">分配预览</div>
               <el-row class="pre-info-normal">
-                <el-col :span="4" v-for="(item, index) in preData.data" :key="index">
+                <el-col :span="4" v-for="(item, index) in preBDataTitle" :key="index">
                   <div class="pre-info-title">{{item.title}}</div>
                 </el-col>
               </el-row>
-              <el-row class="pre-info-cont" v-for="(item, index) in preData.data" :key="index">
-                <el-col :span="4"></el-col>
-                <el-col :span="4"></el-col>
+              <el-row class="pre-info-cont" v-for="(item, index) in preBData" :key="index" :class="single-row">
+                <el-col :span="4">{{item.task}}</el-col>
+                <el-col :span="4">{{item.person}}</el-col>
+                <el-col :span="4">
+                  <div class="start-time">{{item.startTime}}</div>
+                  <div class="end-time">{{item.startTime}}</div>
+                </el-col>
+                <el-col :span="4">{{item.flight}}</el-col>
+                <el-col :span="4">{{item.position}}</el-col>
                 <el-col :span="4">
                   <el-button>a</el-button>
                 </el-col>
@@ -676,7 +650,7 @@ import basicTableMixin from '../../components/mixin/basicTableMixin'
 import wholeTableMixin from '../../components/mixin/wholeTableMixin'
 import basicMsgMixin from '../../components/mixin/basicMsgMixin'
 import webSocketMixin from '../../components/mixin/webSocketMixin'
-import {postDataOther, queryAll, postData, getQueryAll} from '../../api/base.js'
+import {postDataOther, queryAll, postData} from '../../api/base.js'
 import {compareSort} from '../../util/util.js'
 import colResizable1 from '../../../static/colResizable-1.6.js'
 import _ from 'lodash'
@@ -875,59 +849,63 @@ export default {
       },
       showImg: false,
       imgSrc: null,
-      preData: {
-        visible: false,
-        loading: false,
-        title: '预分配',
-        taskUrl: 'taskscheduling/taskPredistribution/queryDispatchTask',
-        step: 0,
-        tempObj: {}, // 存放选中的task
-        tempArr: [], // 接口返回的数组
-        filerValue: '',
-        preArr: [], // 全部数据
-        preFilterArr: [], // 过滤后的数据
-        data: {
-          task: {
-            index: 0,
-            type: 1,
-            imgSrc: require('@img/icon_step_task.png'),
-            ltitle: '1.选择任务',
-            title: '任务',
-            no: '',
-            cn: ''
-          },
-          unit: {
-            index: 1,
-            type: 2,
-            imgSrc: require('@img/icon_step_person.png'),
-            ltitle: '2.选择保障单元/人员',
-            title: '保障单元/人员',
-            no: '',
-            cn: ''
-          },
-          stand: {
-            index: 2,
-            type: 2,
-            imgSrc: require('@img/icon_step_location.png'),
-            ltitle: '3.选择机位',
-            title: '机位',
-            no: '',
-            cn: ''
-          },
-          flight: {
-            index: 3,
-            type: 2,
-            imgSrc: require('@img/icon_step_flight.png'),
-            ltitle: '4.选择时间区间及航班',
-            title: '航班号',
-            no: '',
-            cn: '',
-            taskNo: [],
-            sTime: '',
-            eTime: ''
-          }
+      preVisible: true,
+      preLData: [
+        {
+          className: '',
+          imgSrc: require('@img/icon_step_task.png'),
+          title: '1.选择任务',
+          content: '加油'
+        },
+        {
+          className: 'disabled',
+          imgSrc: require('@img/icon_step_person.png'),
+          title: '2.选择保障单元/人员',
+          content: '胡春天 李丹 周小龙 王大壮'
+        },
+        {
+          className: 'disabled',
+          imgSrc: require('@img/icon_step_location.png'),
+          title: '3.选择机位',
+          content: '20 102 23'
+        },
+        {
+          className: 'disabled',
+          imgSrc: require('@img/icon_step_flight.png'),
+          title: '4.选择时间区间及航班',
+          content: ''
         }
-      }
+      ],
+      preBDataTitle: [
+        {
+          title: '任务'
+        },
+        {
+          title: '保障单元/人员'
+        },
+        {
+          title: '时间区间'
+        },
+        {
+          title: '航班号'
+        },
+        {
+          title: '机位'
+        },
+        {
+          title: '操作'
+        }
+      ],
+      preBData: [
+        {
+          task: '接机',
+          person: '王伟',
+          startTime: '01-01 00：00',
+          endTime: '01-01 23：59',
+          flight: 'MU2560',
+          position: '12'
+        }
+      ]
     }
   },
   watch: {
@@ -1431,48 +1409,35 @@ export default {
     },
     // 预分配
     openPreDia () {
-      this.preData.visible = true
-      postData(this.preData.taskUrl, {}).then(res => {
-        if (res.data.code == 0) {
-          this.preData.tempArr = res.data.data
-          this.filterDataEnter()
-        } else {
-          this.showError('获取任务列表', '请重试 !')
-        }
-      })
-    },
-    // 筛选列表
-    filterDataEnter () {
-      if (!this.preData.filterValue) {
-        this.preData.filterArr = this.preData.tempArr
-      } else {
-        // this.preData.filterArr = _.filter(this.preData.preArr, (item) => {
-        //   return ~item.task.indexOf(this.preData.filterValue)
-        // })
-        this.preData.filterArr = _.filter(this.preData.tempArr, ['TASK_CN', this.preData.filterValue])
-      }
-    },
-    handleClick (data) {
-      this.preData.tempObj = data
-      // this.preData.taskArr = _.filter(this.preData.taskArr, ['taskCn', value])
+      this.preVisible = true
     },
     // 弹窗关闭
     handlePreClose () {
-      this.preData.visible = false
+      this.preVisible = false
     },
     // 全部清空
     handlePreClear () {
       console.log()
     },
     handleStep () {
-      // type 0 actived 已填过type 1 '' 当前step type 2 disabled 未填过
-      if (this.preData.step === 0) {
-        this.preData.data.unit.type = 1
-        this.preData.data.task.type = 0
-        this.preData.step = 1
-        this.preData.data.task.no = this.preData.tempObj.TASK_NO
-        this.preData.data.task.cn = this.preData.tempObj.TASK_CN
+      let curStep = 0
+      for (let i = 0; i < 3; i++) {
+        if (this.preLData[i].className === '') {
+          curStep = i
+        }
       }
+      for (let i = 0; i < 3; i++) {
+        if (i < curStep) {
+          this.preLData[i].className = 'actived'
+        }
+        if (i === curStep) {
+          this.preLData[i].className = ''
+        }
+        if (i > curStep) {
+          this.preLData[i].className = 'disabled'
+        }
+      }
+      console.log(this.preLData)
     },
     // 选中左侧步骤1234
     chosePreItem (index) {
@@ -2152,35 +2117,10 @@ export default {
 }
 .twrapper-tr-item {
   height: 430px;
-  padding: 0 10px;
-  white-space:nowrap;
-  text-overflow:ellipsis;
   background-color: rgba(10, 35, 50, 0.4) !important;
   border: 1px solid rgba(60, 166, 200, 0.6) !important;
   box-shadow: 0 0 12px rgba(60, 166, 200, 0.4) inset, 0 0 12px rgba(60, 166, 200, 0.2) !important;
   border-radius: 10px;
-}
-.twrapper-tr-item>.tr-item-ul {
-  margin: 0 6px;
-  display: flex;
-  flex-direction: column;
-  color: #fff;
-  font-size: 16px;
-}
-.tr-item-title {
-  color: #7a939e;
-  font-size: 16px;
-  height: 50px;
-  line-height: 50px;
-}
-.tr-item-list {
-  height: 32px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-.tr-item-list:hover {
-  background-color: rgba(60, 166, 200, 0.4);
-  border-radius: 6px;
 }
 .twrapper-tr-btn {
   display: flex;
@@ -2236,26 +2176,5 @@ export default {
 .current-row {
   background: rgba(60,166,200,0.4) !important;
 } */
-.twrapper-tr-item>div:last-of-type {
-  overflow-x: hidden;
-  margin: 5px 0;
-  height: calc(100% - 90px);
-}
-.task-pre-dialog .tr-item-list {
-  padding: 0 5px;
-  display: flex;
-  align-items: center;
-  margin-left: 0px;
-}
-.task-pre-dialog .tr-item-list>div:first-of-type {
-  width: 20px;
-  height: 20px;
-  line-height: 20px;
-  margin-right: 12px;
-}
-.task-pre-dialog .tr-item-list>div:last-of-type {
-  font-size: 16px;
-  color: #fff;
-}
 /* **************************弹出框设置结束************************** */
 </style>

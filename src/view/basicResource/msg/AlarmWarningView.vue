@@ -211,6 +211,22 @@ export default {
 </script>
 
 <style>
+/* .button-default >.default-tooltip {
+  display: none;
+} */
+/* .default-tooltip {
+    line-height: 26px;
+    position: absolute;
+    top: 44px;
+    right: 20px;
+    width: 60px;
+    height: 26px;
+    border-radius: 10px;
+    background-color: #19526c;
+    color: cadetblue;
+    font-size: 12px;
+    border: 1px solid #447385;
+} */
 .tool-default>.defaultall-tooltip {
   color: transparent;
 }
@@ -242,5 +258,16 @@ export default {
     color: cadetblue;
     font-size: 8px;
     border: 1px solid #447385;
+    /* line-height: 26px;
+    position: absolute;
+    top: 44px;
+    right: 20px;
+    width: 60px;
+    height: 26px;
+    border-radius: 10px;
+    background-color: #19526c;
+    color: cadetblue;
+    font-size: 12px;
+    border: 1px solid #447385; */
 }
 </style>
