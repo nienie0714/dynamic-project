@@ -527,8 +527,8 @@
         <div class="dialog-body">
           <div class="el-dialog-twrapper">
             <div class="dialog-twrapper-tl">
-              <div v-for="(item, index) in preData.data" :key="index">
-                <div class="twrapper-tl-item" :class="item.type == 1  ? '' : (item.type == 2 ? 'disabled' : 'actived')" @click="chosePreItem(index)">
+              <div v-for="(item, index) in preData.preStatic" :key="index">
+                <div class="twrapper-tl-item" :class="item.type == 1  ? '' : (item.type == 2 ? 'disabled' : 'actived')" @click="chosePreItem(item)">
                   <div class="tl-item-img">
                     <img :src="item.imgSrc" width="100%"/>
                   </div>
@@ -542,15 +542,15 @@
             </div>
             <div class="dialog-twrapper-tr" v-if="preData.step == 0">
               <div class="twrapper-tr-item">
-                <div class="tr-item-title">选择任务(单选)</div>
+                <div class="tr-item-titlee">选择任务(单选)</div>
                 <div>
-                  <el-input type="input" v-model.trim.lazy="preData.filterValue" auto-complete="off" placeholder="搜索" @keyup.enter.native="filterDataEnter()">
+                  <el-input type="input" v-model.trim="preData.filterValue" auto-complete="off" placeholder="搜索" @keyup.enter.native="filterDataEnter()">
                     <i slot="prefix" class="el-input__icon el-icon-search"></i>
                   </el-input>
                 </div>
                 <div>
                   <div class="tr-item-ul">
-                    <div v-for="(item, index) in preData.filterArr" :key="index" class="tr-item-list el-radio" @click="handleClick(item)">
+                    <div v-for="(item, index) in preData.preFilterArr" :key="index" class="tr-item-list el-radio" @click="handleClick(item)">
                       <div :class="preData.tempObj && preData.tempObj.TASK_NO == item.TASK_NO ? 'radio-button el-radio__input is-checked' : 'radio-button el-radio__input'"><div class="el-radio__inner"></div></div>
                       <div>{{item.TASK_CN}}</div>
                     </div>
@@ -559,48 +559,107 @@
               </div>
               <div class="twrapper-tr-btn">
                 <el-button class="tr-btn-lhalf" type="info" @click="handlePreClear()">全部清空</el-button>
-                <el-button class="tr-btn-rhalf" type="primary" @click="handleStep()">下一步</el-button>
+                <el-button class="tr-btn-rhalf" :disabled="preData.tempObj == null" type="primary" @click="handleStep()">下一步</el-button>
               </div>
             </div>
-            <div class="dialog-twrapper-tr" v-if="preData.step == 1">
+            <div class="dialog-twrapper-tr" v-if="preData.step !== 0">
               <div class="twrapper-tr-item">
-                <div class="tr-item-title">选择保障单元/人员(多选)</div>
+                <div class="tr-item-title">
+                  <div v-if="preData.step == 1">选择保障单元/人员(多选)</div>
+                  <div v-if="preData.step == 2">选择机位(多选)</div>
+                  <div v-if="preData.step == 3">选择航班号(多选)</div><!--preData.isCheckAll-->
+                  <div class="all-check" @click="checkAll" :class="(preData.tempArr.length != 0 && preData.tempArr.length == preData.preFilterArr.length)? 'radio-button el-checkbox__input is-checked' : 'radio-button el-checkbox__input'"><div class="el-checkbox__inner"></div><div>全选</div></div>
+                </div>
+                <div class="el-timepicker" v-if="preData.step == 3">
+                  <el-time-picker is-range v-model="preData.time" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围" format='HH:mm:ss' valueFormat='HH:mm:ss' @change="getPreFlight"></el-time-picker>
+                </div>
                 <div>
-                  <div class="tr-item-ul">
-                    <div v-for="(item, index) in preData.tempArr" :key="index" class="tr-item-list el-radio" @click="handleClick(item)">
-                      <div :class="preData.tempObj && preData.tempObj.TASK_NO == item.TASK_NO ? 'radio-button el-radio__input is-checked' : 'radio-button el-radio__input'"><div class="el-radio__inner"></div></div>
-                      <div>{{item.TASK_CN}}</div>
+                  <el-input type="input" v-model.trim.lazy="preData.filterValue" auto-complete="off" placeholder="搜索" @keyup.enter.native="filterDataEnter()">
+                    <i slot="prefix" class="el-input__icon el-icon-search"></i>
+                  </el-input>
+                </div>
+                <div :class="preData.step == 3 ? 'reHeight': ''">
+                  <div class="tr-item-ul" v-if="preData.step == 1">
+                    <div v-for="(item, index) in preData.preFilterArr" :key="index" class="tr-item-list" @click="handleSelect(item)">
+                      <div :class="~require('lodash').findIndex(preData.tempArr, ['ID', item.ID]) ? 'radio-button el-checkbox__input is-checked' : 'radio-button el-checkbox__input'"><div class="el-checkbox__inner"></div></div>
+                      <div>{{item.NAME}}</div>
+                    </div>
+                  </div>
+                  <div class="tr-item-ul" v-if="preData.step == 2">
+                    <div v-for="(item, index) in preData.preFilterArr" :key="index" class="tr-item-list" @click="handleSelect(item)">
+                      <div :class="~require('lodash').findIndex(preData.tempArr, ['standNo', item.standNo]) ? 'radio-button el-checkbox__input is-checked' : 'radio-button el-checkbox__input'"><div class="el-checkbox__inner"></div></div>
+                      <div>{{item.standNo}}</div>
+                    </div>
+                  </div>
+                  <div class="tr-item-ul" v-if="preData.step == 3">
+                    <div v-for="(item, index) in preData.preFilterArr" :key="index" class="tr-item-list" @click="handleSelect(item)">
+                      <div :class="~require('lodash').findIndex(preData.tempArr, ['FLIGHT_NO', item.FLIGHT_NO]) ? 'radio-button el-checkbox__input is-checked' : 'radio-button el-checkbox__input'"><div class="el-checkbox__inner"></div></div>
+                      <div>{{item.FLIGHT_NO}}</div>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="twrapper-tr-btn">
                 <el-button class="tr-btn-lhalf" type="info" @click="handlePreClear()">全部清空</el-button>
-                <el-button class="tr-btn-rhalf" type="primary" @click="handleStep()">下一步</el-button>
+                <el-button v-if="preData.step == 1 || preData.step == 2" class="tr-btn-rhalf" :disabled="preData.tempArr.length == 0" type="primary" @click="handleStep()">下一步</el-button>
+                <el-button v-if="preData.step == 3" :disabled="preData.preFilterArr.length == 0 || preData.tempArr.length == 0" class="tr-btn-rhalf" type="primary" @click="handleAddGroup()">添加</el-button>
               </div>
             </div>
           </div>
+          <el-dialog :visible.sync="preData.diaVisible" :close-on-click-modal="false" width="150" append-to-body class="other-dialog prepop-dialog">
+            <div slot="title" class="dialog-header">
+              <img :src="require('@img/title_deco.png')" />
+              <span class="header-title">{{'警告'}}</span>
+            </div>
+            <div class="dialog-body">
+              <div>
+                <div class="cancel-warn-img"></div>
+              </div>
+              <div><p class="other-dialog-cont">{{'修改确认信息可能会清空后置其他信息，确认执行此操作？'}}</p></div>
+              <div><p class="other-dialog-tip">{{'操作不可恢复'}}</p></div>
+            </div>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="()=>{preData.diaVisible=false}">取 消</el-button>
+              <el-button type="primary" @click="handleConfirmDia">确 定</el-button>
+            </div>
+          </el-dialog>
           <div class="el-dialog-bwrapper">
             <el-main class="page-table-view">
               <div class="pretable-name">分配预览</div>
               <el-row class="pre-info-normal">
-                <el-col :span="4" v-for="(item, index) in preData.data" :key="index">
-                  <div class="pre-info-title">{{item.title}}</div>
-                </el-col>
+                <el-col :span="4"><div class="pre-info-title">任务</div></el-col>
+                <el-col :span="5"><div class="pre-info-title">保障单元/人员</div></el-col>
+                <el-col :span="5"><div class="pre-info-title">航班号</div></el-col>
+                <el-col :span="2"><div class="pre-info-title">机位</div></el-col>
+                <el-col :span="4"><div class="pre-info-title">起飞-到达</div></el-col>
+                <el-col :span="4"><div class="pre-info-title pre-title-center">操作</div></el-col>
               </el-row>
-              <el-row class="pre-info-cont" v-for="(item, index) in preData.data" :key="index">
-                <el-col :span="4"></el-col>
-                <el-col :span="4"></el-col>
-                <el-col :span="4">
-                  <el-button>a</el-button>
-                </el-col>
-              </el-row>
+              <div class="pre-info-contbox">
+                <div>
+                  <el-row class="pre-info-cont" v-for="(item, index) in preData.preArr" :key="index">
+                  <el-col :span="4">{{item.TASK_CN}}</el-col>
+                  <el-col :span="5">{{item.NAME}}</el-col>
+                  <el-col :span="5">{{item.FLIGHT_NO}}</el-col>
+                  <el-col :span="2">{{item.STAND}}</el-col>
+                  <el-col :span="4" class="pre-ta-td">
+                    <div>{{item.TD}}</div>
+                    <div>{{item.TA}}</div>
+                  </el-col>
+                  <el-col :span="4">
+                    <div class="table-opt-col">
+                      <div class="tool-div-button button-edit" @click="handlePreEdit(item, index)"></div>
+                      <div class="tool-div-button button-delete" @click="handlePreDelete(item, index)"></div>
+                    </div>
+                  </el-col>
+                </el-row>
+                </div>
+              </div>
             </el-main>
           </div>
         </div>
         <div slot="footer" class="dialog-footer">
           <el-button @click="handlePreClose">取 消</el-button>
-          <el-button type="primary" @click="handlePreCommit()">提交</el-button>
+          <el-button type="primary" @click="handlePreCommit()" :disabled="preData.preArr.length == 0">提交</el-button>
         </div>
         <Warning-box-view :data="taskButtonData" @handleConfirm="handleCancelButtonSave"></Warning-box-view>
       </el-dialog>
@@ -877,55 +936,63 @@ export default {
       imgSrc: null,
       preData: {
         visible: false,
+        diaVisible: false,
+        isCheckAll: false,
         loading: false,
         title: '预分配',
         taskUrl: 'taskscheduling/taskPredistribution/queryDispatchTask',
+        empUrl: 'taskscheduling/taskPredistribution/queryTeamAndEmpByTaskNo',
+        standUrl: 'airportResource/aircraftStand/queryAll',
+        flightUrl: 'taskscheduling/taskPredistribution/queryFlight',
+        commitUrl: 'taskscheduling/taskPredistribution/batchSavePredistributionTask',
+        time: ['00:00:00', '23:59:00'],
         step: 0,
-        tempObj: {}, // 存放选中的task
-        tempArr: [], // 接口返回的数组
+        choseIndex: 0,
+        tempObj: null, // 存放选中的task
+        tempArr: [], // 存放选中的多选参数
         filerValue: '',
-        preArr: [], // 全部数据
+        preGetArr: [], // 存放获取到的数组
         preFilterArr: [], // 过滤后的数据
-        data: {
-          task: {
+        preArr: [], // 向后台发送的数据
+        preStatic: [
+          {
             index: 0,
             type: 1,
+            key: 'TASK_NO',
             imgSrc: require('@img/icon_step_task.png'),
-            ltitle: '1.选择任务',
             title: '任务',
-            no: '',
             cn: ''
           },
-          unit: {
+          {
             index: 1,
             type: 2,
+            key: 'ID',
             imgSrc: require('@img/icon_step_person.png'),
-            ltitle: '2.选择保障单元/人员',
             title: '保障单元/人员',
-            no: '',
             cn: ''
           },
-          stand: {
+          {
             index: 2,
             type: 2,
+            key: 'standNo',
             imgSrc: require('@img/icon_step_location.png'),
-            ltitle: '3.选择机位',
             title: '机位',
-            no: '',
             cn: ''
           },
-          flight: {
+          {
             index: 3,
             type: 2,
+            key: 'FLIGHT_NO',
             imgSrc: require('@img/icon_step_flight.png'),
-            ltitle: '4.选择时间区间及航班',
             title: '航班号',
-            no: '',
-            cn: '',
-            taskNo: [],
-            sTime: '',
-            eTime: ''
+            cn: ''
           }
+        ],
+        data: {
+          TASK: {},
+          TEAM_EMPS: [],
+          STAND: [],
+          FLIGHTS: []
         }
       }
     }
@@ -1431,59 +1498,343 @@ export default {
     },
     // 预分配
     openPreDia () {
+      this.handleClearAll()
       this.preData.visible = true
+      this.getPreTask()
+    },
+    // 筛选列表 todo:去重
+    filterDataEnter () {
+      // this.preData.isCheckAll = false
+      let index = this.preData.step
+      if (!this.preData.filterValue) {
+        this.preData.preFilterArr = this.preData.preGetArr
+      } else {
+        if (index == 0) {
+          this.preData.preFilterArr = _.filter(this.preData.preGetArr, (item) => {
+            return ~item.TASK_CN.indexOf(this.preData.filterValue)
+          })
+          // 精准过滤 this.preData.preFilterArr = _.filter(this.preData.preGetArr, ['TASK_CN', this.preData.filterValue])
+        } else {
+          let obj = null
+          _.forEach(this.preData.preStatic, (item, key) => {
+            if (item.index == this.preData.step) {
+              obj = item
+            }
+          })
+          // this.preData.preFilterArr = _.filter(this.preData.preGetArr, [obj.key, this.preData.filterValue])
+          this.preData.preFilterArr = _.filter(this.preData.preGetArr, (item) => {
+            return ~item[obj.key].indexOf(this.preData.filterValue)
+          })
+        }
+      }
+    },
+    checkAll () {
+      if (this.preData.tempArr.length == this.preData.preFilterArr.length) {
+        // bug: 有延时
+        this.preData.tempArr.length = 0
+      } else {
+        this.preData.tempArr = _.cloneDeep(this.preData.preFilterArr)
+      }
+    },
+    getPreTask (data) {
+      this.$set(this.preData, 'filterValue', '')
+      this.preData.preFilterArr.length = 0
       postData(this.preData.taskUrl, {}).then(res => {
         if (res.data.code == 0) {
-          this.preData.tempArr = res.data.data
+          this.preData.preGetArr = res.data.data
           this.filterDataEnter()
         } else {
           this.showError('获取任务列表', '请重试 !')
         }
       })
+      this.preData.step = 0
     },
-    // 筛选列表
-    filterDataEnter () {
-      if (!this.preData.filterValue) {
-        this.preData.filterArr = this.preData.tempArr
-      } else {
-        // this.preData.filterArr = _.filter(this.preData.preArr, (item) => {
-        //   return ~item.task.indexOf(this.preData.filterValue)
-        // })
-        this.preData.filterArr = _.filter(this.preData.tempArr, ['TASK_CN', this.preData.filterValue])
+    getPreEmp (data) {
+      this.$set(this.preData, 'filterValue', '')
+      this.preData.preFilterArr.length = 0
+      postData(this.preData.empUrl, data).then(res => {
+        if (res.data.code == 0) {
+          this.preData.tempObj = null
+          this.preData.preGetArr = res.data.data
+          this.filterDataEnter()
+        } else {
+          this.showError('获取保障单元/人员', '请重试 !')
+        }
+      })
+      this.preData.step = 1
+    },
+    getPreStand () {
+      this.$set(this.preData, 'filterValue', '')
+      this.preData.preFilterArr.length = 0
+      postData(this.preData.standUrl, {}).then(res => {
+        if (res.data.code == 0) {
+          this.preData.tempObj = null
+          this.preData.preGetArr = res.data.data
+          this.filterDataEnter()
+        } else {
+          this.showError('获取机位', '请重试 !')
+        }
+      })
+      this.preData.step = 2
+    },
+    getPreFlight () {
+      this.$set(this.preData, 'filterValue', '')
+      let standNo = this.preData.data.STAND.map(item => item.standNo)
+      let obj = {
+        'taskNo': this.preData.data.TASK.TASK_NO,
+        'standNos': standNo.join(),
+        'beginTime': this.preData.time[0] == '' ? '00:00:00' : this.preData.time[0],
+        'endTime': this.preData.time[1] == '' ? '00:23:59' : this.preData.time[1]
+      }
+      postData(this.preData.flightUrl, obj).then(res => {
+        if (res.data.code == 0) {
+          this.preData.tempObj = null
+          this.preData.preGetArr = res.data.data
+          this.filterDataEnter()
+        } else {
+          this.showError('获取航班号', '请重试 !')
+        }
+      })
+      this.preData.step = 3
+    },
+    formatTime (val) {
+      if (val == '' || val == null) {
+        return ''
+      }
+      let hours = parseInt(val.hours)
+      hours = hours > 9 ? hours : ('0' + hours)
+      let minutes = parseInt(val.minutes)
+      minutes = minutes > 9 ? minutes : ('0' + minutes)
+      let seconds = parseInt(val.seconds)
+      seconds = seconds > 9 ? seconds : ('0' + seconds)
+      let time = hours + ':' + minutes + ':' + seconds
+
+      return time
+    },
+    // 下一步
+    handleStep () {
+      // type 0 actived 已填过type 1 '' 当前step type 2 disabled 未填过
+      if (this.preData.step === 0) {
+        this.preData.tempArr.length = 0
+        this.preData.preStatic[0].type = 0
+        this.preData.preStatic[0].cn = this.preData.tempObj.TASK_CN
+        this.preData.preStatic[1].type = 1
+        this.preData.data.TASK = this.preData.tempObj
+        this.$set(this.preData, 'filterValue', '')
+        this.getPreEmp(this.preData.tempObj.TASK_NO)
+      } else if (this.preData.step === 1) {
+        this.preData.preStatic[1].type = 0
+        this.preData.preStatic[1].type = 0
+        this.preData.preStatic[2].type = 1
+        this.preData.preStatic[1].cn = this.preData.tempArr.map(item => item.NAME).join()
+        this.preData.data.TEAM_EMPS = _.cloneDeep(this.preData.tempArr)
+        this.$set(this.preData, 'filterValue', '')
+        this.preData.tempArr.length = 0
+        this.getPreStand()
+      } else if (this.preData.step === 2) {
+        this.preData.preStatic[2].type = 0
+        this.preData.preStatic[2].type = 0
+        this.preData.preStatic[3].type = 1
+        this.preData.preStatic[2].cn = this.preData.tempArr.map(item => item.standNo).join()
+        this.preData.data.STAND = _.cloneDeep(this.preData.tempArr)
+        this.preData.preFilterArr.length = 0
+        this.$set(this.preData, 'filterValue', '')
+        this.preData.tempArr.length = 0
+        this.getPreFlight()
+      }
+    },
+    // 选中左侧步骤1234
+    chosePreItem (data) {
+      this.preData.choseIndex = data.index
+      if (data.type == 0) {
+        this.preData.diaVisible = true
+      }
+    },
+    handleConfirmDia () {
+      this.preData.diaVisible = false
+      this.jumpStep()
+    },
+    // 选中某个步骤
+    jumpStep () {
+      // type 0 actived 已填过type 1 '' 当前step type 2 disabled 未填过
+      if (this.preData.choseIndex === 0) {
+        this.preData.preStatic[0].type = 1
+        this.preData.preStatic[0].cn = this.preData.data.TASK.TASK_CN
+        this.preData.preStatic[1].type = 2
+        this.preData.preStatic[1].cn = ''
+        this.preData.preStatic[2].type = 2
+        this.preData.preStatic[2].cn = ''
+        this.preData.preStatic[3].type = 2
+        this.preData.preStatic[3].cn = ''
+        this.preData.tempObj = this.preData.data.TASK
+        this.$set(this.preData, 'filterValue', '')
+        this.getPreTask()
+      } else if (this.preData.choseIndex === 1) {
+        this.preData.preStatic[0].type = 0
+        this.preData.preStatic[1].type = 1
+        this.preData.preStatic[1].cn = this.preData.data.TEAM_EMPS.map(item => item.NAME).join()
+        this.preData.preStatic[2].type = 2
+        this.preData.preStatic[2].cn = ''
+        this.preData.preStatic[3].type = 2
+        this.preData.preStatic[3].cn = ''
+        this.preData.tempArr = _.cloneDeep(this.preData.data.TEAM_EMPS)
+        this.$set(this.preData, 'filterValue', '')
+        this.getPreEmp(this.preData.data.TASK.TASK_NO)
+        // this.getPreStand()
+      } else if (this.preData.choseIndex === 2) {
+        this.preData.preStatic[0].type = 0
+        this.preData.preStatic[1].type = 0
+        this.preData.preStatic[2].type = 1
+        this.preData.preStatic[2].cn = this.preData.data.STAND.map(item => item.standNo).join()
+        this.preData.preStatic[3].type = 2
+        this.preData.preStatic[3].cn = ''
+        this.preData.tempArr = _.cloneDeep(this.preData.data.STAND)
+        this.preData.preFilterArr.length = 0
+        this.$set(this.preData, 'filterValue', '')
+        this.getPreStand()
       }
     },
     handleClick (data) {
       this.preData.tempObj = data
-      // this.preData.taskArr = _.filter(this.preData.taskArr, ['taskCn', value])
+    },
+    handleSelect (data) {
+      let obj = null
+      _.forEach(this.preData.preStatic, (item, key) => {
+        if (item.index == this.preData.step) {
+          obj = item
+        }
+      })
+      let index = _.findIndex(this.preData.tempArr, [obj.key, data[obj.key]])
+      if (index > -1) {
+        this.preData.tempArr.splice(index, 1)
+      } else {
+        this.preData.tempArr.push(data)
+      }
     },
     // 弹窗关闭
     handlePreClose () {
       this.preData.visible = false
     },
+    // 添加到下方列表
+    handleAddGroup () {
+      this.preData.data.FLIGHTS = _.cloneDeep(this.preData.tempArr)
+      // todo:拆分
+      let el = this.preData.data.TEAM_EMPS.length
+      let fl = this.preData.data.FLIGHTS.length
+      let e = this.preData.data.TEAM_EMPS
+      let f = this.preData.data.FLIGHTS
+      // 临时存放    最终数据存到preArr
+      let arr = []
+      // 填充人员，使人员大于飞机数量
+      if (el < fl) {
+        let j = Math.ceil(fl / el)
+        for (let x = 0; x < j; x++) {
+          arr = arr.concat(e)
+        }
+      } else {
+        arr = _.cloneDeep(e)
+      }
+
+      for (let i = 0; i < fl; i++) {
+        let obj = {}
+        Object.assign(obj, f[i], arr[i], this.preData.data.TASK)
+        // 去重
+        // for (let i = 0; i < this.preData.preArr.length; i++) {
+
+        // }
+        if (this.preData.preArr.length == 0) {
+          this.preData.preArr.push(obj)
+        } else {
+          _.forEach(this.preData.preArr, (item, index) => {
+            if (obj.TASK_NO == item.TASK_NO && obj.FLIGHT_NO == item.FLIGHT_NO) {
+              // 无操作,是否提示重复
+            } else {
+              this.preData.preArr.push(obj)
+            }
+          })
+        }
+      }
+      this.handlePreClear()
+    },
+    handlePreEdit (data, index) {
+      this.handlePreClear()
+      let obj = this.preData.preArr[index]
+      this.preData.preStatic[0].cn = obj.TASK_CN
+      this.preData.preStatic[0].type = 0
+
+      let {FLIGHT_NO, DYNAMIC_TASK_ID} = obj
+      let {TASK_NO, TASK_CN} = obj
+      let {EMP_IDS, EMP_NAMES, ID, NAME} = obj
+      let {STAND} = obj
+      let standNo = STAND
+
+      this.preData.tempObj = Object.assign({}, TASK_NO, TASK_CN)
+      this.preData.preStatic[1].cn = NAME
+      this.preData.preStatic[1].type = 0
+      this.preData.preStatic[2].cn = STAND
+      this.preData.preStatic[2].type = 0
+      this.preData.preStatic[3].cn = FLIGHT_NO
+      this.preData.preStatic[3].type = 1
+      this.preData.step = 3
+
+      this.preData.data.TASK = Object.assign({}, {TASK_NO}, {TASK_CN})
+      this.preData.data.TEAM_EMPS.push(Object.assign({}, {EMP_IDS}, {EMP_NAMES}, {ID}, {NAME}))
+      this.preData.data.STAND.push(Object.assign({}, {standNo}))
+      this.preData.data.FLIGHTS.push(Object.assign({}, {FLIGHT_NO}, {DYNAMIC_TASK_ID}))
+
+      this.getPreFlight()
+      this.preData.tempArr.push(Object.assign({}, {FLIGHT_NO}, {DYNAMIC_TASK_ID}))
+    },
+    handlePreDelete (data, index) {
+      this.preData.preArr.splice(index, 1)
+    },
     // 全部清空
     handlePreClear () {
-      console.log()
-    },
-    handleStep () {
-      // type 0 actived 已填过type 1 '' 当前step type 2 disabled 未填过
-      if (this.preData.step === 0) {
-        this.preData.data.unit.type = 1
-        this.preData.data.task.type = 0
-        this.preData.step = 1
-        this.preData.data.task.no = this.preData.tempObj.TASK_NO
-        this.preData.data.task.cn = this.preData.tempObj.TASK_CN
+      for (let i = 0; i < 4; i++) {
+        this.preData.preStatic[i].cn = ''
+        this.preData.preStatic[i].type = i == 0 ? 1 : 2
       }
+      // 清空对象,数组
+      this.preData.tempObj = null
+      this.preData.tempArr.length = 0
+      this.$set(this.preData, 'filterValue', '')
+      this.preData.preGetArr.length = 0
+      this.preData.preFilterArr.length = 0
+      this.preData.step = 0
+      this.preData.data = {
+          TASK: {},
+          TEAM_EMPS: [],
+          STAND: [],
+          FLIGHTS: []
+    }
+      this.getPreTask()
     },
-    // 选中左侧步骤1234
-    chosePreItem (index) {
-      console.log(index)
+    // 清空全部数据
+    handleClearAll () {
+      this.handlePreClear()
+      this.preData.preArr.length = 0
+      this.preData.data.TASK = {}
+      this.preData.data.TEAM_EMPS.length = 0
+      this.preData.data.STAND.length = 0
+      this.preData.data.FLIGHTS.length = 0
+      this.preData.time = ['00:00:00', '23:59:00']
     },
     // 提交
     handlePreCommit () {
-      console.log('1')
+      postData(this.preData.commitUrl, this.preData.preArr).then(res => {
+        if (res.data.code == 0) {
+          this.preData.visible = false
+          this.handleClearAll()
+        } else {
+          this.showError('预分配', '请重试 !')
+        }
+      })
     }
   },
   computed: {
+    // 'preData.isCheckAll': function (value) {
+    //   return
+    // }
     /* comMessage: function (value1) {
       return this.message + value1
     },
@@ -2171,7 +2522,24 @@ export default {
   color: #7a939e;
   font-size: 16px;
   height: 50px;
-  line-height: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.tr-item-titlee {
+  color: #7a939e;
+  font-size: 16px;
+  height: 50px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+.all-check {
+  display: flex;
+  align-items: center;
+}
+.all-check>div:first-child {
+  margin-right: 5px;
 }
 .tr-item-list {
   height: 32px;
@@ -2206,6 +2574,7 @@ export default {
 }
 .pre-info-normal {
   border-top: 1px solid rgba(60,166,200,0.4);
+  margin-right: 8px;
 }
 .pre-info-title {
   height: 50px;
@@ -2213,11 +2582,24 @@ export default {
   font-size: 16px;
   color: #73c7e6;
 }
+.pre-title-center {
+  display: flex;
+  justify-content: center;
+}
+.pre-info-contbox {
+  height: 200px;
+  overflow-x: hidden;
+}
+.pre-info-contbox > div {
+  display: flex;
+  flex-direction: column;
+}
 .pre-info-cont {
   height: 50px;
   line-height: 50px;
   color: #fff;
   font-size: 16px;
+  margin-right: 8px;
 }
 .start-time, .end-time {
   height: 25px;
@@ -2241,6 +2623,9 @@ export default {
   margin: 5px 0;
   height: calc(100% - 90px);
 }
+.reHeight {
+  height: calc(100% - 130px)!important;
+}
 .task-pre-dialog .tr-item-list {
   padding: 0 5px;
   display: flex;
@@ -2257,5 +2642,52 @@ export default {
   font-size: 16px;
   color: #fff;
 }
+.pre-info-cont>.el-col {
+  overflow: hidden;
+  height: 50px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.table-opt-col {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 50px;
+}
+.pre-ta-td {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+}
+.pre-ta-td>div {
+  height: 25px;
+  display: flex;
+  align-items: center;
+}
+.el-timepicker {
+  height: 32px;
+  margin-bottom: 5px;
+}
+.el-range-editor.el-input__inner {
+  height: 32px;
+  width: 300px;
+}
 /* **************************弹出框设置结束************************** */
+</style>
+<style>
+.el-date-editor .el-range__icon {
+  line-height: 27px !important;
+}
+.el-date-editor .el-range-separator {
+  color: #7a939e !important;
+  line-height: 24px !important;
+}
+.el-date-editor .el-range__close-icon {
+  line-height: 27px !important;
+}
+.el-range-editor .el-range-input {
+    line-height: 1 !important;
+    background-color: transparent !important;
+    color: #fff !important;
+}
 </style>

@@ -1814,6 +1814,9 @@ div.el-upload {
   text-align: center;
   overflow: hidden;
 }
+.prepop-dialog>.el-dialog {
+  height: 196px;
+}
 .dialog-delete-warn .dialog-body>div:first-of-type {
   width: 160px;
   height: 160px;
