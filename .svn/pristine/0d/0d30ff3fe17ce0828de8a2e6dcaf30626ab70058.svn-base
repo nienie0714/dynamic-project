@@ -1113,7 +1113,7 @@ export default {
                 msgCont: remark,
                 msgSenderName: item.msgSenderName,
                 taskName: obj.task_cn,
-                msgConfirmTime: item.msgConfirmTime,
+                msgConfirmTime: null,
                 msgUuid: item.msgUuid
               }
               break

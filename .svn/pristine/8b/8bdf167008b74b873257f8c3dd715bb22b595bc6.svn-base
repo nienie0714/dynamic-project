@@ -13,7 +13,7 @@
       <div class="left-button">
         <el-button type="info" plain @click="cleanQueryData()">清空</el-button>
         <el-button type="primary" @click="queryDataReq()">查询</el-button>
-        <el-button v-if="preData.preAuth == 1" type="success" @click="openPreDia()">预分配</el-button>
+        <el-button type="success" @click="openPreDia()">预分配</el-button>
         <el-popover placement="bottom" trigger="manual" v-model="ctrlFVisible" popper-class="ctrl-f-popover" width="274">
           <Query-view :data="ctrlF" @change="changeHandleOfCtrlF" class="right" @keyupEnter="findCtrlF()"></Query-view>
           <div class="ctrl-f-query" @click="findCtrlF()"></div>
@@ -606,36 +606,46 @@
               </div>
             </div>
           </div>
+          <el-dialog :visible.sync="preData.diaVisible" :close-on-click-modal="false" width="150" append-to-body class="other-dialog prepop-dialog">
+            <div slot="title" class="dialog-header">
+              <img :src="require('@img/title_deco.png')" />
+              <span class="header-title">{{'警告'}}</span>
+            </div>
+            <div class="dialog-body">
+              <div>
+                <div class="cancel-warn-img"></div>
+              </div>
+              <div><p class="other-dialog-cont">{{'修改确认信息可能会清空后置其他信息，确认执行此操作？'}}</p></div>
+              <div><p class="other-dialog-tip">{{'操作不可恢复'}}</p></div>
+            </div>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="()=>{preData.diaVisible=false}">取 消</el-button>
+              <el-button type="primary" @click="handleConfirmDia">确 定</el-button>
+            </div>
+          </el-dialog>
           <div class="el-dialog-bwrapper">
             <el-main class="page-table-view">
               <div class="pretable-name">分配预览</div>
               <el-row class="pre-info-normal">
                 <el-col :span="4"><div class="pre-info-title">任务</div></el-col>
-                <el-col :span="4"><div class="pre-info-title">保障单元/人员</div></el-col>
-                <el-col :span="6"><div class="pre-info-title">航班号</div></el-col>
+                <el-col :span="5"><div class="pre-info-title">保障单元/人员</div></el-col>
+                <el-col :span="5"><div class="pre-info-title">航班号</div></el-col>
                 <el-col :span="2"><div class="pre-info-title">机位</div></el-col>
-                <el-col :span="2"><div class="pre-info-title">到达</div></el-col>
-                <el-col :span="2"><div class="pre-info-title">起飞</div></el-col>
-                <el-col :span="3"><div class="pre-info-title pre-title-center">操作</div></el-col>
+                <el-col :span="4"><div class="pre-info-title">起飞-到达</div></el-col>
+                <el-col :span="4"><div class="pre-info-title pre-title-center">操作</div></el-col>
               </el-row>
               <div class="pre-info-contbox">
                 <div>
-                  <el-row class="pre-info-cont" v-for="(item, index) in preData.preArr" :key="index" :class="index % 2 == 0 ? 'row-single' : ''">
-                    <el-col :span="4" style="margin-left: 5px">
-                      <el-tooltip :content="item.TASK_CN" placement="top-start">
-                          <span>{{item.TASK_CN}}</span>
-                      </el-tooltip>
+                  <el-row class="pre-info-cont" v-for="(item, index) in preData.preArr" :key="index">
+                    <el-col :span="4">{{item.TASK_CN}}</el-col>
+                    <el-col :span="5">{{item.NAME}}</el-col>
+                    <el-col :span="5">{{item.FLIGHT_NO}}</el-col>
+                    <el-col :span="2">{{item.STAND}}</el-col>
+                    <el-col :span="4" class="pre-ta-td">
+                      <div>{{item.TD}}</div>
+                      <div>{{item.TA}}</div>
                     </el-col>
                     <el-col :span="4">
-                      <el-tooltip :content="item.NAME" placement="top-start">
-                          <span>{{item.NAME}}</span>
-                      </el-tooltip>
-                    </el-col>
-                    <el-col :span="6">{{item.FLIGHT_NO}}</el-col>
-                    <el-col :span="2">{{item.STAND}}</el-col>
-                    <el-col :span="2">{{item.TA == null ? '--:--' : item.TA.substr(11)}}</el-col>
-                    <el-col :span="2">{{item.TD == null ? '--:--' : item.TD.substr(11)}}</el-col>
-                    <el-col :span="3">
                       <div class="table-opt-col">
                         <div class="tool-div-button button-edit" @click="handlePreEdit(item, index)"></div>
                         <div class="tool-div-button button-delete" @click="handlePreDelete(item, index)"></div>
@@ -651,7 +661,7 @@
           <el-button @click="handlePreClose">取 消</el-button>
           <el-button type="primary" @click="handlePreCommit()" :disabled="preData.preArr.length == 0">提交</el-button>
         </div>
-        <Warning-box-view :data="preButtonData" @handleConfirm="handleConfirmDia"></Warning-box-view>
+        <Warning-box-view :data="taskButtonData" @handleConfirm="handleCancelButtonSave"></Warning-box-view>
       </el-dialog>
     </div>
     <el-dialog v-if="taskFlightData.visible" :visible.sync="taskFlightData.visible" :close-on-click-modal="false" width="660px" append-to-body class="other-dialog dialog-task-flight-warn" @close="clearAllTaskFlightData">
@@ -924,37 +934,12 @@ export default {
       },
       showImg: false,
       imgSrc: null,
-      // 撤销任务/任务编辑 弹出框控制
-     preButtonData: {
-        editVisible: false,
-        loading: false,
-        outLoading: false,
-        width: '660px',
-        class: ' dialog-cancel-warn',
-        info: '修改确认信息可能会清空后置其他信息，确认执行此操作？',
-        type: 0,
-        data: {},
-        style: {
-          'max-height': window.innerHeight - 590 + 'px'
-        },
-        formData: {
-          button: '',
-          textarea: ''
-        },
-        timeData: {
-          startTime: '',
-          endTime: ''
-        },
-        visible: false
-      },
       preData: {
         visible: false,
         diaVisible: false,
         isCheckAll: false,
         loading: false,
         title: '预分配',
-        preAuth: 0,
-        preAuthUrl: 'taskbasic/taskRole/queryIsNotYardman',
         taskUrl: 'taskscheduling/taskPredistribution/queryDispatchTask',
         empUrl: 'taskscheduling/taskPredistribution/queryTeamAndEmpByTaskNo',
         standUrl: 'airportResource/aircraftStand/queryAll',
@@ -1024,7 +1009,6 @@ export default {
     this.getTaskCol()
     this.getDefaultRow()
     this.taskSortSelect = this.taskSorts[0].label
-    this.preAuthority()
   },
   mounted () {
     this.timer = setInterval(this.handleQueryTeam, this.onlineStatusIntervalTime)
@@ -1512,23 +1496,15 @@ export default {
       this.showImg = true
       this.imgSrc = src
     },
-    // 预分配权限
-    preAuthority () {
-      postData(this.preData.preAuthUrl, null).then(res => {
-        if (res.data.code == 0) {
-          this.preData.preAuth = res.data.data
-        }
-      })
-    },
     // 预分配
     openPreDia () {
       this.handleClearAll()
       this.preData.visible = true
-      this.preButtonData.visible = false
       this.getPreTask()
     },
-    // 筛选列表
+    // 筛选列表 todo:去重
     filterDataEnter () {
+      // this.preData.isCheckAll = false
       let index = this.preData.step
       if (!this.preData.filterValue) {
         this.preData.preFilterArr = this.preData.preGetArr
@@ -1554,6 +1530,7 @@ export default {
     },
     checkAll () {
       if (this.preData.tempArr.length == this.preData.preFilterArr.length) {
+        // bug: 有延时
         this.preData.tempArr = []
       } else {
         this.preData.tempArr = _.cloneDeep(this.preData.preFilterArr)
@@ -1609,22 +1586,11 @@ export default {
         'beginTime': this.preData.time[0] == '' ? '00:00:00' : this.preData.time[0],
         'endTime': this.preData.time[1] == '' ? '00:23:59' : this.preData.time[1]
       }
-      let that = this
       postData(this.preData.flightUrl, obj).then(res => {
         if (res.data.code == 0) {
-          that.preData.tempObj = null
-          let objArr = _.filter(that.preData.preArr, (o) => { return o.TASK_NO == that.preData.data.TASK.TASK_NO })
-          if (objArr.length == 0) {
-            that.preData.preGetArr = res.data.data
-          } else {
-            let arr = []
-            _.forEach(objArr, (item) => {
-              arr = _.concat(arr, _.filter(res.data.data, (o) => { return o.FLIGHT_NO == item.FLIGHT_NO }))
-            })
-            that.preData.preGetArr = _.differenceWith(res.data.data, arr)
-            console.log('a')
-          }
-          that.filterDataEnter()
+          this.preData.tempObj = null
+          this.preData.preGetArr = res.data.data
+          this.filterDataEnter()
         } else {
           this.showError('获取航班号', '请重试 !')
         }
@@ -1681,11 +1647,11 @@ export default {
     chosePreItem (data) {
       this.preData.choseIndex = data.index
       if (data.type == 0) {
-        this.preButtonData.visible = true
+        this.preData.diaVisible = true
       }
     },
     handleConfirmDia () {
-      this.preButtonData.visible = false
+      this.preData.diaVisible = false
       this.jumpStep()
     },
     // 选中某个步骤
@@ -1771,7 +1737,19 @@ export default {
       for (let i = 0; i < fl; i++) {
         let obj = {}
         Object.assign(obj, f[i], arr[i], this.preData.data.TASK)
-        this.preData.preArr.push(obj)
+        if (this.preData.preArr.length == 0) {
+          this.preData.preArr.push(obj)
+        } else {
+          // 调整foreach循环为for循环，push后break跳出循环
+          // 单行颜色：rgba(60,166,200,0.1)
+          _.forEach(this.preData.preArr, (item, index) => {
+            if (obj.TASK_NO == item.TASK_NO && obj.FLIGHT_NO == item.FLIGHT_NO) {
+              // 无操作,是否提示重复
+            } else {
+              this.preData.preArr.push(obj)
+            }
+          })
+        }
       }
       this.handlePreClear()
     },
@@ -2620,9 +2598,6 @@ export default {
   font-size: 16px;
   margin-right: 8px;
 }
-.pre-info-cont:hover {
-  background: #215870 !important;
-}
 .start-time, .end-time {
   height: 25px;
   line-height: 25px;
@@ -2693,9 +2668,6 @@ export default {
 .el-range-editor.el-input__inner {
   height: 32px;
   width: 300px;
-}
-.row-single {
-  background-color: rgba(60,166,200,0.1);
 }
 /* **************************弹出框设置结束************************** */
 </style>

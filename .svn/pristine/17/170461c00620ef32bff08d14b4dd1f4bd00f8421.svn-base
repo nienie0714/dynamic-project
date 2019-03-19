@@ -1699,28 +1699,22 @@ div.el-upload {
   background-color: rgba(60, 166, 200, 0.4);
   color: #fff;
 }
-.el-popper:not(.editable-popper)[x-placement*=bottom] .popper__arrow,
-.el-tooltip__popper[x-placement*=bottom] .popper__arrow {
+.el-popper:not(.editable-popper)[x-placement*=bottom] .popper__arrow {
   border-bottom-color: rgba(60, 166, 200, 0.7) !important;
 }
-.el-popper:not(.editable-popper)[x-placement*=bottom] .popper__arrow::after,
-.el-tooltip__popper:not(.editable-popper)[x-placement*=bottom] .popper__arrow::after  {
+.el-popper:not(.editable-popper)[x-placement*=bottom] .popper__arrow::after  {
   border-bottom-color: rgba(8, 25, 38, 0.7) !important;
 }
-.el-popper[x-placement*=left] .popper__arrow,
-.el-tooltip__popper[x-placement*=left] .popper__arrow {
+.el-popper[x-placement*=left] .popper__arrow {
   border-left-color: rgba(60, 166, 200, 0.7) !important;
 }
-.el-popper[x-placement*=left] .popper__arrow::after,
-.el-tooltip__popper[x-placement*=left] .popper__arrow::after  {
+.el-popper[x-placement*=left] .popper__arrow::after  {
   border-left-color: rgba(8, 25, 38, 0.7) !important;
 }
-.el-popper[x-placement*=right] .popper__arrow,
-.el-tooltip__popper[x-placement*=right] .popper__arrow {
+.el-popper[x-placement*=right] .popper__arrow {
   border-right-color: rgba(60, 166, 200, 0.7) !important;
 }
-.el-popper[x-placement*=right] .popper__arrow::after,
-.el-tooltip__popper[x-placement*=right] .popper__arrow::after  {
+.el-popper[x-placement*=right] .popper__arrow::after  {
   border-right-color: rgba(8, 25, 38, 0.7) !important;
 }
 .el-popper[x-placement*=top] .popper__arrow,
