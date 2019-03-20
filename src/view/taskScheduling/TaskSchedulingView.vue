@@ -593,16 +593,16 @@
                   </div>
                   <div class="tr-item-ul" v-if="preData.step == 3">
                     <div v-for="(item, index) in preData.preFilterArr" :key="index" class="tr-item-list" @click="handleSelect(item)">
-                      <div :class="~require('lodash').findIndex(preData.tempArr, ['FLIGHT_NO', item.FLIGHT_NO]) ? 'radio-button el-checkbox__input is-checked' : 'radio-button el-checkbox__input'"><div class="el-checkbox__inner"></div></div>
+                      <div :class="~require('lodash').findIndex(preData.tempArr, ['DYNAMIC_TASK_ID', item.DYNAMIC_TASK_ID]) ? 'radio-button el-checkbox__input is-checked' : 'radio-button el-checkbox__input'"><div class="el-checkbox__inner"></div></div>
                       <div>{{item.FLIGHT_NO}}</div>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="twrapper-tr-btn">
-                <el-button class="tr-btn-lhalf" type="info" @click="handlePreClear()">全部清空</el-button>
+                <el-button class="tr-btn-lhalf" type="info" @click="handlePreClear()">{{preData.editType? '取消' : '全部清空'}}</el-button>
                 <el-button v-if="preData.step == 1 || preData.step == 2" class="tr-btn-rhalf" :disabled="preData.tempArr.length == 0" type="primary" @click="handleStep()">下一步</el-button>
-                <el-button v-if="preData.step == 3" :disabled="preData.preFilterArr.length == 0 || preData.tempArr.length == 0" class="tr-btn-rhalf" type="primary" @click="handleAddGroup()">添加</el-button>
+                <el-button v-if="preData.step == 3" :disabled="preData.preFilterArr.length == 0 || preData.tempArr.length == 0" class="tr-btn-rhalf" type="primary" @click="handleAddGroup()">{{preData.editType ? '保存' : '添加'}}</el-button>
               </div>
             </div>
           </div>
@@ -953,6 +953,8 @@ export default {
         isCheckAll: false,
         loading: false,
         title: '预分配',
+        editType: false,
+        editIndex: null,
         preAuth: 0,
         preAuthUrl: 'taskbasic/taskRole/queryIsNotYardman',
         taskUrl: 'taskscheduling/taskPredistribution/queryDispatchTask',
@@ -982,6 +984,7 @@ export default {
             index: 1,
             type: 2,
             key: 'ID',
+            name: 'NAME',
             imgSrc: require('@img/icon_step_person.png'),
             title: '保障单元/人员',
             cn: ''
@@ -990,6 +993,7 @@ export default {
             index: 2,
             type: 2,
             key: 'standNo',
+            name: 'standNo',
             imgSrc: require('@img/icon_step_location.png'),
             title: '机位',
             cn: ''
@@ -997,7 +1001,8 @@ export default {
           {
             index: 3,
             type: 2,
-            key: 'FLIGHT_NO',
+            key: 'DYNAMIC_TASK_ID',
+            name: 'FLIGHT_NO',
             imgSrc: require('@img/icon_step_flight.png'),
             title: '航班号',
             cn: ''
@@ -1547,7 +1552,7 @@ export default {
           })
           // this.preData.preFilterArr = _.filter(this.preData.preGetArr, [obj.key, this.preData.filterValue])
           this.preData.preFilterArr = _.filter(this.preData.preGetArr, (item) => {
-            return ~item[obj.key].indexOf(this.preData.filterValue)
+            return ~item[obj.name].indexOf(this.preData.filterValue)
           })
         }
       }
@@ -1617,12 +1622,14 @@ export default {
           if (objArr.length == 0) {
             that.preData.preGetArr = res.data.data
           } else {
+            if (this.preData.editType) {
+              objArr = _.dropWhile(objArr, ['DYNAMIC_TASK_ID', that.preData.preArr[this.preData.editIndex].DYNAMIC_TASK_ID])
+            }
             let arr = []
             _.forEach(objArr, (item) => {
-              arr = _.concat(arr, _.filter(res.data.data, (o) => { return o.FLIGHT_NO == item.FLIGHT_NO }))
+              arr = _.concat(arr, _.filter(res.data.data, (o) => { return o.DYNAMIC_TASK_ID == item.DYNAMIC_TASK_ID }))
             })
             that.preData.preGetArr = _.differenceWith(res.data.data, arr)
-            console.log('a')
           }
           that.filterDataEnter()
         } else {
@@ -1771,7 +1778,12 @@ export default {
       for (let i = 0; i < fl; i++) {
         let obj = {}
         Object.assign(obj, f[i], arr[i], this.preData.data.TASK)
-        this.preData.preArr.push(obj)
+        if (this.preData.editType) {
+          this.preData.preArr.splice(this.preData.editIndex, i == 0 ? 1 : 0, obj)
+          this.preData.editIndex += 1
+        } else {
+          this.preData.preArr.push(obj)
+        }
       }
       this.handlePreClear()
     },
@@ -1803,6 +1815,8 @@ export default {
 
       this.getPreFlight()
       this.preData.tempArr.push(Object.assign({}, {FLIGHT_NO}, {DYNAMIC_TASK_ID}))
+      this.preData.editType = true
+      this.preData.editIndex = index
     },
     handlePreDelete (data, index) {
       this.preData.preArr.splice(index, 1)
@@ -1813,6 +1827,8 @@ export default {
         this.preData.preStatic[i].cn = ''
         this.preData.preStatic[i].type = i == 0 ? 1 : 2
       }
+      this.preData.editType = false
+      this.preData.editIndex = null
       // 清空对象,数组
       this.preData.tempObj = null
       this.preData.tempArr = []
@@ -1845,7 +1861,7 @@ export default {
           this.preData.visible = false
           this.handleClearAll()
         } else {
-          this.showError('预分配', '请重试 !')
+          this.showError('预分配', '请重新尝试 !')
         }
       })
     }
