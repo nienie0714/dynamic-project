@@ -1793,7 +1793,7 @@ export default {
       this.preData.preStatic[0].cn = obj.TASK_CN
       this.preData.preStatic[0].type = 0
 
-      let {FLIGHT_NO, DYNAMIC_TASK_ID, TA, TD} = obj
+      let {FLIGHT_NO, DYNAMIC_TASK_ID} = obj
       let {TASK_NO, TASK_CN} = obj
       let {EMP_IDS, EMP_NAMES, ID, NAME} = obj
       let {STAND} = obj
@@ -1814,7 +1814,7 @@ export default {
       this.preData.data.FLIGHTS.push(Object.assign({}, {FLIGHT_NO}, {DYNAMIC_TASK_ID}))
 
       this.getPreFlight()
-      this.preData.tempArr.push(Object.assign({}, {FLIGHT_NO}, {DYNAMIC_TASK_ID}, {TD}, {TA}, {STAND}))
+      this.preData.tempArr.push(Object.assign({}, {FLIGHT_NO}, {DYNAMIC_TASK_ID}))
       this.preData.editType = true
       this.preData.editIndex = index
     },
