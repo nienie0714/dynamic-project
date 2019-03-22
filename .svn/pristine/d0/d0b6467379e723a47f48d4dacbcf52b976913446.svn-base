@@ -289,8 +289,7 @@ export default {
               refTimeOffset: '',
               updNodeNo: '',
               updNodeCn: '',
-              taskTimeType: '',
-              reserved1: 'N'
+              taskTimeType: ''
             }
           }
         ]
@@ -442,8 +441,7 @@ export default {
         refTimeOffset: scopeTemp.data[scopeTemp.item.key][index].refTimeOffset,
         updNodeNo: scopeTemp.data[scopeTemp.item.key][index].updNodeNo,
         updNodeCn: scopeTemp.data[scopeTemp.item.key][index].updNodeCn,
-        taskTimeType: scopeTemp.data[scopeTemp.item.key][index].taskTimeType,
-        reserved1: scopeTemp.data[scopeTemp.item.key][index].reserved1
+        taskTimeType: scopeTemp.data[scopeTemp.item.key][index].taskTimeType
       }))
       for (var i = 0; i < this.tempProTaskDialog.formData[2].tabelFields.length; i++) {
         if (this.tempProTaskDialog.formData[2].tabelFields[i].hasOwnProperty('saveKey')) {
