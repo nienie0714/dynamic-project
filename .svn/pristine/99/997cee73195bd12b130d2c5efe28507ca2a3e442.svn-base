@@ -71,9 +71,9 @@ export default {
       {key: 'bindVehicle',
       classify: '绑定车辆',
       options: [
-        {code: '0', name: '无'},
-        {code: '1', name: '绑定'},
-        {code: '2', name: '解绑'}
+        {code: 0, name: '无'},
+        {code: 1, name: '绑定'},
+        {code: 2, name: '解绑'}
       ]}
     ],
     option: [],
