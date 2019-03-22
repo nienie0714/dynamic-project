@@ -2731,4 +2731,7 @@ export default {
     background-color: transparent !important;
     color: #fff !important;
 }
+.el-time-range-picker__body {
+  border: 1px solid rgba(60, 166, 200, 0.6) !important;
+}
 </style>
