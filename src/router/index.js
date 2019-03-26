@@ -164,6 +164,16 @@ var router = new Router({
               path: 'morrow',
               name: '次日计划',
               component: r => require.ensure([], () => r(require('@/view/flightmanage/plan/MorrowView'), 'MorrowView'))
+            },
+            {
+              path: 'dynamic',
+              name: '航班动态',
+              component: r => require.ensure([], () => r(require('@/view/flightmanage/plan/DynamicView'), 'DynamicView'))
+            },
+            {
+              path: 'season',
+              name: '换季管理',
+              component: r => require.ensure([], () => r(require('@/view/flightmanage/plan/SeasonView'), 'SeasonView'))
             }
           ]
         }

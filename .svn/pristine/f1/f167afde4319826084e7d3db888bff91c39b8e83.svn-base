@@ -5,14 +5,6 @@
       <div class="left-button">
         <el-button type="info" icon="el-icon-search" plain @click="cleanQueryData()">清空</el-button>
         <el-button type="primary" icon="el-icon-search" @click="queryDataReq()">查询</el-button>
-        <el-dropdown trigger="click">
-          <el-button type="success" icon="el-icon-more-outline">更多</el-button>
-          <el-dropdown-menu slot="dropdown" class="morrow-button-dpd">
-            <el-dropdown-item :divided="true" @click.native="openTransDialog">生成次日计划</el-dropdown-item>
-            <el-dropdown-item :divided="true">航班拼接</el-dropdown-item>
-            <el-dropdown-item :divided="true">断开拼接</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
       </div>
     </el-header>
     <el-main class="whole-table-view mult-title-table">
@@ -23,15 +15,10 @@
             <div v-if="permissions.import" class="tool-div-button tool-import" title="导入" @click="handleImport"></div>
           </template>
         </Tool-button-view>
-        <div class="pagination-view">
-          <div class="el-pagination">
-            <span class="el-pagination__total">共 {{ tableTotal }} 条</span>
-          </div>
-        </div>
       </div>
       <whole-table-view :permissions="permissions" :tableData="tableData" ref="basicTable"
       @handleDetail="handleDetail" @handleEdit="handleEdit" @handleDelete="handleDelete"
-      @initEditable="initEditable" @saveEditable="saveEditable" @tableRowContextmenu="tableRowContextmenu">
+      @initEditable="initEditable" @changeEditable="changeEditable">
         <template slot="slot-edit-div" slot-scope="scopeData">
           <el-select v-if="scopeData.field.type == 'select'" v-model="scopeData.item[scopeData.field.prop]" :placeholder="'请选择' + scopeData.field.label"
           :filterable="true" :clearable="true">
@@ -43,17 +30,6 @@
             <el-radio-button v-for="option in scopeData.field.options" :key="option.key" :label="option.key"> {{ option.value }}</el-radio-button>
           </el-radio-group>
           <el-input v-if="scopeData.field.type == 'input'"></el-input>
-        </template>
-        <template slot="slot-opr-button" slot-scope="scopeData">
-          <el-dropdown trigger="click">
-            <span>
-              <div v-if="permissions.delete" class="tool-div-button button-delete"></div>
-            </span>
-            <el-dropdown-menu slot="dropdown" class="morrow-button-dpd">
-              <el-dropdown-item :divided="true">确认</el-dropdown-item>
-              <el-dropdown-item :divided="true">发布</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
         </template>
       </whole-table-view>
     </el-main>
@@ -147,43 +123,6 @@
         <el-button :loading="importData.loading" @click="closeImportDialog">关 闭</el-button>
       </div>
     </el-dialog>
-    <el-dialog :visible.sync="formData.edit.visible" :close-on-click-modal="false" width="300px" append-to-body class="other-dialog plan-edit-dialog" @close="closeEditDialog">
-      <div slot="title" class="dialog-header">
-        <img :src="require('@img/title_deco.png')" />
-        <span class="header-title">提示</span>
-      </div>
-      <div class="dialog-body">
-        <div>请选择需要{{formData.title=='详情'?'查看':'编辑'}}的信息</div>
-        <div>
-          <el-radio-group v-model="formData.edit.type"><!--  :change="valueChange(data)" -->
-            <el-radio-button v-for="option in options.fltType.optionsRemove" :key="option.key" :label="option.key"> {{ option.value }}</el-radio-button>
-          </el-radio-group>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="closeEditDialog">关 闭</el-button>
-        <el-button type="primary" @click="handleEditConfirm">确 定</el-button>
-      </div>
-    </el-dialog>
-    <el-dialog :visible.sync="transData.visible" :close-on-click-modal="false" width="400px" append-to-body class="other-dialog sched-plan-dialog" @close="closeTransDialog">
-      <div slot="title" class="dialog-header">
-        <img :src="require('@img/title_deco.png')" />
-        <span class="header-title">生成次日计划</span>
-      </div>
-      <div class="dialog-body">
-        <div>请选择生成计划的时间区间</div>
-        <div>
-          <el-date-picker v-model="transData.data['beginTime']" type="datetime" placeholder="请选择开始时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm"></el-date-picker>
-        </div>
-        <div>
-          <el-date-picker v-model="transData.data['endTime']" type="datetime" placeholder="请选择结束时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm"></el-date-picker>
-        </div>
-      </div>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="closeTransDialog">关 闭</el-button>
-        <el-button type="primary" @click="handleTransConfirm">确 定</el-button>
-      </div>
-    </el-dialog>
   </el-container>
 </template>
 
@@ -192,12 +131,11 @@ import QueryView from '../../../components/common/QueryView'
 import WholeTableView from '../../../components/common/BaseWholeTableView'
 import ToolButtonView from '../../../components/common/ToolButtonView'
 import EditView from '../../../components/common/EditView'
-import baseMixin from '../../../components/mixin/baseMixin'
 import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import wholeTableMixin from '../../../components/mixin/wholeTableMixin'
 import basicMsgMixin from '../../../components/mixin/basicMsgMixin'
 import {flightNumReg} from '../../../util/rules.js'
-import {postAllData, queryAll, upload, download, postData} from '../../../api/base.js'
+import {postAllData, queryAll, upload, download} from '../../../api/base.js'
 import _ from 'lodash'
 
 // const tableHeight = ''
@@ -209,7 +147,7 @@ export default {
     ToolButtonView,
     EditView
   },
-  mixins: [baseMixin, basicTableMixin, wholeTableMixin, basicMsgMixin],
+  mixins: [basicTableMixin, wholeTableMixin, basicMsgMixin],
   data () {
     return {
       name: '',
@@ -219,20 +157,6 @@ export default {
         airport: {
           options: [],
           optionsRemove: []
-        },
-        fltType: {
-          key: 'fltTypeAll',
-          options: [],
-          optionsRemove: []
-        }
-      },
-      transData: {
-        loading: false,
-        visible: false,
-        url: '/scheduleFlight/generatePlanFlight',
-        data: {
-          beginTime: '',
-          endTime: ''
         }
       },
       // 菜单对应按钮权限
@@ -253,12 +177,6 @@ export default {
         width: '720px',
         className: 'twiceCol',
         key: 'planFlightId',
-        edit: {
-          url: '',
-          type: 'A',
-          row: {},
-          visible: false
-        },
         formData: [
           {key: 'planFlightId', label: '编号', type: 'pInput', isHidden: true},
           {key: 'airline', label: '航空公司', type: 'select', filterable: true, getOptions: '/basicdata/airline/queryAll', itemKey: 'airlineIata', itemLabel: 'briefC'},
@@ -269,10 +187,10 @@ export default {
           {key: 'terminalStation', label: '目的站', type: 'select', filterable: true, itemKey: 'airportIata', itemLabel: 'briefC', holdRule: true},
           {key: 'inOutFlag', label: '进出标识', type: 'tabs', tabsKey: 'fltType', options: [], change: this.changeFlag},
           {key: 'agency', label: '代理', type: 'select', filterable: true, getOptions: '/basicdata/agency/queryAll', itemKey: 'code', itemLabel: 'briefC'},
-          {key: 'aircraft', label: '飞机号', type: 'select', filterable: true, getOptions: '/basicdata/aircraft/queryAll', itemKey: 'aircraftNo', itemLabel: 'aircraftNo', change: this.changeArcft},
-          {key: 'aircraftType', label: '机型', type: 'select', filterable: true, getOptions: '/basicdata/aircraftType/queryAll', itemKey: 'aircraftIcao', itemLabel: 'aircraftIcao', change: this.changeArcftType},
-          {key: 'stand', label: '机位', type: 'select', filterable: true, getOptions: '/airportResource/aircraftStand/queryAll', itemKey: 'standNo', itemLabel: 'standNo', change: this.changeStand},
-          {key: 'terminal', label: '航站楼', type: 'select', filterable: true, getOptions: '/airportResource/terminal/queryAll', itemKey: 'terminalNo', itemLabel: 'name', change: this.changeTmn},
+          {key: 'aircraft', label: '飞机号', type: 'select', filterable: true, getOptions: '/basicdata/aircraft/queryAll', itemKey: 'aircraftNo', itemLabel: 'aircraftNo'},
+          {key: 'aircraftType', label: '机型', type: 'select', filterable: true, getOptions: '/basicdata/aircraftType/queryAll', itemKey: 'aircraftIcao', itemLabel: 'aircraftIcao'},
+          {key: 'stand', label: '机位', type: 'select', filterable: true, getOptions: '/airportResource/aircraftStand/queryAll', itemKey: 'standNo', itemLabel: 'standNo'},
+          {key: 'terminal', label: '航站楼', type: 'select', filterable: true, getOptions: '/airportResource/terminal/queryAll', itemKey: 'terminalNo', itemLabel: 'name'},
           // {key: 'season', label: '班期季节', type: 'tabs', tabsKey: 'scheduleSeason', options: []},
           // {key: 'dateRange', key1: 'beginDate', key2: 'endDate', label: '计划日期区间', label1: '计划开始日期', label2: '计划结束日期', type: 'dateRangePicker', rangeMethod: this.dateRangeReg, dateType: 'date', required: 3, format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd', class: 'auto-width'},
           {key: 'dateRange', key1: 'std', key2: 'sta', label: '计划起飞/降落时间', label1: '计划起飞时间', label2: '计划降落时间', type: 'dateRangePicker', rangeMethod: this.dateRangeReg, dateType: 'datetime', required: 3, format: 'yyyy-MM-dd HH:mm', valueFormat: 'yyyy-MM-dd HH:mm', class: 'auto-width'},
@@ -340,7 +258,25 @@ export default {
           inOutFlag: [
             {required: true, message: '必填项', trigger: 'blur'}
           ],
-          aircraft: [
+          aircraftType: [
+            {required: true, message: '必填项', trigger: 'blur'}
+          ],
+          execArr: [
+            {required: true, message: '必填项', trigger: 'blur'}
+          ],
+          season: [
+            {required: true, message: '必填项', trigger: 'blur'}
+          ],
+          beginDate: [
+            {required: true, message: '必填项', trigger: 'blur'}
+          ],
+          endDate: [
+            {required: true, message: '必填项', trigger: 'blur'}
+          ],
+          std: [
+            {required: true, message: '必填项', trigger: 'blur'}
+          ],
+          sta: [
             {required: true, message: '必填项', trigger: 'blur'}
           ]
         }
@@ -385,22 +321,21 @@ export default {
         data: [],
         type: 'selection',
         headerStyle: 'padding-top: 15px; margin-bottom: -15px;',
-        oprWidth: 172,
+        oprWidth: 130,
         key: 'planFlightId',
         multipleSelection: [],
-        selectIndex: null,
         headerNum: 2,
         dblClick: this.dblClick,
         leftFields: [
           {prop: 'flightNo', label: '航班号', hidden: false, width: 100, overflow: true},
-          {prop: 'attr', label: '属性', hidden: false, optionKey: 'attr', width: 50},
-          {prop: 'taskCn', label: '航班任务', hidden: false, width: 60},
+          {prop: 'attr', label: '属性', hidden: false, optionKey: 'attr', width: 50, overflow: true},
+          {prop: 'taskCn', label: '航班任务', hidden: false, width: 60, overflow: true},
           // {prop: 'startStationCn', label: '始发站', fixed: 'left', hidden: false, width: 70},
           // {prop: 'terminalStationCn', label: '目的站', fixed: 'left', hidden: false, width: 70, overflow: true},
           // {prop: 'routeCn', label: '航线', fixed: false, hidden: false, width: 60, overflow: true},
           {prop: 'inOutFlag', label: '进出标识', hidden: false, optionKey: 'fltTypeAll', width: 70},
           {prop: 'aircraft', label: '飞机号', width: 90, type: 'select', filterable: true, getOptions: '/basicdata/aircraft/queryAll', itemKey: 'aircraftNo', itemLabel: 'aircraftNo', edit: true},
-          /* {prop: 'aircraftType', label: '机型', hidden: false, width: 50}, */
+          {prop: 'aircraftType', label: '机型', hidden: false, width: 50},
           {prop: 'stand', label: '机位', hidden: false, width: 50},
           {prop: 'terminal', label: '航站楼', hidden: false, width: 50},
           // {prop: 'exec', label: '每周班次', fixed: false, hidden: false, width: 90, overflow: true},
@@ -413,10 +348,10 @@ export default {
             label: '始发站',
             prop: 'startStation',
             hidden: false,
-            width: 230,
+            width: 210,
             fields: [
-              {prop: 'startStationCn', label: '始发站', fixed: false, hidden: false, width: 90},
-              {prop: 'std', label: '起飞', fixed: false, hidden: false, width: 140, formatter: this.formatterMin}
+              {prop: 'startStationCn', label: '始发站', fixed: false, hidden: false, width: 70},
+              {prop: 'std', label: '起飞', fixed: false, hidden: false, width: 140, formatter: this.formatterCharHHMMVal}
             ]
           },
           {
@@ -424,11 +359,11 @@ export default {
             prop: 'lstScheduleFlightStation',
             index: 0,
             hidden: false,
-            width: 370,
+            width: 350,
             fields: [
-              {prop: 'stationCn', label: '经停站', fixed: false, hidden: false, width: 90},
-              {prop: 'sta', label: '降落', fixed: false, hidden: false, width: 140, formatter: this.formatterMin},
-              {prop: 'std', label: '起飞', fixed: false, hidden: false, width: 140, formatter: this.formatterMin}
+              {prop: 'stationCn', label: '经停站', fixed: false, hidden: false, width: 70},
+              {prop: 'sta', label: '降落', fixed: false, hidden: false, width: 140, formatter: this.formatterCharHHMMVal},
+              {prop: 'std', label: '起飞', fixed: false, hidden: false, width: 140, formatter: this.formatterCharHHMMVal}
             ]
           },
           {
@@ -436,11 +371,11 @@ export default {
             prop: 'lstScheduleFlightStation',
             index: 1,
             hidden: false,
-            width: 370,
+            width: 350,
             fields: [
-              {prop: 'stationCn', label: '经停站', fixed: false, hidden: false, width: 90},
-              {prop: 'sta', label: '降落', fixed: false, hidden: false, width: 140, formatter: this.formatterMin},
-              {prop: 'std', label: '起飞', fixed: false, hidden: false, width: 140, formatter: this.formatterMin}
+              {prop: 'stationCn', label: '经停站', fixed: false, hidden: false, width: 70},
+              {prop: 'sta', label: '降落', fixed: false, hidden: false, width: 140, formatter: this.formatterCharHHMMVal},
+              {prop: 'std', label: '起飞', fixed: false, hidden: false, width: 140, formatter: this.formatterCharHHMMVal}
             ]
           },
           {
@@ -448,27 +383,26 @@ export default {
             prop: 'lstScheduleFlightStation',
             index: 2,
             hidden: false,
-            width: 370,
+            width: 350,
             fields: [
-              {prop: 'stationCn', label: '经停站', fixed: false, hidden: false, width: 90},
-              {prop: 'sta', label: '降落', fixed: false, hidden: false, width: 140, formatter: this.formatterMin},
-              {prop: 'std', label: '起飞', fixed: false, hidden: false, width: 140, formatter: this.formatterMin}
+              {prop: 'stationCn', label: '经停站', fixed: false, hidden: false, width: 70},
+              {prop: 'sta', label: '降落', fixed: false, hidden: false, width: 140, formatter: this.formatterCharHHMMVal},
+              {prop: 'std', label: '起飞', fixed: false, hidden: false, width: 140, formatter: this.formatterCharHHMMVal}
             ]
           },
           {
             label: '目的站',
             prop: 'terminalStation',
             hidden: false,
-            width: 230,
+            width: 210,
             fields: [
-              {prop: 'terminalStationCn', label: '目的站', fixed: false, hidden: false, width: 90},
-              {prop: 'sta', label: '降落', fixed: false, hidden: false, width: 140, formatter: this.formatterMin}
+              {prop: 'terminalStationCn', label: '目的站', fixed: false, hidden: false, width: 70},
+              {prop: 'sta', label: '降落', fixed: false, hidden: false, width: 140, formatter: this.formatterCharHHMMVal}
             ]
           }
         ],
         rightFields: [
-          {prop: 'vipFlag', label: 'VIP标识', type: 'tabs', hidden: false, optionKey: 'isYOrN', width: 70, edit: true},
-          {prop: 'confirmedFlag', label: '确认标识', hidden: false, optionKey: 'isYOrN', width: 70}
+          {prop: 'vipFlag', label: 'VIP标识', type: 'tabs', hidden: false, optionKey: 'isYOrN', width: 90, overflow: true, edit: true}
         ],
         tempValue: '',
         editData: {
@@ -507,9 +441,6 @@ export default {
     this.name = localStorage.getItem(_.find(this.$store.getters.getHomeRouterData, ['path', this.$route.matched[0].path]).name)
     this.importData.fileName = this.name + '导入模板.xls'
     this.importData.errorFileName = this.name + '导入失败信息.xls'
-    this.$store.commit('setOption', this.options.fltType.key)
-    this.options.fltType.options = this.$store.getters.getOption
-    this.options.fltType.optionsRemove = _.dropRight(this.options.fltType.options)
   },
   methods: {
     dateRangeReg (rule, value, callback) {
@@ -621,6 +552,10 @@ export default {
       this.importData.statusData.fileUrl = null
       this.importData.data.fileList = []
     },
+    formatterCharHHMMVal (value, callback) {
+      let val = value ? value.substr(11, 5) : ''
+      callback(val)
+    },
     addOpr (scopeTemp) {
       scopeTemp.item.tempData = {}
       let obj = {}
@@ -701,19 +636,146 @@ export default {
       }
     },
     dblClick (index) {
-      this.initEditable(this.tableData.editData.index)
       this.tableData.editData.index = index
       this.tableData.editData.tempObj = JSON.parse(JSON.stringify(this.tableData.data[index]))
+    },
+    saveEditable (index) {
+      this.tableData.editData.index = null
+      this.tableData.editData.tempObj = {}
+    },
+    initEditable (index) {
+      this.tableData.editData.index = null
+      this.tableData.editData.tempObj = {}
     },
     itemChangeHandle (item, field) {
       item[field.prop] = item[field.propObj][field.itemKey]
       item[field.propCn] = item[field.propObj][field.itemLabel]
     },
-    handleEditConfirm () {
+    // 新增
+    handleAdd () {
       let obj = _.filter(this.formData.formData, ['type', 'slot'])
       let urls = _.map(obj, 'getOptions')
       let datas = _.fill(Array(obj.length), {})
-      let row = JSON.parse(JSON.stringify(this.formData.edit.row))
+      postAllData(urls, datas).then(this.axios.spread((resa, resb) => {
+        if (resa.data.code == 0) {
+          this.options.airport.options = resa.data.data
+          this.options.airport.optionsRemove = JSON.parse(JSON.stringify(this.options.airport.options))
+          let index = _.findIndex(this.options.airport.optionsRemove, ['airportIata', this.aptLoc])
+          this.options.airport.optionsRemove.splice(index, 1)
+          if (resb.data.code == 0) {
+            for (let i = 0; i < this.formData.formData.length; i++) {
+              if (this.formData.formData[i].type == 'slot') {
+                if (this.formData.formData[i].hasOwnProperty('tempArr')) {
+                  this.formData.formData[i].tempArr = []
+                  this.formData.formData[i].editIndex = null
+                  _.forEach(obj, (item) => {
+                    if (this.formData.formData[i].key == item.key) {
+                      _.forEach(this.formData.formData[i].tabelFields, (field) => {
+                        if (field.prop == 'station') {
+                          field.options = this.options.airport.optionsRemove
+                        } else if (field.prop == 'airline') {
+                          field.options = resb.data.data
+                        }
+                      })
+                    }
+                  })
+                }
+              }
+              if (this.formData.formData[i].key == 'terminalStation') {
+                this.$set(this.formData.formData[i], 'isDisabled', true)
+                this.$set(this.formData.formData[i], 'defaultValue', this.aptLoc)
+                this.$set(this.formData.formData[i], 'options', this.options.airport.options)
+              }
+              if (this.formData.formData[i].key == 'startStation') {
+                this.$delete(this.formData.formData[i], 'isDisabled')
+                this.$delete(this.formData.formData[i], 'disabled')
+                this.$set(this.formData.formData[i], 'defaultValue', '')
+                this.$set(this.formData.formData[i], 'options', this.options.airport.optionsRemove)
+              }
+              if (this.formData.formData[i].hasOwnProperty('tabsKey') && this.formData.formData[i].tabsKey == 'isYOrN') {
+                this.formData.formData[i].defaultValue = 'N'
+              }
+            }
+            this.formData.title = '新增'
+            this.formData.visible = true
+          } else {
+            this.showError('获取航空公司信息', '请重新尝试 !')
+          }
+        } else {
+          this.showError('获取机场信息', '请重新尝试 !')
+        }
+      }))
+    },
+    // 详情
+    handleDetail (row) {
+      let obj = _.filter(this.formData.formData, ['type', 'slot'])
+      let urls = _.map(obj, 'getOptions')
+      let datas = _.fill(Array(obj.length), {})
+      postAllData(urls, datas).then(this.axios.spread((resa, resb) => {
+        if (resa.data.code == 0) {
+          this.options.airport.options = resa.data.data
+          this.options.airport.optionsRemove = JSON.parse(JSON.stringify(this.options.airport.options))
+          let index = _.findIndex(this.options.airport.optionsRemove, ['airportIata', this.aptLoc])
+          this.options.airport.optionsRemove.splice(index, 1)
+          if (resb.data.code == 0) {
+            for (let i = 0; i < this.formData.formData.length; i++) {
+              if (this.formData.formData[i].type == 'dateRangePicker') {
+                this.$set(this.formData.formData[i], 'value', {start: null, end: null})
+                this.formData.formData[i].value.start = row[this.formData.formData[i].key1]
+                this.formData.formData[i].value.end = row[this.formData.formData[i].key2]
+              } else {
+                this.$set(this.formData.formData[i], 'value', row[this.formData.formData[i].key])
+              }
+              if (this.formData.formData[i].type == 'slot') {
+                if (this.formData.formData[i].hasOwnProperty('tempArr')) {
+                  this.formData.formData[i].tempArr = row[this.formData.formData[i].key] ? JSON.parse(JSON.stringify(row[this.formData.formData[i].key])) : []
+                  _.forEach(this.formData.formData[i].tabelFields, (field) => {
+                    _.forEach(obj, (item) => {
+                      if (this.formData.formData[i].key == item.key) {
+                        if (field.prop == 'station') {
+                          field.options = this.options.airport.optionsRemove
+                        } else if (field.prop == 'airline') {
+                          field.options = resb.data.data
+                        }
+                      }
+                    })
+                  })
+                  this.formData.formData[i].editIndex = null
+                }
+              }
+              if (row['inOutFlag'] == 'A') {
+                if (this.formData.formData[i].key == 'terminalStation') {
+                  this.$set(this.formData.formData[i], 'defaultValue', this.aptLoc)
+                  this.$set(this.formData.formData[i], 'options', this.options.airport.options)
+                }
+                if (this.formData.formData[i].key == 'startStation') {
+                  this.$set(this.formData.formData[i], 'options', this.options.airport.optionsRemove)
+                }
+              } else {
+                if (this.formData.formData[i].key == 'startStation') {
+                  this.$set(this.formData.formData[i], 'defaultValue', this.aptLoc)
+                  this.$set(this.formData.formData[i], 'options', this.options.airport.options)
+                }
+                if (this.formData.formData[i].key == 'terminalStation') {
+                  this.$set(this.formData.formData[i], 'options', this.options.airport.optionsRemove)
+                }
+              }
+            }
+            this.formData.title = '详情'
+            this.formData.visible = true
+          } else {
+            this.showError('获取航空公司信息', '请重新尝试 !')
+          }
+        } else {
+          this.showError('获取机场信息', '请重新尝试 !')
+        }
+      }))
+    },
+    // 编辑
+    handleEdit (row) {
+      let obj = _.filter(this.formData.formData, ['type', 'slot'])
+      let urls = _.map(obj, 'getOptions')
+      let datas = _.fill(Array(obj.length), {})
       postAllData(urls, datas).then(this.axios.spread((resa, resb) => {
         if (resa.data.code == 0) {
           this.options.airport.options = resa.data.data
@@ -778,6 +840,7 @@ export default {
                 }
               }
             }
+            this.formData.title = '编辑'
             this.formData.visible = true
           } else {
             this.showError('获取航空公司信息', '请重新尝试 !')
@@ -786,119 +849,6 @@ export default {
           this.showError('获取机场信息', '请重新尝试 !')
         }
       }))
-    },
-    closeEditDialog () {
-      this.formData.edit.type = this.options.fltType.optionsRemove[0].key
-      this.formData.edit.visible = false
-      this.formData.edit.row = {}
-    },
-    openTransDialog () {
-      this.transData.visible = true
-      let date = new Date(this.newTime.getTime() + 24 * 3600 * 1000)
-      let day = `${date.getFullYear()}-${this.addZero(date.getMonth() + 1)}-${this.addZero(date.getDate())}`
-      this.$set(this.transData.data, 'beginTime', day + ' 00:00')
-      this.$set(this.transData.data, 'endTime', day + ' 23:59')
-      /* date.setHours(0, 0, 0)
-      this.$set(this.transData.data, 'beginTime', new Date(date))
-      date.setHours(23, 59, 59)
-      this.$set(this.transData.data, 'endTime', new Date(date)) */
-    },
-    handleTransConfirm () {
-      this.transData.loading = true
-      postData(this.transData.url, this.transData.data).then(res => {
-        if (res.data.code == 0) {
-          this.showSuccess('生成次日计划')
-          this.transData.loading = false
-          this.transData.visible = false
-        }
-      })
-    },
-    closeTransDialog () {
-      this.transData.loading = false
-      this.transData.visible = false
-    },
-    // 新增
-    handleAdd () {
-      let obj = _.filter(this.formData.formData, ['type', 'slot'])
-      let urls = _.map(obj, 'getOptions')
-      let datas = _.fill(Array(obj.length), {})
-      postAllData(urls, datas).then(this.axios.spread((resa, resb) => {
-        if (resa.data.code == 0) {
-          this.options.airport.options = resa.data.data
-          this.options.airport.optionsRemove = JSON.parse(JSON.stringify(this.options.airport.options))
-          let index = _.findIndex(this.options.airport.optionsRemove, ['airportIata', this.aptLoc])
-          this.options.airport.optionsRemove.splice(index, 1)
-          if (resb.data.code == 0) {
-            for (let i = 0; i < this.formData.formData.length; i++) {
-              if (this.formData.formData[i].type == 'slot') {
-                if (this.formData.formData[i].hasOwnProperty('tempArr')) {
-                  this.formData.formData[i].tempArr = []
-                  this.formData.formData[i].editIndex = null
-                  _.forEach(obj, (item) => {
-                    if (this.formData.formData[i].key == item.key) {
-                      _.forEach(this.formData.formData[i].tabelFields, (field) => {
-                        if (field.prop == 'station') {
-                          field.options = this.options.airport.optionsRemove
-                        } else if (field.prop == 'airline') {
-                          field.options = resb.data.data
-                        }
-                      })
-                    }
-                  })
-                }
-              }
-              if (this.formData.formData[i].key == 'terminalStation') {
-                this.$set(this.formData.formData[i], 'isDisabled', true)
-                this.$set(this.formData.formData[i], 'defaultValue', this.aptLoc)
-                this.$set(this.formData.formData[i], 'options', this.options.airport.options)
-              }
-              if (this.formData.formData[i].key == 'startStation') {
-                this.$delete(this.formData.formData[i], 'isDisabled')
-                this.$delete(this.formData.formData[i], 'disabled')
-                this.$set(this.formData.formData[i], 'defaultValue', '')
-                this.$set(this.formData.formData[i], 'options', this.options.airport.optionsRemove)
-              }
-              if (this.formData.formData[i].hasOwnProperty('tabsKey') && this.formData.formData[i].tabsKey == 'isYOrN') {
-                this.formData.formData[i].defaultValue = 'N'
-              }
-            }
-            this.formData.title = '新增'
-            this.formData.visible = true
-          } else {
-            this.showError('获取航空公司信息', '请重新尝试 !')
-          }
-        } else {
-          this.showError('获取机场信息', '请重新尝试 !')
-        }
-      }))
-    },
-    // 详情
-    handleDetail (row) {
-      this.formData.title = '详情'
-      if (row['inOutFlag'] == this.options.fltType.optionsRemove[0].key) {
-        this.formData.edit.row = JSON.parse(JSON.stringify(row))
-        this.handleEditConfirm()
-      } else if (row['inOutFlag'] == 'D') {
-        this.formData.edit.row = JSON.parse(JSON.stringify(row))
-        this.handleEditConfirm()
-      } else {
-        this.formData.edit.row = JSON.parse(JSON.stringify(row))
-        this.formData.edit.visible = true
-      }
-    },
-    // 编辑
-    handleEdit (row) {
-      this.formData.title = '编辑'
-      if (row['inOutFlag'] == this.options.fltType.optionsRemove[0].key) {
-        this.formData.edit.row = JSON.parse(JSON.stringify(row))
-        this.handleEditConfirm()
-      } else if (row['inOutFlag'] == 'D') {
-        this.formData.edit.row = JSON.parse(JSON.stringify(row))
-        this.handleEditConfirm()
-      } else {
-        this.formData.edit.row = JSON.parse(JSON.stringify(row))
-        this.formData.edit.visible = true
-      }
     },
     customSaveBefore (data) {
       for (let i = 0; i < this.formData.formData.length; i++) {
@@ -911,65 +861,6 @@ export default {
           }
         }
       }
-    },
-    tableRowContextmenu (data) {
-      console.log(data)
-    },
-    changeArcft (value, callback) {
-      queryAll('/basicdata/aircraft/queryAll', {'aircraftNo': value}).then(res => {
-        let aircraftType = {
-          key: 'aircraftType',
-          value: null
-        }
-        if (res.data.code == 0) {
-          this.$set(aircraftType, 'value', res.data.data['aircraftIcao'])
-          callback(aircraftType)
-          return null
-        } else {
-          this.showError('通过飞机号获取机型信息', '请重新选择飞机号')
-          callback(aircraftType)
-          return null
-        }
-      })
-    },
-    changeArcftType (value, callback) {
-      let aircraft = {
-        key: 'aircraft',
-        value: null
-      }
-      callback(aircraft)
-      return null
-    },
-    changeStand (value, callback) {
-      queryAll('/airportResource/aircraftStand/queryAll', {'standNo': value}).then(res => {
-        let terminal = {
-          key: 'terminal',
-          value: null
-        }
-        if (res.data.code == 0) {
-          if (res.data.data.length > 0) {
-            this.$set(terminal, 'value', res.data.data[0]['terminalNo'])
-            callback(terminal)
-            return null
-          } else {
-            this.showError('该机位未设置航站楼', '请先为该机位设置航站楼 !')
-            callback(terminal)
-            return null
-          }
-        } else {
-          this.showError('通过机位获取航站楼信息', '请重新选择机位')
-          callback(terminal)
-          return null
-        }
-      })
-    },
-    changeTmn (value, callback) {
-      let stand = {
-        key: 'stand',
-        value: null
-      }
-      callback(stand)
-      return null
     }
   }
 }
@@ -979,16 +870,6 @@ export default {
 /* .mult-title-table .el-table__fixed-body-wrapper {
   top: 40px !important
 } */
-.morrow-button-dpd>li:first-of-type {
-  border-top: 0;
-}
-.morrow-button-dpd .el-dropdown-menu__item--divided {
-  margin-top: 0;
-  border-top: 1px solid rgba(60, 166, 200, 0.3);
-}
-.morrow-button-dpd .el-dropdown-menu__item--divided:before {
-  height: 0 !important;
-}
 .mult-title-table .el-table th {
   background: #081e2d !important;
 }
@@ -1063,28 +944,6 @@ export default {
 }
 .plan-dialog .dialog-body>div:not(:first-of-type):not(.tip-font)>div:first-of-type {
   width: calc(100% - 116px);
-}
-.plan-edit-dialog>.el-dialog {
-  height: 250px;
-}
-.plan-edit-dialog .dialog-body>div:first-of-type {
-  font-size: 18px;
-  color: #7a939e;
-  margin: 12px 0 20px 0;
-}
-.plan-edit-dialog .dialog-body>div:last-of-type {
-  margin: 10px 30px;
-}
-.sched-plan-dialog>.el-dialog {
-  height: 300px;
-}
-.sched-plan-dialog .dialog-body>div:first-of-type {
-  font-size: 18px;
-  color: #7a939e;
-  margin: 12px 0 20px 0;
-}
-.sched-plan-dialog .dialog-body>div:last-of-type {
-  margin: 10px 30px;
 }
 </style>
 

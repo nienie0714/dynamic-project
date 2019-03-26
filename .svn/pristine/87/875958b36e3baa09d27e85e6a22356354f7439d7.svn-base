@@ -48,14 +48,6 @@ export default {
     this.$nextTick(() => {
       that.queryResourcePerm()
     })
-    window.onresize = () => {
-      this.$nextTick(() => {
-        return (() => {
-          var basicWidth = window.innerWidth - asideView.offsetWidth - 40
-          basicContView.style.width = basicWidth + 'px'
-        })()
-      })
-    }
     /* this.$nextTick(() => {
       this.scrollTable()
     }) */
@@ -86,7 +78,6 @@ export default {
       postData(this.queryUrl, this.queryData).then(response => {
         this.setLastUpdateTime()
         this.tableData.loading = false
-        this.tableData.multipleSelection = []
         if (this.tableData.hasOwnProperty('editData')) {
           this.initEditable()
         }
@@ -192,7 +183,7 @@ export default {
       }
     },
     changeEditBefore (index) { return true },
-    saveEditable (index) {
+    changeEditable (index) {
       let result = this.changeEditBefore()
       if (result) {
         postData(this.queryUrl, this.queryData).then(res => {

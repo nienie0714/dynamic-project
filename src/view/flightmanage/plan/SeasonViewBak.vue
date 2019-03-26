@@ -107,10 +107,6 @@
         <div v-if="~importData.statusData.status">
           <div>导入成功 <span style="color: green;">{{importData.statusData.success}}</span> 条<br/>导入失败 <span style="color: red;">{{importData.statusData.fail}}</span> 条。</div>
           <el-button size="small" type="primary" :disabled="!importData.statusData.fileUrl" @click="downloadErrorExcel()">下载导入失败信息</el-button>
-          <!-- <div>
-            <div>查看导入失败信息：</div>
-            <button type="button" class="el-button el-button--primary"><a>下载失败文件</a></button>
-          </div> -->
         </div>
       </div>
       <div slot="footer" class="dialog-footer">
@@ -151,9 +147,7 @@ export default {
       optionsRemove: [],
       // 菜单对应按钮权限
       permissions: {
-        add: false,
         update: false,
-        delete: false,
         export: false,
         import: false
       },
@@ -200,9 +194,9 @@ export default {
           {key: 'dateRange', key1: 'beginDate', key2: 'endDate', label: '计划日期区间', label1: '计划开始日期', label2: '计划结束日期', type: 'dateRangePicker', rangeMethod: this.dateRangeReg, dateType: 'date', required: 3, format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd', class: 'auto-width'},
           // {key: 'beginDate', label: '计划开始', type: 'date', format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd'},
           // {key: 'endDate', label: '计划结束', type: 'date', format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd'},
-          // {key: 'timeRange', key1: 'std', key2: 'sta', label: '计划起飞/降落时间', label1: '计划起飞时间', label2: '计划降落时间', pickerOpt: {format: 'HH:mm'}, type: 'dateRangePicker', rangeMethod: this.dateRangeReg, dateType: 'time', required: 3, format: 'HH:mm', valueFormat: 'HH:mm', class: 'auto-width'},
-          {key: 'std', label: '计划起飞', type: 'time', format: 'HH:mm', valueFormat: 'HH:mm', pickerOpt: {format: 'HH:mm'}},
-          {key: 'sta', label: '计划降落', type: 'time', format: 'HH:mm', valueFormat: 'HH:mm', pickerOpt: {format: 'HH:mm'}},
+          {key: 'timeRange', key1: 'std', key2: 'sta', label: '计划起飞/降落时间', label1: '计划起飞时间', label2: '计划降落时间', pickerOpt: {format: 'HH:mm'}, type: 'dateRangePicker', rangeMethod: this.dateRangeReg, dateType: 'time', required: 3, format: 'HH:mm', valueFormat: 'HH:mm', class: 'auto-width'},
+          // {key: 'std', label: '计划起飞', type: 'time', valueFormat: 'HH:mm', pickerOpt: {format: 'HH:mm'}},
+          // {key: 'sta', label: '计划降落', type: 'time', valueFormat: 'HH:mm', pickerOpt: {format: 'HH:mm'}},
           {
             key: 'lstScheduleFlightStation',
             label: '',
@@ -271,45 +265,9 @@ export default {
       // 查询条件设置
       queryList: [
         {
-          // 'p': '航班号',
-          key: 'flightNo',
-          value: '',
-          type: 'input',
-          inputText: '航班号',
-          toUpper: true,
-          span: 3
-        }, {
-          // 'p': '属性',
-          key: 'attr',
-          tabsKey: 'attr',
-          value: null,
-          type: 'tabs',
-          size: 'medium',
-          inputText: '',
-          options: [{
-            key: null,
-            value: '全部'
-          }],
-          'valueChange': 'attrChange',
-          'span': 4
-        }, {
           // 'p': '班期季节',
           key: 'season',
           tabsKey: 'scheduleSeason',
-          value: null,
-          type: 'tabs',
-          size: 'medium',
-          inputText: '',
-          options: [{
-            key: null,
-            value: '全部'
-          }],
-          'valueChange': 'attrChange',
-          'span': 4
-        }, {
-          // 'p': '进出标识',
-          key: 'inOutFlag',
-          tabsKey: 'fltType',
           value: null,
           type: 'tabs',
           size: 'medium',
@@ -330,87 +288,17 @@ export default {
         height: window.innerHeight,
         type: 'selection',
         highlight: true,
-        headerStyle: 'padding-top: 15px; margin-bottom: -15px;',
+        headerStyle: 'padding-top: 15px; margin-bottom: -5px;',
         oprWidth: 130,
         key: 'scheduleFlightId',
         multipleSelection: [],
         headerNum: 2,
         leftFields: [
-          {prop: 'flightNo', label: '航班号', hidden: false, width: 100, overflow: true},
-          {prop: 'attr', label: '属性', hidden: false, optionKey: 'attr', width: 50, overflow: true},
-          {prop: 'taskCn', label: '航班任务', hidden: false, width: 75, overflow: true},
-          // {prop: 'startStationCn', label: '始发站', fixed: 'left', hidden: false, width: 70},
-          // {prop: 'terminalStationCn', label: '目的站', fixed: 'left', hidden: false, width: 70, overflow: true},
-          // {prop: 'routeCn', label: '航线', fixed: false, hidden: false, width: 60, overflow: true},
-          {prop: 'inOutFlag', label: '进出标识', hidden: false, optionKey: 'fltType', width: 60, overflow: true},
-          {prop: 'aircraftType', label: '机型', hidden: false, width: 100, overflow: true},
-          {prop: 'exec', label: '每周班次', hidden: false, width: 110, overflow: true},
-          // {prop: 'std', label: '计划起飞', fixed: false, hidden: false, formatter: this.formatterCharHHMM, width: 60},
-          // {prop: 'sta', label: '计划降落', fixed: false, hidden: false, formatter: this.formatterCharHHMM, width: 60},
-          {prop: 'beginDate', label: '计划开始', hidden: false, width: 98},
-          {prop: 'endDate', label: '计划结束', hidden: false, width: 98}
+          {prop: 'name', label: '名称', hidden: false, width: 180, overflow: true},
+          {prop: 'start', label: '开始时间', hidden: false, width: 150, overflow: true},
+          {prop: 'end', label: '结束时间', hidden: false, width: 160, overflow: true}
         ],
-        centerFields: [
-          {
-            label: '始发站',
-            prop: 'startStation',
-            hidden: false,
-            width: 150,
-            fields: [
-              {prop: 'startStationCn', label: '始发站', fixed: false, hidden: false, width: 90},
-              {prop: 'std', label: '起飞', fixed: false, hidden: false, width: 60}
-            ]
-          },
-          {
-            label: '经停站1',
-            prop: 'lstScheduleFlightStation',
-            index: 0,
-            hidden: false,
-            width: 210,
-            fields: [
-              {prop: 'stationCn', label: '经停站', fixed: false, hidden: false, width: 90},
-              {prop: 'sta', label: '降落', fixed: false, hidden: false, width: 60},
-              {prop: 'std', label: '起飞', fixed: false, hidden: false, width: 60}
-            ]
-          },
-          {
-            label: '经停站2',
-            prop: 'lstScheduleFlightStation',
-            index: 1,
-            hidden: false,
-            width: 210,
-            fields: [
-              {prop: 'stationCn', label: '经停站', fixed: false, hidden: false, width: 90},
-              {prop: 'sta', label: '降落', fixed: false, hidden: false, width: 60},
-              {prop: 'std', label: '起飞', fixed: false, hidden: false, width: 60}
-            ]
-          },
-          {
-            label: '经停站3',
-            prop: 'lstScheduleFlightStation',
-            index: 2,
-            hidden: false,
-            width: 210,
-            fields: [
-              {prop: 'stationCn', label: '经停站', fixed: false, hidden: false, width: 90},
-              {prop: 'sta', label: '降落', fixed: false, hidden: false, width: 60},
-              {prop: 'std', label: '起飞', fixed: false, hidden: false, width: 60}
-            ]
-          },
-          {
-            label: '目的站',
-            prop: 'terminalStation',
-            hidden: false,
-            width: 150,
-            fields: [
-              {prop: 'terminalStationCn', label: '目的站', fixed: false, hidden: false, width: 90},
-              {prop: 'sta', label: '降落', fixed: false, hidden: false, width: 60}
-            ]
-          }
-        ],
-        rightFields: [
-          {prop: 'season', label: '季节', fixed: 'right', hidden: false, optionKey: 'scheduleSeason', width: 80, overflow: true}
-        ]
+        rightFields: []
       },
       importData: {
         visible: false,
@@ -560,6 +448,10 @@ export default {
       this.importData.statusData.fail = 0
       this.importData.statusData.fileUrl = null
       this.importData.data.fileList = []
+    },
+    formatterCharHHMMVal (value, callback) {
+      let val = value ? value.substr(0, 2) + ':' + value.substr(2, 2) : ''
+      callback(val)
     },
     addOpr (scopeTemp) {
       scopeTemp.item.tempData = {}

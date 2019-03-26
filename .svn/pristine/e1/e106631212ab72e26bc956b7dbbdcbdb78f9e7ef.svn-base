@@ -23,40 +23,38 @@
       <div class="div-left-table_body" @mousewheel="scrollEvent" :style="leftTableStyle">
         <table cellpadding="0" cellspacing="0" class="left-table_body" ref="wholeTable">
           <tbody>
-            <tr v-for="(item, index) in tableData.data" :key="index" :class="[(index%2==0)?'single-row':'', tableData.selectIndex==index?'select-row':'']"
+            <tr v-for="(item, index) in tableData.data" :key="index" :class="[(index%2==0)?'single-row':'', selectIndex==index?'select-row':'']"
             @click="clickRow(index)" @dblclick="tableData.hasOwnProperty('dblClick')&&dblRowClick(index, tableData.dblClick)"><!--  :class="[tableData.tableRowClassName({'row': item, 'rowIndex': index}), tableClickRowClass[index]?'is-active':'']" -->
-              <td v-if="tableData.type=='selection'" :width="50" style="padding-top: 15px; margin-bottom: -15px;"><!-- @contextmenu.prevent="tableRowContextmenu(item, $event)" -->
+              <td v-if="tableData.type=='selection'" :width="50" style="padding-top: 15px; margin-bottom: -15px;">
                 <div :class="~require('lodash').findIndex(tableData.multipleSelection, [tableData.key, item[tableData.key]]) ? 'radio-button el-checkbox__input is-checked' : 'radio-button el-checkbox__input'" @click.stop="itemSelectClick(item)">
                   <div class="el-checkbox__inner"></div>
                 </div>
               </td>
               <div v-for="(field, x) in tableData.leftFields" :key="x" :style="`width': ${field.width+'px'}; height: 50px; float: left; line-height: 50px;`">
                 <td v-if="!field.hidden" :width="field.width" :class="field.class" @dblclick="field.hasOwnProperty('dblClick')&&dblClick(index, field)">
-                  <template v-if="field.hasOwnProperty('edit') && tableData.editData.index == index">
-                    <div :style="`width: ${field.width}px;`">
-                      <slot name="slot-edit-div" :item="item" :field="field"></slot>
-                    </div>
-                  </template>
-                  <template v-else-if="field.hasOwnProperty('optionKey')">
+                  <div v-if="field.hasOwnProperty('edit') && tableData.editData.index == index" :style="`width: ${field.width}px;`">
+                    <slot name="slot-edit-div" :item="item" :field="field"></slot>
+                  </div>
+                  <div v-else-if="field.hasOwnProperty('optionKey')">
                     <el-tooltip v-if="field.hasOwnProperty('overflow')&&field.overflow" :content="formatterOption(field, item)" placement="top-start">
                       <div class="td-div" :style="`width: ${field.width}px;`">{{ formatterOption(field, item) }}</div>
                     </el-tooltip>
                     <div v-else class="td-div" :style="`width: ${field.width}px;`">{{ formatterOption(field, item) }}</div>
-                  </template>
-                  <template v-else-if="field.hasOwnProperty('formatter')">
+                  </div>
+                  <div v-else-if="field.hasOwnProperty('format')">
                     <el-tooltip v-if="field.hasOwnProperty('overflow')&&field.overflow" :content="formatterField(field, item)" placement="top-start">
                       <div class="td-div" :style="`width: ${field.width}px;`">{{ formatterField(field, item) }}</div>
                     </el-tooltip>
                     <div v-else class="td-div" :style="`width: ${field.width}px;`">{{ formatterField(field, item) }}</div>
-                  </template>
-                  <template v-else>
+                  </div>
+                  <div v-else>
                     <el-tooltip v-if="field.hasOwnProperty('overflow')&&field.overflow" :content="item[field.prop]" placement="top-start">
                       <div class="td-div" :style="`width: ${field.width}px;`">
                         {{ item[field.prop] }}
                       </div>
                     </el-tooltip>
                     <div v-else class="td-div" :style="`width: ${field.width}px;`">{{ item[field.prop] }}</div>
-                  </template>
+                  </div>
                 </td>
               </div>
             </tr>
@@ -83,60 +81,56 @@
       <div class="div-right-table_body" @mousewheel="scrollEvent" :style="rightTableHeightStyle">
         <table cellpadding="0" cellspacing="0" class="right-table_body" :style="rightTableBodyStyle">
           <tbody>
-            <tr v-for="(item, index) in tableData.data" :key="index" :class="[(index%2==0)?'single-row':'', tableData.selectIndex==index?'select-row':'']"
+            <tr v-for="(item, index) in tableData.data" :key="index" :class="[(index%2==0)?'single-row':'', selectIndex==index?'select-row':'']"
             @click="clickRow(index)" @dblclick="tableData.hasOwnProperty('dblClick')&&dblRowClick(index, tableData.dblClick)"><!--  :class="[tableRowClassName({'row': item, 'rowIndex': index}), tableClickRowClass[index]?'is-active':'']" -->
               <div v-for="(field, x) in tableData.centerFields" :key="x" class="body-tr-div" :style="`width': ${field.width+'px'}; height: 50px; float: left; line-height: 50px;`">
                 <div v-if="!field.hidden&&field.hasOwnProperty('fields')">
                   <td v-for="(obj, x) in field.fields" :key="x" :width="obj.width" :class="obj.class">
-                    <template v-if="obj.hasOwnProperty('edit') && tableData.editData.index == index">
-                      <div :style="`width: ${obj.width}px;`">
-                        <slot name="slot-edit-div"></slot>
-                      </div>
-                    </template>
-                    <template v-else-if="obj.hasOwnProperty('optionKey')">
+                    <div v-if="obj.hasOwnProperty('edit') && tableData.editData.index == index" :style="`width: ${obj.width}px;`">
+                      <slot name="slot-edit-div"></slot>
+                    </div>
+                    <div v-else-if="obj.hasOwnProperty('optionKey')">
                       <el-tooltip v-if="obj.hasOwnProperty('overflow')&&obj.overflow" :content="formatterOption(obj, field.hasOwnProperty('index') ? ((item[field.prop] && item[field.prop][field.index]) ? item[field.prop][field.index] : item[field.prop]) : item)" placement="top-start">
                         <div class="td-div" :style="`width: ${obj.width}px;`">{{ formatterOption(obj, field.hasOwnProperty('index') ? ((item[field.prop] && item[field.prop][field.index]) ? item[field.prop][field.index] : item[field.prop]) : item) }}</div>
                       </el-tooltip>
                       <div v-else class="td-div" :style="`width: ${obj.width}px;`">{{ formatterOption(obj, field.hasOwnProperty('index') ? ((item[field.prop] && item[field.prop][field.index]) ? item[field.prop][field.index] : item[field.prop]) : item) }}</div>
-                    </template>
-                    <template v-else-if="obj.hasOwnProperty('formatter')">
+                    </div>
+                    <div v-else-if="obj.hasOwnProperty('format')">
                       <el-tooltip v-if="obj.hasOwnProperty('overflow')&&obj.overflow" :content="formatterField(obj, (field.hasOwnProperty('index') ? ((item[field.prop] && item[field.prop][field.index]) ? item[field.prop][field.index] : item[field.prop]) : item))" placement="top-start">
                         <div class="td-div" :style="`width: ${obj.width}px;`">{{ formatterField(obj, (field.hasOwnProperty('index') ? ((item[field.prop] && item[field.prop][field.index]) ? item[field.prop][field.index] : item[field.prop]) : item)) }}</div>
                       </el-tooltip>
                       <div v-else class="td-div" :style="`width: ${obj.width}px;`">{{ formatterField(obj, (field.hasOwnProperty('index') ? ((item[field.prop] && item[field.prop][field.index]) ? item[field.prop][field.index] : item[field.prop]) : item)) }}</div>
-                    </template>
-                    <template v-else>
+                    </div>
+                    <div v-else>
                       <el-tooltip v-if="obj.hasOwnProperty('overflow')&&obj.overflow" :content="field.hasOwnProperty('index') ? ((item[field.prop] && item[field.prop][field.index]) ? item[field.prop][field.index][obj.prop] : '') : item[obj.prop]" placement="top-start">
                         <div class="td-div" :style="`width: ${obj.width}px;`">{{ field.hasOwnProperty('index') ? ((item[field.prop] && item[field.prop][field.index]) ? item[field.prop][field.index][obj.prop] : '') : item[obj.prop] }}</div>
                       </el-tooltip>
                       <div v-else class="td-div" :style="`width: ${obj.width}px;`">{{ field.hasOwnProperty('index') ? ((item[field.prop] && item[field.prop][field.index]) ? item[field.prop][field.index][obj.prop] : '') : item[obj.prop] }}</div>
-                    </template>
+                    </div>
                   </td>
                 </div>
                 <td v-else-if="!field.hidden" :width="field.width" :class="field.class">
-                  <template v-if="field.hasOwnProperty('edit') && tableData.editData.index == index">
-                    <div :style="`width: ${field.width}px;`">
-                      <slot name="slot-edit-div" :item="item" :field="field"></slot>
-                    </div>
-                  </template>
-                  <template v-else-if="field.hasOwnProperty('optionKey')">
+                  <div v-if="field.hasOwnProperty('edit') && tableData.editData.index == index" :style="`width: ${field.width}px;`">
+                    <slot name="slot-edit-div"></slot>
+                  </div>
+                  <div v-else-if="field.hasOwnProperty('optionKey')">
                     <el-tooltip v-if="field.hasOwnProperty('overflow')&&field.overflow" :content="formatterOption(field, item)" placement="top-start">
                       <div class="td-div" :style="`width: ${field.width}px;`">{{ formatterOption(field, item) }}</div>
                     </el-tooltip>
                     <div v-else class="td-div" :style="`width: ${field.width}px;`">{{ formatterOption(field, item) }}</div>
-                  </template>
-                  <template v-else-if="field.hasOwnProperty('formatter')">
+                  </div>
+                  <div v-else-if="field.hasOwnProperty('format')">
                     <el-tooltip v-if="field.hasOwnProperty('overflow')&&field.overflow" :content="formatterField(field, item)" placement="top-start">
                       <div class="td-div" :style="`width: ${field.width}px;`">{{ formatterField(field, item) }}</div>
                     </el-tooltip>
                     <div v-else class="td-div" :style="`width: ${field.width}px;`">{{ formatterField(field, item) }}</div>
-                  </template>
-                  <template v-else class="td-div">
+                  </div>
+                  <div v-else class="td-div">
                     <el-tooltip v-if="field.hasOwnProperty('overflow')&&field.overflow" :content="item[field.prop]" placement="top-start">
                       <div class="td-div" :style="`width: ${field.width}px;`">{{ item[field.prop] }}</div>
                     </el-tooltip>
                     <div v-else class="td-div" :style="`width: ${field.width}px;`">{{ item[field.prop] }}</div>
-                  </template>
+                  </div>
                 </td>
               </div>
             </tr>
@@ -167,51 +161,33 @@
       <div class="div-opr-table_body" :style="oprTableStyle">
         <table cellpadding="0" cellspacing="0" class="opr-table_body">
           <tbody>
-            <tr v-for="(item, index) in tableData.data" :key="index" :class="[(index%2==0)?'single-row':'', tableData.selectIndex==index?'select-row':'']"
+            <tr v-for="(item, index) in tableData.data" :key="index" :class="[(index%2==0)?'single-row':'', selectIndex==index?'select-row':'']"
             @click="clickRow(index)">
               <div v-for="(field, x) in tableData.rightFields" :key="x" :style="`width': ${field.width+'px'}; height: 50px; float: left; line-height: 50px;`">
                 <td v-if="!field.hidden" :width="field.width" :class="field.class" @dblclick="field.hasOwnProperty('dblClick')&&dblClick(index, field)">
-                  <template v-if="field.hasOwnProperty('edit') && tableData.editData.index == index">
-                    <div :style="`width: ${field.width}px;`">
-                      <slot name="slot-edit-div" :item="item" :field="field"></slot>
-                    </div>
-                  </template>
-                  <template v-else-if="field.hasOwnProperty('optionKey')">
-                    <el-tooltip v-if="field.hasOwnProperty('overflow')&&field.overflow" :content="formatterOption(field, item)" placement="top-start">
-                      <div class="td-div" :style="`width: ${field.width}px;`">{{ formatterOption(field, item) }}</div>
-                    </el-tooltip>
-                    <div v-else class="td-div" :style="`width: ${field.width}px;`">{{ formatterOption(field, item) }}</div>
-                  </template>
-                  <template v-else-if="field.hasOwnProperty('formatter')">
-                    <el-tooltip v-if="field.hasOwnProperty('overflow')&&field.overflow" :content="formatterField(field, item)" placement="top-start">
-                      <div class="td-div" :style="`width: ${field.width}px;`">{{ formatterField(field, item) }}</div>
-                    </el-tooltip>
-                    <div v-else class="td-div" :style="`width: ${field.width}px;`">{{ formatterField(field, item) }}</div>
-                  </template>
-                  <template v-else class="td-div">
-                    <el-tooltip v-if="field.hasOwnProperty('overflow')&&field.overflow" :content="item[field.prop]" placement="top-start">
-                      <div class="td-div" :style="`width: ${field.width}px;`">{{ item[field.prop] }}</div>
-                    </el-tooltip>
-                    <div v-else class="td-div" :style="`width: ${field.width}px;`">{{ item[field.prop] }}</div>
-                  </template>
+                  <div v-if="field.hasOwnProperty('edit') && tableData.editData.index == index" :style="`width: ${field.width}px;`">
+                    <slot name="slot-edit-div" :item="item" :field="field"></slot>
+                  </div>
+                  <div v-else-if="field.hasOwnProperty('optionKey')" class="td-div" :style="`width: ${field.width}px;`">
+                    {{ formatterOption(field, item) }}
+                  </div>
+                  <div v-else-if="field.hasOwnProperty('format')" class="td-div" :style="`width: ${field.width}px;`">
+                    {{ formatterField(field, item) }}
+                  </div>
+                  <div v-else class="td-div" :style="`width: ${field.width}px;`">{{ item[field.prop] }}</div>
                 </td>
               </div>
               <td v-if="tableData.isOperat ? false : true" :width="tableData.oprWidth" class="table-opt-col">
                 <div class="div-opr-i">
-                  <template v-if="tableData.hasOwnProperty('editData') && tableData.editData.index == index">
-                    <div>
-                      <div class="tool-div-button opr-edit-save" @click.stop="saveEditable(index)"></div><!-- :class="(editData.count == 0)?'opr-edit-save':'opr-edit-save div-disabled'"  -->
-                      <div class="tool-div-button opr-edit-cancel" @click.stop="initEditable(index)"></div>
-                    </div>
-                  </template>
-                  <template v-else>
-                    <div>
-                      <div class="tool-div-button button-detail" title="详情" @click.stop="handleDetail(item)"></div>
-                      <div v-if="permissions.update" class="tool-div-button button-edit" title="编辑" @click.stop="handleEdit(item)"></div>
-                      <div v-if="permissions.delete" class="tool-div-button button-delete" title="删除" @click.stop="handleDelete(item)"></div>
-                      <slot name="slot-opr-button" :index="index" :item="item"></slot>
-                    </div>
-                  </template>
+                  <div v-if="tableData.hasOwnProperty('editData') && tableData.editData.index == index">
+                    <div class="tool-div-button opr-edit-save" @click.stop="changeEditable(index)"></div><!-- :class="(editData.count == 0)?'opr-edit-save':'opr-edit-save div-disabled'"  -->
+                    <div class="tool-div-button opr-edit-cancel" @click.stop="initEditable(index)"></div>
+                  </div>
+                  <div v-else>
+                    <div class="tool-div-button button-detail" title="详情" @click.stop="handleDetail(item)"></div>
+                    <div v-if="permissions.update" class="tool-div-button button-edit" title="编辑" @click.stop="handleEdit(item)"></div>
+                    <div v-if="permissions.delete" class="tool-div-button button-delete" title="删除" @click.stop="handleDelete(item)"></div>
+                  </div>
                 </div>
               </td>
                 <!-- 自定义右侧冻结列-body内容 -->
@@ -249,7 +225,8 @@ export default {
       },
       autoSelect: false,
       // 行class定义
-      tableClickRowClass: {}
+      tableClickRowClass: {},
+      selectIndex: null
     }
   },
   mounted () {
@@ -337,10 +314,10 @@ export default {
       }
     },
     clickRow (index, type) {
-      if (this.tableData.selectIndex == index) {
-        this.tableData.selectIndex = null
+      if (this.selectIndex == index) {
+        this.selectIndex = null
       } else {
-        this.tableData.selectIndex = index
+        this.selectIndex = index
       }
       if (type == 'scroll') {
         this.tableClickRowClass = {}
@@ -387,14 +364,14 @@ export default {
     formatterField (field, item) {
       let value = ''
       if (item) {
-        let method = field.formatter
+        let method = field.format
         if (method) {
           let data = {
             item: item,
             field: field
           }
-          value = method(data, par => {
-            return par
+          method(data, par => {
+            value = par
           })
         }
       }
@@ -424,21 +401,13 @@ export default {
       this.$emit('handleDelete', row)
     },
     // 提交行变更事件
-    saveEditable (row) {
-      this.$emit('saveEditable', row)
+    changeEditable (row) {
+      this.$emit('changeEditable', row)
     },
     // 取消行变更事件
     initEditable (index) {
       this.$emit('initEditable', index)
     }
-    /* tableRowContextmenu (item, event) {
-      let data = {
-        x: event.clientX,
-        y: event.clientY,
-        item: item
-      }
-      this.$emit('tableRowContextmenu', data)
-    } */
   }
 }
 </script>
@@ -470,7 +439,7 @@ export default {
 .whole-table-class .right-table_header th,
 .whole-table-class .opr-table_header th {
   height: 40px;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 40px;
   color: #7a939e;
 }

@@ -72,7 +72,7 @@ export default {
       {key: 'scheduleSeason',
       classify: '班期季节',
       options: [
-        {code: 'Y', name: '冬春'},
+        {code: 'Y', name: '春冬'},
         {code: 'N', name: '夏秋'}
       ]},
       {key: 'bindVehicle',

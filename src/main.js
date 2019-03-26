@@ -7,11 +7,12 @@ import echarts from 'echarts'
 import 'element-ui/lib/theme-chalk/index.css'
 import './style/custom.css'
 import router from './router'
-import { axiosReq, axiosOtherReq, axiosDfs, upload } from './conf/axios.conf'
+import { axiosReq, axiosNoneReq, axiosOtherReq, axiosDfs, upload } from './conf/axios.conf'
 import store from './store'
 
 Vue.config.productionTip = false
 Vue.prototype.axios = axiosReq
+Vue.prototype.axiosNone = axiosNoneReq
 Vue.prototype.axiosOther = axiosOtherReq
 Vue.prototype.dfs = axiosDfs
 Vue.prototype.axiosUpload = upload
