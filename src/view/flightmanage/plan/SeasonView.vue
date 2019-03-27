@@ -55,7 +55,7 @@ export default {
         formData: [
           {key: 'id', label: '资源名称', type: 'input', isHidden: true},
           {key: 'name', label: '资源名称', type: 'pInput'},
-          {key: 'dateRange', key1: 'beginDate', key2: 'endDate', label: '计划日期区间', label1: '计划开始日期', label2: '计划结束日期', type: 'dateRangePicker', rangeMethod: this.dateRangeReg, dateType: 'date', required: 3, format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd', class: 'auto-width'}
+          {key: 'dateRange', key1: 'beginDate', key2: 'endDate', label: '计划日期区间', label1: '计划开始日期', label2: '计划结束日期', type: 'dateRangePicker', rangeMethod: this.dateRangeReg, dateType: 'date', required: 3, format: 'MM-dd', valueFormat: 'MM-dd', class: 'auto-width'}
         ],
         rules: {
           name: [

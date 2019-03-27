@@ -324,7 +324,7 @@ export default {
         highlight: true,
         headerStyle: '',
         oprWidth: 100,
-        key: 'scheduleFlightId',
+        key: 'afid',
         multipleSelection: [],
         headerNum: 1,
         leftFields: [
@@ -340,7 +340,7 @@ export default {
         centerFields: [
           {prop: 'execDateA', label: '进港执行日期', width: 100, fixed: false, hidden: false, formatter: this.formatterDay},
           {prop: 'execDateD', label: '出港执行日期', width: 100, fixed: false, hidden: false, formatter: this.formatterDay},
-          {prop: 'routeCh', label: '航线', width: 300, fixed: true, hidden: false},
+          {prop: 'routeCh', label: '航线', width: 300, fixed: true, hidden: false, overflow: true},
           {prop: 'preDepTime', label: '前起', width: 80, fixed: false, hidden: false},
           {prop: 'arrvTime', label: '到达', width: 80, fixed: false, hidden: false},
           {prop: 'deptTime', label: '起飞', width: 80, fixed: false, hidden: false},

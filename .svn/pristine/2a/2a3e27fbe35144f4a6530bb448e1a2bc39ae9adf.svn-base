@@ -9,8 +9,8 @@
           <el-button type="success" icon="el-icon-more-outline">更多</el-button>
           <el-dropdown-menu slot="dropdown" class="morrow-button-dpd">
             <el-dropdown-item :divided="true" @click.native="openTransDialog">生成次日计划</el-dropdown-item>
-            <el-dropdown-item :divided="true" @click.native="jointReq">航班拼接</el-dropdown-item>
-            <el-dropdown-item :divided="true" @click.native="unJointReq">断开拼接</el-dropdown-item>
+            <el-dropdown-item :divided="true">航班拼接</el-dropdown-item>
+            <el-dropdown-item :divided="true">断开拼接</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </div>
@@ -44,8 +44,19 @@
           </el-radio-group>
           <el-input v-if="scopeData.field.type == 'input'"></el-input>
         </template>
+        <template slot="slot-opr-button" slot-scope="scopeData">
+          <el-dropdown trigger="click">
+            <span>
+              <div v-if="permissions.delete" class="tool-div-button button-delete"></div>
+            </span>
+            <el-dropdown-menu slot="dropdown" class="morrow-button-dpd">
+              <el-dropdown-item :divided="true">确认</el-dropdown-item>
+              <el-dropdown-item :divided="true">发布</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </template>
       </whole-table-view>
-      <!-- <Menu-right-view :menuData="menuData"></Menu-right-view> -->
+      <Menu-right-view :menuData="menuData"></Menu-right-view>
     </el-main>
     <Edit-view :formData="formData" @handleAdd="saveAdd" @handleEdit="saveEdit">
       <template slot="slot-scope" slot-scope="scopeTemp">
@@ -178,7 +189,7 @@
 </template>
 
 <script>
-// import MenuRightView from '../../../components/common/MenuRightView'
+import MenuRightView from '../../../components/common/MenuRightView'
 import QueryView from '../../../components/common/QueryView'
 import WholeTableView from '../../../components/common/BaseWholeTableView'
 import ToolButtonView from '../../../components/common/ToolButtonView'
@@ -195,7 +206,7 @@ import _ from 'lodash'
 
 export default {
   components: {
-    // MenuRightView,
+    MenuRightView,
     QueryView,
     WholeTableView,
     ToolButtonView,
@@ -210,21 +221,8 @@ export default {
           x: 0,
           y: 0
         },
-        data: {},
-        items: [
-        {
-          label: '确认',
-          disabled: false,
-          method: this.confirmPlan
-        },
-        {
-          label: '发布',
-          disabled: true
-        }
-      ]
+        data: {}
       },
-      jointUrl: '/planFlight/queryJointPlanFlights',
-      unJointUrl: '/planFlight/breakJointPlanFlight',
       name: '',
       dfsUrl: '',
       aptLoc: '',
@@ -484,7 +482,6 @@ export default {
         ],
         tempValue: '',
         editData: {
-          url: '/planFlight/updateAircraftNoAndVipFlag',
           index: null,
           tempObj: {}
         }
@@ -805,27 +802,6 @@ export default {
       this.formData.edit.visible = false
       this.formData.edit.row = {}
     },
-    changeEditBefore (index) { return true },
-    saveEditable (index) {
-      let result = this.changeEditBefore()
-      if (result) {
-        postData(this.tableData.editData.url, this.tableData.editData.tempObj).then(res => {
-          if (res.data.code == 0) {
-            this.tableData.editData.tempObj = {}
-            this.showSuccess('设置')
-            this.queryDataReq()
-          } else {
-            this.showError('设置', '请重新尝试')
-          }
-        })
-      }
-    },
-    initEditable (index) {
-      if (index != null) {
-        this.tableData.data[index] = JSON.parse(JSON.stringify(this.tableData.editData.tempObj))
-      }
-      this.tableData.editData.index = null
-    },
     openTransDialog () {
       this.transData.visible = true
       let date = new Date(this.newTime.getTime() + 24 * 3600 * 1000)
@@ -850,28 +826,6 @@ export default {
     closeTransDialog () {
       this.transData.loading = false
       this.transData.visible = false
-    },
-    jointReq () {
-      queryAll(this.jointUrl, this.queryData).then(res => {
-        if (res.data.code == 0) {
-          this.showSuccess('航班拼接')
-          this.queryUrl = res.data.data.path
-          this.queryDataReq()
-        } else {
-          this.showError('航班拼接', '请重新尝试')
-        }
-      })
-    },
-    unJointReq () {
-      queryAll(this.unJointUrl, this.queryData).then(res => {
-        if (res.data.code == 0) {
-          this.showSuccess('断开拼接')
-          this.queryUrl = res.data.data.path
-          this.queryDataReq()
-        } else {
-          this.showError('断开拼接', '请重新尝试')
-        }
-      })
     },
     // 新增
     handleAdd () {
@@ -969,6 +923,7 @@ export default {
       }
     },
     tableRowContextmenu (data) {
+      console.log(data)
       this.menuData.style.x = data.x
       this.menuData.style.y = data.y
       this.menuData.data = data.item
@@ -1029,9 +984,6 @@ export default {
       }
       callback(stand)
       return null
-    },
-    confirmPlan (data) {
-      this.showSuccess('确认')
     }
   }
 }

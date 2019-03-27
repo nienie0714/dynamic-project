@@ -7,7 +7,7 @@
             <tr v-for="num in tableData.headerNum" :key="num">
               <th v-if="tableData.type=='selection'&&num==1" :width="50" :style="tableData.headerStyle"
               :rowspan="tableData.headerNum?tableData.headerNum:1">
-                <div :class="(tableData.multipleSelection.length == tableData.data.length && tableData.data.length > 0) ? 'radio-button el-checkbox__input is-checked' : 'radio-button el-checkbox__input'" @click="autoSelectClick()">
+                <div :class="(tableData.multipleSelection.length == tableData.data.length && tableData.data.length > 0) ? 'radio-button el-checkbox__input is-checked' : 'radio-button el-checkbox__input'" @click="autoSelectClick(item)">
                   <div class="el-checkbox__inner"></div>
                 </div>
               </th>
@@ -85,7 +85,6 @@
         <table cellpadding="0" cellspacing="0" class="right-table_body" :style="rightTableBodyStyle">
           <tbody>
             <tr v-for="(item, index) in tableData.data" :key="index" :class="[(index%2==0)?'single-row':'', selectIndex==index?'select-row':'']"
-            @contextmenu.prevent="tableRowContextmenu(item, $event)"
             @click="clickRow(index)" @dblclick="tableData.hasOwnProperty('dblClick')&&dblRowClick(index, tableData.dblClick)"><!--  :class="[tableRowClassName({'row': item, 'rowIndex': index}), tableClickRowClass[index]?'is-active':'']" -->
               <div v-for="(field, x) in tableData.centerFields" :key="x" class="body-tr-div" :style="`width': ${field.width+'px'}; height: 50px; float: left; line-height: 50px;`">
                 <div v-if="!field.hidden&&field.hasOwnProperty('fields')">

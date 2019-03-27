@@ -45,7 +45,7 @@
           <el-input v-if="scopeData.field.type == 'input'"></el-input>
         </template>
       </whole-table-view>
-      <!-- <Menu-right-view :menuData="menuData"></Menu-right-view> -->
+      <Menu-right-view :menuData="menuData"></Menu-right-view>
     </el-main>
     <Edit-view :formData="formData" @handleAdd="saveAdd" @handleEdit="saveEdit">
       <template slot="slot-scope" slot-scope="scopeTemp">
@@ -178,7 +178,7 @@
 </template>
 
 <script>
-// import MenuRightView from '../../../components/common/MenuRightView'
+import MenuRightView from '../../../components/common/MenuRightView'
 import QueryView from '../../../components/common/QueryView'
 import WholeTableView from '../../../components/common/BaseWholeTableView'
 import ToolButtonView from '../../../components/common/ToolButtonView'
@@ -195,7 +195,7 @@ import _ from 'lodash'
 
 export default {
   components: {
-    // MenuRightView,
+    MenuRightView,
     QueryView,
     WholeTableView,
     ToolButtonView,
