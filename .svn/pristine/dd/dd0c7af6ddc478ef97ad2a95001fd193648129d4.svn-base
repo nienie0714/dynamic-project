@@ -52,17 +52,14 @@ export default {
   data () {
     return {
       // 基础路径
-      baseUrl: '',
-      queryUrl: 'basicdata/classifyCode/querySeason',
-      editUrl: 'basicdata/classifyCode/updateSeason',
+      baseUrl: 'sys/resource',
       formData: {
         title: '新增',
         visible: false,
         inline: true,
         className: 'twiceCol',
         formData: [
-          {key: 'code', label: 'code', type: 'input', isHidden: true},
-          {key: 'classify', label: 'classify', type: 'input', isHidden: true},
+          {key: 'id', label: '冬春夏秋', type: 'input', isHidden: true},
           {key: 'name', label: '名称', type: 'pInput'},
           {key: 'dateRange', key1: 'beginDate', key2: 'endDate', label: '计划日期区间', label1: '计划开始日期', label2: '计划结束日期', type: 'dateRangePicker', rangeMethod: this.dateRangeReg, dateType: 'date', required: 3, format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd', class: 'auto-width'}
         ],
@@ -79,8 +76,15 @@ export default {
       colSize: 4,
       // 查询条件设置
       queryList: [{
+        // p: '资源名称',
+        key: 'name',
+        value: '',
+        type: 'input',
+        inputText: '名称',
+        span: 4
+      }, {
           // 'p': '资源类型',
-          key: 'code',
+          key: 'season',
           tabsKey: 'scheduleSeason',
           value: null,
           type: 'tabs',
@@ -93,14 +97,6 @@ export default {
           'valueChange': 'attrChange',
           'span': 5
         }],
-      // 分页参数
-      pageData: {
-        currentPage: 1,
-        pageSizes: [10],
-        pageSize: 10,
-        layout: 'total, sizes, prev, pager, next, jumper',
-        total: 0
-      },
       // 列表设置
       tableData: {
         loading: false,
@@ -113,10 +109,9 @@ export default {
         key: 'resourceId',
         multipleSelection: [],
         fields: [
-          {prop: 'code', label: 'code', fixed: true, hidden: true},
           {prop: 'name', label: '名称', fixed: true, hidden: false},
-          {prop: 'beginDate', label: '开始时间', fixed: false, hidden: false},
-          {prop: 'endDate', label: '结束时间', fixed: false, hidden: false}
+          {prop: 'start', label: '开始时间', fixed: false, hidden: false},
+          {prop: 'icon', label: '结束时间', fixed: false, hidden: false}
         ]
       },
       time: {
@@ -128,12 +123,13 @@ export default {
     }
   },
   created () {
+    this.getDefaultTime()
   },
   methods: {
     dateRangeReg (rule, value, callback) {
-      if (value.hasOwnProperty('beginDate') && value.hasOwnProperty('endDate')) {
-        if (value.beginDate && value.endDate) {
-          if (value.beginDate >= value.endDate) {
+      if (value.hasOwnProperty('start') && value.hasOwnProperty('end')) {
+        if (value.start && value.end) {
+          if (value.start >= value.end) {
             let same = this.formData.formData.filter((obj) => {
               return obj.key == rule.field
             })
@@ -144,24 +140,15 @@ export default {
       callback()
     },
     handleDefault (row) {
-      this.getDefaultTime()
-      if (row.code == 'N') {
-        // 夏秋
-        row.beginDate = this.time.sumStart
-        row.endDate = this.time.sumEnd
-      } else {
-        // 冬春
-        row.beginDate = this.time.winStart
-        row.endDate = this.time.winEnd
-      }
-      postData(this.editUrl, row).then(res => {
-        if (res.data.code == 0) {
-          this.showSuccess(`恢复默认`)
-          this.queryDataReq()
-        } else {
-          this.showError(`恢复默认`, '请联系管理员 !')
-        }
-      })
+      console.log(row)
+      // postData(this.defaultUrl, data).then(res => {
+      //   if (res.data.code == 0) {
+      //     this.showSuccess(`恢复默认`)
+      //     this.queryDataReq()
+      //   } else {
+      //     this.showError(`恢复默认`, '请联系管理员 !')
+      //   }
+      // })
     },
     getDefaultTime () {
       let year = this.newTime.getFullYear()
@@ -174,6 +161,7 @@ export default {
       this.time.sumStart = this.dateAdd(year + '-3-31', -sumStart)// 每年3月份最后一个周日
       let sumEnd = this.getWeekByDay(year + '-10-31')
       this.time.sumEnd = this.dateAdd(year + '-10-31', -(sumEnd + 1))// 当年10月份最后一个周日之前的周六
+      console.log(this.time)
     },
     getWeekByDay (dayValue) { // dayValue=“2014-01-01”
       let day = new Date(Date.parse(dayValue.replace(/-/g, '/')))
