@@ -90,7 +90,7 @@
         </div>
       </template>
     </Edit-view>
-    <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm" @handleClose="handleDeleteClose"></Warning-box-view>
+    <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm"></Warning-box-view>
     <el-dialog :visible.sync="importData.visible" :close-on-click-modal="false" width="500px" append-to-body class="other-dialog plan-dialog" @close="closeImportDialog">
       <div slot="title" class="dialog-header">
         <img :src="require('@img/title_deco.png')" />

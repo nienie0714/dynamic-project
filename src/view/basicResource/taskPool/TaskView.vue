@@ -72,7 +72,7 @@
         <Warning-box-view :data="scopeTemp.item.deleteData" @handleConfirm="handleOprDeleteConfirm(scopeTemp)"></Warning-box-view>
       </template>
     </Edit-view>
-    <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm"></Warning-box-view>
+    <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm" @handleClose="handleDeleteClose"></Warning-box-view>
   </el-container>
 </template>
 

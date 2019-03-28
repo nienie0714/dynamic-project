@@ -572,15 +572,9 @@ export default {
           }
         } else if (item.type == 'dateRangePicker') {
           switch (title) {
-            case '新增': if (item.hasOwnProperty('defaultValue')) {
-                          this.$set(this.editData, item.key, item.defaultValue)
-                          this.$set(this.editData, item.key1, item.defaultValue[item.key1])
-                          this.$set(this.editData, item.key2, item.defaultValue[item.key2])
-                        } else {
-                          this.$set(this.editData, item.key, {})
-                          this.$set(this.editData, item.key1, null)
-                          this.$set(this.editData, item.key2, null)
-                        }
+            case '新增': this.$set(this.editData, item.key, {})
+                        this.$set(this.editData, item.key1, null)
+                        this.$set(this.editData, item.key2, null)
                         break
             case '编辑': this.$set(this.editData, item.key, item.value)
                         this.$set(this.editData, item.key1, item.value.start)

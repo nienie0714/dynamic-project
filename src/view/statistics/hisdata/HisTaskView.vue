@@ -69,7 +69,7 @@
         </div>
       </el-dialog>
     </div>
-    <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm"></Warning-box-view>
+    <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm" @handleClose="handleDeleteClose"></Warning-box-view>
   </el-container>
 </template>
 
