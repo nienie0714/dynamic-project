@@ -171,7 +171,7 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeTransDialog">关 闭</el-button>
-        <el-button type="primary" :loading="transData.loading" @click="handleTransConfirm()">确 定</el-button>
+        <el-button type="primary" :loading="transData.loading" @click="handleTransConfirm">确 定</el-button>
       </div>
     </el-dialog>
     <Warning-box-view :data="changeData" @handleConfirm="handleChange" @handleClose="closeChangeDialog"></Warning-box-view>
@@ -180,7 +180,7 @@
 </template>
 
 <script>
-import MenuRightView from '../../../components/common/MenuRight/MenuRightView'
+import MenuRightView from '../../../components/common/MenuRightView'
 import QueryView from '../../../components/common/QueryView'
 import WholeTableView from '../../../components/common/BaseWholeTableView'
 import ToolButtonView from '../../../components/common/ToolButtonView'
@@ -428,7 +428,6 @@ export default {
         oprWidth: 140,
         key: 'strPlanFlightId',
         multipleSelection: [],
-        tableRowClassName: this.tableRowClassName,
         headerNum: 2,
         dblClick: this.dblClick,
         leftFields: [
@@ -510,6 +509,7 @@ export default {
           {prop: 'vipFlag', label: 'VIP标识', type: 'tabs', hidden: false, optionKey: 'isYOrN', formatter: this.formatterFlag, width: 70, edit: true},
           {prop: 'confirmedFlag', label: '确认标识', hidden: false, optionKey: 'isYOrN', width: 70}
         ],
+        tempValue: '',
         editData: {
           url: '/planFlight/updateAircraftNoAndVipFlag',
           index: null,
@@ -924,7 +924,7 @@ export default {
       this.menuData.show = true
     },
     changeArcft (value, callback) {
-      queryAll('/basicdata/aircraft/detail', value).then(res => {
+      queryAll('/basicdata/aircraft/queryAll', {'aircraftNo': value}).then(res => {
         let aircraftType = {
           key: 'aircraftType',
           value: null
@@ -942,14 +942,14 @@ export default {
     },
     changeArcftType (value, callback) {
       let aircraft = {
-        key: 'aircraftNo',
+        key: 'aircraft',
         value: null
       }
       callback(aircraft)
       return null
     },
     changeStand (value, callback) {
-      queryAll('/airportResource/aircraftStand/detail', value).then(res => {
+      queryAll('/airportResource/aircraftStand/queryAll', {'standNo': value}).then(res => {
         let terminal = {
           key: 'terminal',
           value: null
@@ -960,7 +960,7 @@ export default {
             callback(terminal)
             return null
           } else {
-            this.showErrorCustom('该机位未设置航站楼', '请先为该机位设置航站楼 !')
+            this.showError('该机位未设置航站楼', '请先为该机位设置航站楼 !')
             callback(terminal)
             return null
           }
@@ -1006,7 +1006,7 @@ export default {
       this.confirmData.visible = false
       document.removeEventListener('keypress', this.handleConfirmPlan)
     },
-    handleChange (event) {
+    handleChange () {
       if ((event && event.keyCode == 13) || !event) {
         if (this.changeData.method) {
           this.changeData.method()
@@ -1153,7 +1153,6 @@ export default {
         this.confirmData.id = row.strPlanFlightId
         this.changeData.method = this.editConfirm
         this.changeData.visible = true
-        document.addEventListener('keypress', this.handleChange, false)
       } else {
         this.confirmData.id = null
         this.editConfirm(row)

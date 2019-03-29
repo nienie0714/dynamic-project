@@ -2,37 +2,36 @@
   <div v-if="menuData.show" ref="rightMenu" class="right-menu-pop" :style="`top: ${menuData.style.y}px; left: ${menuData.style.x}px;`">
     <ul>
       <li v-for="(item, index) in menuData.items" :key="index" :class="item.disabled ? 'disabled' : ''" @mouseenter="handleHover(index)" @mouseleave="handleRemoveHover"
-      @click="handleClick(item)">
+      @click="!item.hasOwnProperty('children')&&handleClick(item)">
         <span>{{ item.label }}</span>
         <i v-if="item.hasOwnProperty('children')" class="el-icon-caret-right"></i>
-        <template v-if="item.hasOwnProperty('children') && (hoverIndex == index)">
-          <div class="right-menu-pop" :style="childStyle">
-            <ul>
-              <li v-for="(child, idx) in item.children" :key="idx" :class="child.disabled ? 'disabled' : ''" @click.stop="handleClick(child)">
-                {{ child.label }}
-              </li>
-            </ul>
-          </div>
-        </template>
+        <child v-if="item.hasOwnProperty('children') && (hoverIndex == index)" :children="item.children" :data="menuData.data" :index="index" :childStyle="style"></child>
       </li>
     </ul>
   </div>
 </template>
 
 <script>
+import Child from './MenuRightChildView'
+
 export default {
   props: ['menuData'],
+  components: {
+    Child
+  },
   data () {
     return {
       hoverIndex: null,
-      childStyle: {
+      style: {
         left: 0,
         top: 0,
         width: 'max-content'
-      }
+      },
+      data: null
     }
   },
   mounted () {
+    this.data = this.menuData.data
     document.addEventListener('click', this.hiddenMenu)
   },
   destroyed () {
@@ -48,8 +47,8 @@ export default {
       } else {
         this.hoverIndex = index
         let width = this.$refs.rightMenu.offsetWidth
-        this.childStyle.left = width + 'px'
-        this.childStyle.top = 36 * index + 'px'
+        this.style.left = width + 'px'
+        this.style.top = 36 * index + 'px'
       }
     },
     handleRemoveHover () {
@@ -57,7 +56,9 @@ export default {
     },
     handleClick (item) {
       let method = item.method
-      method(this.menuData.data)
+      if (method) {
+        method(this.menuData.data)
+      }
     }
   }
 }
