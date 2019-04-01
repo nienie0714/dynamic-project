@@ -194,19 +194,15 @@ export default {
       }
     },
     formatterFlag (row) {
-      if (row.item[row.field.prop]) {
-        let arr = row.item[row.field.prop].split('|')
-        let valArr = []
-        _.forEach(arr, str => {
-          let obj = _.find(row.field.options, ['key', str])
-          if (obj) {
-            valArr.push(obj.value)
-          }
-        })
-        return valArr.join('|')
-      } else {
-        return ''
-      }
+      let arr = row.item[row.field.prop].split('|')
+      let valArr = []
+      _.forEach(arr, str => {
+        let obj = _.find(row.field.options, ['key', str])
+        if (obj) {
+          valArr.push(obj.value)
+        }
+      })
+      return valArr.join('|')
     },
     formatterHHMM (row) {
       return row.item[row.field.prop] ? row.item[row.field.prop].substr(0, 16) : ''
