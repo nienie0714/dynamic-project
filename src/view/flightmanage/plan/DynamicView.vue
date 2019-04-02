@@ -83,7 +83,7 @@
                       <div v-else class="tr-div-td">
                         <td v-for="field in scopeTemp.item.tabelFields" :key="field.prop" class="cont-tr-div" :width="field.width">
                           <div v-if="field.hasOwnProperty('propCn')">{{item[field.propCn]}}</div>
-                          <div v-else-if="field.type == 'datetime'">{{item[field.prop]?item[field.prop].substr(11, 5):''}}</div>
+                          <div v-else-if="field.type == 'datetime'">{{item[field.prop]}}</div>
                           <div v-else>{{item[field.prop]}}</div>
                         </td>
                         <td v-if="formData.title!='详情'" class="cont-tr-div table-opt-col">
@@ -264,7 +264,7 @@ export default {
         import: false
       },
       // 基础路径
-      baseUrl: '',
+      baseUrl: 'dynamicFlight/', // +save  delete  update
       queryUrl: 'dynamicFlight/queryDynamicFlightVOs',
       formData: {
         title: '新增',
@@ -281,34 +281,51 @@ export default {
           visible: false
         },
         formData: [
+          {key: 'dynamicFlightId', label: '编号', type: 'pInput', isHidden: true},
           {key: 'airline', label: '航空公司', type: 'select', filterable: true, getOptions: '/basicdata/airline/queryAll', itemKey: 'airlineIata', itemLabel: 'briefC'},
-          {key: 'flightNum', label: '航班号', type: 'input', toUpper: true, maxlength: 5},
-          {key: 'execDate', label: '执行日期', type: 'date', format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd'},
+          {key: 'flightNo', label: '航班号', type: 'input', toUpper: true, maxlength: 5},
+          {key: 'execDate', label: '执行日期', type: 'date', format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd', defaultValue: ''},
           {key: 'attr', label: '属性', type: 'tabs', tabsKey: 'attr', options: []},
           {key: 'task', label: '航班任务', type: 'select', filterable: true, getOptions: '/basicdata/flighttask/queryAll', itemKey: 'taskCode', itemLabel: 'briefC'},
           {key: 'inOutFlag', label: '进出标识', type: 'tabs', tabsKey: 'fltType', options: [], change: this.changeFlag},
-          {key: 'aircraftType', label: '机型', type: 'select', filterable: true, getOptions: '/basicdata/aircraftType/queryAll', itemKey: 'aircraftIcao', itemLabel: 'aircraftIcao', change: this.changeArcftType},
           {key: 'aircraftNo', label: '机号', type: 'select', filterable: true, getOptions: '/basicdata/aircraft/queryAll', itemKey: 'aircraftNo', itemLabel: 'aircraftNo', change: this.changeArcft},
+          {key: 'aircraftType', label: '机型', type: 'select', filterable: true, getOptions: '/basicdata/aircraftType/queryAll', itemKey: 'aircraftIcao', itemLabel: 'aircraftIcao', change: this.changeArcftType},
           {key: 'startStation', label: '始发站', type: 'select', filterable: true, itemKey: 'airportIata', itemLabel: 'briefC', holdRule: true},
           {key: 'terminalStation', label: '目的站', type: 'select', filterable: true, itemKey: 'airportIata', itemLabel: 'briefC', holdRule: true},
-          {key: 'prevStation', label: '前站', type: 'select', filterable: true, itemKey: 'airportIata', itemLabel: 'briefC', holdRule: true},
-          {key: 'nextStation', label: '下站', type: 'select', filterable: true, itemKey: 'airportIata', itemLabel: 'briefC', holdRule: true},
-          {key: 'dateRange', key1: 'sta', key2: 'std', label: '计划降落/起飞时间', label1: '计划降落时间', label2: '计划起飞时间', type: 'dateRangePicker', rangeMethod: this.dateRangeReg, dateType: 'datetime', required: 3, format: 'yyyy-MM-dd HH:mm', valueFormat: 'yyyy-MM-dd HH:mm', class: 'auto-width'},
-          {key: 'stand', label: '机位', type: 'select', filterable: true, getOptions: '/airportResource/aircraftStand/queryAll', itemKey: 'standNo', itemLabel: 'standNo', change: this.changeStand},
-          {key: 'terminal', label: '航站楼', type: 'select', filterable: true, getOptions: '/airportResource/terminal/queryAll', itemKey: 'terminalNo', itemLabel: 'name', change: this.changeTmn},
-          {key: 'agency', label: '代理', type: 'select', filterable: true, getOptions: '/basicdata/agency/queryAll', itemKey: 'code', itemLabel: 'briefC'},
-          // {key: 'season', label: '班期季节', type: 'tabs', tabsKey: 'scheduleSeason', options: []},
-          // {key: 'dateRange', key1: 'beginDate', key2: 'endDate', label: '计划日期区间', label1: '计划开始日期', label2: '计划结束日期', type: 'dateRangePicker', rangeMethod: this.dateRangeReg, dateType: 'date', required: 3, format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd', class: 'auto-width'},
+          // {key: 'prevStation', label: '前站', type: 'select', filterable: true, itemKey: 'airportIata', itemLabel: 'briefC', holdRule: true},
+          // {key: 'nextStation', label: '下站', type: 'select', filterable: true, itemKey: 'airportIata', itemLabel: 'briefC', holdRule: true},
+          {key: 'dateRange', key1: 'std', key2: 'sta', label: '计划起飞/降落时间', label1: '计划起飞时间', label2: '计划降落时间', type: 'dateRangePicker', rangeMethod: this.dateRangeReg, dateType: 'datetime', required: 3, format: 'yyyy-MM-dd HH:mm', valueFormat: 'yyyy-MM-dd HH:mm', class: 'auto-width'},
+          {key: 'dateRange1', key1: 'etd', key2: 'eta', label: '预计起飞/降落时间', label1: '预计起飞时间', label2: '预计降落时间', type: 'dateRangePicker', rangeMethod: this.dateRangeReg, dateType: 'datetime', format: 'yyyy-MM-dd HH:mm', valueFormat: 'yyyy-MM-dd HH:mm', class: 'auto-width'},
+          {key: 'dateRange2', key1: 'atd', key2: 'ata', label: '实际起飞/降落时间', label1: '实际起飞时间', label2: '实际降落时间', type: 'dateRangePicker', rangeMethod: this.dateRangeReg, dateType: 'datetime', format: 'yyyy-MM-dd HH:mm', valueFormat: 'yyyy-MM-dd HH:mm', class: 'auto-width'},
+          {key: 'progressStatus', label: '进展状态', type: 'select', filterable: true, getOptions: '/basicdata/flightstatus/queryAll', itemKey: 'statusCode', itemLabel: 'nameC', optionsQuery: {abnormalFlag: 'N'}},
+          {key: 'abnormalStatus', label: '异常状态', type: 'select', filterable: true, getOptions: '/basicdata/flightstatus/queryAll', itemKey: 'statusCode', itemLabel: 'nameC', optionsQuery: {abnormalFlag: 'Y'}},
+          {key: 'abnormalReason', label: '异常原因', type: 'select', filterable: true, getOptions: '/basicdata/abnormalreason/queryAll', itemKey: 'reasonCode', itemLabel: 'nameC'},
+          // {key: 'alternateStationCn', label: '备降站', type: 'select', filterable: true, getOptions: '/basicdata/aircraftType/queryAll', itemKey: 'aircraftIcao', itemLabel: 'aircraftIcao'},
+          // {key: 'alternateReason', label: '备降原因', type: 'select', filterable: true, getOptions: '/basicdata/aircraftType/queryAll', itemKey: 'aircraftIcao', itemLabel: 'aircraftIcao'},
           {key: 'vipFlag', label: 'VIP标识', type: 'tabs', tabsKey: 'isYOrN', options: []},
+          {key: 'stand', label: '停机位', type: 'select', filterable: true, getOptions: '/airportResource/aircraftStand/queryAll', itemKey: 'standNo', itemLabel: 'standNo', change: this.changeStand},
+          {key: 'terminal', label: '航站楼', type: 'select', filterable: true, getOptions: '/airportResource/terminal/queryAll', itemKey: 'terminalNo', itemLabel: 'name', change: this.changeTmn},
+          {key: 'runway', label: '跑道', type: 'select', filterable: true, getOptions: '/airportResource/runway/queryAll', itemKey: 'runwayNo', itemLabel: 'runwayNo'},
+          {key: 'agency', label: '代理', type: 'select', filterable: true, getOptions: '/basicdata/agency/queryAll', itemKey: 'code', itemLabel: 'briefC'},
+          {key: 'belt', label: '行李转盘', type: 'select', filterable: true, getOptions: '/airportResource/terminalResource/queryAll', itemKey: 'resourceId', itemLabel: 'resourceNo', optionsQuery: {resourceType: 'BELT'}},
+          {key: 'checkinRegion', label: '值机区域', type: 'select', filterable: true, getOptions: '/airportResource/terminalArea/queryAll', itemKey: 'terminalAreaNo', itemLabel: 'name'},
+          {key: 'checkinCounter', label: '值机柜台', type: 'select', filterable: true, getOptions: '/airportResource/terminalResource/queryAll', itemKey: 'resourceId', itemLabel: 'resourceNo', optionsQuery: {resourceType: 'COUNTER'}},
+          {key: 'gate', label: '登机口', type: 'select', filterable: true, getOptions: '/airportResource/gate/queryAll', itemKey: 'gateNo', itemLabel: 'gateNo'},
+          {key: 'chute', label: '行李滑槽', type: 'select', filterable: true, getOptions: '/airportResource/terminalResource/queryAll', itemKey: 'resourceId', itemLabel: 'resourceNo', optionsQuery: {resourceType: 'CHUTE'}},
+          {key: 'psgNumTotal', label: '旅客总数', type: 'number', position: 'right', step: 1, min: 0},
+          {key: 'psgNumAdult', label: '成人', type: 'number', position: 'right', step: 1, min: 0},
+          {key: 'psgNumBaby', label: '婴儿', type: 'number', position: 'right', step: 1, min: 0},
+          {key: 'lugNumTotal', label: '交运行李数', type: 'number', position: 'right', step: 1, min: 0},
+          {key: 'dateRange3', key1: 'lugTimeF', key2: 'lugTimeL', label: '首/末件行李上架时间', label1: '首件行李上架时间', label2: '末件行李上架时间', type: 'dateRangePicker', rangeMethod: this.dateRangeReg, dateType: 'datetime', format: 'yyyy-MM-dd HH:mm', valueFormat: 'yyyy-MM-dd HH:mm', class: 'auto-width'},
           {
-            key: 'lstPlanFlightStation',
+            key: 'lstDynamicFlightStation',
             label: '经停站',
             type: 'slot',
             class: 'whole-width',
             editIndex: null,
             editType: 0,
             getOptions: '/basicdata/airport/queryAll',
-            saveKey: 'lstPlanFlightStation',
+            saveKey: 'lstDynamicFlightStation',
             tabelFields: [
               {prop: 'station', label: '经停站', propObj: 'stationObj', propCn: 'stationCn', type: 'select', width: '140', valueKey: 'airportIata', itemKey: 'airportIata', itemLabel: 'briefC'},
               {prop: 'sta', label: '计划降落', type: 'datetime', iconClass: 'a', width: '155', format: 'yyyy-MM-dd HH:mm', valueFormat: 'yyyy-MM-dd HH:mm'},
@@ -328,8 +345,8 @@ export default {
             getOptions: '/basicdata/airline/queryAll',
             saveKey: 'lstShareFlightStation',
             tabelFields: [
-              {prop: 'airline', label: '航空公司', propObj: 'airlineObj', propCn: 'airlineCn', type: 'select', width: '210', valueKey: 'airlineIata', itemKey: 'airlineIata', itemLabel: 'briefC'},
-              {prop: 'flightNum', label: '航班号', width: '210', type: 'input', maxlength: 5, required: true}
+              {prop: 'airline', label: '航空公司', propObj: 'airlineObj', propCn: 'airlineCn', type: 'select', width: '250', valueKey: 'airlineIata', itemKey: 'airlineIata', itemLabel: 'briefC'},
+              {prop: 'flightNo', label: '航班号', width: '250', type: 'input', maxlength: 5, required: true}
             ],
             tempData: {},
             tempArr: []
@@ -339,7 +356,7 @@ export default {
           airline: [
             {required: true, message: '必填项', trigger: 'blur'}
           ],
-          flightNum: [
+          flightNo: [
             {required: true, message: '必填项', trigger: 'blur'},
             {validator: flightNumReg, trigger: 'blur'}
           ],
@@ -359,6 +376,9 @@ export default {
             {required: true, message: '必填项', trigger: 'blur'}
           ],
           inOutFlag: [
+            {required: true, message: '必填项', trigger: 'blur'}
+          ],
+          aircraftType: [
             {required: true, message: '必填项', trigger: 'blur'}
           ],
           aircraftNo: [
@@ -502,9 +522,9 @@ export default {
     this.options.fltType.options = this.$store.getters.getOption
   },
   methods: {
-    customQueryMethod () {
-      this.$set(this.queryData, 'remark', 'S')
-    },
+    // customQueryMethod () {
+    //   this.$set(this.queryData, 'remark', 'S')
+    // },
     dateRangeReg (rule, value, callback) {
       if (value.hasOwnProperty('start') && value.hasOwnProperty('end')) {
         if (value.start && value.end) {
@@ -512,7 +532,7 @@ export default {
             let same = this.formData.formData.filter((obj) => {
               return obj.key == rule.field
             })
-            callback(new Error(same.regInfo ? same.regInfo : '开始时间必须小于结束时间'))
+            callback(new Error(same.regInfo ? same.regInfo : '起飞时间必须小于降落时间'))
           }
         }
       }
@@ -651,7 +671,7 @@ export default {
     },
     saveOpr (scopeTemp, item, index) {
       let can = this.canSave(scopeTemp, item)
-      if (scopeTemp.item.key == 'lstPlanFlightStation') {
+      if (scopeTemp.item.key == 'lstDynamicFlightStation') {
         if (can) {
           if (item[scopeTemp.item.tabelFields[1].prop] < item[scopeTemp.item.tabelFields[2].prop]) {
             let result = this.oprSortkeyReg(item.sortkey)
@@ -904,8 +924,8 @@ export default {
           value: null
         }
         if (res.data.code == 0) {
-          if (res.data.data.length > 0) {
-            this.$set(terminal, 'value', res.data.data[0]['terminalNo'])
+          if (!_.isNull(res.data.data)) {
+            this.$set(terminal, 'value', res.data.data['terminalNo'])
             callback(terminal)
             return null
           } else {
@@ -1018,6 +1038,14 @@ export default {
               }
               if (this.formData.formData[i].hasOwnProperty('tabsKey') && this.formData.formData[i].tabsKey == 'isYOrN') {
                 this.formData.formData[i].defaultValue = 'N'
+              }
+              if (this.formData.formData[i].key == 'execDate') {
+                this.$delete(this.formData.formData[i], 'isDisabled')
+                this.$delete(this.formData.formData[i], 'disabled')
+                let year = this.newTime.getFullYear()
+                let month = this.newTime.getMonth() + 1
+                let day = this.newTime.getDate()
+                this.$set(this.formData.formData[i], 'defaultValue', year + '-' + month + '-' + day)
               }
             }
             this.formData.title = '新增'
