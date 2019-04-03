@@ -266,13 +266,15 @@ export default {
       // 基础路径
       baseUrl: 'dynamicFlight/', // +save  delete  update
       queryUrl: 'dynamicFlight/queryDynamicFlightVOs',
+      // addDiaIsHidden: ['airline', 'flightNo', 'attr', 'task'],
+      addDiaIsHidden: [],
       formData: {
         title: '新增',
         visible: false,
         inline: true,
         width: '730px',
         className: 'twiceCol',
-        key: 'scheduleFlightId',
+        key: 'dynamicFlightId',
         edit: {
           url: '/planFlight/queryPlanFlightDetail',
           type: 'A',
@@ -428,7 +430,7 @@ export default {
         type: 'selection',
         headerStyle: '',
         oprWidth: 100,
-        key: 'afid',
+        key: 'dynamicFlightId',
         multipleSelection: [],
         tableRowClassName: this.tableRowClassName,
         headerNum: 1,
@@ -444,8 +446,8 @@ export default {
         ],
         centerFields: [
           {prop: 'shareFlights', label: '共享航班', width: 120, fixed: false, hidden: false, overflow: true},
-          {prop: 'startStationCn', label: '始发站', width: 120, fixed: false, hidden: false, overflow: true},
-          {prop: 'terminalStationCn', label: '目的站', width: 120, fixed: false, hidden: false, overflow: true},
+          {prop: 'startStationCn', label: '始发站', width: 120, fixed: false, hidden: false},
+          {prop: 'terminalStationCn', label: '目的站', width: 120, fixed: false, hidden: false},
           {prop: 'routeCn', label: '航线', width: 300, fixed: true, hidden: false, overflow: true},
           {prop: 'std', label: '计划起飞', width: 80, fixed: false, hidden: false, formatter: this.formatterMin},
           {prop: 'etd', label: '预计起飞', width: 80, fixed: false, hidden: false, formatter: this.formatterMin},
@@ -1048,6 +1050,9 @@ export default {
                 let day = this.newTime.getDate()
                 this.$set(this.formData.formData[i], 'defaultValue', year + '-' + month + '-' + day)
               }
+              if (this.addDiaIsHidden.includes(this.formData.formData[i].key)) {
+                this.formData.formData[i].isHidden = true
+              }
             }
             this.formData.title = '新增'
             this.formData.visible = true
@@ -1068,6 +1073,11 @@ export default {
         this.formData.edit.row = JSON.parse(JSON.stringify(row))
         this.formData.edit.visible = true
       }
+      for (let i = 0; i < this.formData.formData.length; i++) {
+        if (this.addDiaIsHidden.includes(this.formData.formData[i].key)) {
+          delete this.formData.formData[i].isHidden
+        }
+      }
     },
     // 编辑
     handleEdit (row) {
@@ -1080,6 +1090,11 @@ export default {
       } else {
         this.confirmData.id = null
         this.editConfirm(row)
+      }
+      for (let i = 0; i < this.formData.formData.length; i++) {
+        if (this.addDiaIsHidden.includes(this.formData.formData[i].key)) {
+          delete this.formData.formData[i].isHidden
+        }
       }
     },
     editConfirm (row) {
