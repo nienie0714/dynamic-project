@@ -498,7 +498,7 @@
             (taskButtonData.data.beginTimeA&&!taskButtonData.data.endTimeA&&taskButtonData.timeData.endTime&&taskButtonData.timeData.startTime<=taskButtonData.timeData.endTime))">{{taskButtonData.outLoading?'确定中':'确 定'}}</el-button>
           </el-tooltip>
         </div>
-        <Warning-box-view :data="taskButtonData" @handleConfirm="handleCancelButtonSave"></Warning-box-view>
+        <Warning-box-view :data="taskButtonData" @handleConfirm="handleCancelButtonSave" @handleClose="handleTaskButtonClose"></Warning-box-view>
         <!-- <el-dialog :visible.sync="taskButtonData.visible" :close-on-click-modal="false" width="660px" append-to-body class="other-dialog dialog-cancel-warn">
           <div slot="title" class="dialog-header">
             <img src="../../assets/img/title_deco.png" />
