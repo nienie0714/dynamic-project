@@ -161,6 +161,121 @@
         <el-button type="primary" :loading="transData.loading" @click="handleTransConfirm()">确 定</el-button>
       </div>
     </el-dialog>
+    <el-dialog :visible.sync="menuData.statusData.visible" :close-on-click-modal="false" width="800px" append-to-body class="other-dialog menu-status-dialog ntwiceCol" @close="closeStatusDialog">
+      <div slot="title" class="dialog-header">
+        <img :src="require('@img/title_deco.png')" />
+        <span class="header-title">{{menuData.statusData.title}}</span>
+      </div>
+      <div class="dialog-body">
+        <el-form :model="menuData.statusData.data" :rules="menuData.statusData.rules" label-width="100px" label-position="left" ref="ruleForm" size="mini" class="edit-form">
+          <div>
+            <el-form-item label="航空公司">
+              <!-- 不可编辑框 -->
+              <!-- <el-input type="input" v-model.trim="menuData.statusData.data.dynamicFlightId" disabled></el-input> -->
+              <el-input type="input" v-model.trim="menuData.statusData.data.airlineCn" disabled></el-input>
+            </el-form-item>
+          </div>
+          <div>
+            <el-form-item label="航班号">
+              <el-input type="input" v-model.trim="menuData.statusData.data.flightNo" disabled></el-input>
+            </el-form-item>
+          </div>
+          <div v-if="!['发布前站起飞', '发布航班到达'].includes(menuData.statusData.title)">
+            <el-form-item label="机型">
+              <el-input type="input" v-model.trim="menuData.statusData.data.aircraftType" disabled></el-input>
+            </el-form-item>
+          </div>
+          <div>
+            <el-form-item label="机号">
+              <el-input type="input" v-model.trim="menuData.statusData.data.aircraftNo" disabled></el-input>
+            </el-form-item>
+          </div>
+          <div>
+            <el-form-item label="机位" prop="stand">
+              <!-- <el-input type="input" v-model.trim="menuData.statusData.data.stand" disabled></el-input> -->
+              <el-select v-model="menuData.statusData.data.stand" placeholder="请选择机位" clearable :disabled="['发布航班到达', '发布开始值机'].includes(menuData.statusData.title)">
+                <el-option v-for="option in standList" :key="option.standNo" :label="option.standNo" :value="option.standNo">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </div>
+          <!-- 1start 发布前站起飞  发布航班到达-->
+          <div v-if="['发布前站起飞', '发布航班到达', '发布起飞'].includes(menuData.statusData.title)">
+            <el-form-item label="前方航站">
+              <el-input type="input" v-model.trim="menuData.statusData.data.nextStation" disabled></el-input>
+            </el-form-item>
+          </div>
+          <div v-if="['发布前站起飞'].includes(menuData.statusData.title)">
+            <el-form-item label="计划到达时间">
+              <el-date-picker v-model="menuData.statusData.data.sta" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss" disabled></el-date-picker>
+            </el-form-item>
+          </div>
+          <div v-if="['发布前站起飞'].includes(menuData.statusData.title)">
+            <el-form-item label="预计到达时间">
+              <el-date-picker v-model="menuData.statusData.data.eta" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss" disabled></el-date-picker>
+            </el-form-item>
+          </div>
+          <div v-if="['发布前站起飞'].includes(menuData.statusData.title)">
+            <el-form-item label="前方实际起飞时间">
+              <el-date-picker v-model="menuData.statusData.data.prevDepTimeA" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
+            </el-form-item>
+          </div>
+          <!-- end 发布前站起飞 -->
+          <!-- 2start 发布航班到达-->
+          <div v-if="['发布航班到达'].includes(menuData.statusData.title)">
+            <el-form-item label="前方实际起飞时间">
+              <el-date-picker v-model="menuData.statusData.data.prevDepTimeA" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss" disabled></el-date-picker>
+            </el-form-item>
+          </div>
+          <div v-if="['发布航班到达'].includes(menuData.statusData.title)">
+            <el-form-item label="实际到达时间">
+              <el-date-picker v-model="menuData.statusData.data.ata" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
+            </el-form-item>
+          </div>
+          <!-- end 发布航班到达 -->
+          <!-- 3start 发布开始值机-->
+          <div v-if="['发布开始值机', '发布值机截止', '发布开始登机', '发布催促登机'].includes(menuData.statusData.title)">
+            <el-form-item label="值机区域">
+              <el-input type="input" v-model.trim="menuData.statusData.data.checkinRegion" disabled></el-input>
+            </el-form-item>
+          </div>
+          <div v-if="['发布开始值机', '发布值机截止', '发布开始登机', '发布催促登机'].includes(menuData.statusData.title)">
+            <el-form-item label="值机柜台">
+              <el-input type="input" v-model.trim="menuData.statusData.data.checkinCounter" disabled></el-input>
+            </el-form-item>
+          </div>
+          <!-- end 发布开始值机 -->
+          <!-- 3start 发布开始值机-->
+          <div v-if="['发布催促登机', '发布登机结束'].includes(menuData.statusData.title)">
+            <el-form-item label="计划起飞时间">
+              <el-date-picker v-model="menuData.statusData.data.std" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss" disabled></el-date-picker>
+            </el-form-item>
+          </div>
+          <div v-if="['发布催促登机', '发布登机结束'].includes(menuData.statusData.title)">
+            <el-form-item label="预计起飞时间">
+              <el-date-picker v-model="menuData.statusData.data.etd" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss" disabled></el-date-picker>
+            </el-form-item>
+          </div>
+          <!-- 7start 发布起飞-->
+          <div v-if="['发布起飞'].includes(menuData.statusData.title)">
+            <el-form-item label="实际到达时间">
+              <el-date-picker v-model="menuData.statusData.data.ata" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss" disabled></el-date-picker>
+            </el-form-item>
+          </div>
+          <div v-if="['发布起飞'].includes(menuData.statusData.title)">
+            <el-form-item label="实际起飞时间">
+              <el-date-picker v-model="menuData.statusData.data.atd" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
+            </el-form-item>
+          </div>
+          <!-- end 发布起飞 -->
+        </el-form>
+      </div>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="closeStatusDialog">关 闭</el-button>
+        <el-button type="primary" :loading="menuData.statusData.loading" @click="handleStatusConfirm()">确 定</el-button>
+      </div>
+    </el-dialog>
+    <Warning-box-view :data="revokeData" @handleConfirm="openStatusDialog" @handleClose="closeStatusDialog"></Warning-box-view>
     <Warning-box-view :data="changeData" @handleConfirm="handleChange" @handleClose="closeChangeDialog"></Warning-box-view>
     <Warning-box-view :data="confirmData" @handleConfirm="handleConfirmPlan" @handleClose="handleConfirmPlanClose"></Warning-box-view>
   </el-container>
@@ -177,6 +292,7 @@ import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import wholeTableMixin from '../../../components/mixin/wholeTableMixin'
 import basicMsgMixin from '../../../components/mixin/basicMsgMixin'
 import {flightNumReg} from '../../../util/rules.js'
+import {flattenDeep} from '../../../util/util.js'
 import {postAllData, queryAll, upload, download, postData} from '../../../api/base.js'
 import _ from 'lodash'
 
@@ -200,14 +316,736 @@ export default {
           y: 0
         },
         data: {},
+        statusData: {
+          loading: false,
+          visible: false,
+          title: '',
+          url: '',
+          data: {
+            dynamicFlightId: ''
+          },
+          rules: {
+            stand: [
+              { required: true, message: '请选择机位', trigger: 'blur' }
+            ]
+          }
+        },
         items: [
         {
-          label: '确认',
+          index: '0',
+          label: '发布正常状态',
           disabled: false,
-          method: this.confirmPlan
+          children: [
+            {
+              index: '0-0',
+              label: '发布',
+              disabled: false,
+              children: [
+                {
+                  index: '0-0-0',
+                  label: '前站起飞',
+                  disabled: false,
+                  method: this.openStatusDialog,
+                  data: {
+                    title: '发布前站起飞',
+                    url: '/dynamicFlight/publish',
+                    type: 'publish',
+                    inOutFlag: 'A',
+                    key: 'progressStatus',
+                    value: 'ONR'
+                  },
+                  reg: [
+                    {
+                      key: 'progressStatus',
+                      value: null
+                    }
+                  ]
+                },
+                {
+                  index: '0-0-1',
+                  label: '航班到达',
+                  disabled: false,
+                  method: this.openStatusDialog,
+                  data: {
+                    title: '发布航班到达',
+                    url: '/dynamicFlight/publish',
+                    type: 'publish',
+                    inOutFlag: 'A',
+                    key: 'progressStatus',
+                    value: 'ARR'
+                  },
+                  reg: [
+                    {
+                      key: 'progressStatus',
+                      value: 'ONR'
+                    }
+                  ]
+                },
+                {
+                  index: '0-0-2',
+                  label: '开始值机',
+                  disabled: false,
+                  method: this.openStatusDialog,
+                  data: {
+                    title: '发布开始值机',
+                    url: '/dynamicFlight/publish',
+                    type: 'publish',
+                    inOutFlag: 'D',
+                    key: 'progressStatus',
+                    value: 'CKI'
+                  },
+                  reg: [
+                    {
+                      key: 'progressStatus',
+                      value: 'ARR'
+                    }
+                  ]
+                },
+                {
+                  index: '0-0-3',
+                  label: '值机截止',
+                  disabled: false,
+                  method: this.openStatusDialog,
+                  data: {
+                    title: '发布值机截止',
+                    url: '/dynamicFlight/publish',
+                    type: 'publish',
+                    inOutFlag: 'D',
+                    key: 'progressStatus',
+                    value: 'CKO'
+                  },
+                  reg: [
+                    {
+                      key: 'progressStatus',
+                      value: 'CKI'
+                    }
+                  ]
+                },
+                {
+                  index: '0-0-4',
+                  label: '开始登机',
+                  disabled: false,
+                  method: this.openStatusDialog,
+                  data: {
+                    title: '发布开始登机',
+                    url: '/dynamicFlight/publish',
+                    type: 'publish',
+                    inOutFlag: 'D',
+                    key: 'progressStatus',
+                    value: 'BOR'
+                  },
+                  reg: [
+                    {
+                      key: 'progressStatus',
+                      value: 'CKO'
+                    }
+                  ]
+                },
+                {
+                  index: '0-0-5',
+                  label: '催促登机',
+                  disabled: false,
+                  method: this.openStatusDialog,
+                  data: {
+                    title: '发布催促登机',
+                    url: '/dynamicFlight/publish',
+                    type: 'publish',
+                    inOutFlag: 'D',
+                    key: 'progressStatus',
+                    value: 'LBD'
+                  },
+                  reg: [
+                    {
+                      key: 'progressStatus',
+                      value: 'BOR'
+                    }
+                  ]
+                },
+                {
+                  index: '0-0-6',
+                  label: '登机结束',
+                  disabled: false,
+                  method: this.openStatusDialog,
+                  data: {
+                    title: '发布登机结束',
+                    url: '/dynamicFlight/publish',
+                    type: 'publish',
+                    inOutFlag: 'D',
+                    key: 'progressStatus',
+                    value: 'POK'
+                  },
+                  reg: [
+                    {
+                      key: 'progressStatus',
+                      value: 'LBD'
+                    }
+                  ]
+                },
+                {
+                  index: '0-0-7',
+                  label: '起飞',
+                  disabled: false,
+                  method: this.openStatusDialog,
+                  data: {
+                    title: '发布起飞',
+                    url: '/dynamicFlight/publish',
+                    type: 'publish',
+                    inOutFlag: 'D',
+                    key: 'progressStatus',
+                    value: 'DEP'
+                  },
+                  reg: [
+                    {
+                      key: 'progressStatus',
+                      value: 'POK'
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              index: '0-1',
+              label: '撤销', // todo:当前是什么就能撤销什么
+              disabled: false,
+              children: [
+                {
+                  index: '0-1-0',
+                  label: '前站起飞',
+                  disabled: false,
+                  method: this.openStatusDialog,
+                  data: {
+                    title: '撤销前站起飞',
+                    url: '/dynamicFlight/publish',
+                    type: 'revoke',
+                    inOutFlag: 'A',
+                    key: 'abnormalStatus',
+                    value: 'ONR'
+                  },
+                  reg: [
+                    {
+                      key: 'progressStatus',
+                      value: 'ONR'
+                    }
+                  ]
+                },
+                {
+                  index: '0-1-1',
+                  label: '航班到达',
+                  disabled: false,
+                  method: this.openStatusDialog,
+                  data: {
+                    title: '撤销航班到达',
+                    url: '/dynamicFlight/publish',
+                    type: 'revoke',
+                    inOutFlag: 'A',
+                    key: 'abnormalStatus',
+                    value: 'ARR'
+                  },
+                  reg: [
+                    {
+                      key: 'progressStatus',
+                      value: 'ARR'
+                    }
+                  ]
+                },
+                {
+                  index: '0-1-2',
+                  label: '开始值机',
+                  disabled: false,
+                  method: this.openStatusDialog,
+                  data: {
+                    title: '撤销开始值机',
+                    url: '/dynamicFlight/publish',
+                    type: 'revoke',
+                    inOutFlag: 'D',
+                    key: 'abnormalStatus',
+                    value: 'CKI'
+                  },
+                  reg: [
+                    {
+                      key: 'progressStatus',
+                      value: 'CKI'
+                    }
+                  ]
+                },
+                {
+                  index: '0-1-3',
+                  label: '值机截止',
+                  disabled: false,
+                  method: this.openStatusDialog,
+                  data: {
+                    title: '撤销值机截止',
+                    url: '/dynamicFlight/publish',
+                    type: 'revoke',
+                    inOutFlag: 'D',
+                    key: 'abnormalStatus',
+                    value: 'CKO'
+                  },
+                  reg: [
+                    {
+                      key: 'progressStatus',
+                      value: 'CKO'
+                    }
+                  ]
+                },
+                {
+                  index: '0-1-4',
+                  label: '开始登机',
+                  disabled: false,
+                  method: this.openStatusDialog,
+                  data: {
+                    title: '撤销开始登机',
+                    url: '/dynamicFlight/publish',
+                    type: 'revoke',
+                    inOutFlag: 'D',
+                    key: 'abnormalStatus',
+                    value: 'BOR'
+                  },
+                  reg: [
+                    {
+                      key: 'progressStatus',
+                      value: 'BOR'
+                    }
+                  ]
+                },
+                {
+                  index: '0-1-5',
+                  label: '催促登机',
+                  disabled: false,
+                  method: this.openStatusDialog,
+                  data: {
+                    title: '撤销催促登机',
+                    url: '/dynamicFlight/publish',
+                    type: 'revoke',
+                    inOutFlag: 'D',
+                    key: 'abnormalStatus',
+                    value: 'LBD'
+                  },
+                  reg: [
+                    {
+                      key: 'progressStatus',
+                      value: 'LBD'
+                    }
+                  ]
+                },
+                {
+                  index: '0-1-6',
+                  label: '登机结束',
+                  disabled: false,
+                  method: this.openStatusDialog,
+                  data: {
+                    title: '撤销登机结束',
+                    url: '/dynamicFlight/publish',
+                    type: 'revoke',
+                    inOutFlag: 'D',
+                    key: 'abnormalStatus',
+                    value: 'POK'
+                  },
+                  reg: [
+                    {
+                      key: 'progressStatus',
+                      value: 'POK'
+                    }
+                  ]
+                },
+                {
+                  index: '0-1-7',
+                  label: '起飞',
+                  disabled: false,
+                  method: this.openStatusDialog,
+                  data: {
+                    title: '撤销起飞',
+                    url: '/dynamicFlight/publish',
+                    type: 'revoke',
+                    inOutFlag: 'D',
+                    key: 'abnormalStatus',
+                    value: 'DEP'
+                  },
+                  reg: [
+                    {
+                      key: 'progressStatus',
+                      value: 'DEP'
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          index: '1',
+          label: '发布异常状态',
+          disabled: false,
+          children: [
+            {
+              index: '1-0',
+              label: '发布',
+              disabled: false,
+              children: [
+                {
+                  index: '1-0-0',
+                  label: '航班延误', // DLY
+                  disabled: false,
+                  method: this.confirmPlan,
+                  data: {
+                    title: '发布航班延误',
+                    url: '/dynamicFlight/publish',
+                    type: 'publish',
+                    inOutFlag: 'A',
+                    key: 'abnormalStatus',
+                    value: 'DLY'
+                  }
+                },
+                {
+                  index: '1-0-1',
+                  label: '航班取消', // CAN  前起和起飞 不能 航班取消
+                  disabled: false,
+                  method: this.confirmPlan,
+                  data: {
+                    title: '发布航班取消',
+                    url: '/dynamicFlight/publish',
+                    type: 'publish',
+                    inOutFlag: 'A',
+                    key: 'abnormalStatus',
+                    value: 'CAN'
+                  },
+                  reg: [
+                    {
+                      key: 'progressStatus',
+                      value: 'ONR'
+                    }
+                  ]
+                },
+                {
+                  index: '1-0-2',
+                  label: '航班备降', // ALT
+                  disabled: false,
+                  method: this.confirmPlan,
+                  data: {
+                    title: '发布航班备降',
+                    url: '/dynamicFlight/publish',
+                    type: 'publish',
+                    inOutFlag: 'A',
+                    key: 'abnormalStatus',
+                    value: 'ALT'
+                  }
+                },
+                {
+                  index: '1-0-3',
+                  label: '航班返航', // RTN
+                  disabled: false,
+                  method: this.confirmPlan,
+                  data: {
+                    title: '发布航班返航',
+                    url: '/dynamicFlight/publish',
+                    type: 'publish',
+                    inOutFlag: 'A',
+                    key: 'abnormalStatus',
+                    value: 'RTN'
+                  }
+                },
+                {
+                  index: '1-0-4',
+                  label: '航班滑回', // BAK
+                  disabled: false,
+                  method: this.confirmPlan,
+                  data: {
+                    title: '发布航班滑回',
+                    url: '/dynamicFlight/publish',
+                    type: 'publish',
+                    inOutFlag: 'A',
+                    key: 'abnormalStatus',
+                    value: 'BAK'
+                  }
+                }
+              ]
+            },
+            {
+              index: '1-1',
+              label: '撤销',
+              disabled: false,
+              children: [
+                {
+                  index: '1-1-0',
+                  label: '航班延误',
+                  disabled: false,
+                  method: this.confirmPlan,
+                  data: {
+                    title: '撤销航班延误',
+                    url: '/dynamicFlight/publish',
+                    type: 'revoke',
+                    inOutFlag: 'A',
+                    key: 'abnormalStatus',
+                    value: 'DLY'
+                  },
+                  reg: [
+                    {
+                      key: 'abnormalStatus',
+                      value: 'DLY'
+                    }
+                  ]
+                },
+                {
+                  index: '1-1-1',
+                  label: '航班取消',
+                  disabled: false,
+                  method: this.confirmPlan,
+                  data: {
+                    title: '撤销航班取消',
+                    url: '/dynamicFlight/publish',
+                    type: 'revoke',
+                    inOutFlag: 'A',
+                    key: 'abnormalStatus',
+                    value: 'CAN'
+                  },
+                  reg: [
+                    {
+                      key: 'abnormalStatus',
+                      value: 'CAN'
+                    }
+                  ]
+                },
+                {
+                  index: '1-1-2',
+                  label: '航班备降',
+                  disabled: false,
+                  method: this.confirmPlan,
+                  data: {
+                    title: '撤销航班取消',
+                    url: '/dynamicFlight/publish',
+                    type: 'revoke',
+                    inOutFlag: 'A',
+                    key: 'abnormalStatus',
+                    value: 'ALT'
+                  },
+                  reg: [
+                    {
+                      key: 'abnormalStatus',
+                      value: 'ALT'
+                    }
+                  ]
+                },
+                {
+                  index: '1-1-3',
+                  label: '航班返航',
+                  disabled: false,
+                  method: this.confirmPlan,
+                  data: {
+                    title: '撤销航班返航',
+                    url: '/dynamicFlight/publish',
+                    type: 'revoke',
+                    inOutFlag: 'A',
+                    key: 'abnormalStatus',
+                    value: 'RTN'
+                  }
+                },
+                {
+                  index: '1-1-4',
+                  label: '航班滑回',
+                  disabled: false,
+                  method: this.confirmPlan,
+                  data: {
+                    title: '撤销航班滑回',
+                    url: '/dynamicFlight/publish',
+                    type: 'revoke',
+                    inOutFlag: 'A',
+                    key: 'abnormalStatus',
+                    value: 'BAK'
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          index: '2',
+          label: '其他操作',
+          disabled: false,
+          children: [
+            {
+              index: '2-0',
+              label: '允许登机',
+              disabled: false,
+              method: this.confirmPlan
+            },
+            {
+              index: '2-1',
+              label: '航班拼接',
+              disabled: false,
+              method: this.confirmPlan
+            },
+            {
+              index: '2-2',
+              label: '断开拼接',
+              disabled: false,
+              method: this.confirmPlan
+            },
+            {
+              index: '2-3',
+              label: '机位回收',
+              disabled: false,
+              children: [
+                {
+                  index: '2-3-0',
+                  label: '进港',
+                  disabled: false,
+                  method: this.confirmPlan
+                },
+                {
+                  index: '2-3-1',
+                  label: '出港',
+                  disabled: false,
+                  method: this.confirmPlan
+                }
+              ]
+            },
+            {
+              index: '2-4',
+              label: '航班结束',
+              disabled: false,
+              children: [
+                {
+                  index: '2-4-0',
+                  label: '进港',
+                  disabled: false,
+                  method: this.openStatusDialog,
+                  data: {
+                    title: '发布航班结束',
+                    url: '/dynamicFlight/publish',
+                    type: 'fltEnd',
+                    inOutFlag: 'A'
+                    // key: 'progressStatus',
+                    // value: 'ONR'
+                  }
+                },
+                {
+                  index: '2-4-1',
+                  label: '出港',
+                  disabled: false,
+                  method: this.openStatusDialog,
+                  data: {
+                    title: '发布航班结束',
+                    url: '/dynamicFlight/publish',
+                    type: 'fltEnd',
+                    inOutFlag: 'D'
+                  }
+                }
+              ]
+            },
+            {
+              index: '2-5',
+              label: '取消航班结束',
+              disabled: false,
+              children: [
+                {
+                  index: '2-5-0',
+                  label: '进港',
+                  disabled: false,
+                  method: this.openStatusDialog,
+                  data: {
+                    title: '取消航班结束',
+                    url: '/dynamicFlight/publish',
+                    type: 'revokeFltEnd',
+                    inOutFlag: 'A'
+                  }
+                },
+                {
+                  index: '2-5-1',
+                  label: '出港',
+                  disabled: false,
+                  method: this.openStatusDialog,
+                  data: {
+                    title: '取消航班结束',
+                    url: '/dynamicFlight/publish',
+                    type: 'revokeFltEnd',
+                    inOutFlag: 'D'
+                  }
+                }
+              ]
+            },
+            {
+              index: '2-6',
+              label: '发布VIP',
+              disabled: false,
+              method: this.confirmPlan
+            },
+            {
+              index: '2-7',
+              label: '取消VIP',
+              disabled: false,
+              method: this.confirmPlan
+            }
+          ]
+        },
+        {
+          index: '3',
+          label: '资源分配',
+          disabled: false,
+          children: [
+            {
+              label: '值机柜台',
+              disabled: false,
+              method: this.confirmPlan
+            },
+            {
+              label: '登机口',
+              disabled: false,
+              method: this.confirmPlan
+            },
+            {
+              label: '机位分配',
+              disabled: false,
+              children: [
+                {
+                  label: '进港',
+                  disabled: false,
+                  method: this.confirmPlan
+                },
+                {
+                  label: '出港',
+                  disabled: false,
+                  method: this.confirmPlan
+                }
+              ]
+            },
+            {
+              label: '行李转盘',
+              disabled: false,
+              method: this.confirmPlan
+            },
+            {
+              label: '清除资源分配',
+              disabled: false,
+              children: [
+                {
+                  label: '进港',
+                  disabled: false,
+                  method: this.confirmPlan
+                },
+                {
+                  label: '出港',
+                  disabled: false,
+                  method: this.confirmPlan
+                }
+              ]
+            }
+          ]
         }
       ]
       },
+      revokeData: {
+        title: '警告',
+        info: '',
+        width: '500px',
+        class: ' dialog-delete-warn',
+        warning: ' ',
+        visible: false,
+        loading: false,
+        method: null,
+        index: null,
+        row: null
+      },
+      standList: [],
       jointUrl: '/planFlight/jointPlanFlight',
       unJointUrl: '/planFlight/breakJointPlanFlight',
       changeData: {
@@ -466,7 +1304,7 @@ export default {
           {prop: 'abnormalReasonCn', label: '异常原因', width: 180, fixed: false, hidden: false},
           {prop: 'alternateStationCn', label: '备降站', width: 180, fixed: false, hidden: false},
           {prop: 'alternateReason', label: '备降原因', width: 180, fixed: false, hidden: false},
-           {prop: 'vipFlag', label: 'VIP标识', type: 'tabs', hidden: false, optionKey: 'isYOrN', formatter: this.formatterFlag, width: 70, edit: true},
+          {prop: 'vipFlag', label: 'VIP标识', type: 'tabs', hidden: false, optionKey: 'isYOrN', formatter: this.formatterFlag, width: 70, edit: true},
           {prop: 'agency', label: '代理', width: 120, fixed: false, hidden: false},
           {prop: 'runway', label: '跑道', width: 120, fixed: false, hidden: false},
           {prop: 'belt', label: '转盘', width: 80, fixed: false, hidden: false},
@@ -1106,6 +1944,18 @@ export default {
         this.setEditInfo(JSON.parse(JSON.stringify(row)))
       } else {
         this.formData.edit.row = JSON.parse(JSON.stringify(row))
+        for (let i = 0; i < this.formData.formData.length; i++) {
+          if (this.formData.formData[i].type == 'dateRangePicker') {
+            let data = {}
+            this.$set(data, this.formData.formData[i].key1, null)
+            this.$set(data, this.formData.formData[i].key2, null)
+            this.$set(this.formData.formData[i], 'value', data)
+            this.formData.formData[i].value[this.formData.formData[i].key1] = this.formData.edit.row[this.formData.formData[i].key1]
+            this.formData.formData[i].value[this.formData.formData[i].key2] = this.formData.edit.row[this.formData.formData[i].key2]
+          } else {
+            this.$set(this.formData.formData[i], 'value', this.formData.edit.row[this.formData.formData[i].key])
+          }
+        }
         this.formData.edit.visible = true
       }
     },
@@ -1123,6 +1973,172 @@ export default {
     },
     customMethod () {
       this.confirmPlan()
+    },
+    changeMenuDisabled (data) {
+      // debugger
+      let items = []
+      flattenDeep(this.menuData.items, items, 0)
+      if (data.hasOwnProperty('dynamicFlightId')) {
+        _.forEach(items, (obj) => {
+          console.log(obj)
+          if (obj.hasOwnProperty('reg')) {
+            let result = true
+            for (let i = 0; i < obj.reg.length; i++) {
+              if (data[obj.reg[i].key] == obj.reg[i].value) {
+                // reg匹配上就是可选的，没匹配就是不可选的，不写reg是直接可选
+                result = false
+              } else {
+                result = true
+                break
+              }
+            }
+            let arr = obj.index.split('-')
+            let that = this
+            if (arr.length == 1) {
+              this.$set(that.menuData.items[arr[0]], 'disabled', result)
+            } else if (arr.length == 2) {
+              this.$set(that.menuData.items[arr[0]].children[arr[1]], 'disabled', result)
+            } else if (arr.length == 3) {
+              this.$set(that.menuData.items[arr[0]].children[arr[1]].children[arr[2]], 'disabled', result)
+            }
+          }
+        })
+      } else {
+        this.$set(this.menuData.items[0], 'disabled', false)
+      }
+    },
+    // publishStatus (data, item) {
+    //   console.log(data)
+    //   console.log(item)
+    // },
+    openStatusDialog (data, item) {
+      let statusData = this.menuData.statusData
+      statusData.title = item.title
+      statusData.url = item.url
+      this.$set(statusData.data, 'type', item.type)
+      // 发布弹框字段回显
+      this.$set(statusData.data, 'dynamicFlightId', data.dynamicFlightId)
+      this.$set(statusData.data, 'airline', data.airline)
+      this.$set(statusData.data, 'airlineCn', data.airlineCn)
+      this.$set(statusData.data, 'flightNo', data.flightNo)
+      this.$set(statusData.data, 'aircraftNo', data.aircraftNo)
+      // todo: stand 应该是下拉框
+      this.$set(statusData.data, 'stand', data.stand)
+      this.$set(statusData.data, 'inOutFlag', item.tinOutFlagype)
+      this.$set(statusData.data, item.key, item.value)
+
+      queryAll('/airportResource/aircraftStand/queryAll', {}).then(res => {
+        this.standList = res.data.data
+      })
+      // 发布前站起飞
+      if (item.type == 'publish' && item.value == 'ONR') {
+        // todo: ?前方到站是不是就是下站，前方航站不可填，是空的怎么办
+        this.$set(statusData.data, 'nextStation', data.nextStation)
+        this.$set(statusData.data, 'sta', data.sta) // 计划到达
+        this.$set(statusData.data, 'eta', data.eta) // 预计到达
+        this.$set(statusData.data, 'prevDepTimeA', this.newTime) // 前方实际起飞时间
+      } else if (item.type == 'publish' && item.value == 'ARR') {
+        // 航班到达
+        this.$set(statusData.data, 'nextStation', data.nextStation)
+        this.$set(statusData.data, 'prevDepTimeA', data.prevDepTimeA) // 前方实际起飞时间
+        this.$set(statusData.data, 'ata', this.newTime) // 实际到达时间
+      } else if (item.type == 'publish' && (item.value == 'CKI' || item.value == 'CKO' || item.value == 'BOR')) {
+        // 开始值机  值机截止 开始登机
+        this.$set(statusData.data, 'checkinRegion', data.checkinRegion)
+        this.$set(statusData.data, 'checkinCounter', data.checkinCounter)
+      } else if (item.type == 'publish' && (item.value == 'LBD' || item.value == 'POK')) {
+        // 催促登机
+        this.$set(statusData.data, 'checkinRegion', data.checkinRegion)
+        this.$set(statusData.data, 'checkinCounter', data.checkinCounter)
+        this.$set(statusData.data, 'std', data.std) // 计划起飞时间
+        this.$set(statusData.data, 'etd', data.etd) // 预计起飞时间
+      } else if (item.type == 'publish' && item.value == 'DEP') {
+        // 起飞
+        this.$set(statusData.data, 'nextStation', data.nextStation)
+        this.$set(statusData.data, 'ata', data.std) // 实际到达时间
+        this.$set(statusData.data, 'atd', this.newTime) // 实际起飞时间
+      }
+
+      console.log(statusData)
+
+      // this.$set(statusData.data, 'dynamicFlightId', data.dynamicFlightId)
+      if (item.type == 'publish') {
+        // this.$set(statusData.data, 'prevDepTimeA', this.newTime)
+        statusData.visible = true
+        document.addEventListener('keypress', this.handleTransConfirm, false)
+      } else if (item.type == 'revoke') {
+        this.revokeData.visible = true
+        this.revokeData.info = `${statusData.data.airline}${statusData.data.flightNo}：是否${statusData.title}？`
+      } else if (item.type == 'fltEnd') {
+        this.revokeData.visible = true
+        this.revokeData.info = `${statusData.data.airline}${statusData.data.flightNo}：是否结束航班？`
+      } else if (item.type == 'revokeFltEnd') {
+        this.revokeData.visible = true
+        this.revokeData.info = `${statusData.data.airline}${statusData.data.flightNo}：是否取消结束航班？`
+      }
+    },
+    handleStatusConfirm (event) {
+      if ((event && event.keyCode == 13) || !event) {
+        // if (!this.transData.data['endTime'] || !Date.parse(this.transData.data['beginTime'])) {
+        //   this.showError('生成次日计划', '开始时间/结束时间不能为空 !')
+        // } else {
+          // let dateSpan = Math.abs(Date.parse(this.transData.data['endTime']) - Date.parse(this.transData.data['beginTime']))
+          // let days = Math.ceil((dateSpan / (24 * 3600 * 1000)))
+          // if (days > 3) {
+          //   this.showError('生成次日计划', '所选时间区间最多相差 3 天 !')
+          // } else if (days < 0) {
+          //   this.showError('生成次日计划', '结束时间必须大于开始时间 !')
+          // } else {
+            this.menuData.statusData.loading = true
+            postData(this.menuData.statusData.url, this.menuData.statusData.data).then(res => {
+              if (res.data.code == 0) {
+                this.showSuccess('操作')
+                this.closeStatusDialog()
+                this.queryDataReq()
+              } else {
+                this.menuData.statusData.loading = false
+                this.showError('状态修改', '请重新尝试 !')
+              }
+            })
+          // }
+        // }
+      }
+    },
+    closeStatusDialog () {
+      this.menuData.statusData.loading = false
+      this.menuData.statusData.visible = false
+      this.menuData.statusData.url = ''
+      this.menuData.statusData.title = ''
+      // 清空数据
+      this.menuData.statusData.data = {}
+      // 关闭撤销弹框
+      this.revokeData.visible = false
+      this.revokeData.method = null
+      this.revokeData.info = ''
+      document.removeEventListener('keypress', this.handleStatusConfirm)
+    }
+    // handleRevoke (event) {
+    //   if ((event && event.keyCode == 13) || !event) {
+    //     if (this.changeData.method) {
+    //       this.changeData.method()
+    //       // this.changeData.method = this.editConfirm
+    //       this.closeChangeDialog()
+    //     }
+    //   }
+    // },
+    // closeRevokeDialog () {
+    //   this.revokeData.visible = false
+    //   this.revokeData.method = null
+    //   this.revokeData.index = null
+    //   document.removeEventListener('keypress', this.handleRevoke)
+    // }
+  },
+  watch: {
+    'menuData.data': {
+      handler (data) {
+          this.changeMenuDisabled(data)
+      },
+      deep: true
     }
   }
 }
@@ -1238,6 +2254,32 @@ export default {
 }
 .sched-plan-dialog .dialog-body>div:last-of-type {
   margin: 10px 30px;
+}
+
+.menu-status-dialog>.el-dialog {
+  height: 500px;
+}
+/* .menu-status-dialog .dialog-body>div:first-of-type {
+  font-size: 18px;
+  color: #7a939e;
+  margin: 12px 0 20px 0;
+}
+.menu-status-dialog .dialog-body>div:last-of-type {
+  margin: 10px 30px;
+} */
+.menu-status-dialog .el-dialog__body .el-form-item__content {
+    height: 100%;
+    min-height: 32px;
+    margin-bottom: 24px;
+}
+.ntwiceCol .el-form-item {
+    float: left;
+    width: 45%;
+    margin-right: 10px;
+    margin-bottom: 0;
+    display: flex;
+    height: 50px;
+    line-height: 50px;
 }
 </style>
 
@@ -1478,5 +2520,10 @@ export default {
 }
 .td-edit-div input {
   border-radius: 6px;
+}
+</style>
+<style>
+.menu-status-dialog .el-form-item__content {
+  margin-left: 10px!important;
 }
 </style>
