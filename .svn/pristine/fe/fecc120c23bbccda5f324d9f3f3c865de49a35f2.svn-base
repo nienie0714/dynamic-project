@@ -571,7 +571,7 @@
                   <div class="all-check" @click="checkAll" :class="(preData.tempArr.length != 0 && preData.tempArr.length == preData.preFilterArr.length)? 'radio-button el-checkbox__input is-checked' : 'radio-button el-checkbox__input'"><div class="el-checkbox__inner"></div><div>全选</div></div>
                 </div>
                 <div class="el-timepicker" v-if="preData.step == 3">
-                  <el-time-picker is-range :clearable="false" v-model="preData.time" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围" format='HH:mm' valueFormat='HH:mm:ss' @change="getPreFlight"></el-time-picker>
+                  <el-time-picker is-range v-model="preData.time" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围" format='HH:mm:ss' valueFormat='HH:mm:ss' @change="getPreFlight"></el-time-picker>
                 </div>
                 <div>
                   <el-input type="input" v-model.trim.lazy="preData.filterValue" auto-complete="off" placeholder="搜索" @keyup.enter.native="filterDataEnter()">

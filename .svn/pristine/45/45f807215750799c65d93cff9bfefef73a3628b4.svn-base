@@ -498,7 +498,7 @@
             (taskButtonData.data.beginTimeA&&!taskButtonData.data.endTimeA&&taskButtonData.timeData.endTime&&taskButtonData.timeData.startTime<=taskButtonData.timeData.endTime))">{{taskButtonData.outLoading?'确定中':'确 定'}}</el-button>
           </el-tooltip>
         </div>
-        <Warning-box-view :data="taskButtonData" @handleConfirm="handleCancelButtonSave"></Warning-box-view>
+        <Warning-box-view :data="taskButtonData" @handleConfirm="handleCancelButtonSave" @handleClose="handleCancelButtonClose"></Warning-box-view>
         <!-- <el-dialog :visible.sync="taskButtonData.visible" :close-on-click-modal="false" width="660px" append-to-body class="other-dialog dialog-cancel-warn">
           <div slot="title" class="dialog-header">
             <img src="../../assets/img/title_deco.png" />
@@ -571,7 +571,7 @@
                   <div class="all-check" @click="checkAll" :class="(preData.tempArr.length != 0 && preData.tempArr.length == preData.preFilterArr.length)? 'radio-button el-checkbox__input is-checked' : 'radio-button el-checkbox__input'"><div class="el-checkbox__inner"></div><div>全选</div></div>
                 </div>
                 <div class="el-timepicker" v-if="preData.step == 3">
-                  <el-time-picker is-range :clearable="false" v-model="preData.time" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围" format='HH:mm' valueFormat='HH:mm:ss' @change="getPreFlight"></el-time-picker>
+                  <el-time-picker is-range v-model="preData.time" range-separator="至" start-placeholder="开始时间" end-placeholder="结束时间" placeholder="选择时间范围" format='HH:mm:ss' valueFormat='HH:mm:ss' @change="getPreFlight"></el-time-picker>
                 </div>
                 <div>
                   <el-input type="input" v-model.trim.lazy="preData.filterValue" auto-complete="off" placeholder="搜索" @keyup.enter.native="filterDataEnter()">
@@ -1435,6 +1435,10 @@ export default {
       this.taskFlightData.visible = false
       this.taskFlightData.loading = false
       this.clearAllTaskFlightData()
+    },
+    handleCancelButtonClose () {
+      this.taskButtonData.loading = false
+      this.taskButtonData.visible = false
     },
     // 撤销分配 撤销按钮事件
     handleCancelButtonSave () {

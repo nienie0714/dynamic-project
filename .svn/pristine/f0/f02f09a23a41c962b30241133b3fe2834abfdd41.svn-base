@@ -161,179 +161,114 @@
         <el-button type="primary" :loading="transData.loading" @click="handleTransConfirm()">确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog :visible.sync="menuData.statusData.visible" :close-on-click-modal="false" width="800px" append-to-body class="other-dialog menu-status-dialog" @close="closeStatusDialog">
+    <el-dialog :visible.sync="menuData.statusData.visible" :close-on-click-modal="false" width="800px" append-to-body class="other-dialog menu-status-dialog ntwiceCol" @close="closeStatusDialog">
       <div slot="title" class="dialog-header">
         <img :src="require('@img/title_deco.png')" />
         <span class="header-title">{{menuData.statusData.title}}</span>
       </div>
       <div class="dialog-body">
-        <el-row :gutter="20">
-          <el-col :span="4"><div>航空公司</div></el-col>
-          <el-col :span="8"><el-input type="input" v-model.trim="menuData.statusData.data.airlineCn" disabled></el-input></el-col>
-          <el-col :span="4"><div></div>航班号</el-col>
-          <el-col :span="8"><el-input type="input" v-model.trim="menuData.statusData.data.flightNo" disabled></el-input></el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="4"><div>机型</div></el-col>
-          <el-col :span="8"><el-input type="input" v-model.trim="menuData.statusData.data.aircraftType" disabled></el-input></el-col>
-          <el-col :span="4"><div></div>机号</el-col>
-          <el-col :span="8"><el-input type="input" v-model.trim="menuData.statusData.data.aircraftNo" disabled></el-input></el-col>
-        </el-row>
-        <el-row :gutter="20">
-          <el-col :span="4"><div>机位</div></el-col>
-          <el-col :span="8"><el-input type="input" v-model.trim="menuData.statusData.data.stand" disabled></el-input></el-col>
-          <el-col :span="4">
-            <div v-if="menuData.statusData.data.key == 'progressStatus'">进展状态</div>
-            <div v-if="menuData.statusData.data.key == 'abnormalStatus'">进出港</div>
-          </el-col>
-          <el-col :span="8" v-if="menuData.statusData.data.key == 'progressStatus'">
-            <el-input type="input" v-model.trim="menuData.statusData.data.value" disabled></el-input>
-          </el-col>
-          <el-col :span="8" v-if="menuData.statusData.data.key == 'abnormalStatus'">
-            <el-radio-group v-model="menuData.statusData.data.inOutFlag" disabled>
-              <el-radio-button v-for="option in menuData.statusData.options.inOutFlagList" :key="option.key" :label="option.key"> {{ option.value }}</el-radio-button>
-            </el-radio-group>
-          </el-col>
-        </el-row>
-        <!-- ············ 正常 ··········· -->
-        <!-- 发布前站起飞 -->
-        <template v-if="['发布前站起飞'].includes(menuData.statusData.title)">
-          <el-row :gutter="20">
-            <el-col :span="4"><div>前方航站</div></el-col>
-            <el-col :span="8"><el-input type="input" v-model.trim="menuData.statusData.data.prevStation" disabled></el-input></el-col>
-            <el-col :span="4"><div></div>计划到达时间</el-col>
-            <el-col :span="8">
+        <el-form :model="menuData.statusData.data" :rules="menuData.statusData.rules" label-width="100px" label-position="left" ref="ruleForm" size="mini" class="edit-form">
+          <div>
+            <el-form-item label="航空公司">
+              <!-- 不可编辑框 -->
+              <!-- <el-input type="input" v-model.trim="menuData.statusData.data.dynamicFlightId" disabled></el-input> -->
+              <el-input type="input" v-model.trim="menuData.statusData.data.airlineCn" disabled></el-input>
+            </el-form-item>
+          </div>
+          <div>
+            <el-form-item label="航班号">
+              <el-input type="input" v-model.trim="menuData.statusData.data.flightNo" disabled></el-input>
+            </el-form-item>
+          </div>
+          <div v-if="!['发布前站起飞', '发布航班到达'].includes(menuData.statusData.title)">
+            <el-form-item label="机型">
+              <el-input type="input" v-model.trim="menuData.statusData.data.aircraftType" disabled></el-input>
+            </el-form-item>
+          </div>
+          <div>
+            <el-form-item label="机号">
+              <el-input type="input" v-model.trim="menuData.statusData.data.aircraftNo" disabled></el-input>
+            </el-form-item>
+          </div>
+          <div>
+            <el-form-item label="机位" prop="stand">
+              <el-input type="input" v-model.trim="menuData.statusData.data.stand" disabled></el-input>
+              <!-- <el-select v-model="menuData.statusData.data.stand" placeholder="请选择机位" clearable :disabled="['发布航班到达', '发布开始值机'].includes(menuData.statusData.title)">
+                <el-option v-for="option in standList" :key="option.standNo" :label="option.standNo" :value="option.standNo">
+                </el-option>
+              </el-select> -->
+            </el-form-item>
+          </div>
+          <!-- 1start 发布前站起飞  发布航班到达-->
+          <div v-if="['发布前站起飞', '发布航班到达', '发布起飞'].includes(menuData.statusData.title)">
+            <el-form-item label="前方航站">
+              <el-input type="input" v-model.trim="menuData.statusData.data.nextStation" disabled></el-input>
+            </el-form-item>
+          </div>
+          <div v-if="['发布前站起飞'].includes(menuData.statusData.title)">
+            <el-form-item label="计划到达时间">
               <el-date-picker v-model="menuData.statusData.data.sta" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss" disabled></el-date-picker>
-            </el-col>
-          </el-row>
-          <el-row :gutter="16">
-            <el-col :span="4"><div>预计到达时间</div></el-col>
-            <el-col :span="8">
+            </el-form-item>
+          </div>
+          <div v-if="['发布前站起飞'].includes(menuData.statusData.title)">
+            <el-form-item label="预计到达时间">
               <el-date-picker v-model="menuData.statusData.data.eta" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss" disabled></el-date-picker>
-            </el-col>
-            <el-col :span="4"><div></div>前方实际起飞时间</el-col>
-            <el-col :span="8">
+            </el-form-item>
+          </div>
+          <div v-if="['发布前站起飞'].includes(menuData.statusData.title)">
+            <el-form-item label="前方实际起飞时间">
               <el-date-picker v-model="menuData.statusData.data.prevDepTimeA" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
-            </el-col>
-          </el-row>
-        </template>
-        <!-- 发布航班到达 -->
-        <template v-if="['发布航班到达'].includes(menuData.statusData.title)">
-          <el-row :gutter="16">
-            <el-col :span="4"><div>前方航站</div></el-col>
-            <el-col :span="8"><el-input type="input" v-model.trim="menuData.statusData.data.prevStation" disabled></el-input></el-col>
-            <el-col :span="4"><div></div>前方实际起飞时间</el-col>
-            <el-col :span="8">
+            </el-form-item>
+          </div>
+          <!-- end 发布前站起飞 -->
+          <!-- 2start 发布航班到达-->
+          <div v-if="['发布航班到达'].includes(menuData.statusData.title)">
+            <el-form-item label="前方实际起飞时间">
               <el-date-picker v-model="menuData.statusData.data.prevDepTimeA" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss" disabled></el-date-picker>
-            </el-col>
-          </el-row>
-          <el-row :gutter="16">
-            <el-col :span="4"><div>实际到达时间</div></el-col>
-            <el-col :span="8">
+            </el-form-item>
+          </div>
+          <div v-if="['发布航班到达'].includes(menuData.statusData.title)">
+            <el-form-item label="实际到达时间">
               <el-date-picker v-model="menuData.statusData.data.ata" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
-            </el-col>
-          </el-row>
-        </template>
-        <!-- 发布开始值机 todo:下拉框？-->
-        <template v-if="['发布开始值机', '发布值机截止', '发布开始登机', '发布催促登机'].includes(menuData.statusData.title)">
-          <el-row :gutter="20">
-            <el-col :span="4"><div>值机区域</div></el-col>
-            <el-col :span="8">
-              <el-input type="input" v-model.trim="menuData.statusData.data.checkinRegion"></el-input>
-            </el-col>
-            <el-col :span="4"><div></div>值机柜台</el-col>
-            <el-col :span="8">
-              <el-input type="input" v-model.trim="menuData.statusData.data.checkinCounter"></el-input>
-            </el-col>
-          </el-row>
-        </template>
-        <!-- 发布催促登机 -->
-        <template v-if="['发布催促登机', '发布登机结束'].includes(menuData.statusData.title)">
-          <el-row :gutter="16">
-            <el-col :span="4"><div>计划起飞时间</div></el-col>
-            <el-col :span="8">
+            </el-form-item>
+          </div>
+          <!-- end 发布航班到达 -->
+          <!-- 3start 发布开始值机-->
+          <div v-if="['发布开始值机', '发布值机截止', '发布开始登机', '发布催促登机'].includes(menuData.statusData.title)">
+            <el-form-item label="值机区域">
+              <el-input type="input" v-model.trim="menuData.statusData.data.checkinRegion" disabled></el-input>
+            </el-form-item>
+          </div>
+          <div v-if="['发布开始值机', '发布值机截止', '发布开始登机', '发布催促登机'].includes(menuData.statusData.title)">
+            <el-form-item label="值机柜台">
+              <el-input type="input" v-model.trim="menuData.statusData.data.checkinCounter" disabled></el-input>
+            </el-form-item>
+          </div>
+          <!-- end 发布开始值机 -->
+          <!-- 3start 发布开始值机-->
+          <div v-if="['发布催促登机', '发布登机结束'].includes(menuData.statusData.title)">
+            <el-form-item label="计划起飞时间">
               <el-date-picker v-model="menuData.statusData.data.std" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss" disabled></el-date-picker>
-            </el-col>
-            <el-col :span="4"><div></div>预计起飞时间</el-col>
-            <el-col :span="8">
-              <el-date-picker v-model="menuData.statusData.data.etd" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
-            </el-col>
-          </el-row>
-        </template>
-        <!-- 发布起飞 -->
-        <template v-if="['发布起飞'].includes(menuData.statusData.title)">
-          <el-row :gutter="16">
-            <el-col :span="4"><div>实际到达时间</div></el-col>
-            <el-col :span="8">
+            </el-form-item>
+          </div>
+          <div v-if="['发布催促登机', '发布登机结束'].includes(menuData.statusData.title)">
+            <el-form-item label="预计起飞时间">
+              <el-date-picker v-model="menuData.statusData.data.etd" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss" disabled></el-date-picker>
+            </el-form-item>
+          </div>
+          <!-- 7start 发布起飞-->
+          <div v-if="['发布起飞'].includes(menuData.statusData.title)">
+            <el-form-item label="实际到达时间">
               <el-date-picker v-model="menuData.statusData.data.ata" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss" disabled></el-date-picker>
-            </el-col>
-            <el-col :span="4"><div></div>实际起飞时间</el-col>
-            <el-col :span="8">
+            </el-form-item>
+          </div>
+          <div v-if="['发布起飞'].includes(menuData.statusData.title)">
+            <el-form-item label="实际起飞时间">
               <el-date-picker v-model="menuData.statusData.data.atd" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
-            </el-col>
-          </el-row>
-        </template>
-        <!-- ··········· 异常 ··········· -->
-        <template v-if="menuData.statusData.data.key == 'abnormalStatus'">
-          <el-row :gutter="20">
-            <el-col :span="4"><div></div>任务</el-col>
-            <el-col :span="8">
-              <el-input type="input" v-model.trim="menuData.statusData.data.task" disabled></el-input>
-            </el-col>
-            <el-col :span="4"><div>属性</div></el-col>
-            <el-col :span="8">
-              <el-radio-group v-model="menuData.statusData.data.attr" disabled>
-                <el-radio-button v-for="option in menuData.statusData.options.attrList" :key="option.key" :label="option.key"> {{ option.value }}</el-radio-button>
-              </el-radio-group>
-            </el-col>
-          </el-row>
-          <el-row :gutter="20">
-            <el-col :span="4"><div>内部异常原因</div></el-col>
-            <el-col :span="8">
-              <el-select v-model="menuData.statusData.data.inAbnormalResson" placeholder="请选择" clearable :change="changeDebug">
-                <el-option v-for="option in reasonList" :key="option.reasonCode" :label="option.nameC" :value="option.reasonCode">
-                </el-option>
-              </el-select>
-            </el-col>
-            <el-col :span="4"><div></div>外部异常原因</el-col>
-            <el-col :span="8">
-              <el-select v-model="menuData.statusData.data.outAbnormalResson" placeholder="请选择" clearable>
-                <el-option v-for="option in reasonList" :key="option.reasonCode" :label="option.nameC" :value="option.reasonCode">
-                </el-option>
-              </el-select>
-            </el-col>
-          </el-row>
-        </template>
-        <template v-if="['发布航班延误'].includes(menuData.statusData.title)">
-          <el-row :gutter="20" v-if="menuData.statusData.data.inOutFlag == 'A'">
-            <el-col :span="4"><div>本站计划时间</div></el-col>
-            <el-col :span="8">
-              <el-input type="input" v-model.trim="menuData.statusData.data.sta" disabled></el-input>
-            </el-col>
-            <el-col :span="4"><div></div>本站预计时间</el-col>
-            <el-col :span="8">
-              <el-date-picker v-model="menuData.statusData.data.eta" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
-            </el-col>
-          </el-row>
-          <el-row :gutter="20" v-if="menuData.statusData.data.inOutFlag == 'D'">
-            <el-col :span="4"><div>本站计划时间D</div></el-col>
-            <el-col :span="8">
-              <el-input type="input" v-model.trim="menuData.statusData.data.std" disabled></el-input>
-            </el-col>
-            <el-col :span="4"><div></div>本站预计时间D</el-col>
-            <el-col :span="8">
-              <el-date-picker v-model="menuData.statusData.data.etd" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
-            </el-col>
-          </el-row>
-          <el-row :gutter="20">
-            <el-col :span="4"><div>延误</div></el-col>
-            <el-col :span="8">
-              <el-radio-group v-model="menuData.statusData.data.isDly">
-                <el-radio-button v-for="option in menuData.statusData.options.isDlyList" :key="option.key" :label="option.key"> {{ option.value }}</el-radio-button>
-              </el-radio-group>
-            </el-col>
-          </el-row>
-        </template>
+            </el-form-item>
+          </div>
+          <!-- end 发布起飞 -->
+        </el-form>
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeStatusDialog">关 闭</el-button>
@@ -386,11 +321,6 @@ export default {
           visible: false,
           title: '',
           url: '',
-          options: {
-            standList: [],
-            reasonList: [],
-            inOutFlagList: []
-          },
           data: {
             dynamicFlightId: ''
           },
@@ -588,8 +518,8 @@ export default {
                     url: '/dynamicFlight/publish',
                     type: 'revoke',
                     inOutFlag: 'A',
-                    key: 'progressStatus',
-                    value: null
+                    key: 'abnormalStatus',
+                    value: 'ONR'
                   },
                   reg: [
                     {
@@ -608,8 +538,8 @@ export default {
                     url: '/dynamicFlight/publish',
                     type: 'revoke',
                     inOutFlag: 'A',
-                    key: 'progressStatus',
-                    value: 'ONR'
+                    key: 'abnormalStatus',
+                    value: 'ARR'
                   },
                   reg: [
                     {
@@ -628,8 +558,8 @@ export default {
                     url: '/dynamicFlight/publish',
                     type: 'revoke',
                     inOutFlag: 'D',
-                    key: 'progressStatus',
-                    value: 'ARR'
+                    key: 'abnormalStatus',
+                    value: 'CKI'
                   },
                   reg: [
                     {
@@ -648,8 +578,8 @@ export default {
                     url: '/dynamicFlight/publish',
                     type: 'revoke',
                     inOutFlag: 'D',
-                    key: 'progressStatus',
-                    value: 'CKI'
+                    key: 'abnormalStatus',
+                    value: 'CKO'
                   },
                   reg: [
                     {
@@ -668,8 +598,8 @@ export default {
                     url: '/dynamicFlight/publish',
                     type: 'revoke',
                     inOutFlag: 'D',
-                    key: 'progressStatus',
-                    value: 'CKO'
+                    key: 'abnormalStatus',
+                    value: 'BOR'
                   },
                   reg: [
                     {
@@ -688,8 +618,8 @@ export default {
                     url: '/dynamicFlight/publish',
                     type: 'revoke',
                     inOutFlag: 'D',
-                    key: 'progressStatus',
-                    value: 'BOR'
+                    key: 'abnormalStatus',
+                    value: 'LBD'
                   },
                   reg: [
                     {
@@ -708,8 +638,8 @@ export default {
                     url: '/dynamicFlight/publish',
                     type: 'revoke',
                     inOutFlag: 'D',
-                    key: 'progressStatus',
-                    value: 'LBD'
+                    key: 'abnormalStatus',
+                    value: 'POK'
                   },
                   reg: [
                     {
@@ -728,8 +658,8 @@ export default {
                     url: '/dynamicFlight/publish',
                     type: 'revoke',
                     inOutFlag: 'D',
-                    key: 'progressStatus',
-                    value: 'POK'
+                    key: 'abnormalStatus',
+                    value: 'DEP'
                   },
                   reg: [
                     {
@@ -764,13 +694,41 @@ export default {
                     inOutFlag: 'A',
                     key: 'abnormalStatus',
                     value: 'DLY'
-                  }
-                  // reg: [
-                  //   {
-                  //     key: 'progressStatus',
-                  //     value: ['ONR', 'ARR', 'CKI', 'CKO', 'BOR', 'LBD', 'POK', 'DEP']
-                  //   }
-                  // ]
+                  },
+                  reg: [
+                    {
+                      key: 'progressStatus',
+                      value: 'ONR'
+                    },
+                    {
+                      key: 'progressStatus',
+                      value: 'ARR'
+                    },
+                    {
+                      key: 'progressStatus',
+                      value: 'CKI'
+                    },
+                    {
+                      key: 'progressStatus',
+                      value: 'CKO'
+                    },
+                    {
+                      key: 'progressStatus',
+                      value: 'BOR'
+                    },
+                    {
+                      key: 'progressStatus',
+                      value: 'LBD'
+                    },
+                    {
+                      key: 'progressStatus',
+                      value: 'POK'
+                    },
+                    {
+                      key: 'progressStatus',
+                      value: 'DEP'
+                    }
+                  ]
                 },
                 {
                   index: '1-0-1',
@@ -788,7 +746,27 @@ export default {
                   reg: [
                     {
                       key: 'progressStatus',
-                      value: ['ARR', 'CKI', 'CKO', 'BOR', 'LBD', 'POK']
+                      value: 'ARR'
+                    },
+                    {
+                      key: 'progressStatus',
+                      value: 'CKI'
+                    },
+                    {
+                      key: 'progressStatus',
+                      value: 'CKO'
+                    },
+                    {
+                      key: 'progressStatus',
+                      value: 'BOR'
+                    },
+                    {
+                      key: 'progressStatus',
+                      value: 'LBD'
+                    },
+                    {
+                      key: 'progressStatus',
+                      value: 'POK'
                     }
                   ]
                 },
@@ -808,7 +786,11 @@ export default {
                   reg: [
                     {
                       key: 'progressStatus',
-                      value: ['ONR', 'DEP']
+                      value: 'ONR'
+                    },
+                    {
+                      key: 'progressStatus',
+                      value: 'DEP'
                     }
                   ]
                 },
@@ -828,7 +810,11 @@ export default {
                   reg: [
                     {
                       key: 'progressStatus',
-                      value: ['ONR', 'DEP']
+                      value: 'ONR'
+                    },
+                    {
+                      key: 'progressStatus',
+                      value: 'DEP'
                     }
                   ]
                 },
@@ -848,7 +834,11 @@ export default {
                   reg: [
                     {
                       key: 'progressStatus',
-                      value: ['ONR', 'DEP']
+                      value: 'ONR'
+                    },
+                    {
+                      key: 'progressStatus',
+                      value: 'DEP'
                     }
                   ]
                 }
@@ -931,13 +921,7 @@ export default {
                     inOutFlag: 'A',
                     key: 'abnormalStatus',
                     value: 'RTN'
-                  },
-                  reg: [
-                    {
-                      key: 'abnormalStatus',
-                      value: 'RTN'
-                    }
-                  ]
+                  }
                 },
                 {
                   index: '1-1-4',
@@ -951,13 +935,7 @@ export default {
                     inOutFlag: 'A',
                     key: 'abnormalStatus',
                     value: 'BAK'
-                  },
-                  reg: [
-                    {
-                      key: 'abnormalStatus',
-                      value: 'BAK'
-                    }
-                  ]
+                  }
                 }
               ]
             }
@@ -1152,7 +1130,6 @@ export default {
         row: null
       },
       standList: [],
-      reasonList: [],
       jointUrl: '/planFlight/jointPlanFlight',
       unJointUrl: '/planFlight/breakJointPlanFlight',
       changeData: {
@@ -1473,10 +1450,6 @@ export default {
     // customQueryMethod () {
     //   this.$set(this.queryData, 'remark', 'S')
     // },
-    changeDebug (value) {
-      debugger
-      console.log(value)
-    },
     dateRangeReg (rule, value, callback) {
       if (value.hasOwnProperty('std') && value.hasOwnProperty('sta')) {
         if (value.std && value.sta) {
@@ -2123,26 +2096,14 @@ export default {
       if (data.hasOwnProperty('dynamicFlightId')) {
         _.forEach(items, (obj) => {
           console.log(obj)
-          // 没有reg直接开放 数组就是有一个满足就开放
           if (obj.hasOwnProperty('reg')) {
             let result = true
             for (let i = 0; i < obj.reg.length; i++) {
-              if (_.isArray(obj.reg[i].value)) {
-                for (let j = 0; j < obj.reg[i].value.length; j++) {
-                  if (data[obj.reg[i].key] == obj.reg[i].value[j]) {
-                    result = false
-                    break
-                  } else {
-                    result = true
-                  }
-                }
+              if (data[obj.reg[i].key] == obj.reg[i].value) {
+                result = false
               } else {
-                if (data[obj.reg[i].key] == obj.reg[i].value) {
-                  result = false
-                } else {
-                  result = true
-                  break
-                }
+                result = true
+                break
               }
             }
             let arr = obj.index.split('-')
@@ -2174,28 +2135,25 @@ export default {
       this.$set(statusData.data, 'airline', data.airline)
       this.$set(statusData.data, 'airlineCn', data.airlineCn)
       this.$set(statusData.data, 'flightNo', data.flightNo)
-      this.$set(statusData.data, 'aircraftType', data.aircraftType)
       this.$set(statusData.data, 'aircraftNo', data.aircraftNo)
-      // todo: stand 跳转页面
-      // queryAll('/airportResource/aircraftStand/queryAll', {}).then(res => {
-      //   this.standList = res.data.data
-      // })
+      // todo: stand 应该是下拉框
       this.$set(statusData.data, 'stand', data.stand)
-      this.$set(statusData.data, 'inOutFlag', item.inOutFlag)
+      this.$set(statusData.data, 'inOutFlag', item.tinOutFlagype)
       this.$set(statusData.data, item.key, item.value)
-      this.$set(statusData.data, 'key', item.key)
-      this.$set(statusData.data, 'value', item.value)
 
-      // 发布
+      queryAll('/airportResource/aircraftStand/queryAll', {}).then(res => {
+        this.standList = res.data.data
+      })
+      // 发布前站起飞
       if (item.type == 'publish' && item.value == 'ONR') {
-        // 前站起飞
-        this.$set(statusData.data, 'prevStation', data.prevStation)
+        // todo: ?前方到站是不是就是下站，前方航站不可填，是空的怎么办
+        this.$set(statusData.data, 'nextStation', data.nextStation)
         this.$set(statusData.data, 'sta', data.sta) // 计划到达
         this.$set(statusData.data, 'eta', data.eta) // 预计到达
         this.$set(statusData.data, 'prevDepTimeA', this.newTime) // 前方实际起飞时间
       } else if (item.type == 'publish' && item.value == 'ARR') {
         // 航班到达
-        this.$set(statusData.data, 'prevStation', data.prevStation)
+        this.$set(statusData.data, 'nextStation', data.nextStation)
         this.$set(statusData.data, 'prevDepTimeA', data.prevDepTimeA) // 前方实际起飞时间
         this.$set(statusData.data, 'ata', this.newTime) // 实际到达时间
       } else if (item.type == 'publish' && (item.value == 'CKI' || item.value == 'CKO' || item.value == 'BOR')) {
@@ -2213,40 +2171,11 @@ export default {
         this.$set(statusData.data, 'nextStation', data.nextStation)
         this.$set(statusData.data, 'ata', data.std) // 实际到达时间
         this.$set(statusData.data, 'atd', this.newTime) // 实际起飞时间
-      } else {
       }
 
-      // ------- 异常 -------------
-      if (item.key == 'abnormalStatus') {
-        queryAll('/basicdata/abnormalreason/queryAll', {abnormalFlag: 'Y'}).then(res => {
-          this.reasonList = res.data.data
-        })
-        this.$store.commit('setOption', 'attr')
-        this.menuData.statusData.options.attrList = _.cloneDeep(this.$store.getters.getOption)
-        this.$set(statusData.data, 'attr', data.attr)
-        this.$set(statusData.data, 'task', data.task) // todo: task显示 W/D
+      // if () {
 
-        this.$set(statusData.data, 'inAbnormalResson', null)
-        this.$set(statusData.data, 'outAbnormalResson', null)
-
-        this.$store.commit('setOption', 'fltType')
-        this.menuData.statusData.options.inOutFlagList = _.cloneDeep(this.$store.getters.getOption)
-      }
-      if (item.key == 'abnormalStatus' && item.value == 'DLY') {
-        // 航班延误
-        // 本站计划时间 预计时间
-        if (statusData.data.inOutFlag == 'A') {
-          this.$set(statusData.data, 'sta', data.sta) // 进港航班，则本站计划时间为本站计划落地时间，本站预计时间为预计本站落地时间
-          this.$set(statusData.data, 'eta', data.eta)
-        } else if (statusData.data.inOutFlag == 'D') {
-          this.$set(statusData.data, 'std', data.sta) // 进港航班，则本站计划时间为本站计划落地时间，本站预计时间为预计本站落地时间
-          this.$set(statusData.data, 'etd', data.sta)
-        }
-        this.$store.commit('setOption', 'isYOrN')
-        this.menuData.statusData.options.isDlyList = _.cloneDeep(this.$store.getters.getOption)
-        // todo: 有点延误选择“是”，则必须填写本站预计时间，否则，无需填写.::添加校验
-        this.$set(statusData.data, 'isDly', null)
-      }
+      // }
 
       console.log(statusData)
 
@@ -2461,12 +2390,14 @@ export default {
     min-height: 32px;
     margin-bottom: 24px;
 }
-.menu-status-dialog .dialog-body .el-row {
-  text-align: left;
-  height: 40px;
-  line-height: 40px;
-  margin: 5px 0;
-  color: #7a939e;
+.ntwiceCol .el-form-item {
+    float: left;
+    width: 45%;
+    margin-right: 10px;
+    margin-bottom: 0;
+    display: flex;
+    height: 50px;
+    line-height: 50px;
 }
 </style>
 
@@ -2712,11 +2643,5 @@ export default {
 <style>
 .menu-status-dialog .el-form-item__content {
   margin-left: 10px!important;
-}
-.menu-status-dialog .el-date-editor.el-input, .el-date-editor.el-input__inner {
-    width: 100%;
-}
-.menu-status-dialog .el-select {
-  width: 100%;
 }
 </style>
