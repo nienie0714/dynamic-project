@@ -210,13 +210,13 @@
             </el-col>
           </el-row>
           <el-row :gutter="16">
-            <el-col :span="4"><div></div>前方实际起飞时间</el-col>
-            <el-col :span="8">
-              <el-date-picker v-model="statusData.data.prevDepTimeA" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
-            </el-col>
             <el-col :span="4"><div>预计到达时间</div></el-col>
             <el-col :span="8">
               <el-date-picker v-model="statusData.data.eta" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
+            </el-col>
+            <el-col :span="4"><div></div>前方实际起飞时间</el-col>
+            <el-col :span="8">
+              <el-date-picker v-model="statusData.data.prevDepTimeA" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
             </el-col>
           </el-row>
         </template>
@@ -1156,25 +1156,6 @@ export default {
             ]
           }
         ]
-      },
-      statusData: {
-        loading: false,
-        visible: false,
-        title: '',
-        url: '',
-        options: {
-          standList: [],
-          reasonList: [],
-          inOutFlagList: []
-        },
-        data: {
-          dynamicFlightId: ''
-        },
-        rules: {
-          stand: [
-            { required: true, message: '请选择机位', trigger: 'blur' }
-          ]
-        }
       },
       revokeData: {
         title: '警告',
