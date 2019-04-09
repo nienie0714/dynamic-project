@@ -54,14 +54,13 @@ export default {
         return '—:—'
       }
     },
-    formatterTimeOfYMDHMS (time, split) {
+    formatterTimeOfYMDHM (time, split) {
       if (time) {
         var date = new Date(time)
         var dateStr = `${date.getFullYear()}${split}${this.addZero(date.getMonth() + 1)}${split}${this.addZero(date.getDate())}`
         var hour = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()
         var minite = date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
-        var second = date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds()
-        return `${dateStr} ${hour}:${minite}:${second}`
+        return `${dateStr} ${hour}:${minite}`
       } else {
         return '—'
       }
