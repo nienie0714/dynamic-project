@@ -65,6 +65,11 @@ export default {
       } else {
         return '—'
       }
+    },
+    formatterNewtimeOfYMD () {
+        var date = this.newTime
+        var dateStr = `${date.getFullYear()}-${this.addZero(date.getMonth() + 1)}-${this.addZero(date.getDate())}`
+        return `${dateStr}`
     }
   }
 }

@@ -1502,10 +1502,15 @@ export default {
     this.importData.errorFileName = this.name + '导入失败信息.xls'
     this.$store.commit('setOption', this.options.fltType.key)
     this.options.fltType.options = this.$store.getters.getOption
+
+    // 页面起始修改发送参数的初始值为当日
+    this.$set(this.queryList[1], 'value', this.formatterNewtimeOfYMD())
+    this.$set(this.queryList[2], 'value', this.formatterNewtimeOfYMD())
+    this.$set(this.queryData, 'beginDate', this.queryList[1].value)
+    this.$set(this.queryData, 'endDate', this.queryList[2].value)
   },
   methods: {
     // customQueryMethod () {
-    //   this.$set(this.queryData, 'remark', 'S')
     // },
     confirmPlan () {},
     dateRangeReg (rule, value, callback) {
