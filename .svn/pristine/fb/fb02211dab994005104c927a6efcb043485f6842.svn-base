@@ -12,7 +12,7 @@
             <el-dropdown-item :divided="true" @click.native="jointReq">航班拼接</el-dropdown-item>
             <el-dropdown-item :divided="true" @click.native="unJointReq">断开拼接</el-dropdown-item>
             <el-dropdown-item :divided="true" @click.native="openTransDialog">自动发布VIP</el-dropdown-item>
-            <el-dropdown-item :divided="true" @click.native="publishDLYBatch">发布延误</el-dropdown-item>
+            <el-dropdown-item :divided="true" @click.native="openTransDialog">发布延误</el-dropdown-item>
             <el-dropdown-item :divided="true" @click.native="openTransDialog">转历史</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -1512,15 +1512,10 @@ export default {
     this.importData.errorFileName = this.name + '导入失败信息.xls'
     this.$store.commit('setOption', this.options.fltType.key)
     this.options.fltType.options = this.$store.getters.getOption
-
-    // 页面起始修改发送参数的初始值为当日
-    this.$set(this.queryList[1], 'value', this.formatterNewtimeOfYMD())
-    this.$set(this.queryList[2], 'value', this.formatterNewtimeOfYMD())
-    this.$set(this.queryData, 'beginDate', this.queryList[1].value)
-    this.$set(this.queryData, 'endDate', this.queryList[2].value)
   },
   methods: {
     // customQueryMethod () {
+    //   this.$set(this.queryData, 'remark', 'S')
     // },
     confirmPlan () {},
     dateRangeReg (rule, value, callback) {
@@ -2228,7 +2223,7 @@ export default {
       this.$set(statusData.data, 'key', item.key)
       this.$set(statusData.data, 'value', item.value)
 
-      //  ------- 正常 -------------
+      // 发布
       if (item.type == 'publish' && item.value == 'ONR') {
         // 前站起飞
         this.$set(statusData.data, 'prevStation', data.prevStation)
@@ -2246,10 +2241,10 @@ export default {
         // 开始值机  值机截止 开始登机
         queryAll('/airportResource/terminalArea/queryAll').then(res => {
           this.statusData.options.checkinRegionList = res.data.data
-        })
+        }) // terminalAreaNo name checkinRegion
         queryAll('/airportResource/terminalResource/queryAll', {resourceType: 'COUNTER'}).then(res => {
           this.statusData.options.checkinCounterList = res.data.data
-        })
+        }) // resourceId resourceNo checkinCounter
         this.$set(statusData.data, 'checkinRegion', data.checkinRegion)
         this.$set(statusData.data, 'checkinCounter', data.checkinCounter)
       } else if (item.type == 'publish' && (item.value == 'LBD' || item.value == 'POK')) {
@@ -2302,10 +2297,13 @@ export default {
         }
         this.$store.commit('setOption', 'isYOrN')
         this.statusData.options.isDlyList = _.cloneDeep(this.$store.getters.getOption)
+        // todo: 有点延误选择“是”，则必须填写本站预计时间，否则，无需填写.::添加校验
         this.$set(statusData.data, 'isDly', null)
       }
 
+      // this.$set(statusData.data, 'dynamicFlightId', data.dynamicFlightId)
       if (item.type == 'publish') {
+        // this.$set(statusData.data, 'prevDepTimeA', this.newTime)
         statusData.visible = true
         document.addEventListener('keypress', this.handleStatusConfirm, false)
       } else if (item.type == 'revoke') {
@@ -2349,16 +2347,16 @@ export default {
     },
     postStatusSuccess () {
       this.statusData.loading = true
-      postData(this.statusData.url, this.statusData.data).then(res => {
-        if (res.data.code == 0) {
-          this.showSuccess('操作')
-          this.closeStatusDialog()
-          this.queryDataReq()
-        } else {
-          this.statusData.loading = false
-          this.showError('状态修改', '请重新尝试 !')
-        }
-      })
+        postData(this.statusData.url, this.statusData.data).then(res => {
+          if (res.data.code == 0) {
+            this.showSuccess('操作')
+            this.closeStatusDialog()
+            this.queryDataReq()
+          } else {
+            this.statusData.loading = false
+            this.showError('状态修改', '请重新尝试 !')
+          }
+        })
     },
     closeStatusDialog () {
       this.statusData.loading = false
@@ -2458,12 +2456,6 @@ export default {
       this.vipFlagData.loading = false
       this.vipFlagData.visible = false
       document.removeEventListener('keypress', this.handleVipFlagConfirm)
-    },
-    publishDLYBatch () {
-      if (this.multipleSelection.length > 0) {
-      } else {
-        this.showErrorCustom('当前未勾选航班信息', '')
-      }
     }
   },
   watch: {
