@@ -56,8 +56,8 @@ export default {
         formData: [
           {key: 'cameraNo', label: '摄像头编号', type: 'input', maxlength: 30},
           {key: 'cameraCn', label: '摄像头名称', type: 'input', maxlength: 50},
-          {key: 'longitude', label: '经度', type: 'input', maxlength: 7},
-          {key: 'latitude', label: '纬度', type: 'input', maxlength: 7},
+          {key: 'longitude', label: 'X坐标', type: 'input', maxlength: 7},
+          {key: 'latitude', label: 'Y坐标', type: 'input', maxlength: 7},
           {key: 'ip', label: 'IP地址', type: 'input'},
           {key: 'port', label: '端口', type: 'input', maxlength: 7},
           {key: 'username', label: '用户名', type: 'input', maxlength: 30},
@@ -125,8 +125,8 @@ export default {
         fields: [
           {prop: 'cameraNo', label: '摄像头编号', fixed: true, hidden: false, overflow: true},
           {prop: 'cameraCn', label: '摄像头名称', fixed: false, hidden: false, overflow: true},
-          {prop: 'longitude', label: '经度', fixed: false, hidden: false, overflow: true},
-          {prop: 'latitude', label: '维度', fixed: false, hidden: false, overflow: true},
+          {prop: 'longitude', label: 'X坐标', fixed: false, hidden: false, overflow: true},
+          {prop: 'latitude', label: 'Y坐标', fixed: false, hidden: false, overflow: true},
           {prop: 'ip', label: 'IP地址', fixed: false, hidden: false, overflow: true},
           {prop: 'port', label: '端口', fixed: false, hidden: false, overflow: true},
           {prop: 'username', label: '用户名', fixed: false, hidden: false, overflow: true},

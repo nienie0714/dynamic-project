@@ -164,7 +164,7 @@
         <el-button type="primary" :loading="transData.loading" @click="handleTransConfirm()">确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog :visible.sync="statusData.visible" :close-on-click-modal="false" width="800px" append-to-body :class="statusData.title == '更改飞机' && statusData.jointFlag == 1 ? 'other-dialog menu-status-dialog change-aircraft-dialog' : 'other-dialog menu-status-dialog'" @close="closeStatusDialog">
+    <el-dialog :visible.sync="statusData.visible" :close-on-click-modal="false" width="800px" append-to-body class="other-dialog menu-status-dialog" @close="closeStatusDialog">
       <div slot="title" class="dialog-header">
         <img :src="require('@img/title_deco.png')" />
         <span class="header-title">{{statusData.title}}</span>
@@ -187,12 +187,12 @@
           <el-col :span="8"><el-input type="input" v-model.trim="statusData.data.stand" disabled></el-input></el-col>
           <el-col :span="4">
             <div v-if="statusData.data.key == 'progressStatus'">进展状态</div>
-            <div v-if="statusData.data.key == 'abnormalStatus' || statusData.data.key == 'permission' || statusData.data.key == 'exchange'">进出港</div>
+            <div v-if="statusData.data.key == 'abnormalStatus'">进出港</div>
           </el-col>
           <el-col :span="8" v-if="statusData.data.key == 'progressStatus'">
             <el-input type="input" v-model.trim="statusData.progressStatusCn" disabled></el-input>
           </el-col>
-          <el-col :span="8" v-if="statusData.data.key == 'abnormalStatus' || statusData.data.key == 'permission' || statusData.data.key == 'exchange'">
+          <el-col :span="8" v-if="statusData.data.key == 'abnormalStatus'">
             <el-radio-group v-model="statusData.data.inOutFlag" disabled>
               <el-radio-button v-for="option in statusData.options.inOutFlagList" :key="option.key" :label="option.key"> {{ option.value }}</el-radio-button>
             </el-radio-group>
@@ -237,7 +237,7 @@
             </el-col>
           </el-row>
         </template>
-        <!-- 发布开始值机 -->
+        <!-- 发布开始值机 todo:下拉框？-->
         <template v-if="['发布开始值机', '发布值机截止', '发布开始登机', '发布催促登机'].includes(statusData.title)">
           <el-row :gutter="20">
             <el-col :span="4"><div>值机区域</div></el-col>
@@ -283,7 +283,7 @@
           </el-row>
         </template>
         <!-- ··········· 异常 ··········· -->
-        <template v-if="statusData.data.key == 'abnormalStatus' || statusData.data.type == 'permission' || statusData.data.key == 'exchange'">
+        <template v-if="statusData.data.key == 'abnormalStatus'">
           <el-row :gutter="20">
             <el-col :span="4"><div></div>任务</el-col>
             <el-col :span="8">
@@ -296,8 +296,6 @@
               </el-radio-group>
             </el-col>
           </el-row>
-        </template>
-        <template v-if="statusData.data.key == 'abnormalStatus'">
           <el-row :gutter="20">
             <el-col :span="4"><div>内部异常原因</div></el-col>
             <el-col :span="8">
@@ -341,71 +339,6 @@
             <el-col :span="8">
               <el-radio-group v-model="statusData.data.isDly">
                 <el-radio-button v-for="option in statusData.options.isDlyList" :key="option.key" :label="option.key"> {{ option.value }}</el-radio-button>
-              </el-radio-group>
-            </el-col>
-          </el-row>
-        </template>
-        <!-- ··········· 允许登机 ··········· -->
-        <template v-if="statusData.data.key == 'permission'">
-          <el-row :gutter="20">
-            <el-col :span="4"><div>允许登机时间</div></el-col>
-            <el-col :span="8">
-              <el-date-picker v-model="statusData.data.gateTime" type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm:ss"></el-date-picker>
-            </el-col>
-          </el-row>
-        </template>
-        <!-- ··········· 更换飞机 ··········· -->
-        <template v-if="statusData.data.key == 'exchange' && statusData.jointFlag == 0">
-          <el-row :gutter="20">
-            <el-col :span="4"><div>新机型</div></el-col>
-            <el-col :span="8">
-              <el-select v-model="statusData.data.newAircraftType" placeholder="请选择" clearable>
-                <el-option v-for="option in statusData.options.aircraftTypeList" :key="option.aircraftIcao" :label="option.aircraftIcao" :value="option.aircraftIcao">
-                </el-option>
-              </el-select>
-            </el-col>
-            <el-col :span="4"><div></div>新机号</el-col>
-            <el-col :span="8">
-              <el-input type="input" v-model.trim="statusData.data.newAircraftNo"  placeholder="请输入新机号"></el-input>
-            </el-col>
-          </el-row>
-        </template>
-        <!-- ··········· 更换飞机(拼接)todo：未测，待航班动态拼接做完后再测 ··········· -->
-        <template v-if="statusData.data.key == 'exchange' && statusData.jointFlag == 1">
-        <hr>
-          <el-row :gutter="20">
-            <el-col :span="4"><div>航空公司</div></el-col>
-            <el-col :span="8"><el-input type="input" v-model.trim="statusData.data.airlineCnD" disabled></el-input></el-col>
-            <el-col :span="4"><div></div>航班号</el-col>
-            <el-col :span="8"><el-input type="input" v-model.trim="statusData.data.flightNoD" disabled></el-input></el-col>
-          </el-row>
-          <el-row :gutter="20">
-            <el-col :span="4"><div>机型</div></el-col>
-            <el-col :span="8"><el-input type="input" v-model.trim="statusData.data.aircraftTypeD" disabled></el-input></el-col>
-            <el-col :span="4"><div></div>机号</el-col>
-            <el-col :span="8"><el-input type="input" v-model.trim="statusData.data.aircraftNoD" disabled></el-input></el-col>
-          </el-row>
-          <el-row :gutter="20">
-            <el-col :span="4"><div>机位</div></el-col>
-            <el-col :span="8"><el-input type="input" v-model.trim="statusData.data.standD" disabled></el-input></el-col>
-            <el-col :span="4">
-              <div>进出港</div>
-            </el-col>
-            <el-col :span="8" v-if="statusData.data.key == 'abnormalStatus' || statusData.data.key == 'permission' || statusData.data.key == 'exchange'">
-              <el-radio-group v-model="statusData.data.inOutFlagD" disabled>
-                <el-radio-button v-for="option in statusData.options.inOutFlagList" :key="option.key" :label="option.key"> {{ option.value }}</el-radio-button>
-              </el-radio-group>
-            </el-col>
-          </el-row>
-          <el-row :gutter="20">
-            <el-col :span="4"><div></div>任务</el-col>
-            <el-col :span="8">
-              <el-input type="input" v-model.trim="statusData.data.taskCnD" disabled></el-input>
-            </el-col>
-            <el-col :span="4"><div>属性</div></el-col>
-            <el-col :span="8">
-              <el-radio-group v-model="statusData.data.attrD" disabled>
-                <el-radio-button v-for="option in statusData.options.attrList" :key="option.key" :label="option.key"> {{ option.value }}</el-radio-button>
               </el-radio-group>
             </el-col>
           </el-row>
@@ -635,7 +568,7 @@ export default {
               },
               {
                 index: '0-1',
-                label: '撤销',
+                label: '撤销', // todo:当前是什么就能撤销什么
                 disabled: false,
                 children: [
                   {
@@ -1026,55 +959,33 @@ export default {
                 index: '2-0',
                 label: '允许登机',
                 disabled: false,
-                method: this.openStatusDialog,
-                data: {
-                  title: '允许登机',
-                  url: '/dynamicFlight/publish',
-                  type: 'permission',
-                  inOutFlag: 'A',
-                  key: 'permission',
-                  value: 'board'
-                }
+                method: this.confirmPlan
               },
               {
                 index: '2-1',
-                label: '更改飞机',
-                disabled: false,
-                method: this.openStatusDialog,
-                data: {
-                  title: '更改飞机',
-                  url: '/dynamicFlight/publish',
-                  type: 'exchange',
-                  inOutFlag: 'A',
-                  key: 'exchange',
-                  value: 'flt'
-                }
-              },
-              {
-                index: '2-2',
                 label: '航班拼接',
                 disabled: false,
                 method: this.confirmPlan
               },
               {
-                index: '2-3',
+                index: '2-2',
                 label: '断开拼接',
                 disabled: false,
                 method: this.confirmPlan
               },
               {
-                index: '2-4',
+                index: '2-3',
                 label: '机位回收',
                 disabled: false,
                 children: [
                   {
-                    index: '2-4-0',
+                    index: '2-3-0',
                     label: '进港',
                     disabled: false,
                     method: this.confirmPlan
                   },
                   {
-                    index: '2-4-1',
+                    index: '2-3-1',
                     label: '出港',
                     disabled: false,
                     method: this.confirmPlan
@@ -1082,12 +993,12 @@ export default {
                 ]
               },
               {
-                index: '2-5',
+                index: '2-4',
                 label: '航班结束',
                 disabled: false,
                 children: [
                   {
-                    index: '2-5-0',
+                    index: '2-4-0',
                     label: '进港',
                     disabled: false,
                     method: this.flightFlagChange,
@@ -1099,7 +1010,7 @@ export default {
                     }
                   },
                   {
-                    index: '2-5-1',
+                    index: '2-4-1',
                     label: '出港',
                     disabled: false,
                     method: this.flightFlagChange,
@@ -1119,12 +1030,12 @@ export default {
                 ]
               },
               {
-                index: '2-6',
+                index: '2-5',
                 label: '取消航班结束',
                 disabled: false,
                 children: [
                   {
-                    index: '2-6-0',
+                    index: '2-5-0',
                     label: '进港',
                     disabled: false,
                     method: this.flightFlagChange,
@@ -1136,7 +1047,7 @@ export default {
                     }
                   },
                   {
-                    index: '2-6-1',
+                    index: '2-5-1',
                     label: '出港',
                     disabled: false,
                     method: this.flightFlagChange,
@@ -1156,7 +1067,7 @@ export default {
                 ]
               },
               {
-                index: '2-7',
+                index: '2-6',
                 label: '发布VIP',
                 disabled: false,
                 method: this.vipFlagChange,
@@ -1173,7 +1084,7 @@ export default {
                 ]
               },
               {
-                index: '2-8',
+                index: '2-7',
                 label: '取消VIP',
                 disabled: false,
                 method: this.vipFlagChange,
@@ -1250,10 +1161,8 @@ export default {
       statusData: {
         loading: false,
         visible: false,
-        diaWidth: '800px',
         title: '',
         url: '',
-        jointFlag: false,
         options: {
           standList: [],
           reasonList: [],
@@ -2319,7 +2228,7 @@ export default {
       this.$set(statusData.data, 'key', item.key)
       this.$set(statusData.data, 'value', item.value)
 
-      //  ------- 正常 -------------
+      // 发布
       if (item.type == 'publish' && item.value == 'ONR') {
         // 前站起飞
         this.$set(statusData.data, 'prevStation', data.prevStation)
@@ -2334,34 +2243,25 @@ export default {
         this.$set(statusData.data, 'prevDepTimeA', data.prevDepTimeA) // 前方实际起飞时间
         this.$set(statusData.data, 'ata', this.formatterTimeOfYMDHMS(this.newTime, '-')) // 实际到达时间
       } else if (item.type == 'publish' && (item.value == 'CKI' || item.value == 'CKO' || item.value == 'BOR')) {
-        this.statusData.options.checkinRegionList = []
         // 开始值机  值机截止 开始登机
         queryAll('/airportResource/terminalArea/queryAll').then(res => {
-          if (res.data.code == 0) {
-            this.statusData.options.checkinRegionList = res.data.data
-            queryAll('/airportResource/terminalResource/queryAll', {resourceType: 'COUNTER'}).then(resa => {
-              this.statusData.options.checkinCounterList = resa.data.data
-              this.$set(statusData.data, 'checkinRegion', data.checkinRegion)
-              this.$set(statusData.data, 'checkinCounter', data.checkinCounter)
-            })
-          } else {
-            this.showError('获取值机区域列表', '请重新尝试 !')
-          }
-        })
+          this.statusData.options.checkinRegionList = res.data.data
+        }) // terminalAreaNo name checkinRegion
+        queryAll('/airportResource/terminalResource/queryAll', {resourceType: 'COUNTER'}).then(res => {
+          this.statusData.options.checkinCounterList = res.data.data
+        }) // resourceId resourceNo checkinCounter
+        this.$set(statusData.data, 'checkinRegion', data.checkinRegion)
+        this.$set(statusData.data, 'checkinCounter', data.checkinCounter)
       } else if (item.type == 'publish' && (item.value == 'LBD' || item.value == 'POK')) {
         // 催促登机
         queryAll('/airportResource/terminalArea/queryAll').then(res => {
-          if (res.data.code == 0) {
-            this.statusData.options.checkinRegionList = res.data.data
-            queryAll('/airportResource/terminalResource/queryAll', {resourceType: 'COUNTER'}).then(resa => {
-              this.statusData.options.checkinCounterList = resa.data.data
-              this.$set(statusData.data, 'checkinRegion', data.checkinRegion)
-              this.$set(statusData.data, 'checkinCounter', data.checkinCounter)
-            })
-          } else {
-            this.showError('获取值机区域列表', '请重新尝试 !')
-          }
+          this.statusData.options.checkinRegionList = res.data.data
         })
+        queryAll('/airportResource/terminalResource/queryAll', {resourceType: 'COUNTER'}).then(res => {
+          this.statusData.optionscheckin.CounterList = res.data.data
+        })
+        this.$set(statusData.data, 'checkinRegion', data.checkinRegion)
+        this.$set(statusData.data, 'checkinCounter', data.checkinCounter)
         this.$set(statusData.data, 'std', data.std) // 计划起飞时间
         this.$set(statusData.data, 'etd', data.etd) // 预计起飞时间
       } else if (item.type == 'publish' && item.value == 'DEP') {
@@ -2375,27 +2275,24 @@ export default {
       // ------- 异常 -------------
       if (item.key == 'abnormalStatus' && item.type == 'publish') {
         queryAll('/basicdata/abnormalreason/queryAll', {abnormalFlag: 'Y'}).then(res => {
-          if (res.data.code == 0) {
-            this.statusData.options.reasonList = res.data.data
-            this.$set(statusData.data, 'intAbnormalResson', null)
-            this.$set(statusData.data, 'abnormalResson', null)
-          } else {
-            this.showError('获取异常状态列表', '请重新尝试 !')
-          }
+          this.statusData.options.reasonList = res.data.data
         })
-      }
-      if ((item.key == 'abnormalStatus' && item.type == 'publish') || item.type == 'permission' || item.type == 'exchange') {
+
         this.$store.commit('setOption', 'attr')
         this.statusData.options.attrList = _.cloneDeep(this.$store.getters.getOption)
         this.$set(statusData.data, 'attr', data.attr)
         this.$set(statusData.data, 'task', data.task)
         this.$set(statusData.data, 'taskCn', data.taskCn)
 
+        this.$set(statusData.data, 'intAbnormalResson', null)
+        this.$set(statusData.data, 'abnormalResson', null)
+
         this.$store.commit('setOption', 'fltType')
         this.statusData.options.inOutFlagList = _.cloneDeep(this.$store.getters.getOption)
       }
       if (item.key == 'abnormalStatus' && item.value == 'DLY') {
-        // 航班延误  本站计划时间 预计时间
+        // 航班延误
+        // 本站计划时间 预计时间
         if (statusData.data.inOutFlag == 'A') {
           this.$set(statusData.data, 'sta', data.sta) // 进港航班，则本站计划时间为本站计划落地时间，本站预计时间为预计本站落地时间
           this.$set(statusData.data, 'eta', data.eta)
@@ -2405,87 +2302,20 @@ export default {
         }
         this.$store.commit('setOption', 'isYOrN')
         this.statusData.options.isDlyList = _.cloneDeep(this.$store.getters.getOption)
+        // todo: 有点延误选择“是”，则必须填写本站预计时间，否则，无需填写.::添加校验
         this.$set(statusData.data, 'isDly', null)
       }
 
-      // ------- 允许登机 -------------
-      if (item.type == 'permission') {
-        this.$set(statusData.data, 'gateTime', null)
-      }
-
-      // 航班是否拼接
-      statusData.jointFlag = statusData.data.inOutFlag.indexOf('|') == -1 ? 0 : 1
-      // 换飞机
-      if (item.key == 'exchange') {
-        // 不是拼接航班
-        if (!statusData.jointFlag) {
-          queryAll('/basicdata/aircraftType/queryAll').then(res => {
-            if (res.data.code == 0) {
-              this.statusData.options.aircraftTypeList = res.data.data
-              this.$set(statusData.data, 'newAircraftType', null)
-            } else {
-              this.showError('获取机型列表', '请重新尝试 !')
-            }
-          })
-          // {key: 'aircraftNo', label: '飞机号', type: 'select', filterable: true, getOptions: '/basicdata/aircraft/queryAll', itemKey: 'aircraftNo', itemLabel: 'aircraftNo', change: this.changeArcft},
-          this.$set(statusData.data, 'newAircraftNo', null)
-        } else {
-          _.forEach(statusData.data, (value, key) => {
-            let i = value.indexOf('|')
-            if (i != -1) {
-              this.$set(statusData.data, key + 'D', value.slice(i + 1))
-            }
-          })
-
-          this.$set(statusData.data, 'inOutFlag', 'A')
-          this.$set(statusData.data, 'inOutFlagD', 'D')
-          console.log(statusData)
-        }
-      }
-
+      // this.$set(statusData.data, 'dynamicFlightId', data.dynamicFlightId)
       if (item.type == 'publish') {
+        // this.$set(statusData.data, 'prevDepTimeA', this.newTime)
         statusData.visible = true
         document.addEventListener('keypress', this.handleStatusConfirm, false)
       } else if (item.type == 'revoke') {
         this.revokeData.visible = true
         this.revokeData.info = `${statusData.data.airline}${statusData.data.flightNo}：是否${statusData.title}？`
         document.addEventListener('keypress', this.handleStatusConfirm, false)
-      } else if (item.type == 'permission' || item.type == 'exchange') {
-        statusData.visible = true
-        document.addEventListener('keypress', this.handleStatusConfirm, false)
       }
-    },
-    openExFltDialog (data, item) {
-      let statusData = this.statusData
-      statusData.title = item.title
-      statusData.progressStatusCn = item.title.substr(2)
-      statusData.url = item.url
-      this.$set(statusData.data, 'type', item.type)
-
-      this.$set(statusData.data, 'dynamicFlightId', data.dynamicFlightId)
-      this.$set(statusData.data, 'airline', data.airline)
-      this.$set(statusData.data, 'airlineCn', data.airlineCn)
-      this.$set(statusData.data, 'flightNo', data.flightNo)
-      this.$set(statusData.data, 'aircraftType', data.aircraftType)
-      this.$set(statusData.data, 'aircraftNo', data.aircraftNo)
-
-      this.$set(statusData.data, 'stand', data.stand)
-      this.$set(statusData.data, 'inOutFlag', data.inOutFlag)
-      this.$set(statusData.data, item.key, item.value)
-      this.$set(statusData.data, 'key', item.key)
-      this.$set(statusData.data, 'value', item.value)
-
-      this.$store.commit('setOption', 'attr')
-      this.statusData.options.attrList = _.cloneDeep(this.$store.getters.getOption)
-      this.$set(statusData.data, 'attr', data.attr)
-      this.$set(statusData.data, 'task', data.task)
-      this.$set(statusData.data, 'taskCn', data.taskCn)
-
-      this.$store.commit('setOption', 'fltType')
-      this.statusData.options.inOutFlagList = _.cloneDeep(this.$store.getters.getOption)
-
-      statusData.visible = true
-      document.addEventListener('keypress', this.handleStatusConfirm, false)
     },
     handleStatusConfirm (event) {
       if ((event && event.keyCode == 13) || !event) {
@@ -2761,9 +2591,6 @@ export default {
 
 .menu-status-dialog>.el-dialog {
   height: 500px;
-}
-.change-aircraft-dialog>.el-dialog {
-  height: 600px !important;
 }
 /* .menu-status-dialog .dialog-body>div:first-of-type {
   font-size: 18px;
