@@ -2200,7 +2200,6 @@ export default {
     handleDetail (row) {
       this.formData.title = '详情'
       if (~_.findIndex(this.options.fltType.options, ['key', row['inOutFlag']])) {
-        this.$set(row, this.formData.key, row[this.formData.key + row['inOutFlag']])
         this.setEditInfo(JSON.parse(JSON.stringify(row)))
       } else {
         this.formData.edit.row = JSON.parse(JSON.stringify(row))
@@ -2235,7 +2234,6 @@ export default {
       }
       this.formData.title = '编辑'
       if (~_.findIndex(this.options.fltType.options, ['key', row['inOutFlag']])) {
-        this.$set(row, this.formData.key, row[this.formData.key + row['inOutFlag']])
         this.setEditInfo(JSON.parse(JSON.stringify(row)))
       } else {
         this.formData.edit.row = JSON.parse(JSON.stringify(row))

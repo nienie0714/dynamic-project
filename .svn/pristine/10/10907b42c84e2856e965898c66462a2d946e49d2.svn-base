@@ -329,10 +329,10 @@ export default {
             getOptions: '/basicdata/airport/queryAll',
             saveKey: 'lstPlanFlightStation',
             tabelFields: [
-              {prop: 'station', label: '经停站', propObj: 'stationObj', propCn: 'stationCn', type: 'select', width: '135', valueKey: 'airportIata', itemKey: 'airportIata', itemLabel: 'briefC'},
+              {prop: 'station', label: '经停站', propObj: 'stationObj', propCn: 'stationCn', type: 'select', width: '140', valueKey: 'airportIata', itemKey: 'airportIata', itemLabel: 'briefC'},
               {prop: 'sta', label: '计划降落', type: 'datetime', iconClass: 'a', width: '155', format: 'yyyy-MM-dd HH:mm', valueFormat: 'yyyy-MM-dd HH:mm'},
               {prop: 'std', label: '计划起飞', type: 'datetime', iconClass: 'a', width: '155', format: 'yyyy-MM-dd HH:mm', valueFormat: 'yyyy-MM-dd HH:mm'},
-              {prop: 'sortkey', label: '航站顺序', width: '65', type: 'number', min: 0, max: 999}
+              {prop: 'sortkey', label: '航站顺序', width: '70', type: 'number', min: 0, max: 999}
             ],
             tempData: {},
             tempArr: []
@@ -1138,10 +1138,6 @@ export default {
     handleDetail (row) {
       this.formData.title = '详情'
       if (~_.findIndex(this.options.fltType.options, ['key', row['inOutFlag']])) {
-        if (row[this.formData.key]) {
-        } else {
-          this.$set(row, this.formData.key, row[this.formData.key + row['inOutFlag']])
-        }
         this.setEditInfo(JSON.parse(JSON.stringify(row)))
       } else {
         this.formData.edit.row = JSON.parse(JSON.stringify(row))
@@ -1167,10 +1163,6 @@ export default {
       }
       this.formData.title = '编辑'
       if (~_.findIndex(this.options.fltType.options, ['key', row['inOutFlag']])) {
-        if (row[this.formData.key]) {
-        } else {
-          this.$set(row, this.formData.key, row[this.formData.key + row['inOutFlag']])
-        }
         this.setEditInfo(JSON.parse(JSON.stringify(row)))
       } else {
         this.formData.edit.row = JSON.parse(JSON.stringify(row))

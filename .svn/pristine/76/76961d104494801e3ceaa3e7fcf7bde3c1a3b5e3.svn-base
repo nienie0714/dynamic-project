@@ -250,7 +250,7 @@
             <el-col :span="4"><div></div>值机柜台</el-col>
             <el-col :span="8">
               <el-select v-model="statusData.data.checkinCounter" placeholder="请选择" clearable>
-                <el-option v-for="option in statusData.options.checkinCounterList" :key="option.resourceId" :label="option.resourceNo" :value="option.resourceNo">
+                <el-option v-for="option in statusData.options.checkinCounterList" :key="option.resourceId" :label="option.resourceNo" :value="option.resourceId">
                 </el-option>
               </el-select>
             </el-col>
@@ -1400,11 +1400,11 @@ export default {
           {key: 'terminal', label: '航站楼', type: 'select', filterable: true, optionsKey: 'Terminal', itemKey: 'terminalNo', itemLabel: 'name', change: this.changeTmn},
           {key: 'runway', label: '跑道', type: 'select', filterable: true, optionsKey: 'Runway', itemKey: 'runwayNo', itemLabel: 'runwayNo'},
           {key: 'agency', label: '代理', type: 'select', filterable: true, optionsKey: 'Agency', itemKey: 'code', itemLabel: 'briefC'},
-          {key: 'belt', label: '行李转盘', type: 'select', filterable: true, getOptions: '/airportResource/terminalResource/queryAll', itemKey: 'resourceId', itemLabel: 'resourceNo', itemValue: 'resourceNo', optionsQuery: {resourceType: 'BELT'}},
+          {key: 'belt', label: '行李转盘', type: 'select', filterable: true, getOptions: '/airportResource/terminalResource/queryAll', itemKey: 'resourceId', itemLabel: 'resourceNo', optionsQuery: {resourceType: 'BELT'}},
           {key: 'checkinRegion', label: '值机区域', type: 'select', filterable: true, optionsKey: 'TerminalArea', itemKey: 'terminalAreaNo', itemLabel: 'name'},
-          {key: 'checkinCounter', label: '值机柜台', type: 'select', filterable: true, getOptions: '/airportResource/terminalResource/queryAll', itemKey: 'resourceId', itemLabel: 'resourceNo', itemValue: 'resourceNo', optionsQuery: {resourceType: 'COUNTER'}},
+          {key: 'checkinCounter', label: '值机柜台', type: 'select', filterable: true, getOptions: '/airportResource/terminalResource/queryAll', itemKey: 'resourceId', itemLabel: 'resourceNo', optionsQuery: {resourceType: 'COUNTER'}},
           {key: 'gate', label: '登机口', type: 'select', filterable: true, optionsKey: 'Gate', itemKey: 'gateNo', itemLabel: 'gateNo'},
-          {key: 'chute', label: '行李滑槽', type: 'select', filterable: true, getOptions: '/airportResource/terminalResource/queryAll', itemKey: 'resourceId', itemLabel: 'resourceNo', itemValue: 'resourceNo', optionsQuery: {resourceType: 'CHUTE'}},
+          {key: 'chute', label: '行李滑槽', type: 'select', filterable: true, getOptions: '/airportResource/terminalResource/queryAll', itemKey: 'resourceId', itemLabel: 'resourceNo', optionsQuery: {resourceType: 'CHUTE'}},
           {key: 'psgNumTotal', label: '旅客总数', type: 'number', position: 'right', step: 1, min: 0},
           {key: 'psgNumAdult', label: '成人', type: 'number', position: 'right', step: 1, min: 0},
           {key: 'psgNumBaby', label: '婴儿', type: 'number', position: 'right', step: 1, min: 0},
@@ -2200,7 +2200,6 @@ export default {
     handleDetail (row) {
       this.formData.title = '详情'
       if (~_.findIndex(this.options.fltType.options, ['key', row['inOutFlag']])) {
-        this.$set(row, this.formData.key, row[this.formData.key + row['inOutFlag']])
         this.setEditInfo(JSON.parse(JSON.stringify(row)))
       } else {
         this.formData.edit.row = JSON.parse(JSON.stringify(row))
@@ -2235,7 +2234,6 @@ export default {
       }
       this.formData.title = '编辑'
       if (~_.findIndex(this.options.fltType.options, ['key', row['inOutFlag']])) {
-        this.$set(row, this.formData.key, row[this.formData.key + row['inOutFlag']])
         this.setEditInfo(JSON.parse(JSON.stringify(row)))
       } else {
         this.formData.edit.row = JSON.parse(JSON.stringify(row))
