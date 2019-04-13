@@ -11,7 +11,7 @@
             <el-dropdown-item :divided="true" @click.native="openTransDialog">自动航班结束</el-dropdown-item>
             <el-dropdown-item :divided="true" @click.native="jointReq">航班拼接</el-dropdown-item>
             <el-dropdown-item :divided="true" @click.native="unJointReq">断开拼接</el-dropdown-item>
-            <!-- <el-dropdown-item :divided="true" @click.native="openTransDialog">自动发布VIP</el-dropdown-item> -->
+            <el-dropdown-item :divided="true" @click.native="openTransDialog">自动发布VIP</el-dropdown-item>
             <el-dropdown-item :divided="true" @click.native="publishDLYBatch">发布延误</el-dropdown-item>
             <el-dropdown-item :divided="true" @click.native="openTransDialog">转历史</el-dropdown-item>
           </el-dropdown-menu>
@@ -21,7 +21,7 @@
     <el-main class="whole-table-view mult-title-table">
       <div class="whole-table-header">
         <div class="whole-table-title">查询结果</div>
-        <Tool-button-view :permissions="permissions" :selectionCount="0" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete">
+        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete">
           <template slot="button-slot-scope-pre">
             <div v-if="permissions.import" class="tool-div-button tool-import" title="导入" @click="handleImport"></div>
           </template>
@@ -242,14 +242,14 @@
           <el-row :gutter="20">
             <el-col :span="4"><div>值机区域</div></el-col>
             <el-col :span="8">
-              <el-select v-model="statusData.data.checkinRegions" multiple placeholder="请选择" clearable>
+              <el-select v-model="statusData.data.checkinRegion" placeholder="请选择" clearable>
                 <el-option v-for="option in statusData.options.checkinRegionList" :key="option.terminalAreaNo" :label="option.name" :value="option.terminalAreaNo">
                 </el-option>
               </el-select>
             </el-col>
             <el-col :span="4"><div></div>值机柜台</el-col>
             <el-col :span="8">
-              <el-select v-model="statusData.data.checkinCounters" multiple placeholder="请选择" clearable>
+              <el-select v-model="statusData.data.checkinCounter" placeholder="请选择" clearable>
                 <el-option v-for="option in statusData.options.checkinCounterList" :key="option.resourceId" :label="option.resourceNo" :value="option.resourceNo">
                 </el-option>
               </el-select>
@@ -429,7 +429,7 @@
     </el-dialog>
     <Warning-box-view :data="revokeData" @handleConfirm="handleStatusConfirm" @handleClose="closeStatusDialog"></Warning-box-view>
     <Warning-box-view :data="changeData" @handleConfirm="handleChange" @handleClose="closeChangeDialog"></Warning-box-view>
-    <Warning-box-view :data="recoveryStandData" @handleConfirm="handleRecoveryStandConfirm" @handleClose="closeRecoveryStandDialog"></Warning-box-view>
+    <Warning-box-view :data="resourceData" @handleConfirm="handleResourceConfirm" @handleClose="closeResourceDialog"></Warning-box-view>
     <Warning-box-view :data="flightFlagData" @handleConfirm="handleFlightFlagConfirm" @handleClose="closeFlightFlagDialog"></Warning-box-view>
     <Warning-box-view :data="vipFlagData" @handleConfirm="handleVipFlagConfirm" @handleClose="closeVipFlagDialog"></Warning-box-view>
   </el-container>
@@ -542,9 +542,9 @@ export default {
                       type: 'publish',
                       inOutFlag: 'D',
                       key: 'progressStatus',
-                      value: 'CKI',
-                      counterFlag: true
+                      value: 'CKI'
                     }
+                    // 特殊处理，单出 一进一出分开
                   },
                   {
                     index: '0-0-3',
@@ -557,8 +557,7 @@ export default {
                       type: 'publish',
                       inOutFlag: 'D',
                       key: 'progressStatus',
-                      value: 'CKO',
-                      counterFlag: true
+                      value: 'CKO'
                     },
                     reg: [
                       {
@@ -582,8 +581,7 @@ export default {
                       type: 'publish',
                       inOutFlag: 'D',
                       key: 'progressStatus',
-                      value: 'BOR',
-                      counterFlag: true
+                      value: 'BOR'
                     },
                     reg: [
                       {
@@ -607,8 +605,7 @@ export default {
                       type: 'publish',
                       inOutFlag: 'D',
                       key: 'progressStatus',
-                      value: 'LBD',
-                      counterFlag: true
+                      value: 'LBD'
                     },
                     reg: [
                       {
@@ -1103,7 +1100,7 @@ export default {
               {
                 index: '2-4',
                 label: '机位回收',
-                disabled: true,
+                disabled: false,
                 children: [
                   {
                     index: '2-4-0',
@@ -1244,7 +1241,7 @@ export default {
           {
             index: '3',
             label: '资源分配',
-            disabled: true,
+            disabled: false,
             children: [
               {
                 label: '值机柜台',
@@ -1326,7 +1323,7 @@ export default {
         index: null,
         row: null
       },
-      recoveryStandData: {
+      resourceData: {
         title: '提示',
         info: '',
         warning: ' ',
@@ -1334,10 +1331,8 @@ export default {
         class: ' dialog-delete-warn',
         visible: false,
         loading: false,
-        id: null,
-        row: null,
-        url: '',
-        otherResourceUrl: ''
+        data: {},
+        url: ''
       },
       flightFlagData: {
         title: '提示',
@@ -1433,7 +1428,7 @@ export default {
           {key: 'dynamicFlightId', label: '编号', type: 'pInput', isHidden: true},
           {key: 'airline', label: '航空公司', type: 'select', filterable: true, optionsKey: 'Airline', itemKey: 'airlineIata', itemLabel: 'briefC'},
           {key: 'flightNo', label: '航班号', type: 'input', toUpper: true, maxlength: 5},
-          {key: 'execDate', label: '执行日期', type: 'date', format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd', defaultValue: '', pickerOpt: this.pickerOptMethod},
+          {key: 'execDate', label: '执行日期', type: 'date', format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd', defaultValue: ''},
           {key: 'attr', label: '属性', type: 'tabs', options: []},
           {key: 'task', label: '航班任务', type: 'select', filterable: true, optionsKey: 'FlightTask', itemKey: 'taskCode', itemLabel: 'briefC'},
           {key: 'inOutFlag', label: '进出标识', type: 'tabs', tabsKey: 'fltType', options: [], change: this.changeFlag},
@@ -1456,11 +1451,11 @@ export default {
           {key: 'terminal', label: '航站楼', type: 'select', filterable: true, optionsKey: 'Terminal', itemKey: 'terminalNo', itemLabel: 'name', change: this.changeTmn},
           {key: 'runway', label: '跑道', type: 'select', filterable: true, optionsKey: 'Runway', itemKey: 'runwayNo', itemLabel: 'runwayNo'},
           {key: 'agency', label: '代理', type: 'select', filterable: true, optionsKey: 'Agency', itemKey: 'code', itemLabel: 'briefC'},
-          {key: 'belts', label: '行李转盘', type: 'select', multiple: true, saveKey: 'belt', filterable: true, getOptions: '/airportResource/terminalResource/queryAll', itemKey: 'resourceId', itemLabel: 'resourceNo', itemValue: 'resourceNo', optionsQuery: {resourceType: 'BELT'}},
-          {key: 'checkinRegions', label: '值机区域', type: 'select', multiple: true, saveKey: 'checkinRegion', filterable: true, getOptions: '/airportResource/terminalArea/queryAll', itemKey: 'terminalAreaNo', itemLabel: 'name', optionsQuery: {}},
-          {key: 'checkinCounters', label: '值机柜台', type: 'select', multiple: true, saveKey: 'checkinCounter', filterable: true, getOptions: '/airportResource/terminalResource/queryAll', itemKey: 'resourceId', itemLabel: 'resourceNo', itemValue: 'resourceNo', optionsQuery: {resourceType: 'COUNTER'}},
-          {key: 'gates', label: '登机口', type: 'select', multiple: true, saveKey: 'gate', filterable: true, getOptions: '/airportResource/gate/queryAll', itemKey: 'gateNo', itemLabel: 'gateNo', optionsQuery: {}},
-          {key: 'chutes', label: '行李滑槽', type: 'select', multiple: true, saveKey: 'chute', filterable: true, getOptions: '/airportResource/terminalResource/queryAll', itemKey: 'resourceId', itemLabel: 'resourceNo', itemValue: 'resourceNo', optionsQuery: {resourceType: 'CHUTE'}},
+          {key: 'belt', label: '行李转盘', type: 'select', filterable: true, getOptions: '/airportResource/terminalResource/queryAll', itemKey: 'resourceId', itemLabel: 'resourceNo', itemValue: 'resourceNo', optionsQuery: {resourceType: 'BELT'}},
+          {key: 'checkinRegion', label: '值机区域', type: 'select', filterable: true, getOptions: '/airportResource/terminalArea/queryAll', itemKey: 'terminalAreaNo', itemLabel: 'name', optionsQuery: {}},
+          {key: 'checkinCounter', label: '值机柜台', type: 'select', filterable: true, getOptions: '/airportResource/terminalResource/queryAll', itemKey: 'resourceId', itemLabel: 'resourceNo', itemValue: 'resourceNo', optionsQuery: {resourceType: 'COUNTER'}},
+          {key: 'gate', label: '登机口', type: 'select', filterable: true, getOptions: '/airportResource/gate/queryAll', itemKey: 'gateNo', itemLabel: 'gateNo', optionsQuery: {}},
+          {key: 'chute', label: '行李滑槽', type: 'select', filterable: true, getOptions: '/airportResource/terminalResource/queryAll', itemKey: 'resourceId', itemLabel: 'resourceNo', itemValue: 'resourceNo', optionsQuery: {resourceType: 'CHUTE'}},
           {key: 'psgNumTotal', label: '旅客总数', type: 'number', position: 'right', step: 1, min: 0},
           {key: 'psgNumAdult', label: '成人', type: 'number', position: 'right', step: 1, min: 0},
           {key: 'psgNumBaby', label: '婴儿', type: 'number', position: 'right', step: 1, min: 0},
@@ -1536,12 +1531,6 @@ export default {
           ]
         }
       },
-      pickerOptMethod: {
-        disabledDate: (time) => {
-          return (time.getTime() < new Date(this.nowTime).getTime() - 8.64e7)
-        }
-      },
-      nowTime: null,
       // 查询条件每行个数
       colSize: 5,
       // 查询条件设置
@@ -2250,10 +2239,6 @@ export default {
           let index = _.findIndex(this.options.airport.optionsRemove, ['airportIata', this.aptLoc])
           this.options.airport.optionsRemove.splice(index, 1)
           for (let i = 0; i < this.formData.formData.length; i++) {
-            if (this.formData.formData[i].key == 'execDate') {
-              this.nowTime = JSON.parse(JSON.stringify(this.newTime))
-              this.$set(this.formData.formData[i], 'pickerOpt', this.pickerOptMethod)
-            }
             if (this.formData.formData[i].type == 'slot') {
               if (this.formData.formData[i].hasOwnProperty('tempArr')) {
                 this.formData.formData[i].tempArr = []
@@ -2329,10 +2314,6 @@ export default {
     },
     // 编辑
     handleEdit (row) {
-      if (row.endFlag == 'Y') {
-        this.showErrorCustom('当前航班已结束', '无法编辑')
-        return
-      }
       if (row.confirmedFlag == 'Y') {
         this.changeData.row = row
         this.changeData.method = this.editConfirm
@@ -2348,10 +2329,6 @@ export default {
         }
         if (['belt', 'checkinRegion', 'checkinCounter', 'gate', 'chute'].includes(this.formData.formData[i].key)) {
           this.$set(this.formData.formData[i].optionsQuery, 'terminalNo', row.terminalNo)
-        }
-        if (this.formData.formData[i].key == 'execDate') {
-          this.nowTime = JSON.parse(JSON.stringify('1970-01-01'))
-          this.$delete(this.formData.formData[i], 'pickerOpt')
         }
       }
     },
@@ -2452,7 +2429,6 @@ export default {
       statusData.title = item.title
       statusData.progressStatusCn = item.title.substr(2)
       statusData.url = item.url
-      this.$set(statusData, 'data', {})
       this.$set(statusData.data, 'type', item.type)
 
       // 发布弹框字段回显
@@ -2463,6 +2439,9 @@ export default {
       this.$set(statusData.data, 'aircraftType', data.aircraftType)
       this.$set(statusData.data, 'aircraftNo', data.aircraftNo)
       // todo: stand 跳转页面
+      // queryAll('/airportResource/aircraftStand/queryAll', {}).then(res => {
+      //   this.standList = res.data.data
+      // })
       this.$set(statusData.data, 'stand', data.stand)
       this.$set(statusData.data, 'inOutFlag', data.inOutFlag)
       this.$set(statusData.data, item.key, item.value)
@@ -2486,14 +2465,13 @@ export default {
       } else if (item.type == 'publish' && (item.value == 'CKI' || item.value == 'CKO' || item.value == 'BOR')) {
         this.statusData.options.checkinRegionList = []
         // 开始值机  值机截止 开始登机
-        queryAll('/airportResource/terminalArea/queryAll', {terminalNo: data.terminalNo == undefined ? null : data.terminalNo}).then(res => {
+        queryAll('/airportResource/terminalArea/queryAll').then(res => {
           if (res.data.code == 0) {
             this.statusData.options.checkinRegionList = res.data.data
-            queryAll('/airportResource/terminalResource/queryAll', {resourceType: 'COUNTER', terminalNo: data.terminalNo == undefined ? null : data.terminalNo}).then(resa => {
+            queryAll('/airportResource/terminalResource/queryAll', {resourceType: 'COUNTER'}).then(resa => {
               this.statusData.options.checkinCounterList = resa.data.data
-              this.$set(statusData.data, 'checkinRegions', data.checkinRegions == undefined ? [] : data.checkinRegions)
-              this.$set(statusData.data, 'checkinCounters', data.checkinCounterss == undefined ? [] : data.checkinCounterss)
-              this.$set(statusData.data, 'counterFlag', true)
+              this.$set(statusData.data, 'checkinRegion', data.checkinRegion)
+              this.$set(statusData.data, 'checkinCounter', data.checkinCounter)
             })
           } else {
             this.showError('获取值机区域列表', '请重新尝试 !')
@@ -2501,14 +2479,13 @@ export default {
         })
       } else if (item.type == 'publish' && (item.value == 'LBD' || item.value == 'POK')) {
         // 催促登机
-        queryAll('/airportResource/terminalArea/queryAll', {terminalNo: data.terminalNo == undefined ? null : data.terminalNo}).then(res => {
+        queryAll('/airportResource/terminalArea/queryAll').then(res => {
           if (res.data.code == 0) {
             this.statusData.options.checkinRegionList = res.data.data
-            queryAll('/airportResource/terminalResource/queryAll', {resourceType: 'COUNTER', terminalNo: data.terminalNo == undefined ? null : data.terminalNo}).then(resa => {
+            queryAll('/airportResource/terminalResource/queryAll', {resourceType: 'COUNTER'}).then(resa => {
               this.statusData.options.checkinCounterList = resa.data.data
-              this.$set(statusData.data, 'checkinRegions', data.checkinRegions == undefined ? [] : data.checkinRegions)
-              this.$set(statusData.data, 'checkinCounters', data.checkinCounterss == undefined ? [] : data.checkinCounterss)
-              this.$set(statusData.data, 'counterFlag', true)
+              this.$set(statusData.data, 'checkinRegion', data.checkinRegion)
+              this.$set(statusData.data, 'checkinCounter', data.checkinCounter)
             })
           } else {
             this.showError('获取值机区域列表', '请重新尝试 !')
@@ -2622,6 +2599,38 @@ export default {
           document.addEventListener('keypress', this.handleStatusConfirm, false)
         }
     },
+    openExFltDialog (data, item) {
+      let statusData = this.statusData
+      statusData.title = item.title
+      statusData.progressStatusCn = item.title.substr(2)
+      statusData.url = item.url
+      this.$set(statusData.data, 'type', item.type)
+
+      this.$set(statusData.data, 'dynamicFlightId', data.dynamicFlightId)
+      this.$set(statusData.data, 'airline', data.airline)
+      this.$set(statusData.data, 'airlineCn', data.airlineCn)
+      this.$set(statusData.data, 'flightNo', data.flightNo)
+      this.$set(statusData.data, 'aircraftType', data.aircraftType)
+      this.$set(statusData.data, 'aircraftNo', data.aircraftNo)
+
+      this.$set(statusData.data, 'stand', data.stand)
+      this.$set(statusData.data, 'inOutFlag', data.inOutFlag)
+      this.$set(statusData.data, item.key, item.value)
+      this.$set(statusData.data, 'key', item.key)
+      this.$set(statusData.data, 'value', item.value)
+
+      this.$store.commit('setOption', 'attr')
+      this.statusData.options.attrList = _.cloneDeep(this.$store.getters.getOption)
+      this.$set(statusData.data, 'attr', data.attr)
+      this.$set(statusData.data, 'task', data.task)
+      this.$set(statusData.data, 'taskCn', data.taskCn)
+
+      this.$store.commit('setOption', 'fltType')
+      this.statusData.options.inOutFlagList = _.cloneDeep(this.$store.getters.getOption)
+
+      statusData.visible = true
+      document.addEventListener('keypress', this.handleStatusConfirm, false)
+    },
     handleStatusConfirm (event) {
       if ((event && event.keyCode == 13) || !event) {
         if (this.statusData.data.key == 'progressStatus' && this.statusData.data.value == 'ONR') { // 前起
@@ -2650,11 +2659,6 @@ export default {
           } else {
             this.postStatusSuccess()
           }
-        } else if (this.statusData.data.counterFlag == true) {
-          // '发布开始值机', '发布值机截止', '发布开始登机', '发布催促登机' 有值机区域和值机柜台
-          this.$set(this.statusData.data, 'checkinRegion', this.statusData.data.checkinRegions.join())
-          this.$set(this.statusData.data, 'checkinCounter', this.statusData.data.checkinCounters.join())
-          this.postStatusSuccess()
         } else {
           this.postStatusSuccess()
         }
@@ -2687,60 +2691,20 @@ export default {
       document.removeEventListener('keypress', this.handleStatusConfirm)
     },
     recoveryStandChange (data, item) {
-      this.recoveryStandData.url = item.url
-      if (data['gate']) {
-        this.recoveryStandData.row = data
-        this.recoveryStandData.id = data[this.formData.key]
-        postData(this.recoveryStandData.url, this.recoveryStandData.id).then(res => {
-          if (res.data.code == 0) {
-            this.closeResourceDialog()
-            this.showSuccess('该航班机位回收', '')
-            if (res.data.data.flag) {
-              // this.recoveryStandData
-            }
-            this.queryDataReq(1)
-          } else {
-            this.showError('该航班机位回收', '请重新尝试')
-            this.recoveryStandData.loading = false
-          }
-        }).catch(() => {
-          this.recoveryStandData.loading = false
-        })
-      } else {
-        this.showError('')
-      }
-      /* this.$set(this.recoveryStandData.data, item.key, item.value)
+      this.resourceData.url = item.url
+      this.resourceData.data = {}
+      this.$set(this.resourceData.data, item.key, item.value)
       if (data.inOutFlag == item.inOutFlag) {
         this.$set(this.resourceData.data, 'dynamicFlightId', data.dynamicFlightId)
       } else {
         this.$set(this.resourceData.data, 'dynamicFlightId', data['dynamicFlightId' + item.inOutFlag])
       }
-      this.recoveryStandData.visible = true
-      document.addEventListener('keypress', this.handleResourceConfirm, false) */
+      this.resourceData.visible = true
+      document.addEventListener('keypress', this.handleResourceConfirm, false)
     },
-    handleRecoveryStandConfirm (data, item) {
-      this.recoveryStandData.loading = true
-      postData(this.recoveryStandData.url, this.recoveryStandData.id).then(res => {
-        if (res.data.code == 0) {
-          this.closeResourceDialog()
-          this.showSuccess('该航班机位回收', '')
-          if (res.data.data.flag) {
-            // this.recoveryStandData
-          }
-          this.queryDataReq(1)
-        } else {
-          this.showError('该航班机位回收', '请重新尝试')
-          this.recoveryStandData.loading = false
-        }
-      }).catch(() => {
-        this.recoveryStandData.loading = false
-      })
+    handleResourceConfirm (data, item) {
     },
-    closeRecoveryStandDialog () {
-      this.recoveryStandData.loading = false
-      this.recoveryStandData.visible = false
-      document.removeEventListener('keypress', this.handleResourceConfirm)
-    },
+    closeResourceDialog () {},
     flightFlagChange (data, item) {
       this.flightFlagData.url = item.url
       this.flightFlagData.data = {}

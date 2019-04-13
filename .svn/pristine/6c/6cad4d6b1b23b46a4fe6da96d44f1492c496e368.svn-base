@@ -57,7 +57,7 @@
             <!-- year/month/date/dates/week/datetime/datetimerange/daterange -->
             <!-- yyyy-年/M、MM-月/W、WW-周/dd-日/HH-24小时制/hh-12小时制、须和A、a-am、PM使用/mm-分/ss-秒/timestamp-时间戳：组件绑定类型为number -->
             <el-date-picker v-if="item.type == 'year' || item.type == 'month' || item.type == 'date' || item.type == 'dates' || item.type == 'week' || item.type == 'datetime' || item.type == 'datetimerange' || item.type == 'daterange'"
-            v-model="editData[item.key]" :type="item.type" :placeholder="'请选择' + item.label" :editable="item.editable" :clearable="item.clearable" :picker-options="item.hasOwnProperty('pickerOpt') ? item.pickerOpt : {}"
+            v-model="editData[item.key]" :type="item.type" :placeholder="'请选择' + item.label" :editable="item.editable" :clearable="item.clearable"
             :size="item.size" :align="item.align" :default-value="item.defaultDate" :format="item.format" :value-format="item.valueFormat" :readonly="item.readonly" :disabled="item.disabled"
             :start-placeholder="item.startPlaceholder || '开始时间'" :end-placeholder="item.endPlaceholder || '结束时间'" :range-separator="item.separator"
             @change="itemChangeHandle(item, item.change)"></el-date-picker>

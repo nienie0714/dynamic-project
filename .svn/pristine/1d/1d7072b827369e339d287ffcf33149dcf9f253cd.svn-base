@@ -1536,12 +1536,6 @@ export default {
           ]
         }
       },
-      pickerOptMethod: {
-        disabledDate: (time) => {
-          return (time.getTime() < new Date(this.nowTime).getTime() - 8.64e7)
-        }
-      },
-      nowTime: null,
       // 查询条件每行个数
       colSize: 5,
       // 查询条件设置
@@ -1692,6 +1686,13 @@ export default {
   methods: {
     // customQueryMethod () {
     // },
+    pickerOptMethod () {
+      return {
+        disabledDate: (time) => {
+          return (time.getTime() < new Date('').getTime() - 8.64e7)
+        }
+      }
+    },
     confirmPlan () {},
     dateRangeReg (rule, value, callback) {
       if (value.hasOwnProperty('std') && value.hasOwnProperty('sta')) {
@@ -2250,10 +2251,6 @@ export default {
           let index = _.findIndex(this.options.airport.optionsRemove, ['airportIata', this.aptLoc])
           this.options.airport.optionsRemove.splice(index, 1)
           for (let i = 0; i < this.formData.formData.length; i++) {
-            if (this.formData.formData[i].key == 'execDate') {
-              this.nowTime = JSON.parse(JSON.stringify(this.newTime))
-              this.$set(this.formData.formData[i], 'pickerOpt', this.pickerOptMethod)
-            }
             if (this.formData.formData[i].type == 'slot') {
               if (this.formData.formData[i].hasOwnProperty('tempArr')) {
                 this.formData.formData[i].tempArr = []
@@ -2329,10 +2326,6 @@ export default {
     },
     // 编辑
     handleEdit (row) {
-      if (row.endFlag == 'Y') {
-        this.showErrorCustom('当前航班已结束', '无法编辑')
-        return
-      }
       if (row.confirmedFlag == 'Y') {
         this.changeData.row = row
         this.changeData.method = this.editConfirm
@@ -2348,10 +2341,6 @@ export default {
         }
         if (['belt', 'checkinRegion', 'checkinCounter', 'gate', 'chute'].includes(this.formData.formData[i].key)) {
           this.$set(this.formData.formData[i].optionsQuery, 'terminalNo', row.terminalNo)
-        }
-        if (this.formData.formData[i].key == 'execDate') {
-          this.nowTime = JSON.parse(JSON.stringify('1970-01-01'))
-          this.$delete(this.formData.formData[i], 'pickerOpt')
         }
       }
     },
@@ -2486,13 +2475,13 @@ export default {
       } else if (item.type == 'publish' && (item.value == 'CKI' || item.value == 'CKO' || item.value == 'BOR')) {
         this.statusData.options.checkinRegionList = []
         // 开始值机  值机截止 开始登机
-        queryAll('/airportResource/terminalArea/queryAll', {terminalNo: data.terminalNo == undefined ? null : data.terminalNo}).then(res => {
+        queryAll('/airportResource/terminalArea/queryAll', {terminalNo: data.terminalNo}).then(res => {
           if (res.data.code == 0) {
             this.statusData.options.checkinRegionList = res.data.data
-            queryAll('/airportResource/terminalResource/queryAll', {resourceType: 'COUNTER', terminalNo: data.terminalNo == undefined ? null : data.terminalNo}).then(resa => {
+            queryAll('/airportResource/terminalResource/queryAll', {resourceType: 'COUNTER', terminalNo: data.terminalNo}).then(resa => {
               this.statusData.options.checkinCounterList = resa.data.data
-              this.$set(statusData.data, 'checkinRegions', data.checkinRegions == undefined ? [] : data.checkinRegions)
-              this.$set(statusData.data, 'checkinCounters', data.checkinCounterss == undefined ? [] : data.checkinCounterss)
+              this.$set(statusData.data, 'checkinRegions', data.checkinRegions)
+              this.$set(statusData.data, 'checkinCounters', data.checkinCounters)
               this.$set(statusData.data, 'counterFlag', true)
             })
           } else {
@@ -2501,13 +2490,13 @@ export default {
         })
       } else if (item.type == 'publish' && (item.value == 'LBD' || item.value == 'POK')) {
         // 催促登机
-        queryAll('/airportResource/terminalArea/queryAll', {terminalNo: data.terminalNo == undefined ? null : data.terminalNo}).then(res => {
+        queryAll('/airportResource/terminalArea/queryAll', {terminalNo: data.terminalNo}).then(res => {
           if (res.data.code == 0) {
             this.statusData.options.checkinRegionList = res.data.data
-            queryAll('/airportResource/terminalResource/queryAll', {resourceType: 'COUNTER', terminalNo: data.terminalNo == undefined ? null : data.terminalNo}).then(resa => {
+            queryAll('/airportResource/terminalResource/queryAll', {resourceType: 'COUNTER', terminalNo: data.terminalNo}).then(resa => {
               this.statusData.options.checkinCounterList = resa.data.data
-              this.$set(statusData.data, 'checkinRegions', data.checkinRegions == undefined ? [] : data.checkinRegions)
-              this.$set(statusData.data, 'checkinCounters', data.checkinCounterss == undefined ? [] : data.checkinCounterss)
+              this.$set(statusData.data, 'checkinRegions', data.checkinRegions)
+              this.$set(statusData.data, 'checkinCounters', data.checkinCounters)
               this.$set(statusData.data, 'counterFlag', true)
             })
           } else {

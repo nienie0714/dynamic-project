@@ -227,8 +227,7 @@ export default {
             type: 'dateRangePicker',
             min: '',
             max: '',
-            // rangeMethod: this.dateRangeReg,
-            regInfo: '开始日期必须小于等于结束日期',
+            rangeMethod: this.dateRangeReg,
             dateType: 'date',
             required: 3,
             format: 'yyyy-MM-dd',
@@ -507,7 +506,7 @@ export default {
       this.dateRange.winSpr.date = JSON.parse(_.find(dateRange, ['value', this.dateRange.winSpr.value]).remark)
       this.dateRange.sumAut.date = JSON.parse(_.find(dateRange, ['value', this.dateRange.sumAut.value]).remark)
     },
-    /* dateRangeReg (rule, value, callback) {
+    dateRangeReg (rule, value, callback) {
       if (value.hasOwnProperty('beginDate') && value.hasOwnProperty('endDate')) {
         if (value.beginDate && value.endDate) {
           if (value.beginDate >= value.endDate) {
@@ -519,7 +518,7 @@ export default {
         }
       }
       callback()
-    }, */
+    },
     changeFlag (value, callback) {
       let station = [{
         key: '',
