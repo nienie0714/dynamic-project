@@ -164,42 +164,40 @@
         <el-button type="primary" :loading="transData.loading" @click="handleTransConfirm()">确 定</el-button>
       </div>
     </el-dialog>
-    <el-dialog  :visible.sync="statusData.visible" :close-on-click-modal="false" width="800px" append-to-body :class="statusData.title == '更改飞机' && statusData.jointFlag == 1 ? 'other-dialog menu-status-dialog change-aircraft-dialog' : 'other-dialog menu-status-dialog'" @close="closeStatusDialog">
+    <el-dialog :visible.sync="statusData.visible" :close-on-click-modal="false" width="800px" append-to-body :class="statusData.title == '更改飞机' && statusData.jointFlag == 1 ? 'other-dialog menu-status-dialog change-aircraft-dialog' : 'other-dialog menu-status-dialog'" @close="closeStatusDialog">
       <div slot="title" class="dialog-header">
         <img :src="require('@img/title_deco.png')" />
         <span class="header-title">{{statusData.title}}</span>
       </div>
       <div class="dialog-body">
-        <div v-if="!['批量发布延误'].includes(statusData.title)">
-          <el-row :gutter="20">
-            <el-col :span="4"><div>航空公司</div></el-col>
-            <el-col :span="8"><el-input type="input" v-model.trim="statusData.data.airlineCn" disabled></el-input></el-col>
-            <el-col :span="4"><div></div>航班号</el-col>
-            <el-col :span="8"><el-input type="input" v-model.trim="statusData.data.flightNo" disabled></el-input></el-col>
-          </el-row>
-          <el-row :gutter="20">
-            <el-col :span="4"><div>机型</div></el-col>
-            <el-col :span="8"><el-input type="input" v-model.trim="statusData.data.aircraftType" disabled></el-input></el-col>
-            <el-col :span="4"><div></div>机号</el-col>
-            <el-col :span="8"><el-input type="input" v-model.trim="statusData.data.aircraftNo" disabled></el-input></el-col>
-          </el-row>
-          <el-row :gutter="20">
-            <el-col :span="4"><div>机位</div></el-col>
-            <el-col :span="8"><el-input type="input" v-model.trim="statusData.data.stand" disabled></el-input></el-col>
-            <el-col :span="4">
-              <div v-if="statusData.data.key == 'progressStatus'">进展状态</div>
-              <div v-if="statusData.data.key == 'abnormalStatus' || statusData.data.key == 'permission' || statusData.data.key == 'exchange' || statusData.data.key == 'jointFlt'">进出港</div>
-            </el-col>
-            <el-col :span="8" v-if="statusData.data.key == 'progressStatus'">
-              <el-input type="input" v-model.trim="statusData.progressStatusCn" disabled></el-input>
-            </el-col>
-            <el-col :span="8" v-if="statusData.data.key == 'abnormalStatus' || statusData.data.key == 'permission' || statusData.data.key == 'exchange' || statusData.data.key == 'jointFlt'">
-              <el-radio-group v-model="statusData.data.inOutFlag" disabled>
-                <el-radio-button v-for="option in statusData.options.inOutFlagList" :key="option.key" :label="option.key"> {{ option.value }}</el-radio-button>
-              </el-radio-group>
-            </el-col>
-          </el-row>
-        </div>
+        <el-row :gutter="20">
+          <el-col :span="4"><div>航空公司</div></el-col>
+          <el-col :span="8"><el-input type="input" v-model.trim="statusData.data.airlineCn" disabled></el-input></el-col>
+          <el-col :span="4"><div></div>航班号</el-col>
+          <el-col :span="8"><el-input type="input" v-model.trim="statusData.data.flightNo" disabled></el-input></el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="4"><div>机型</div></el-col>
+          <el-col :span="8"><el-input type="input" v-model.trim="statusData.data.aircraftType" disabled></el-input></el-col>
+          <el-col :span="4"><div></div>机号</el-col>
+          <el-col :span="8"><el-input type="input" v-model.trim="statusData.data.aircraftNo" disabled></el-input></el-col>
+        </el-row>
+        <el-row :gutter="20">
+          <el-col :span="4"><div>机位</div></el-col>
+          <el-col :span="8"><el-input type="input" v-model.trim="statusData.data.stand" disabled></el-input></el-col>
+          <el-col :span="4">
+            <div v-if="statusData.data.key == 'progressStatus'">进展状态</div>
+            <div v-if="statusData.data.key == 'abnormalStatus' || statusData.data.key == 'permission' || statusData.data.key == 'exchange'">进出港</div>
+          </el-col>
+          <el-col :span="8" v-if="statusData.data.key == 'progressStatus'">
+            <el-input type="input" v-model.trim="statusData.progressStatusCn" disabled></el-input>
+          </el-col>
+          <el-col :span="8" v-if="statusData.data.key == 'abnormalStatus' || statusData.data.key == 'permission' || statusData.data.key == 'exchange'">
+            <el-radio-group v-model="statusData.data.inOutFlag" disabled>
+              <el-radio-button v-for="option in statusData.options.inOutFlagList" :key="option.key" :label="option.key"> {{ option.value }}</el-radio-button>
+            </el-radio-group>
+          </el-col>
+        </el-row>
         <!-- ············ 正常 ··········· -->
         <!-- 发布前站起飞 -->
         <template v-if="['发布前站起飞'].includes(statusData.title)">
@@ -244,14 +242,14 @@
           <el-row :gutter="20">
             <el-col :span="4"><div>值机区域</div></el-col>
             <el-col :span="8">
-              <el-select v-model="statusData.data.checkinRegionArray" multiple placeholder="请选择" clearable>
+              <el-select v-model="statusData.data.checkinRegions" multiple placeholder="请选择" clearable>
                 <el-option v-for="option in statusData.options.checkinRegionList" :key="option.terminalAreaNo" :label="option.name" :value="option.terminalAreaNo">
                 </el-option>
               </el-select>
             </el-col>
             <el-col :span="4"><div></div>值机柜台</el-col>
             <el-col :span="8">
-              <el-select v-model="statusData.data.checkinCounterArray" multiple placeholder="请选择" clearable>
+              <el-select v-model="statusData.data.checkinCounters" multiple placeholder="请选择" clearable>
                 <el-option v-for="option in statusData.options.checkinCounterList" :key="option.resourceId" :label="option.resourceNo" :value="option.resourceNo">
                 </el-option>
               </el-select>
@@ -299,7 +297,7 @@
             </el-col>
           </el-row>
         </template>
-        <template v-if="statusData.data.key == 'abnormalStatus' || ['批量发布延误'].includes(statusData.title)">
+        <template v-if="statusData.data.key == 'abnormalStatus'">
           <el-row :gutter="20">
             <el-col :span="4"><div>内部异常原因</div></el-col>
             <el-col :span="8">
@@ -367,32 +365,6 @@
             </el-col>
           </el-row>
         </template>
-        <!--··········· 批量发布延误 ········-->
-        <div v-if="['批量发布延误'].includes(statusData.title)">
-          <el-table height="307" ref="multipleTable" :data="statusData.dlyData.tableData" stripe :highlight-current-row="true" align="center" style="width: 100%" @selection-change="handleDlySelectionChange">
-            <el-table-column type="selection" fixed="left"></el-table-column>
-            <el-table-column prop="airline" label="航空公司"></el-table-column>
-            <el-table-column prop="flightNo" label="航班号"></el-table-column>
-            <el-table-column prop="aircraftType" label="机型"> </el-table-column>
-            <el-table-column prop="aircraftNo" label="机号"> </el-table-column>
-            <el-table-column prop="inOutFlagCn" label="进出港"></el-table-column>
-          </el-table>
-        </div>
-        <!--··········· 航班拼接 ········-->
-        <div v-if="['航班拼接'].includes(statusData.title)">
-          <el-table height="235" ref="multipleTable" :data="statusData.jointData.tableData" stripe :highlight-current-row="true" align="center" style="width: 100%" @current-change="handleJointSelectionChange">
-          <el-table-column label="操作"  width="55" fixed="left">
-            <template slot-scope="scope">
-              <el-checkbox v-model="scope.row.checked"></el-checkbox>
-            </template>
-          </el-table-column>
-            <el-table-column prop="airline" label="航空公司"></el-table-column>
-            <el-table-column prop="flightNo" label="航班号"></el-table-column>
-            <el-table-column prop="aircraftType" label="机型"> </el-table-column>
-            <el-table-column prop="aircraftNo" label="机号"> </el-table-column>
-            <el-table-column prop="inOutFlagCn" label="进出港"></el-table-column>
-          </el-table>
-        </div>
         <!-- ··········· 更换飞机 ··········· -->
         <template v-if="statusData.data.key == 'exchange' && statusData.jointFlag == 0">
           <el-row :gutter="20">
@@ -452,9 +424,7 @@
       </div>
       <div slot="footer" class="dialog-footer">
         <el-button @click="closeStatusDialog">关 闭</el-button>
-        <el-button v-if="!['批量发布延误'].includes(statusData.title) && !['航班拼接'].includes(statusData.title)" type="primary" :loading="statusData.loading" @click="handleStatusConfirm()">确 定</el-button>
-        <el-button v-if="['批量发布延误'].includes(statusData.title)" type="primary" :loading="statusData.loading" @click="handleDlyBatchConfirm()">确 定</el-button>
-        <el-button v-if="['航班拼接'].includes(statusData.title)" type="primary" :loading="statusData.loading" @click="handleJointConfirm()">确 定</el-button>
+        <el-button type="primary" :loading="statusData.loading" @click="handleStatusConfirm()">确 定</el-button>
       </div>
     </el-dialog>
     <Warning-box-view :data="revokeData" @handleConfirm="handleStatusConfirm" @handleClose="closeStatusDialog"></Warning-box-view>
@@ -1122,29 +1092,13 @@ export default {
                 index: '2-2',
                 label: '航班拼接',
                 disabled: false,
-                method: this.openStatusDialog,
-                data: {
-                  title: '航班拼接',
-                  url: '/dynamicFlight/jointFlt', // todo:航班拼接Url
-                  type: 'jointFlt',
-                  inOutFlag: 'A',
-                  key: 'jointFlt',
-                  value: 'joint'
-                }
+                method: this.confirmPlan
               },
               {
                 index: '2-3',
                 label: '断开拼接',
                 disabled: false,
-                method: this.openStatusDialog,
-                data: {
-                  title: '航班拼接',
-                  url: '/dynamicFlight/breakJointFlt', // todo:断开航班拼接Url
-                  type: 'breakJointFlt',
-                  inOutFlag: 'A',
-                  key: 'breakJointFlt',
-                  value: 'flt'
-                }
+                method: this.confirmPlan
               },
               {
                 index: '2-4',
@@ -1382,14 +1336,6 @@ export default {
         },
         data: {
           dynamicFlightId: ''
-        },
-        dlyData: {
-          tableData: [],
-          multipleSelection: []
-        },
-        jointData: {
-          tableData: [],
-          singleSelection: {}
         }
       },
       revokeData: {
@@ -1534,11 +1480,11 @@ export default {
           {key: 'terminal', label: '航站楼', type: 'select', filterable: true, optionsKey: 'Terminal', itemKey: 'terminalNo', itemLabel: 'name', change: this.changeTmn},
           {key: 'runway', label: '跑道', type: 'select', filterable: true, optionsKey: 'Runway', itemKey: 'runwayNo', itemLabel: 'runwayNo'},
           {key: 'agency', label: '代理', type: 'select', filterable: true, optionsKey: 'Agency', itemKey: 'code', itemLabel: 'briefC'},
-          {key: 'beltArray', label: '行李转盘', type: 'select', multiple: true, saveKey: 'belt', filterable: true, getOptions: '/airportResource/terminalResource/queryAll', itemKey: 'resourceId', itemLabel: 'resourceNo', itemValue: 'resourceNo', optionsQuery: {resourceType: 'BELT'}},
-          {key: 'checkinRegionArray', label: '值机区域', type: 'select', multiple: true, saveKey: 'checkinRegion', filterable: true, getOptions: '/airportResource/terminalArea/queryAll', itemKey: 'terminalAreaNo', itemLabel: 'name', optionsQuery: {}},
-          {key: 'checkinCounterArray', label: '值机柜台', type: 'select', multiple: true, saveKey: 'checkinCounter', filterable: true, getOptions: '/airportResource/terminalResource/queryAll', itemKey: 'resourceId', itemLabel: 'resourceNo', itemValue: 'resourceNo', optionsQuery: {resourceType: 'COUNTER'}},
-          {key: 'gateArray', label: '登机口', type: 'select', multiple: true, saveKey: 'gate', filterable: true, getOptions: '/airportResource/gate/queryAll', itemKey: 'gateNo', itemLabel: 'gateNo', optionsQuery: {}},
-          {key: 'chuteArray', label: '行李滑槽', type: 'select', multiple: true, saveKey: 'chute', filterable: true, getOptions: '/airportResource/terminalResource/queryAll', itemKey: 'resourceId', itemLabel: 'resourceNo', itemValue: 'resourceNo', optionsQuery: {resourceType: 'CHUTE'}},
+          {key: 'belts', label: '行李转盘', type: 'select', multiple: true, saveKey: 'belt', filterable: true, getOptions: '/airportResource/terminalResource/queryAll', itemKey: 'resourceId', itemLabel: 'resourceNo', itemValue: 'resourceNo', optionsQuery: {resourceType: 'BELT'}},
+          {key: 'checkinRegions', label: '值机区域', type: 'select', multiple: true, saveKey: 'checkinRegion', filterable: true, getOptions: '/airportResource/terminalArea/queryAll', itemKey: 'terminalAreaNo', itemLabel: 'name', optionsQuery: {}},
+          {key: 'checkinCounters', label: '值机柜台', type: 'select', multiple: true, saveKey: 'checkinCounter', filterable: true, getOptions: '/airportResource/terminalResource/queryAll', itemKey: 'resourceId', itemLabel: 'resourceNo', itemValue: 'resourceNo', optionsQuery: {resourceType: 'COUNTER'}},
+          {key: 'gates', label: '登机口', type: 'select', multiple: true, saveKey: 'gate', filterable: true, getOptions: '/airportResource/gate/queryAll', itemKey: 'gateNo', itemLabel: 'gateNo', optionsQuery: {}},
+          {key: 'chutes', label: '行李滑槽', type: 'select', multiple: true, saveKey: 'chute', filterable: true, getOptions: '/airportResource/terminalResource/queryAll', itemKey: 'resourceId', itemLabel: 'resourceNo', itemValue: 'resourceNo', optionsQuery: {resourceType: 'CHUTE'}},
           {key: 'psgNumTotal', label: '旅客总数', type: 'number', position: 'right', step: 1, min: 0},
           {key: 'psgNumAdult', label: '成人', type: 'number', position: 'right', step: 1, min: 0},
           {key: 'psgNumBaby', label: '婴儿', type: 'number', position: 'right', step: 1, min: 0},
@@ -1660,7 +1606,7 @@ export default {
         data: [],
         type: 'selection',
         headerStyle: '',
-        oprWidth: 140,
+        oprWidth: 100,
         key: 'dynamicFlightId',
         multipleSelection: [],
         tableRowClassName: this.tableRowClassName,
@@ -2407,7 +2353,6 @@ export default {
     },
     // 编辑
     handleEdit (row) {
-      console.log(row)
       if (row.endFlag == 'Y') {
         this.showErrorCustom('当前航班已结束', '无法编辑')
         return
@@ -2470,23 +2415,6 @@ export default {
           }
         }
       }
-    },
-    // 删除
-    handleDelete (row) {
-      if (row.endFlag == 'Y') {
-        this.showErrorCustom('当前航班已结束', '无法删除')
-        return
-      }
-      let standFree = _.isNull(row.stand) || row.stand == ''
-      let beltFree = _.isNull(row.belt) || row.belt == ''
-      let gateFree = _.isNull(row.gate) || row.gate == ''
-      let checkinCounterFree = _.isNull(row.checkinCounter) || row.checkinCounter == ''
-      if (!standFree || !beltFree || !gateFree || !checkinCounterFree) {
-        this.showErrorCustom('当前航班有资源占用，请回收资源 ！', '无法删除')
-        return
-      }
-      this.deleteData.visible = true
-      document.addEventListener('keypress', this.handleDeleteConfirm, false)
     },
     changeMenuDisabled (data) {
       // debugger
@@ -2587,8 +2515,8 @@ export default {
             this.statusData.options.checkinRegionList = res.data.data
             queryAll('/airportResource/terminalResource/queryAll', {resourceType: 'COUNTER', terminalNo: data.terminalNo == undefined ? null : data.terminalNo}).then(resa => {
               this.statusData.options.checkinCounterList = resa.data.data
-              this.$set(statusData.data, 'checkinRegionArray', data.checkinRegionArray == undefined ? [] : data.checkinRegionArray)
-              this.$set(statusData.data, 'checkinCounterArray', data.checkinCounterArray == undefined ? [] : data.checkinCounterArray)
+              this.$set(statusData.data, 'checkinRegions', data.checkinRegions == undefined ? [] : data.checkinRegions)
+              this.$set(statusData.data, 'checkinCounters', data.checkinCounterss == undefined ? [] : data.checkinCounterss)
               this.$set(statusData.data, 'counterFlag', true)
             })
           } else {
@@ -2602,8 +2530,8 @@ export default {
             this.statusData.options.checkinRegionList = res.data.data
             queryAll('/airportResource/terminalResource/queryAll', {resourceType: 'COUNTER', terminalNo: data.terminalNo == undefined ? null : data.terminalNo}).then(resa => {
               this.statusData.options.checkinCounterList = resa.data.data
-              this.$set(statusData.data, 'checkinRegionArray', data.checkinRegionArray == undefined ? [] : data.checkinRegionArray)
-              this.$set(statusData.data, 'checkinCounterArray', data.checkinCounterArray == undefined ? [] : data.checkinCounterArray)
+              this.$set(statusData.data, 'checkinRegions', data.checkinRegions == undefined ? [] : data.checkinRegions)
+              this.$set(statusData.data, 'checkinCounters', data.checkinCounterss == undefined ? [] : data.checkinCounterss)
               this.$set(statusData.data, 'counterFlag', true)
             })
           } else {
@@ -2701,26 +2629,6 @@ export default {
         }
       }
 
-      // ------- 航班拼接 -------------
-      if (item.key == 'jointFlt') {
-        this.$set(statusData.data, 'inOutFlag', data.inOutFlag)
-        this.$store.commit('setOption', 'fltType')
-        this.statusData.options.inOutFlagList = _.cloneDeep(this.$store.getters.getOption)
-        let arr = _.cloneDeep(this.tableData.multipleSelection)
-        arr.forEach(item => {
-          item.checked = false
-        })
-        this.statusData.jointData.tableData = arr // todo:选择某条进/出航班,系统查找出同一执行日期内，同机号的出/进航班
-        // let jointUrl = ''
-        // postData(jointUrl, data).then(res => {
-        //   if (res.data.code == 0) {
-        //     this.statusData.jointData.tableData = res.data.data
-        //   } else {
-        //     this.showError('获取可拼接的航班', '请重新尝试 !')
-        //   }
-        // })
-      }
-
       if (item.type == 'publish') {
         statusData.visible = true
         document.addEventListener('keypress', this.handleStatusConfirm, false)
@@ -2735,13 +2643,6 @@ export default {
         document.addEventListener('keypress', this.handleStatusConfirm, false)
         } else if (item.type == 'permission' || item.type == 'exchange') {
           statusData.visible = true
-          document.addEventListener('keypress', this.handleStatusConfirm, false)
-        } else if (item.type == 'jointFlt') {
-          statusData.visible = true
-          document.addEventListener('keypress', this.handleStatusConfirm, false)
-        } else if (item.type == 'breakJointFlt') {
-          this.revokeData.visible = true
-          this.revokeData.info = `是否断开拼接？`
           document.addEventListener('keypress', this.handleStatusConfirm, false)
         }
     },
@@ -2770,24 +2671,13 @@ export default {
                 this.postStatusSuccess()
               }
             }
-          } else if (this.statusData.data.type == 'breakJointFlt') {
-              postData(this.statusData.url, this.statusData.data).then(res => {
-                if (res.data.code == 0) {
-                  this.showSuccess('操作')
-                  this.closeStatusDialog()
-                  this.queryDataReq(1)
-                } else {
-                  this.statusData.loading = false
-                  this.showError('断开拼接', '请重新尝试 !')
-                }
-              })
           } else {
             this.postStatusSuccess()
           }
         } else if (this.statusData.data.counterFlag == true) {
           // '发布开始值机', '发布值机截止', '发布开始登机', '发布催促登机' 有值机区域和值机柜台
-          this.$set(this.statusData.data, 'checkinRegion', this.statusData.data.checkinRegionArray.join())
-          this.$set(this.statusData.data, 'checkinCounter', this.statusData.data.checkinCounterArray.join())
+          this.$set(this.statusData.data, 'checkinRegion', this.statusData.data.checkinRegions.join())
+          this.$set(this.statusData.data, 'checkinCounter', this.statusData.data.checkinCounters.join())
           this.postStatusSuccess()
         } else {
           this.postStatusSuccess()
@@ -2814,10 +2704,6 @@ export default {
       this.statusData.title = ''
       // 清空数据
       this.statusData.data = {}
-      this.statusData.dlyData.tableData = []
-      this.statusData.dlyData.multipleSelection = []
-      this.statusData.jointData.tableData = []
-      this.statusData.jointData.singleSelection = {}
       // 关闭撤销弹框
       this.revokeData.visible = false
       this.revokeData.method = null
@@ -2966,69 +2852,10 @@ export default {
       document.removeEventListener('keypress', this.handleVipFlagConfirm)
     },
     publishDLYBatch () {
-      if (this.tableData.multipleSelection.length > 0) {
-        this.statusData.visible = true
-        this.statusData.title = '批量发布延误'
-        this.statusData.dlyData.tableData = this.tableData.multipleSelection
-        queryAll('/basicdata/abnormalreason/queryAll', {abnormalFlag: 'Y'}).then(res => {
-          if (res.data.code == 0) {
-            this.statusData.options.reasonList = res.data.data
-            this.$set(this.statusData.data, 'intAbnormalResson', null)
-            this.$set(this.statusData.data, 'abnormalResson', null)
-          } else {
-            this.showError('获取异常状态列表', '请重新尝试 !')
-          }
-        })
+      if (this.multipleSelection.length > 0) {
       } else {
         this.showErrorCustom('当前未勾选航班信息', '')
       }
-    },
-    handleDlyBatchConfirm () {
-      // todo: 发送后台的数据格式和url
-      let lists = this.statusData.dlyData.multipleSelection
-      let data = {list: lists, intAbnormalResson: this.statusData.data.intAbnormalResson, abnormalResson: this.statusData.data.abnormalResson}
-      console.log(data)
-      this.statusData.loading = true
-      postData(this.statusData.url, data).then(res => {
-        if (res.data.code == 0) {
-          this.showSuccess('操作')
-          this.closeStatusDialog()
-          this.queryDataReq(1)
-        } else {
-          this.statusData.loading = false
-          this.showError('批量发布延误', '请重新尝试 !')
-        }
-      })
-    },
-    handleDlySelectionChange (val) {
-      this.statusData.dlyData.multipleSelection = val
-    },
-    handleJointSelectionChange (row) {
-      this.statusData.jointData.tableData.forEach(item => {
-        // 排他,每次选择时把其他选项都清除
-        if (item.dynamicFlightId !== row.dynamicFlightId) {
-          item.checked = false
-        }
-      })
-      console.log(row)
-      this.statusData.jointData.singleSelection = row
-    },
-    handleJointConfirm () {
-      // todo: 发送后台的数据格式和url
-      this.$set(this.statusData.data, 'jointFltData', this.statusData.jointData.singleSelection)
-      this.statusData.loading = true
-      postData(this.statusData.url, this.statusData.data).then(res => {
-        if (res.data.code == 0) {
-          this.showSuccess('操作')
-          this.closeStatusDialog()
-          this.$delete(this.statusData.data, 'jointFltData')
-          this.queryDataReq(1)
-        } else {
-          this.statusData.loading = false
-          this.showError('航班拼接', '请重新尝试 !')
-          this.$delete(this.statusData.data, 'jointFltData')
-        }
-      })
     }
   },
   watch: {
@@ -3428,32 +3255,4 @@ export default {
 .menu-status-dialog .el-select {
   width: 100%;
 }
-.menu-status-dialog .el-table__row--striped>td:first-child {
-  background-color: #081e2d !important;
-}
-.menu-status-dialog .el-table__fixed-body-wrapper .hover-row,
-.menu-status-dialog .el-table__fixed-body-wrapper .current-row, {
-  box-shadow: none;
-}
-.menu-status-dialog .el-table__fixed-body-wrapper .hover-row th,
-.menu-status-dialog .el-table__fixed-body-wrapper .hover-row td,
-.menu-status-dialog .el-table__fixed-body-wrapper .current-row th,
-.menu-status-dialog .el-table__fixed-body-wrapper .current-row td {
-  background: #215870 !important;
-}
-.menu-status-dialog .el-table__body-wrapper .hover-row th,
-.menu-status-dialog .el-table__body-wrapper .hover-row td,
-.menu-status-dialog .el-table__body-wrapper .current-row th,
-.menu-status-dialog .el-table__body-wrapper .current-row td {
-  background: #215870 !important;/* rgba(60,166,200,0.4) !important; */
-}
-.menu-status-dialog .el-table--striped .el-table__body tr.el-table__row--striped td {
-  background: none;
-}
-.menu-status-dialog .el-table__row--striped>.el-table-column--selection {
-  background-color: #081e2d !important;
-}
-/* .menu-status-dialog .el-table__row--striped>.el-table_1_column_1 {
-  background-color: #081e2d !important;
-} */
 </style>
