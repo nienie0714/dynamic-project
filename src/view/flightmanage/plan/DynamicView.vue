@@ -1130,7 +1130,13 @@ export default {
                   inOutFlag: 'A',
                   key: 'jointFlt',
                   value: 'joint'
-                }
+                },
+                reg: [
+                  {
+                    key: 'inOutFlag',
+                    value: ['D', 'A']
+                  }
+                ]
               },
               {
                 index: '2-3',
@@ -1144,7 +1150,13 @@ export default {
                   inOutFlag: 'A',
                   key: 'breakJointFlt',
                   value: 'flt'
-                }
+                },
+                reg: [
+                  {
+                    key: 'inOutFlag',
+                    value: ['A|D']
+                  }
+                ]
               },
               {
                 index: '2-4',
