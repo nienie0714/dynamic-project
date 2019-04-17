@@ -132,7 +132,7 @@ export default {
     }
   },
   methods: {
-    customMethod () {
+    customMethod () { // 新增后重新获取下拉框列表
       this.queryList.forEach(item => {
         if (item.key == 'msgTypeCn') {
           queryAll(item.getOptions, {}).then(response => {

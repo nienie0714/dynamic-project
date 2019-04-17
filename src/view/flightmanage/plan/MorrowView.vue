@@ -302,10 +302,10 @@ export default {
         queryAllUrl: '/dynamicFlight/queryAllByCode',
         formData: [
           {key: 'planFlightId', label: '编号', type: 'pInput', isHidden: true},
-          {key: 'flightNo', label: '航班号', type: 'pInput', isHidden: true},
+          {key: 'flightNum', label: '航班号', type: 'pInput', isHidden: true},
           {key: 'confirmedFlag', label: '确认标识', type: 'pInput', isHidden: true},
           {key: 'airline', label: '航空公司', type: 'select', filterable: true, optionsKey: 'Airline', itemKey: 'airlineIata', itemLabel: 'briefC'},
-          {key: 'flightNum', label: '航班号', type: 'input', toUpper: true, maxlength: 5},
+          {key: 'flightNo', label: '航班号', type: 'input', toUpper: true, maxlength: 5},
           {key: 'attr', label: '属性', type: 'tabs', tabsKey: 'attr', options: []},
           {key: 'task', label: '航班任务', type: 'select', filterable: true, optionsKey: 'FlightTask', itemKey: 'taskCode', itemLabel: 'briefC'},
           {key: 'execDate', label: '执行日期', type: 'date', format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd'},
@@ -365,7 +365,7 @@ export default {
           airline: [
             {required: true, message: '必填项', trigger: 'blur'}
           ],
-          flightNum: [
+          flightNo: [
             {required: true, message: '必填项', trigger: 'blur'},
             {validator: flightNumReg, trigger: 'blur'}
           ],
@@ -398,7 +398,7 @@ export default {
       queryList: [
         {
           // 'p': '航班号',
-          key: 'flightNo',
+          key: 'flightNum',
           value: '',
           type: 'input',
           inputText: '航班号',
@@ -439,7 +439,7 @@ export default {
         headerNum: 2,
         dblClick: this.dblClick,
         leftFields: [
-          {prop: 'flightNo', label: '航班号', hidden: false, width: 120, overflow: true},
+          {prop: 'flightNum', label: '航班号', hidden: false, width: 120, overflow: true},
           {prop: 'attrCn', label: '属性', hidden: false, width: 70}, /* , optionKey: 'attr' */
           {prop: 'taskCn', label: '航班任务', hidden: false, width: 70},
           // {prop: 'startStationCn', label: '始发站', fixed: 'left', hidden: false, width: 70},
