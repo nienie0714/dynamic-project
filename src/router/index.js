@@ -354,6 +354,11 @@ var router = new Router({
               path: 'resource',
               name: '资源',
               component: r => require.ensure([], () => r(require('@/view/basicResource/perm/ResourceView'), 'ResourceView'))
+            },
+            {
+              path: 'log',
+              name: '日志',
+              component: r => require.ensure([], () => r(require('@/view/basicResource/perm/LogView'), 'LogView'))
             }
           ]
         },
