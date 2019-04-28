@@ -1,0 +1,31 @@
+<template>
+  <div class="tool-button-view">
+    <div v-if="permissions.export" class="tool-div-button tool-export" @click="handleDownloadTable"></div><!--  v-if="permissions.export" -->
+    <div v-if="permissions.bind" class="tool-div-button tool-bind" @click="handleBind"></div><!--  v-if="permissions.export" -->
+    <div v-if="permissions.delete&&selectionCount" class="tool-div-button tool-delete" @click="handleDelete"></div><!--  v-if="permissions.delete&&selectionCount" -->
+    <div v-if="permissions.add" class="tool-div-button tool-add" @click="handleAdd"></div><!--  v-if="permissions.add" -->
+  </div>
+</template>
+
+<script>
+export default {
+  props: ['permissions', 'selectionCount'],
+  methods: {
+    handleDownloadTable () {
+      this.$emit('handleDownload', {})
+    },
+    handleBind () {
+      this.$emit('handleBind', null)
+    },
+    handleDelete () {
+      this.$emit('handleDelete', null)
+    },
+    handleAdd () {
+      this.$emit('handleAdd', {})
+    }
+  }
+}
+</script>
+
+<style>
+</style>
