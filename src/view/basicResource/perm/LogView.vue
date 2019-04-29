@@ -50,7 +50,7 @@ export default {
         export: false
       },
       // 基础路径
-      baseUrl: 'basicdata/log',
+      baseUrl: 'basicdata/sysLog',
       formData: {
         title: '详情',
         visible: false,
@@ -80,8 +80,12 @@ export default {
           // 'p': '用户名',
           key: 'logType',
           value: '',
-          type: 'input',
+          type: 'select',
+          filterable: true,
+          optKey: 'logType',
+          optLabel: 'logType',
           inputText: '日志类型',
+          getOptions: '/sys/log/getLogType',
           span: 4
         },
         {

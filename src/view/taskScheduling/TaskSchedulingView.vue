@@ -139,7 +139,7 @@
                       :style="!taskField.hidden && {width: 'calc(' + taskField.width + 'px - 10px'}">
                         <td v-if="!taskField.hidden" :width="taskField.width - 10">
                           <el-popover placement="bottom" width="160" trigger="click" class="popover-bottom"><!--  :ref="`popover-${index}-`" -->
-                            <div :id="`el-popover-${index}-${taskField.prop}`" class="task-right-click-tip">
+                            <div :name="`el-popover-${index}-${taskField.prop}`" class="task-right-click-tip">
                               <div :class="queryData.execDateFlag != -1&&(item.taskDataMap[taskField.prop] && (!['NoDistribute', 'NormalFinished', 'OvertimeFinished', 'ExceptionFinished'].includes(item.taskDataMap[taskField.prop].taskDataCss)))?'tip-first':'tip-first div-disabled'"
                               @click="queryData.execDateFlag != -1&&item.taskDataMap[taskField.prop] && (!['NoDistribute', 'NormalFinished', 'OvertimeFinished', 'ExceptionFinished'].includes(item.taskDataMap[taskField.prop].taskDataCss)) && cancelTaskButtonClick(item.taskDataMap[taskField.prop])">
                                 <div class="tip-undo"></div>

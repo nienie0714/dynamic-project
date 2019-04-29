@@ -327,6 +327,11 @@ var router = new Router({
               path: 'teamEmp',
               name: '班组成员',
               component: r => require.ensure([], () => r(require('@/view/basicResource/org/TeamEmpView'), 'TeamEmpView'))
+            },
+            {
+              path: 'duty',
+              name: '值班信息',
+              component: r => require.ensure([], () => r(require('@/view/basicResource/org/DutyView'), 'DutyView'))
             }
           ]
         },

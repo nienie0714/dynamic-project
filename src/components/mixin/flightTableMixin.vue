@@ -162,7 +162,7 @@ export default {
         document.getElementsByClassName('div-right-table_body')[0].scrollTop = oprTableTop
         document.getElementsByClassName('div-left-table_body')[0].scrollTop = oprTableTop
         if (that.showTaskDivId) {
-          let div = document.getElementById(that.showTaskDivId)
+          let div = document.getElementsByName(that.showTaskDivId)[0].parentElement
           div.style.display = 'none'
         }
       }
@@ -170,7 +170,7 @@ export default {
         var rightTableLeft = this.scrollLeft
         document.getElementsByClassName('div-right-table_header')[0].scrollLeft = rightTableLeft
         if (that.showTaskDivId) {
-          let div = document.getElementById(that.showTaskDivId)
+          let div = document.getElementsByName(that.showTaskDivId)[0].parentElement
           div.style.display = 'none'
         }
       }
