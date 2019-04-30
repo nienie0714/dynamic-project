@@ -92,13 +92,7 @@ var router = new Router({
         {
           path: 'merge',
           name: '态势分析',
-          component: r => require.ensure([], () => r(require('@/view/situation/MergeView'), 'MergeView')),
-          redirect: '/merge/byBirdge',
-          children: [{
-            path: '/merge/byBirdge',
-            name: '靠桥率',
-            component: r => require.ensure([], () => r(require('@/view/situation/merge/ByBridgeView'), 'ByBridgeView'))
-          }]
+          component: r => require.ensure([], () => r(require('@/view/situation/MergeView'), 'MergeView'))
         }
       ]
     },
