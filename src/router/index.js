@@ -72,6 +72,37 @@ var router = new Router({
       }]
     },
     {
+      path: '/situation',
+      component: Home,
+      /* beforeEnter: (to, from, next) => {
+        var resource = []
+        var obj = {
+          url: '/statistics'
+        }
+        postData('basicdata/sysUser/queryResourceByUserId', obj).then(response => {
+          resource = response.data.data
+          localStorage.setItem('statResource', JSON.stringify(resource))
+          postData('sysconfig/listSysParams', null).then(res => {
+            store.commit('setConfigs', res.data.data)
+            next()
+          })
+        })
+      }, */
+      children: [
+        {
+          path: 'merge',
+          name: '态势分析',
+          component: r => require.ensure([], () => r(require('@/view/situation/MergeView'), 'MergeView')),
+          redirect: '/merge/byBirdge',
+          children: [{
+            path: '/merge/byBirdge',
+            name: '靠桥率',
+            component: r => require.ensure([], () => r(require('@/view/situation/merge/ByBridgeView'), 'ByBridgeView'))
+          }]
+        }
+      ]
+    },
+    {
       path: '/resourceGantt',
       name: '资源甘特图',
       component: r => require.ensure([], () => r(require('@/view/taskScheduling/gantt/ResourceGanttView'), 'ResourceGanttView')),
