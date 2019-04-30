@@ -85,7 +85,7 @@ export default {
           optKey: 'logType',
           optLabel: 'logType',
           inputText: '日志类型',
-          getOptions: '/sys/log/getLogType',
+          getOptions: '/basicdata/sysLog/queryLogType',
           span: 4
         },
         {
@@ -100,22 +100,24 @@ export default {
           // 'p': '开始时间',
           key: 'beginDate',
           value: null,
-          type: 'date',
+          type: 'datetime',
           editable: false,
           clearable: true,
           inputText: '开始时间',
-          valueFormat: 'yyyy-MM-dd',
-          span: 3
+          valueFormat: 'yyyy-MM-dd HH:mm',
+          format: 'yyyy-MM-dd HH:mm',
+          span: 4
         }, {
           // 'p': '结束时间',
           key: 'endDate',
           value: null,
-          type: 'date',
+          type: 'datetime',
           editable: false,
           clearable: true,
           inputText: '结束时间',
-          valueFormat: 'yyyy-MM-dd',
-          span: 3
+          valueFormat: 'yyyy-MM-dd HH:mm',
+          format: 'yyyy-MM-dd HH:mm',
+          span: 4
         }
       ],
       // 列表设置
@@ -133,10 +135,10 @@ export default {
           {prop: 'logId', label: '日志Id', hidden: true},
           {prop: 'logUser', label: '操作用户', hidden: false},
           {prop: 'logType', label: '日志类型', hidden: false},
-          {prop: 'logSession', label: '登录会话', hidden: false},
+          {prop: 'logSession', label: '登录会话', hidden: false, overflow: true},
           {prop: 'logSource', label: '操作来源', hidden: false},
           {prop: 'logSummary', label: '日志概述', hidden: false},
-          {prop: 'logDetail', label: '日志详细', hidden: false},
+          {prop: 'logDetail', label: '日志详细', hidden: false, width: '350px', overflow: true},
           {prop: 'logTime', label: '记录时间', hidden: false, formatter: this.formatterDayMin},
           {prop: 'remark', label: '备注', hidden: false}
         ]

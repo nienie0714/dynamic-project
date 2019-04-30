@@ -918,7 +918,7 @@ export default {
   right: 5px;
 }
 .tree-filter-all {
-  width: calc(100% - 20px);
+  /* width: calc(100% - 20px); */
   display: inline;
   position: absolute;
   top: 10px;
