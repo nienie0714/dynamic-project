@@ -2421,28 +2421,3 @@ tr.tr-single {
   max-height: 100%;
 }
 /* 全屏图片设置结束 */
-/* 态势分析开始 */
-.merge-block {
-  width: 100%;
-  height: 100%;
-  border-radius: 12px;
-  background-color: rgba(8, 25, 38, 0.8);
-  border: 1px solid rgba(60, 166, 200, 0.7);
-  box-shadow: 0 0 50px rgba(60, 166, 200, 0.4) inset;
-  border-radius: 10px;
-  box-sizing: border-box;
-}
-.merge-block > .header {
-  height: 60px;
-  padding: 0;
-  margin: 0 0 0 20px;
-  line-height: 60px;
-}
-.merge-block > .body {
-  height: calc(100% - 70px);
-}
-.merge-block > .header >.header-title {
-  color: white;
-  font-size: 20px;
-}
-/* 态势分析结束 */

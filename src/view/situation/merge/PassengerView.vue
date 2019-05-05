@@ -5,8 +5,90 @@
       <span class="header-title">旅客统计</span>
     </div>
     <div class="body">
-      <div></div>
-      <div></div>
+      <div class="pass-block">
+        <div>
+          <div class="font-st">出港旅客统计</div>
+          <div class="font-nd">机上等待时间/航班数</div>
+        </div>
+        <div>
+          <div class="count">
+            <div>
+              <div class="font-rd font-gray">值机总人数</div>
+              <div class="num-nd font-white">1065</div>
+            </div>
+            <div>
+              <div class="font-rd font-gray">登机总人数</div>
+              <div class="num-nd font-white">1060</div>
+            </div>
+            <div>
+              <div class="font-rd font-gray">隔离区人数</div>
+              <div class="num-nd font-white">190</div>
+            </div>
+          </div>
+          <div class="time">
+            <div>
+              <div class="time-icon"></div>
+              <div class="font-rs font-gray">&lt;45min</div>
+              <div class="num-rd color-1">230</div>
+            </div>
+            <div>
+              <div class="time-icon"></div>
+              <div class="font-rs font-gray">45~90min</div>
+              <div class="num-rd color-2">230</div>
+            </div>
+            <div>
+              <div class="time-icon"></div>
+              <div class="font-rs font-gray">90~150min</div>
+              <div class="num-rd color-3">230</div>
+            </div>
+            <div>
+              <div class="time-icon"></div>
+              <div class="font-rs font-gray">&gt;150min</div>
+              <div class="num-rd color-4">230</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pass-block">
+        <div>
+          <div class="font-st">进港旅客统计</div>
+          <div class="font-nd">机上等待时间/航班数</div>
+        </div>
+        <div>
+          <div class="count">
+            <div>
+              <div class="font-rd font-gray">值机总人数</div>
+              <div class="num-nd font-white">1065</div>
+            </div>
+            <div>
+              <div class="font-rd font-gray">登机总人数</div>
+              <div class="num-nd font-white">1060</div>
+            </div>
+          </div>
+          <div class="time">
+            <div>
+              <div class="time-icon"></div>
+              <div class="font-rs font-gray">&lt;45min</div>
+              <div class="num-rd color-1">230</div>
+            </div>
+            <div>
+              <div class="time-icon"></div>
+              <div class="font-rs font-gray">45~90min</div>
+              <div class="num-rd color-2">230</div>
+            </div>
+            <div>
+              <div class="time-icon"></div>
+              <div class="font-rs font-gray">90~150min</div>
+              <div class="num-rd color-3">230</div>
+            </div>
+            <div>
+              <div class="time-icon"></div>
+              <div class="font-rs font-gray">&gt;150min</div>
+              <div class="num-rd color-4">230</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -14,14 +96,87 @@
 <style scoped>
 .passenger>.body {
   margin: 0 20px 10px 20px;
+  height: calc(100% - 70px);
   display: flex;
   flex-direction: column;
 }
-.passenger>.body>div {
-  box-sizing: border-box;
-  height: 50%;
-}
 .passenger>.body>div:first-child {
   border-bottom: 1px solid blue;
+}
+.pass-block {
+  box-sizing: border-box;
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0;
+}
+.pass-block>div:first-child {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  justify-content: space-between;
+}
+.pass-block>div:last-child {
+  width: 100%;
+  height: calc(100% - 60px);
+  display: flex;
+  justify-content: space-between;
+}
+.pass-block>div:first-child>div  {
+  height: 100%;
+  color: #fff;
+}
+.pass-block>div:last-child>div {
+  box-sizing: border-box;
+  width: 50%;
+  display: flex;
+}
+.pass-block>div:last-child>.time {
+  border-left: 1px solid blue;
+}
+.count>div {
+  width: calc(100% / 3);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+.time>div {
+  width: calc(100% / 4);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: flex-start;
+  margin-left: calc(25% / 4);
+  overflow: hidden;
+}
+.count .num-nd, .time .num-rd {
+  font-weight: bold;
+}
+.font-gray {
+  color: #7a939e;
+}
+.font-white {
+  color: #fff;
+}
+.color-1 {
+  color: #F5F46B;
+}
+.color-2 {
+  color: #FDCF53;
+}
+.color-3 {
+  color: #FE9E59;
+}
+.color-4 {
+  color: #FE6959;
+}
+.time-icon {
+  width: 20%;
+  height: 20%;
+  margin: 0 0 8% 0;
+  background-color: #F5F46B;
 }
 </style>

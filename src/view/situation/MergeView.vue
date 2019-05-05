@@ -6,19 +6,25 @@
       </template>
     </progrs> -->
     <div class="left">
-      <div class="top"></div>
+      <div class="top">
+        <Dynamic></Dynamic>
+      </div>
       <div class="bottom">
-        <div class="lb-left"></div>
+        <div class="lb-left">
+          <Green></Green>
+        </div>
         <div class="lb-right">
-          <bridge></bridge>
+          <Bridge></Bridge>
         </div>
       </div>
     </div>
     <div class="right">
       <div class="top">
-        <passenger></passenger>
+        <Passenger></Passenger>
       </div>
-      <div class="bottom"></div>
+      <div class="bottom">
+        <Stand></Stand>
+      </div>
     </div>
   </div>
 </template>
@@ -26,13 +32,19 @@
 <script>
 import Progrs from '@/components/common/ProgressView'
 import Passenger from './merge/PassengerView'
-import bridge from './merge/ByBridgeView'
+import Bridge from './merge/ByBridgeView'
+import Dynamic from './merge/InOutDynamicView'
+import Green from './merge/GreenView'
+import Stand from './merge/StandView'
 
 export default {
   components: {
     Progrs,
     Passenger,
-    bridge
+    Green,
+    Stand,
+    Bridge,
+    Dynamic
   },
   data () {
     return {
@@ -57,18 +69,11 @@ export default {
   flex-direction: column;
   position: relative;
 }
-.left {
-  background-color: blue;
-}
-.right {
-  background-color: red;
-}
 .top, .bottom {
   width: 100%;
   position: absolute;
 }
 .top {
-  background-color: yellow;
   top: 0;
 }
 .bottom {
