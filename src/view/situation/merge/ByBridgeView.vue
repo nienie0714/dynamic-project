@@ -1,8 +1,8 @@
 <template>
   <div class="bybridge merge-block">
     <div class="header">
-      <img :src="require('@img/title_deco.png')" />
-      <span class="header-title">靠桥率统计</span>
+      <img height="20%" :src="require('@img/title_deco.png')" />
+      <span class="header-title font-st">靠桥率统计</span>
     </div>
     <div class="body gauge-wrapper">
       <div class="gauge-left-content">
@@ -31,16 +31,8 @@ export default {
   data () {
     return {
       bybridgeFltRate: null,
+      bybridgeFltRateEl: null,
       bybridgeFltRateOption: {
-        // title: {
-        //   text: '航班靠桥率',
-        //   textAlign: 'center',
-        //   padding: [0, 150],
-        //   textStyle: {
-        //     color: '#fff',
-        //     fontSize: 14
-        //   }
-        // },
         series: [
           {
             name: '业务指标',
@@ -167,6 +159,7 @@ export default {
         ]
       },
       bybridgePasRate: null,
+      bybridgePasRateEl: null,
       bybridgePasRateOption: {
         series: [
           {
@@ -296,17 +289,41 @@ export default {
     }
   },
   mounted () {
-    this.bybridgeFltRate = this.$echarts.init(document.getElementById('bybridgeFltRate'))
+    this.bybridgeFltRateEl = document.getElementById('bybridgeFltRate')
+    this.bybridgeFltRate = this.$echarts.init(this.bybridgeFltRateEl)
     this.bybridgeFltRate.setOption(this.bybridgeFltRateOption)
-    window.addEventListener('resize', () => {
-      this.$nextTick(() => {
-        this.bybridgeFltRate.resize()
-      })
-     })
 
-    this.bybridgePasRate = this.$echarts.init(document.getElementById('bybridgePasRate'))
+    this.bybridgePasRateEl = document.getElementById('bybridgePasRate')
+    this.bybridgePasRate = this.$echarts.init(this.bybridgePasRateEl)
     this.bybridgePasRate.setOption(this.bybridgePasRateOption)
-    window.addEventListener('resize', () => { this.bybridgePasRate.resize() })
+
+    this.$nextTick(() => {
+      let outOpts = {
+        height: 'auto',
+        width: this.bybridgeFltRateEl.clientHeight
+      }
+      this.bybridgeFltRate.resize(outOpts)
+
+      let inOpts = {
+        height: 'auto',
+        width: this.bybridgePasRateEl.clientHeight
+      }
+      this.bybridgePasRate.resize(inOpts)
+      this.$nextTick(() => {
+        window.onresize = () => {
+          let outOpts2 = {
+            height: 'auto',
+            width: this.bybridgeFltRateEl.clientHeight
+          }
+          this.bybridgeFltRate.resize(outOpts2)
+          let inOpts2 = {
+            height: 'auto',
+            width: this.bybridgePasRateEl.clientHeight
+          }
+          this.bybridgePasRate.resize(inOpts2)
+        }
+      })
+    })
   },
   created () {
     this.queryByBridge()
@@ -339,6 +356,14 @@ export default {
 </script>
 
 <style scoped>
+.merge-block > .header {
+  margin-left: calc(100% / 644 * 20);
+  height: calc(100% / 420 * 60);
+  line-height: calc(100% / 420 * 60);
+}
+.bybridge>.body {
+  height: calc(100% - (100% / 420 * 60));
+}
 .bybridge {
   position: relative;
 }

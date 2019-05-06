@@ -1,8 +1,8 @@
 <template>
   <div class="passenger merge-block">
     <div class="header">
-      <img :src="require('@img/title_deco.png')" />
-      <span class="header-title">旅客统计</span>
+      <img height="20%" :src="require('@img/title_deco.png')" />
+      <span class="header-title font-st">旅客统计</span>
     </div>
     <div class="body">
       <div class="pass-block">
@@ -94,9 +94,16 @@
 </template>
 
 <style scoped>
+.merge-block > .header {
+  margin-left: calc(100% / 783 * 20);
+  height: calc(100% / 380 * 60);
+  line-height: calc(100% / 380 * 60);
+}
+.merge-block > .body {
+  height: calc(100% - (100% / 380 * 60) - 10px);
+}
 .passenger>.body {
-  margin: 0 20px 10px 20px;
-  height: calc(100% - 70px);
+  margin: 0 calc(100% / 783 * 20) calc(100% / 380 * 10) calc(100% / 783 * 20);
   display: flex;
   flex-direction: column;
 }
@@ -108,7 +115,7 @@
   height: 50%;
   display: flex;
   flex-direction: column;
-  margin: 10px 0;
+  margin: calc(50% / 380 * 10) 0;
 }
 .pass-block>div:first-child {
   width: 100%;
@@ -118,7 +125,7 @@
 }
 .pass-block>div:last-child {
   width: 100%;
-  height: calc(100% - 60px);
+  flex-grow: 1;
   display: flex;
   justify-content: space-between;
 }
@@ -151,15 +158,6 @@
   align-items: flex-start;
   margin-left: calc(25% / 4);
   overflow: hidden;
-}
-.count .num-nd, .time .num-rd {
-  font-weight: bold;
-}
-.font-gray {
-  color: #7a939e;
-}
-.font-white {
-  color: #fff;
 }
 .color-1 {
   color: #F5F46B;

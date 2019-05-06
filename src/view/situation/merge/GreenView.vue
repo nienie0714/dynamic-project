@@ -1,8 +1,8 @@
 <template>
   <div class="passenger merge-block">
     <div class="header">
-      <img :src="require('@img/title_deco.png')" />
-      <span class="header-title">航班放行正常率</span>
+      <img height="20%" :src="require('@img/title_deco.png')" />
+      <span class="header-title font-st">航班放行正常率</span>
     </div>
     <div class="body">
       <div class="body-top">
@@ -13,7 +13,7 @@
       <div class="body-bottom">
         <div>
           <div class="body-bottom-left">
-            <progrs :type="'circle'" :percentage="24" :width="'25%'">
+            <progrs :type="'circle'" :percentage="24" :width="83">
               <template slot="text">
                 <div>昨日</div>
               </template>
@@ -26,13 +26,13 @@
         </div>
         <div>
           <div class="body-bottom-right">
-            <div>78.32</div>
-            <div>偏低</div>
+            <div :style="{'text-align': 'right'}">78.32</div>
+            <div :style="{'text-align': 'right'}">偏低</div>
           </div>
           <div class="body-bottom-left">
-            <progrs type="circle" :percentage="24" :width="'25%'">
+            <progrs type="circle" :percentage="24" :width="83">
               <template slot="text">
-                <div>昨日</div>
+                <div>本月</div>
               </template>
             </progrs>
           </div>
@@ -181,9 +181,14 @@ export default {
 }
 </script>
 <style scoped>
+.merge-block > .header {
+  margin-left: calc(100% / 386 * 20);
+  height: calc(100% / 420 * 60);
+  line-height: calc(100% / 420 * 60);
+}
 .passenger>.body {
-  margin: 0 20px 10px 20px;
-  height: calc(100% - 70px);
+  margin: 0 20px 0 20px;
+  height: calc(100% - (100% / 420 * 60));
   display: flex;
   flex-direction: column;
 }
@@ -225,7 +230,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-left: 10px;
+  margin: 0 10px;
 }
 .body-bottom-right > div:nth-child(1) {
   height: 30%;

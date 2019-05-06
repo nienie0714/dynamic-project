@@ -12,19 +12,24 @@
   box-sizing: border-box;
 }
 .merge-block > .header {
-  height: 60px;
   padding: 0;
-  margin: 0 0 0 20px;
-  line-height: 60px;
-}
-.merge-block > .body {
-  height: calc(100% - 60px);
+  display: flex;
+  align-items: center;
 }
 .merge-block > .header >.header-title {
+  margin-left: 5px;
   color: white;
-  font-size: 20px;
 }
-.num-nd, .num-rd {
+.font-gray {
+  color: #7a939e;
+}
+.font-white {
+  color: #fff;
+}
+.num-st, .num-nd {
+  font-weight: bold;
+}
+.num-st, .num-nd, .num-rd {
   font-family: Square721;
 }
 @media (min-width: 1600px) {
@@ -39,6 +44,9 @@
   }
   .font-rs {
     font-size: 22px;
+  }
+  .num-st {
+    font-size: 48px;
   }
   .num-nd {
     font-size: 42px;
@@ -60,6 +68,9 @@
   .font-rs {
     font-size: 14px;
   }
+  .num-st {
+    font-size: 38px;
+  }
   .num-nd {
     font-size: 32px;
   }
@@ -79,6 +90,9 @@
   }
   .font-rs {
     font-size: 16px;
+  }
+  .num-st {
+    font-size: 40px;
   }
   .num-nd {
     font-size: 34px;
@@ -100,6 +114,9 @@
   .font-rs {
     font-size: 20px;
   }
+  .num-st {
+    font-size: 48px;
+  }
   .num-nd {
     font-size: 42px;
   }
@@ -119,6 +136,9 @@
   }
   .font-rs {
     font-size: 22px;
+  }
+  .num-st {
+    font-size: 52px;
   }
   .num-nd {
     font-size: 46px;
@@ -140,6 +160,9 @@
   .font-rs {
     font-size: 26px;
   }
+  .num-st {
+    font-size: 58px;
+  }
   .num-nd {
     font-size: 52px;
   }
@@ -159,6 +182,9 @@
   }
   .font-rs {
     font-size: 28px;
+  }
+  .num-st {
+    font-size: 62px;
   }
   .num-nd {
     font-size: 56px;
@@ -180,6 +206,9 @@
   .font-rs {
     font-size: 30px;
   }
+  .num-st {
+    font-size: 66px;
+  }
   .num-nd {
     font-size: 60px;
   }
@@ -200,6 +229,9 @@
   .font-rs {
     font-size: 32px;
   }
+  .num-st {
+    font-size: 70px;
+  }
   .num-nd {
     font-size: 64px;
   }
@@ -219,6 +251,9 @@
   }
   .font-rs {
     font-size: 34px;
+  }
+  .num-st {
+    font-size: 76px;
   }
   .num-nd {
     font-size: 70px;
