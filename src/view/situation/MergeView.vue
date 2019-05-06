@@ -7,14 +7,14 @@
     </progrs> -->
     <div class="left">
       <div class="top">
-        <Dynamic></Dynamic>
+        <Dynamic :resize="resize"></Dynamic>
       </div>
       <div class="bottom">
         <div class="lb-left">
-          <Green></Green>
+          <Green :resize="resize"></Green>
         </div>
         <div class="lb-right">
-          <Bridge></Bridge>
+          <Bridge :resize="resize"></Bridge>
         </div>
       </div>
     </div>
@@ -23,7 +23,7 @@
         <Passenger></Passenger>
       </div>
       <div class="bottom">
-        <Stand></Stand>
+        <Stand :resize="resize"></Stand>
       </div>
     </div>
   </div>
@@ -48,6 +48,26 @@ export default {
   },
   data () {
     return {
+      // 任务调度、航班查询特殊设置
+      pageStyle: [{
+        key: 'background',
+        value: 'url(' + require('@img/task_bg.jpg') + ') top repeat-x'
+      }, {
+        key: 'background-color',
+        value: '#060d14'
+      }],
+      resize: false
+    }
+  },
+  mounted () {
+    let bodyView = this.$root.$el.querySelector('.body-view')
+    this.pageStyle.forEach(item => {
+      bodyView.style[item.key] = item.value
+    })
+    window.onresize = () => {
+      this.$nextTick(() => {
+        this.resize = !this.resize
+      })
     }
   },
   methods: {
@@ -79,7 +99,6 @@ export default {
 .bottom {
   margin-top: 2%;
   bottom: 0;
-  background-color: green;
 }
 .left > .top {
   height: calc((100% - 2%) / 950 * 530);
@@ -97,13 +116,11 @@ export default {
 .left > .bottom > .lb-left {
   width: calc((100% - 2%) / 1040 * 390);
   height: 100%;
-  background-color: cyan;
 }
 .left > .bottom > .lb-right {
   margin-left: 2%;
   width: calc((100% - 2%) / 1040 * 650);
   height: 100%;
-  background-color: hotpink;
 }
 @media (min-width: 1920px) and (max-aspect-ratio: 16/9) {
   .merge-body {

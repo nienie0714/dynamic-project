@@ -26,11 +26,41 @@
 .font-white {
   color: #fff;
 }
+.font-yellow {
+  color: #FDCF53;
+}
 .num-st, .num-nd {
   font-weight: bold;
 }
 .num-st, .num-nd, .num-rd {
   font-family: Square721;
+}
+.progress-circle {
+  height: 100%;
+  position: relative;
+}
+.progress-circle>.circle {
+  height: 100%;
+}
+.progress-circle>.text {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  background-image: url(~@img/merge/bg_circle_glow_4k.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 90% 90%;
+}
+.progress-circle>.text>div:last-child {
+  margin-top: 10px;
 }
 @media (min-width: 1600px) {
   .font-st {

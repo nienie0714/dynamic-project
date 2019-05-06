@@ -1,7 +1,7 @@
 <template>
   <div class="passenger merge-block">
     <div class="header">
-      <img height="20%" :src="require('@img/title_deco.png')" />
+      <img height="20%" :src="require('@img/merge/title_deco_4k.png')" />
       <span class="header-title font-st">机位统计</span>
     </div>
     <div class="body">
@@ -19,42 +19,42 @@
           <div class="stand-row stand-row-top">
             <div>
               <div class="stand-title font-rd font-gray">
-                <div class="stand-icon"></div>
+                <div class="stand-icon bg-b"></div>
                 <div>类机位</div>
               </div>
               <div class="num-rd font-white">15 / 23</div>
               <div>
-                <progrs :type="'line'" :percentage="24" :width="132"></progrs>
+                <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
               </div>
             </div>
             <div>
               <div class="stand-title font-rd font-gray">
-                <div class="stand-icon"></div>
+                <div class="stand-icon bg-c"></div>
                 <div>类机位</div>
               </div>
               <div class="num-rd font-white">15 / 23</div>
               <div>
-                <progrs :type="'line'" :percentage="24" :width="132"></progrs>
+                <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
               </div>
             </div>
             <div>
               <div class="stand-title font-rd font-gray">
-                <div class="stand-icon"></div>
+                <div class="stand-icon bg-d"></div>
                 <div>类机位</div>
               </div>
               <div class="num-rd font-white">15 / 23</div>
               <div>
-                <progrs :type="'line'" :percentage="24" :width="132"></progrs>
+                <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
               </div>
             </div>
             <div>
               <div class="stand-title font-rd font-gray">
-                <div class="stand-icon"></div>
+                <div class="stand-icon bg-e"></div>
                 <div>类机位</div>
               </div>
               <div class="num-rd font-white">15 / 23</div>
               <div>
-                <progrs :type="'line'" :percentage="24" :width="132"></progrs>
+                <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
               </div>
             </div>
           </div>
@@ -63,35 +63,35 @@
               <div class="font-rd font-gray">廊桥位</div>
               <div class="num-rd font-white">15 / 23</div>
               <div>
-                <progrs :type="'line'" :percentage="24"></progrs>
+                <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
               </div>
             </div>
             <div>
               <div class="font-rd font-gray">远机位</div>
               <div class="num-rd font-white">15 / 23</div>
               <div>
-                <progrs :type="'line'" :percentage="24" :width="132"></progrs>
+                <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
               </div>
             </div>
             <div>
               <div class="font-rd font-gray">除冰位</div>
               <div class="num-rd font-white">15 / 23</div>
               <div>
-                <progrs :type="'line'" :percentage="24" :width="132"></progrs>
+                <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
               </div>
             </div>
             <div>
               <div class="font-rd font-gray">货运位</div>
               <div class="num-rd font-white">15 / 23</div>
               <div>
-                <progrs :type="'line'" :percentage="24" :width="132"></progrs>
+                <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
               </div>
             </div>
           </div>
         </div>
       </div>
-      <div class="body-bottom merge-block one-hour" :style="{height: '50%'}">
-        <div class="header">
+      <div class="body-bottom merge-block one-hour" :style="{height: '46%'}">
+        <div class="header" :style="{height: 'calc(200% / 570 * 60)'}">
           <div class="header-title font-nd">1 小时内机位占用情况（预计）</div>
         </div>
         <div class="body">
@@ -109,28 +109,28 @@
               <div class="stand-row stand-row-top">
                 <div>
                   <div class="stand-title font-rd font-gray">
-                    <div class="stand-icon"></div>
+                    <div class="stand-icon bg-b"></div>
                     <div>类机位</div>
                   </div>
                   <div class="num-rd font-white">15 / 23</div>
                 </div>
                 <div>
                   <div class="stand-title font-rd font-gray">
-                    <div class="stand-icon"></div>
+                    <div class="stand-icon bg-c"></div>
                     <div>类机位</div>
                   </div>
                   <div class="num-rd font-white">15 / 23</div>
                 </div>
                 <div>
                   <div class="stand-title font-rd font-gray">
-                    <div class="stand-icon"></div>
+                    <div class="stand-icon bg-d"></div>
                     <div>类机位</div>
                   </div>
                   <div class="num-rd font-white">15 / 23</div>
                 </div>
                 <div>
                   <div class="stand-title font-rd font-gray">
-                    <div class="stand-icon"></div>
+                    <div class="stand-icon bg-e"></div>
                     <div>类机位</div>
                   </div>
                   <div class="num-rd font-white">15 / 23</div>
@@ -159,13 +159,16 @@
         </div>
       </div>
     </div>
+    <div class="absolute-tag font-rd">机位紧张</div>
+    <div class="absolute-subtag font-rs">机位紧张</div>
   </div>
 </template>
 
 <script>
-
 import Progrs from '@/components/common/ProgressView'
+
 export default {
+  props: ['resize'],
   components: {
     Progrs
   },
@@ -195,23 +198,21 @@ export default {
         width: this.oneCircleEl.clientHeight
       }
       this.oneCircle.resize(inOpts)
-      this.$nextTick(() => {
-        window.onresize = () => {
-          let outOpts2 = {
-            height: 'auto',
-            width: this.standCircleEl.clientHeight
-          }
-          this.standCircle.resize(outOpts2)
-          let inOpts2 = {
-            height: 'auto',
-            width: this.oneCircleEl.clientHeight
-          }
-          this.oneCircle.resize(inOpts2)
-        }
-      })
     })
   },
   methods: {
+    resizeMeth () {
+      let outOpts2 = {
+        height: 'auto',
+        width: this.standCircleEl.clientHeight
+      }
+      this.standCircle.resize(outOpts2)
+      let inOpts2 = {
+        height: 'auto',
+        width: this.oneCircleEl.clientHeight
+      }
+      this.oneCircle.resize(inOpts2)
+    },
     updateOption () {
       let outOptions = {
         tooltip: {
@@ -221,7 +222,7 @@ export default {
         },
         series: [
           {
-            name: '出港计划',
+            name: '机位统计',
             type: 'pie',
             radius: ['72%', '80%'],
             avoidLabelOverlap: false,
@@ -232,12 +233,13 @@ export default {
               }
             },
             data: [
-              {value: 12, name: '未执行', itemStyle: {color: '#FF6959', borderColor: '#081C2A', borderWidth: 2}},
-              {value: 121, name: '已执行', itemStyle: {color: '#7A939E', borderColor: '#081C2A', borderWidth: 2}}
+              {value: 12, name: '空闲', itemStyle: {color: '#FF6959', borderColor: '#071622', borderWidth: 2}},
+              {value: 121, name: '占用', itemStyle: {color: '#7A939E', borderColor: '#071622', borderWidth: 2}}
             ]
           }
         ]
       }
+      // FF6959 橙色 03A786 绿色
       this.standCircle.setOption(outOptions, true)
       let inOptions = {
         tooltip: {
@@ -247,7 +249,7 @@ export default {
         },
         series: [
           {
-            name: '出港计划',
+            name: '机位预计',
             type: 'pie',
             radius: ['72%', '80%'],
             avoidLabelOverlap: false,
@@ -258,13 +260,20 @@ export default {
               }
             },
             data: [
-              {value: 16, name: '未执行', itemStyle: {color: '#03A786', borderColor: '#081C2A', borderWidth: 2}},
-              {value: 74, name: '已执行', itemStyle: {color: '#7A939E', borderColor: '#081C2A', borderWidth: 2}}
+              {value: 16, name: '空闲', itemStyle: {color: '#03A786', borderColor: '#071622', borderWidth: 2}},
+              {value: 74, name: '占用', itemStyle: {color: '#7A939E', borderColor: '#071622', borderWidth: 2}}
             ]
           }
         ]
       }
       this.oneCircle.setOption(inOptions, true)
+    }
+  },
+  watch: {
+    resize: {
+      handler (value) {
+        this.resizeMeth()
+      }
     }
   }
 }
@@ -291,6 +300,9 @@ export default {
 .one-hour>.body>div:first-child {
   display: flex;
   height: 100%;
+}
+.one-hour > .body {
+  padding-right: calc(100% / 783 * 20)
 }
 .body-top>div:first-child {
   width: 30%; /* 机位统计 圆环*/
@@ -327,10 +339,25 @@ export default {
   width: 100%;
 }
 .stand-icon {
-  width: 15%;
+  width: 18%;
   height: 100%;
-  margin: 0 5% 0 0;
-  background-color: #F5F46B;
+  margin: 0 2% 0 0;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-size: 120% 120%;
+}
+.bg-b {
+  background-image: url(~@img/merge/icon_B_4k.png) !important;
+}
+.bg-c {
+  background-image: url(~@img/merge/icon_C_4k.png) !important;
+}
+.bg-d {
+  background-image: url(~@img/merge/icon_D_4k.png) !important;
+}
+.bg-e {
+  background-image: url(~@img/merge/icon_E_4k.png) !important;
 }
 .progress-circle {
   height: 100%;
@@ -354,5 +381,29 @@ export default {
 }
 .progress-circle>.text>div:last-child {
   margin-top: 10px;
+}
+.absolute-tag {
+  position: absolute;
+  top: 15%;
+  left: 19%;
+  width: 9%;
+  height: 4%;
+  background-color: #ff6959;
+  text-align: center;
+  padding: 0.5% 0.5%;
+  border-radius: 15px;
+  font-weight: bold;
+}
+.absolute-subtag {
+  position: absolute;
+  top: 65%;
+  left: 20%;
+  width: 8%;
+  height: 4%;
+  background-color: #ff6959;
+  text-align: center;
+  padding: 0.5% 0.5%;
+  border-radius: 15px;
+  font-weight: bold;
 }
 </style>

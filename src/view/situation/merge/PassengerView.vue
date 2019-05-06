@@ -1,7 +1,7 @@
 <template>
   <div class="passenger merge-block">
     <div class="header">
-      <img height="20%" :src="require('@img/title_deco.png')" />
+      <img height="20%" :src="require('@img/merge/title_deco_4k.png')" />
       <span class="header-title font-st">旅客统计</span>
     </div>
     <div class="body">
@@ -100,7 +100,7 @@
   line-height: calc(100% / 380 * 60);
 }
 .merge-block > .body {
-  height: calc(100% - (100% / 380 * 60) - 10px);
+  height: calc(100% - (100% / 380 * 80));
 }
 .passenger>.body {
   margin: 0 calc(100% / 783 * 20) calc(100% / 380 * 10) calc(100% / 783 * 20);
@@ -115,7 +115,7 @@
   height: 50%;
   display: flex;
   flex-direction: column;
-  margin: calc(50% / 380 * 10) 0;
+  padding: calc(50% / 380 * 10) 0 calc(50% / 380 * 20) 0;
 }
 .pass-block>div:first-child {
   width: 100%;

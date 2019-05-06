@@ -72,7 +72,10 @@ export default {
       ]}
     ],
     option: [],
-    taskColOptions: []
+    taskColOptions: [],
+    widthMap: [3840, 3640, 3552, 3264, 3072, 2560, 2304, 2048, 1920, 1600, 0],
+    fontSizeSt: [40, 38, 36, 34, 32, 28, 26, 22, 20, 28, 16],
+    fontSizeRs: [34, 32, 30, 28, 26, 22, 20, 16, 14, 22, 10]
   },
   getters: {
     getClassifyType: state => {
@@ -86,6 +89,28 @@ export default {
     },
     getTaskColOption: state => {
       return state.taskColOptions
+    },
+    getFontSizeSt: (state) => (width) => {
+      let size
+      let w = width[0] / width[1] * 1920
+      for (let i = 0; i < state.widthMap.length - 1; i++) {
+        if (w > state.widthMap[i]) {
+          size = state.fontSizeSt[i]
+          break
+        }
+      }
+      return size
+    },
+    getFontSizeRs: (state) => (width) => {
+      let size
+      let w = width[0] / width[1] * 1920
+      for (let i = 0; i < state.widthMap.length - 1; i++) {
+        if (w > state.widthMap[i]) {
+          size = state.fontSizeRs[i]
+          break
+        }
+      }
+      return size
     }
   },
   mutations: {

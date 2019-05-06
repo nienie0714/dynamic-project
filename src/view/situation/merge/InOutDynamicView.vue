@@ -1,7 +1,7 @@
 <template>
   <div class="in-out-dynamic merge-block">
     <div class="header">
-      <img height="20%" :src="require('@img/title_deco.png')" />
+      <img height="20%" :src="require('@img/merge/title_deco_4k.png')" />
       <span class="header-title font-st">出、进港航班动态</span>
     </div>
     <div class="body">
@@ -15,7 +15,32 @@
             </div>
           </div>
           <div class="progress-info">
-            <div class="test"></div>
+            <div>
+              <div class="info-block">
+                <div class="font-rs font-gray">已执行</div>
+                <div class="num-nd font-white">121</div>
+              </div>
+              <div class="info-block">
+                <div class="font-rs font-gray">未执行</div>
+                <div class="num-nd font-white">12</div>
+              </div>
+            </div>
+            <div>
+              <div class="info-block">
+                <div class="font-rs font-gray">取消</div>
+                <div class="num-nd font-white">12</div>
+              </div>
+              <div class="info-block">
+                <div class="font-rs font-gray">延误</div>
+                <div class="num-nd font-yellow">3</div>
+              </div>
+            </div>
+            <div class="info-block">
+              <div class="font-rs font-gray">出港正常率 %</div>
+              <div class="pro-trans">
+                <div :class="['pro-trans-val', (percD>50)?'pro-trans-val-nrm':'pro-trans-val-arm']" :style="`height: ${percD}%;`"></div>
+              </div>
+            </div>
           </div>
         </div>
         <div>
@@ -27,23 +52,62 @@
             </div>
           </div>
           <div class="progress-info">
-            <div class="test"></div>
+            <div>
+              <div class="info-block">
+                <div class="font-rs font-gray">已执行</div>
+                <div class="num-nd font-white">76</div>
+              </div>
+              <div class="info-block">
+                <div class="font-rs font-gray">未执行</div>
+                <div class="num-nd font-white">14</div>
+              </div>
+            </div>
+            <div>
+              <div class="info-block">
+                <div class="font-rs font-gray">取消</div>
+                <div class="num-nd font-white">12</div>
+              </div>
+              <div class="info-block">
+                <div class="font-rs font-gray">延误</div>
+                <div class="num-nd font-yellow">3</div>
+              </div>
+            </div>
+            <div class="info-block">
+              <div class="font-rs font-gray">进港正常率 %</div>
+              <div class="pro-trans">
+                <div :class="['pro-trans-val', (percA>50)?'pro-trans-val-nrm':'pro-trans-val-arm']" :style="`height: ${percA}%;`"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="dymc-block"></div>
+      <div class="dymc-block">
+        <div class="hour-takeoff-land">
+          <div id="lineZoom" class="line"></div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import _ from 'lodash'
+
 export default {
+  props: ['resize'],
   data () {
     return {
+      fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`,
       outCircleEl: null,
       outCircle: null,
       inCircleEl: null,
-      inCircle: null
+      inCircle: null,
+      lineZoomEl: null,
+      lineZoom: null,
+      fontSizeSt: 0,
+      fontSizeRs: 0,
+      percD: 30,
+      percA: 68
     }
   },
   mounted () {
@@ -51,6 +115,8 @@ export default {
     this.outCircle = this.$echarts.init(this.outCircleEl)
     this.inCircleEl = document.getElementById('inCircle')
     this.inCircle = this.$echarts.init(this.inCircleEl)
+    this.lineZoomEl = document.getElementById('lineZoom')
+    this.lineZoom = this.$echarts.init(this.lineZoomEl)
     this.updateOption()
     this.$nextTick(() => {
       let outOpts = {
@@ -64,23 +130,27 @@ export default {
         width: this.inCircleEl.clientHeight
       }
       this.inCircle.resize(inOpts)
-      this.$nextTick(() => {
-        window.onresize = () => {
-          let outOpts2 = {
-            height: 'auto',
-            width: this.outCircleEl.clientHeight
-          }
-          this.outCircle.resize(outOpts2)
-          let inOpts2 = {
-            height: 'auto',
-            width: this.inCircleEl.clientHeight
-          }
-          this.inCircle.resize(inOpts2)
-        }
-      })
+      this.fontSizeSt = this.$store.getters.getFontSizeSt([this.lineZoomEl.clientWidth, 1060])
+      this.fontSizeRs = this.$store.getters.getFontSizeRs([this.lineZoomEl.clientWidth, 1060])
+      this.updateLineOption()
     })
   },
   methods: {
+    resizeMeth () {
+      let outOpts2 = {
+        height: 'auto',
+        width: this.outCircleEl.clientHeight
+      }
+      this.outCircle.resize(outOpts2)
+      let inOpts2 = {
+        height: 'auto',
+        width: this.inCircleEl.clientHeight
+      }
+      this.inCircle.resize(inOpts2)
+      this.fontSizeSt = this.$store.getters.getFontSizeSt([this.lineZoomEl.clientWidth, 1060])
+      this.fontSizeRs = this.$store.getters.getFontSizeRs([this.lineZoomEl.clientWidth, 1060])
+      this.updateLineOption()
+    },
     updateOption () {
       let outOptions = {
         tooltip: {
@@ -101,8 +171,8 @@ export default {
               }
             },
             data: [
-              {value: 12, name: '未执行', itemStyle: {color: '#7A939E', borderColor: '#081C2A', borderWidth: 2}},
-              {value: 121, name: '已执行', itemStyle: {color: '#3DA6CC', borderColor: '#081C2A', borderWidth: 2}}
+              {value: 12, name: '未执行', itemStyle: {color: '#7A939E', borderColor: '#071622', borderWidth: 2}},
+              {value: 121, name: '已执行', itemStyle: {color: '#3DA6CC', borderColor: '#071622', borderWidth: 2}}
             ]
           }
         ]
@@ -127,13 +197,228 @@ export default {
               }
             },
             data: [
-              {value: 16, name: '未执行', itemStyle: {color: '#7A939E', borderColor: '#081C2A', borderWidth: 2}},
-              {value: 74, name: '已执行', itemStyle: {color: '#3DA6CC', borderColor: '#081C2A', borderWidth: 2}}
+              {value: 16, name: '未执行', itemStyle: {color: '#7A939E', borderColor: '#071622', borderWidth: 2}},
+              {value: 74, name: '已执行', itemStyle: {color: '#3DA6CC', borderColor: '#071622', borderWidth: 2}}
             ]
           }
         ]
       }
       this.inCircle.setOption(inOptions, true)
+    },
+    updateLineOption () {
+      let data = []
+      for (let i = 12; i > -12; i--) {
+        let num = ((16 - i) > 24) ? (16 - i - 24) : (16 - i)
+        data.push({
+          time: num + ':00',
+          value: num + 60 - i
+        })
+      }
+      let xData = _.map(data, 'time')
+      let yData = _.map(data, 'value')
+      let yDatb = []
+      yData.forEach((item, index) => {
+        yDatb.push(item + 2 * index - 20)
+      })
+      let lineOptions = {
+        title: {
+          text: '每小时起降架次',
+          textAlign: 'left',
+          left: 100 / 1065 * 20 + '%',
+          textStyle: {
+            color: '#fff',
+            fontWeight: 'normal',
+            fontSize: this.fontSizeSt,
+            fontFamily: this.fontFamily
+          }
+        },
+        legend: {
+          align: 'auto',
+          // right: 100 / 1065 * 20 + '%',
+          inactiveColor: 'rgba(122, 147, 158, 0.6)',
+          itemGap: 20,
+          textStyle: {
+            color: '#7a939e',
+            fontSize: this.fontSizeRs,
+            fontFamily: this.fontFamily
+          },
+          data: ['出港', '进港']
+        },
+        grid: {
+          left: 100 / 1065 * 40 + '%',
+          right: 100 / 1065 * 45 + '%',
+          top: 100 / 224 * 40 + '%',
+          bottom: 100 / 224 * 20 + '%',
+          containLabel: true
+        },
+        toolbox: {
+          right: 100 / 1065 * 35 + '%',
+          iconStyle: {
+            borderColor: '#7a939e'
+          },
+          feature: {
+            dataView: {readOnly: false},
+            // magicType: {type: ['bar']},
+            restore: {},
+            saveAsImage: {}
+          }
+        },
+        // tooltip: {
+        //   trigger: 'item',
+        //   confine: true,
+        //   formatter: '{a} <br/>{b}: {c} ({d}%)'
+        // },
+        xAxis: {
+          boundaryGap: false,
+          axisLine: {
+            lineStyle: {
+              color: 'rgba(60, 166, 200, 0.3)'
+            }
+          },
+          axisTick: {
+            show: false
+          },
+          axisLabel: {
+            margin: 15,
+            color: '#fff',
+            fontSize: this.fontSizeRs,
+            fontFamily: this.fontFamily
+          },
+          // data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+          data: xData
+          // min: 'dataMin',
+          // max: 'dataMax'
+        },
+        yAxis: {
+          min: 'dataMin',
+          max: 'dataMax',
+          splitLine: {
+            lineStyle: {
+              color: 'rgba(60, 166, 200, 0.3)'
+            }
+          },
+          axisLine: {
+            show: false
+          },
+          axisTick: {
+            show: false
+          },
+          axisLabel: {
+            margin: 15,
+            color: '#7a939e',
+            fontSize: this.fontSizeRs,
+            fontFamily: this.fontFamily
+          }
+        },
+        dataZoom: [{
+          type: 'inside',
+          filterMode: 'none',
+          start: 25,
+          end: 75
+        }],
+        series: [
+          {
+            name: '出港',
+            type: 'line',
+            // data: [120, 132, 101, 134, 90, 230, 210]
+            symbol: 'circle',
+            symbolSize: 8,
+            smooth: true,
+            itemStyle: {
+              normal: {
+                color: 'rgb(3, 167, 134)',
+                borderColor: '#071622',
+                borderWidth: 2
+              }
+            },
+            lineStyle: {
+              opacity: 0
+            },
+            areaStyle: {
+              normal: {
+                color: {
+                  type: 'linear',
+                  x: 0,
+                  y: 0,
+                  x2: 0,
+                  y2: 1,
+                  colorStops: [{
+                    offset: 0, color: 'rgba(3, 167, 134, 0.8)'
+                  }, {
+                    offset: 0.5, color: 'rgba(3, 167, 134, 0.5)'
+                  }, {
+                    offset: 1, color: 'rgba(3, 167, 134, 0.1)'
+                  }]
+                }
+              }
+            },
+            // label: {
+            //   normal: {
+            //     show: false,
+            //     position: 'center'
+            //   }
+            // },
+            // markPoint: {
+            //   data: [
+            //     {type: 'max', name: '最大值'},
+            //     {type: 'min', name: '最小值'}
+            //   ]
+            // },
+            data: yDatb
+          },
+          {
+            name: '进港',
+            type: 'line',
+            // data: [120, 132, 101, 134, 90, 230, 210]
+            symbol: 'circle',
+            symbolSize: 8,
+            smooth: true,
+            itemStyle: {
+              normal: {
+                color: 'rgb(60, 166, 200)',
+                borderColor: '#071622',
+                borderWidth: 2
+              }
+            },
+            lineStyle: {
+              opacity: 0
+            },
+            areaStyle: {
+              normal: {
+                color: {
+                  type: 'linear',
+                  x: 0,
+                  y: 0,
+                  x2: 0,
+                  y2: 1,
+                  colorStops: [{
+                    offset: 0, color: 'rgba(60, 166, 200, 0.8)'
+                  }, {
+                    offset: 0.5, color: 'rgba(60, 166, 200, 0.5)'
+                  }, {
+                    offset: 1, color: 'rgba(60, 166, 200, 0.1)'
+                  }]
+                }
+              }
+            },
+            // label: {
+            //   normal: {
+            //     show: false,
+            //     position: 'center'
+            //   }
+            // },
+            data: yData
+          }
+        ]
+      }
+      this.lineZoom.setOption(lineOptions, true)
+    }
+  },
+  watch: {
+    resize: {
+      handler (value) {
+        this.resizeMeth()
+      }
     }
   }
 }
@@ -159,50 +444,72 @@ export default {
   width: 50%;
   display: flex;
 }
-.progress-circle {
-  height: 100%;
-  position: relative;
-}
-.progress-circle>.circle {
-  height: 100%;
-}
-.progress-circle>.text {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  pointer-events: none;
-}
-.progress-circle>.text>div:last-child {
-  margin-top: 10px;
-}
 .progress-info {
   padding: 5% 0;
   width: 100%;
+  display: flex;
 }
 .progress-info>div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+.progress-info>div:not(:last-child) {
+  width: 30%;
   border-left: 1px solid blue;
 }
-.test {
-  width: 70px;
-  height: 140px;
-  background-color: violet;
-  position: relative;
+.progress-info>div:last-child {
+  width: 40%;
+  align-items: flex-start;
+  padding-left: calc(100% / 120 * 5);
+  box-sizing: border-box;
 }
-.test:after {
-  content: "";
-  width: 60px;
-  height: 150px;
+.progress-info>div:last-child>div:last-child {
+  margin-top: calc(100% / 120 * 10);
+}
+.info-block>div:last-child {
+  margin-top: calc(100% / 60 * 10);
+}
+.pro-trans {
+  width: 60%;
+  height: calc(100% / 60 * 50);
+  position: relative;
+  background-image: url(~@img/merge/icon__flight_percent_valid_4k.png);
+  background-position-y: bottom;
+  background-repeat:no-repeat;
+  background-size: cover;
+}
+.pro-trans-val {
+  width: 100%;
   position: absolute;
-  background: #081C2A;
+  bottom: 0;
+  background-position-y: bottom;
+  background-repeat:no-repeat;
+  background-size: cover;
+}
+.pro-trans-val-nrm {
+  background-image: url(~@img/merge/icon__flight_percent_green_4k.png);
+}
+.pro-trans-val-arm {
+  background-image: url(~@img/merge/icon__flight_percent_yellow_4k.png);
+}
+.pro-trans:after {
+  content: "";
+  width: 100%;
+  height: calc(120%);
+  position: absolute;
+  background: #071622;
   top: -10px;
   left: 10px;
   border-radius: 100% 0 0 0;
+}
+.hour-takeoff-land {
+  width: 100%;
+  height: 100%;
+}
+.line {
+  width: 100%;
+  height: 100%;
 }
 </style>

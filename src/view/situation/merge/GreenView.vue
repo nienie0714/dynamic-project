@@ -1,7 +1,7 @@
 <template>
   <div class="passenger merge-block">
     <div class="header">
-      <img height="20%" :src="require('@img/title_deco.png')" />
+      <img height="20%" :src="require('@img/merge/title_deco_4k.png')" />
       <span class="header-title font-st">航班放行正常率</span>
     </div>
     <div class="body">
@@ -13,45 +13,49 @@
       <div class="body-bottom">
         <div>
           <div class="body-bottom-left">
-            <progrs :type="'circle'" :percentage="24" :width="83">
-              <template slot="text">
-                <div>昨日</div>
-              </template>
-            </progrs>
+            <div class="progress-circle">
+              <div id="yesCircle" class="circle"></div>
+              <div class="text">
+                <div class="font-rd font-white">昨日</div>
+              </div>
+            </div>
           </div>
           <div class="body-bottom-right">
-            <div>78.32</div>
-            <div>偏低</div>
+            <div class="num-rd font-white">78.32</div>
+            <div class="font-rd" :class="yesRate > 0.5 ? 'font-green' : 'font-yellow'">{{yesRate > 0.5 ? '正常' : '偏低'}}</div>
           </div>
         </div>
         <div>
           <div class="body-bottom-right">
-            <div :style="{'text-align': 'right'}">78.32</div>
-            <div :style="{'text-align': 'right'}">偏低</div>
+            <div class="num-rd font-white" :style="{'text-align': 'right'}">78.32</div>
+            <div class="font-rd" :class="monthRate > 0.5 ? 'font-green' : 'font-yellow'" :style="{'text-align': 'right'}">{{monthRate > 0.5 ? '正常' : '偏低'}}</div>
           </div>
           <div class="body-bottom-left">
-            <progrs type="circle" :percentage="24" :width="83">
-              <template slot="text">
-                <div>本月</div>
-              </template>
-            </progrs>
+            <div class="progress-circle">
+              <div id="monthCircle" class="circle"></div>
+              <div class="text">
+                <div class="font-rd font-white">本月</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="absolute-title">当日放行正常率</div>
-    <div class="absolute-tag">正常</div>
+    <div class="absolute-title font-st">当日放行正常率</div>
+    <div class="absolute-tag font-rd" :class="toRate > 0.5 ? 'bg-green' : 'bg-yellow'">{{toRate > 0.5 ? '正常' : '偏低'}}</div>
   </div>
 </template>
 
 <script>
 import Progrs from '@/components/common/ProgressView'
 export default {
+  props: ['resize'],
   components: {
     Progrs
   },
   data () {
     return {
+      toRate: 0,
       greenRate: null,
       greenRateOption: {
         // title: {
@@ -143,7 +147,13 @@ export default {
             }]
           }
         ]
-      }
+      },
+      yesRate: 0.3,
+      yesCircleEl: null,
+      yesCircle: null,
+      monthRate: 0.7,
+      monthCircleEl: null,
+      monthCircle: null
     }
   },
   mounted () {
@@ -154,11 +164,42 @@ export default {
         this.greenRate.resize()
       })
      })
+
+    this.yesCircleEl = document.getElementById('yesCircle')
+    this.yesCircle = this.$echarts.init(this.yesCircleEl)
+    this.monthCircleEl = document.getElementById('monthCircle')
+    this.monthCircle = this.$echarts.init(this.monthCircleEl)
+    this.updateOption()
+    this.$nextTick(() => {
+      let outOpts = {
+        height: 'auto',
+        width: this.yesCircleEl.clientHeight
+      }
+      this.yesCircle.resize(outOpts)
+
+      let inOpts = {
+        height: 'auto',
+        width: this.monthCircleEl.clientHeight
+      }
+      this.monthCircle.resize(inOpts)
+    })
   },
   created () {
     this.queryGreenRate()
   },
   methods: {
+    resizeMeth () {
+      let outOpts2 = {
+        height: 'auto',
+        width: this.yesCircleEl.clientHeight
+      }
+      this.yesCircle.resize(outOpts2)
+      let inOpts2 = {
+        height: 'auto',
+        width: this.monthCircleEl.clientHeight
+      }
+      this.monthCircle.resize(inOpts2)
+    },
     queryGreenRate () {
       let that = this
       // setTimeout(() => {
@@ -169,13 +210,91 @@ export default {
       setInterval(function () {
         let temp = that.greenRateOption
         var random = (Math.random() * 100).toFixed(2)
-        // random = 60
-        var color = [[random / 100, '#FDCF53'], [1, '#2B404A']]
+        var color = null
+        that.toRate = random / 100
+        if (random / 100 > 0.5) {
+          color = [[random / 100, '#03A786'], [1, '#2e434c']]
+        } else {
+          color = [[random / 100, '#FDCF53'], [1, '#2e434c']]
+        }
         // var color = [[0.2, '#91c7ae'], [0.8, '#FDCF53'], [1, '#2B404A']]
         temp.series[0].axisLine.lineStyle.color = color
         temp.series[0].data[0].value = random
         that.greenRate.setOption(temp)
       }, 500)
+    },
+    updateOption () {
+      let yesColor = ''
+      if (this.yesRate > 0.5) {
+        yesColor = '#03A786'
+      } else {
+        yesColor = '#FDCF53'
+      }
+      let outOptions = {
+        tooltip: {
+          trigger: 'item',
+          confine: true,
+          formatter: '{a} <br/>{b}: {c} ({d}%)'
+        },
+        series: [
+          {
+            type: 'pie',
+            radius: ['75%', '90%'],
+            avoidLabelOverlap: false,
+            silent: true,
+            label: {
+              normal: {
+                show: false,
+                position: 'center'
+              }
+            },
+            data: [
+              {value: 12, name: '未执行', itemStyle: {color: '#060D14'}},
+              {value: 121, name: '已执行', itemStyle: {color: yesColor}}
+            ]
+          }
+        ]
+      }
+      this.yesCircle.setOption(outOptions, true)
+      let monthColor = ''
+      if (this.monthRate > 0.5) {
+        monthColor = '#03A786'
+      } else {
+        monthColor = '#FDCF53'
+      }
+      let inOptions = {
+        tooltip: {
+          trigger: 'item',
+          confine: true,
+          formatter: '{a} <br/>{b}: {c} ({d}%)'
+        },
+        series: [
+          {
+            type: 'pie',
+            radius: ['75%', '90%'],
+            avoidLabelOverlap: false,
+            silent: true,
+            label: {
+              normal: {
+                show: false,
+                position: 'center'
+              }
+            },
+            data: [
+              {value: 16, name: '未执行', itemStyle: {color: '#060D14'}}, // 黑色圈
+              {value: 74, name: '已执行', itemStyle: {color: monthColor}} // 绿色
+            ]
+          }
+        ]
+      }
+      this.monthCircle.setOption(inOptions, true)
+    }
+  },
+  watch: {
+    resize: {
+      handler (value) {
+        this.resizeMeth()
+      }
     }
   }
 }
@@ -198,14 +317,15 @@ export default {
 .passenger>.body>.body-top {
   width: 100%;
   height: 75%;
-  border-bottom: 1px solid blue;
 }
 .passenger>.body>.body-top > div {
   width: 100%;
   height: 100%;
-  background-image: url(/static/img/time_bg_left_corner.9b13c12.png) !important;
+  background-image: url(~@img/merge/bg_earth_4k.jpg) !important;
   background-position: center;
   background-repeat: no-repeat;
+  background-size: cover;
+  background-size: 67% 90%;
 }
 .passenger>.body>.body-bottom {
   display: flex;
@@ -214,7 +334,7 @@ export default {
 .passenger>.body>.body-bottom>div {
   width: 50%;
   display: flex;
-  padding: 8px 0;
+  margin: 2% 0;
 }
 .passenger>.body>.body-bottom>div:nth-child(1) {
   border-right: 1px solid blue;
@@ -230,15 +350,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin: 0 10px;
-}
-.body-bottom-right > div:nth-child(1) {
-  height: 30%;
-  color: #fff;
-}
-.body-bottom-right > div:nth-child(2) {
-  font-weight: 600;
-  color: rgb(180, 204, 73);
+  margin: 0 8%;
 }
 .green-echart {
   height: 100%;
@@ -253,25 +365,38 @@ export default {
 }
 .absolute-title {
   position: absolute;
-  top: 30%;
-  left: 34%;
-  width: 120px;
-  height: 22px;
+  top: 32%;
+  left: 31%;
+  width: 40%;
+  height: 6%;
   text-align: center;
-  padding: 2px 2px;
-  font-weight: bold;
   color:#fff;
 }
 .absolute-tag {
   position: absolute;
-  top: 51%;
+  top: 55%;
   left: 42%;
-  width: 60px;
-  height: 22px;
-  background-color: #FDCF53;
+  width: 17%;
+  height: 5%;
+  background-color: #03A786;
   text-align: center;
-  padding: 2px 2px;
+  padding: 1% 1%;
   border-radius: 15px;
   font-weight: bold;
+}
+.progress-circle>.text>div:last-child {
+  margin-top: 0;
+}
+.font-green {
+  color: #03A786;
+}
+.font-yellow {
+  color: #FDCF53;
+}
+.bg-green {
+  background-color: #03A786;
+}
+.bg-yellow {
+  background-color: #FDCF53;
 }
 </style>
