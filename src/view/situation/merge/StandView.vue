@@ -397,8 +397,8 @@ export default {
 .absolute-subtag {
   position: absolute;
   top: 65%;
-  left: 20%;
-  width: 8%;
+  left: 19%;
+  width: 9%;
   height: 4%;
   background-color: #ff6959;
   text-align: center;

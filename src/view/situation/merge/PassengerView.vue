@@ -27,22 +27,22 @@
           </div>
           <div class="time">
             <div>
-              <div class="time-icon"></div>
+              <div class="time-icon icon-1"></div>
               <div class="font-rs font-gray">&lt;45min</div>
               <div class="num-rd color-1">230</div>
             </div>
             <div>
-              <div class="time-icon"></div>
+              <div class="time-icon icon-2"></div>
               <div class="font-rs font-gray">45~90min</div>
               <div class="num-rd color-2">230</div>
             </div>
             <div>
-              <div class="time-icon"></div>
+              <div class="time-icon icon-3"></div>
               <div class="font-rs font-gray">90~150min</div>
               <div class="num-rd color-3">230</div>
             </div>
             <div>
-              <div class="time-icon"></div>
+              <div class="time-icon icon-4"></div>
               <div class="font-rs font-gray">&gt;150min</div>
               <div class="num-rd color-4">230</div>
             </div>
@@ -67,22 +67,22 @@
           </div>
           <div class="time">
             <div>
-              <div class="time-icon"></div>
+              <div class="time-icon icon-1"></div>
               <div class="font-rs font-gray">&lt;45min</div>
               <div class="num-rd color-1">230</div>
             </div>
             <div>
-              <div class="time-icon"></div>
+              <div class="time-icon icon-2"></div>
               <div class="font-rs font-gray">45~90min</div>
               <div class="num-rd color-2">230</div>
             </div>
             <div>
-              <div class="time-icon"></div>
+              <div class="time-icon icon-3"></div>
               <div class="font-rs font-gray">90~150min</div>
               <div class="num-rd color-3">230</div>
             </div>
             <div>
-              <div class="time-icon"></div>
+              <div class="time-icon icon-4"></div>
               <div class="font-rs font-gray">&gt;150min</div>
               <div class="num-rd color-4">230</div>
             </div>
@@ -108,7 +108,7 @@
   flex-direction: column;
 }
 .passenger>.body>div:first-child {
-  border-bottom: 1px solid blue;
+  border-bottom: 1px solid rgba(60, 166, 200, 0.3);
 }
 .pass-block {
   box-sizing: border-box;
@@ -139,7 +139,7 @@
   display: flex;
 }
 .pass-block>div:last-child>.time {
-  border-left: 1px solid blue;
+  border-left: 1px solid rgba(60, 166, 200, 0.3);
 }
 .count>div {
   width: calc(100% / 3);
@@ -171,10 +171,24 @@
 .color-4 {
   color: #FE6959;
 }
+.icon-1 {
+  background-image: url(~@img/merge/icon_time_45_4k.png);
+}
+.icon-2 {
+  background-image: url(~@img/merge/icon_time_90_4k.png);
+}
+.icon-3 {
+  background-image: url(~@img/merge/icon_time_150_4k.png);
+}
+.icon-4 {
+  background-image: url(~@img/merge/icon_time_r150_4k.png);
+}
 .time-icon {
-  width: 20%;
+  width: 100%;
   height: 20%;
   margin: 0 0 8% 0;
-  background-color: #F5F46B;
+  background-position: left;
+  background-repeat: no-repeat;
+  background-size: auto 100%;
 }
 </style>

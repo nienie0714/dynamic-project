@@ -207,7 +207,7 @@ export default {
       //   temp.series[0].data = []
       //   that.greenRate.setOption(temp)
       // }, 100)
-      setInterval(function () {
+      setTimeout(() => {
         let temp = that.greenRateOption
         var random = (Math.random() * 100).toFixed(2)
         var color = null
@@ -221,7 +221,7 @@ export default {
         temp.series[0].axisLine.lineStyle.color = color
         temp.series[0].data[0].value = random
         that.greenRate.setOption(temp)
-      }, 500)
+      }, 100)
     },
     updateOption () {
       let yesColor = ''

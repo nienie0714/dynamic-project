@@ -352,10 +352,11 @@ export default {
       //   temp.series[0].data = []
       //   that.bybridgeFltRate.setOption(temp)
       // }, 100)
-      setInterval(function () {
+      setTimeout(function () {
         let temp = that.bybridgeFltRateOption
         let temp2 = that.bybridgePasRateOption
-        var random = (Math.random() * 100).toFixed(2)
+        // var random = (Math.random() * 100).toFixed(2)
+        var random = 66.66
         that.fltRate = random / 100
         that.pasRate = random / 100
         var color = null
@@ -371,7 +372,7 @@ export default {
         temp2.series[0].axisLine.lineStyle.color = color
         temp2.series[0].data[0].value = random
         that.bybridgePasRate.setOption(temp2)
-      }, 500)
+      }, 100)
     }
   },
   watch: {

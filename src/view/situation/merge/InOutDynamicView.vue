@@ -149,6 +149,7 @@ export default {
       this.inCircle.resize(inOpts2)
       this.fontSizeSt = this.$store.getters.getFontSizeSt([this.lineZoomEl.clientWidth, 1060])
       this.fontSizeRs = this.$store.getters.getFontSizeRs([this.lineZoomEl.clientWidth, 1060])
+      this.lineZoom.resize()
       this.updateLineOption()
     },
     updateOption () {
@@ -253,6 +254,7 @@ export default {
         },
         toolbox: {
           right: 100 / 1065 * 35 + '%',
+          itemSize: this.fontSizeRs,
           iconStyle: {
             borderColor: '#7a939e'
           },
@@ -263,11 +265,10 @@ export default {
             saveAsImage: {}
           }
         },
-        // tooltip: {
-        //   trigger: 'item',
-        //   confine: true,
-        //   formatter: '{a} <br/>{b}: {c} ({d}%)'
-        // },
+        tooltip: {
+          trigger: 'item',
+          confine: true
+        },
         xAxis: {
           boundaryGap: false,
           axisLine: {
@@ -364,6 +365,14 @@ export default {
             //     {type: 'min', name: '最小值'}
             //   ]
             // },
+            tooltip: {
+              formatter: '{c}',
+              backgroundColor: 'rgb(3, 167, 134)',
+              textStyle: {
+                fontSize: this.fontSizeRs,
+                fontFamily: this.fontFamily
+              }
+            },
             data: yDatb
           },
           {
@@ -407,6 +416,14 @@ export default {
             //     position: 'center'
             //   }
             // },
+            tooltip: {
+              formatter: '{c}',
+              backgroundColor: 'rgb(60, 166, 200)',
+              textStyle: {
+                fontSize: this.fontSizeRs,
+                fontFamily: this.fontFamily
+              }
+            },
             data: yData
           }
         ]
@@ -457,7 +474,7 @@ export default {
 }
 .progress-info>div:not(:last-child) {
   width: 30%;
-  border-left: 1px solid blue;
+  border-left: 1px solid rgba(60, 166, 200, 0.3);
 }
 .progress-info>div:last-child {
   width: 40%;
