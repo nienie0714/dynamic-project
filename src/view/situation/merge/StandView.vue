@@ -280,12 +280,12 @@ export default {
 </script>
 <style scoped>
 .merge-block > .header {
-  margin-left: calc(100% / 783 * 20);
+  margin-left: calc(100% / 800 * 20);
   height: calc(100% / 570 * 60);
-  line-height: calc(100% / 530 * 60);
+  line-height: calc(100% / 570 * 60);
 }
 .passenger>.body {
-  margin: 0 calc(100% / 783 * 20) calc(100% / 380 * 10) calc(100% / 783 * 20);
+  margin: 0 calc(100% / 800 * 20) 0 calc(100% / 800 * 20);
   height: calc(100% - (100% / 530 * 60));
   display: flex;
   flex-direction: column;
