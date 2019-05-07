@@ -9,9 +9,10 @@
         <div class="gauge-title font-rd font-white">航班靠桥率</div>
         <div class="gauge-echart">
           <div id="bybridgeFltRate" class="gauge-canvas"></div>
+          <div class="absolute-div font-rd bg-yellow" v-if="fltRate < 0.5">偏低</div>
           <div class="text">
-            <div class="num-st font-white">95.</div>
-            <div class="num-rd font-white">28</div>
+            <div class="num-st font-white">{{(fltRate*100)}}.</div>
+            <div class="num-rd font-white">1</div>
           </div>
         </div>
         <div class="gauge-subtitle font-rd font-gray">已靠桥 / 总数 (架)</div>
@@ -21,17 +22,16 @@
         <div class="gauge-title font-rd font-white">旅客靠桥率</div>
         <div class="gauge-echart">
           <div id="bybridgePasRate" class="gauge-canvas"></div>
+          <div class="absolute-div font-rd bg-yellow" v-if="fltRate < 0.5">偏低</div>
           <div class="text">
-            <div class="num-st font-white">52.</div>
-            <div class="num-rd font-white">28</div>
+            <div class="num-st font-white">--.</div>
+            <div class="num-rd font-white">--</div>
           </div>
         </div>
         <div class="gauge-subtitle font-rd font-gray">已靠桥 / 总数 (人)</div>
-        <div class="gauge-value num-rd font-white">110 / 128</div>
+        <div class="gauge-value num-rd font-white">-- / --</div>
       </div>
     </div>
-    <div class="absolute-div font-rd bg-yellow" v-if="fltRate < 0.5">偏低</div>
-    <div class="absolute-subdiv font-rd bg-yellow" v-if="fltRate < 0.5">偏低</div>
   </div>
 </template>
 
@@ -41,6 +41,7 @@ export default {
   data () {
     return {
       fltRate: 0,
+      fltRateStr: '',
       pasRate: 0,
       bybridgeFltRate: null,
       bybridgeFltRateEl: null,
@@ -72,7 +73,6 @@ export default {
       }
       this.bybridgePasRate.resize(inOpts)
       this.fontSizeTh = this.$store.getters.getFontSizeTh([this.bybridgeFltRateEl.clientWidth * 2, 650])
-      console.log(this.fontSizeTh)
       this.updatedOption()
     })
   },
@@ -97,6 +97,7 @@ export default {
       })
     },
     updatedOption () {
+      let height = this.bybridgePasRateEl.clientHeight
       this.bybridgeFltRateOption = {
         series: [
           {
@@ -147,28 +148,30 @@ export default {
           },
           {
             type: 'gauge',
-            radius: '85%',
+            radius: height / 2 - height / 214 * 20,
             z: '-1',
             // 仪表盘轴线(轮廓线)相关配置。
             axisLine: {
               show: true,
               lineStyle: {
-                width: 25,
+                width: 1.7 * this.fontSizeTh,
                 color: [[1, 'rgba(122,147,160, 0.15)']]
               }
             },
             // 分隔线样式。
             splitLine: {
-                show: false
+                show: false,
+                length: 0
             },
             // 刻度样式。
             axisTick: {
-              show: false
+              show: false,
+              length: 0
             },
             // 刻度标签。
             axisLabel: {
               show: true,
-              distance: -27, // 标签与刻度线的距离,默认 5。
+              distance: 0, // 标签与刻度线的距离,默认 5。
               color: '#7a939e',
               padding: 3,
               fontSize: this.fontSizeTh,
@@ -252,22 +255,24 @@ export default {
             axisLine: {
               show: true,
               lineStyle: {
-                width: 25,
+                width: 1.7 * this.fontSizeTh,
                 color: [[1, 'rgba(122,147,160, 0.15)']]
               }
             },
             // 分隔线样式。
             splitLine: {
-                show: false
+                show: false,
+                length: 0
             },
             // 刻度样式。
             axisTick: {
-              show: false
+              show: false,
+              length: 0
             },
             // 刻度标签。
             axisLabel: {
               show: true,
-              distance: -27, // 标签与刻度线的距离,默认 5。
+              distance: 0, // 标签与刻度线的距离,默认 5。
               color: '#7a939e',
               padding: 3,
               fontSize: this.fontSizeTh,
@@ -301,10 +306,13 @@ export default {
       setTimeout(function () {
         let temp = that.bybridgeFltRateOption
         let temp2 = that.bybridgePasRateOption
-        // var random = (Math.random() * 100).toFixed(2)
-        var random = 66.66
+        var random = (Math.random() * 100).toFixed(2)
         that.fltRate = random / 100
-        that.pasRate = random / 100
+        let tmp = that.fltRate * 100 + ''
+        // that.fltRateStr = tmp.substring(0, tmp.indexOf('.') + 3)
+        // console.log(that.fltRateStr)
+        // that.pasRate = random / 100
+        that.pasRate = 0
         var color = null
         if (random / 100 > 0.5) {
           color = [[random / 100, '#3da6cc'], [1, '#2e434c']]
@@ -315,8 +323,8 @@ export default {
         temp.series[0].axisLine.lineStyle.color = color
         temp.series[0].data[0].value = random
         that.bybridgeFltRate.setOption(temp)
-        temp2.series[0].axisLine.lineStyle.color = color
-        temp2.series[0].data[0].value = random
+        temp2.series[0].axisLine.lineStyle.color = [[1, '#2e434c']]
+        temp2.series[0].data[0].value = 0
         that.bybridgePasRate.setOption(temp2)
       }, 100)
     }
@@ -339,6 +347,7 @@ export default {
 }
 .bybridge>.body {
   height: calc(100% - (100% / 420 * 60));
+  margin: 0 calc(100% / 644 * 20);
 }
 .bybridge {
   position: relative;
@@ -348,24 +357,22 @@ export default {
 }
 .gauge-left-content {
   width: 50%;
-  /* display: flex;
-  flex-direction: column;
-  justify-content: center; */
 }
 .gauge-right-content {
   flex: 1;
-  /* display: flex;
-  flex-direction: column;
-  justify-content: center; */
 }
 .gauge-title {
   height: calc(100% / 420 * 52);
   text-align: center;
 }
 .gauge-echart {
-  height: calc(100% / 420 * 250);
+  height: calc(100% / 420 * 270);
   width: 100%;
   position: relative;
+  background-image: url(~@img/merge/bg_circle_glow_4k.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: auto 80%;
 }
 .gauge-echart > .gauge-canvas {
   height: 100%;
@@ -383,14 +390,13 @@ export default {
   left: 0;
   right: 0;
   margin: auto;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  pointer-events: none;
+}
+.gauge-echart>.text > div {
+  display: inline-block;
 }
 .gauge-subtitle {
   text-align: center;
-  height: calc(100% / 420 * 52);
+  height: calc(100% / 420 * 35);
 }
 .gauge-value {
   height: calc(100% / 420 * 52);
@@ -398,27 +404,16 @@ export default {
 }
 .absolute-div {
   position: absolute;
-  top: 22%;
-  left: 38%;
-  width: 10%;
-  height: 5%;
-  background-color: #FDCF53;
+  top: 0;
+  right: 0;
+  background-color: #ff6959;
   text-align: center;
-  padding: 0.5% 0.5%;
-  border-radius: 15px;
+  padding: calc(100% / 227 * 3) calc(100% / 227 * 8);
+  border-radius: 20% / 50%;
   font-weight: bold;
-}
-.absolute-subdiv {
-  position: absolute;
-  top: 22%;
-  left: 86%;
-  width: 10%;
-  height: 5%;
-  background-color: #FDCF53;
-  text-align: center;
-  padding: 0.5% 0.5%;
-  border-radius: 15px;
-  font-weight: bold;
+  overflow: hidden;
+  white-space: nowrap;
+  width: fit-content;
 }
 .bg-green {
   background-color: #03A786;

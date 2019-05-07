@@ -11,7 +11,7 @@
             <div id="standCircle" class="circle"></div>
             <div class="absolute-tag font-rs">机位紧张</div>
             <div class="text">
-              <div class="font-st font-white">空闲 / 占用</div>
+              <div class="font-st font-gray">空闲 / 占用</div>
               <div class="num-st font-white">8 / 40</div>
             </div>
           </div>
@@ -75,14 +75,14 @@
               </div>
             </div>
             <div>
-              <div class="font-rd font-gray">除冰位</div>
+              <div class="font-rd font-gray">货运位</div>
               <div class="num-rd font-white">15 / 23</div>
               <div>
                 <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
               </div>
             </div>
             <div>
-              <div class="font-rd font-gray">货运位</div>
+              <div class="font-rd font-gray">除冰位</div>
               <div class="num-rd font-white">15 / 23</div>
               <div>
                 <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
@@ -93,17 +93,17 @@
       </div>
       <div class="body-bottom merge-block one-hour">
         <div class="header" :style="`height: calc(100% / 275 * 60);`">
-          <div class="header-title font-nd">1 小时内机位占用情况（预计）</div>
+          <div class="header-title font-nd">1 小时内机位预占用情况</div>
         </div>
         <div class="body">
           <div class="body-top">
             <div>
               <div class="progress-circle">
                 <div id="oneCircle" class="circle"></div>
-                <div class="absolute-tag font-rs">机位紧张</div>
+                <!-- <div class="absolute-tag font-rs">机位紧张</div> -->
                 <div class="text">
-                  <div class="font-th font-white">空闲 / 占用</div>
-                  <div class="num-th font-white">8 / 40</div>
+                  <div class="font-nd font-gray">预占用</div>
+                  <div class="num-rd font-white">10</div>
                 </div>
               </div>
             </div>
@@ -114,46 +114,46 @@
                     <div class="stand-icon bg-b"></div>
                     <div>类机位</div>
                   </div>
-                  <div class="num-rd font-white">15 / 23</div>
+                  <div class="num-rd font-white">15</div>
                 </div>
                 <div>
                   <div class="stand-title font-rd font-gray">
                     <div class="stand-icon bg-c"></div>
                     <div>类机位</div>
                   </div>
-                  <div class="num-rd font-white">15 / 23</div>
+                  <div class="num-rd font-white">15</div>
                 </div>
                 <div>
                   <div class="stand-title font-rd font-gray">
                     <div class="stand-icon bg-d"></div>
                     <div>类机位</div>
                   </div>
-                  <div class="num-rd font-white">15 / 23</div>
+                  <div class="num-rd font-white">15</div>
                 </div>
                 <div>
                   <div class="stand-title font-rd font-gray">
                     <div class="stand-icon bg-e"></div>
                     <div>类机位</div>
                   </div>
-                  <div class="num-rd font-white">15 / 23</div>
+                  <div class="num-rd font-white">15</div>
                 </div>
               </div>
               <div class="stand-row">
                 <div>
                   <div class="font-rd font-gray">廊桥位</div>
-                  <div class="num-rd font-white">15 / 23</div>
+                  <div class="num-rd font-white">15</div>
                 </div>
                 <div>
                   <div class="font-rd font-gray">远机位</div>
-                  <div class="num-rd font-white">15 / 23</div>
-                </div>
-                <div>
-                  <div class="font-rd font-gray">除冰位</div>
-                  <div class="num-rd font-white">15 / 23</div>
+                  <div class="num-rd font-white">15</div>
                 </div>
                 <div>
                   <div class="font-rd font-gray">货运位</div>
-                  <div class="num-rd font-white">15 / 23</div>
+                  <div class="num-rd font-white">15</div>
+                </div>
+                <div>
+                  <div class="font-rd font-gray">除冰位</div>
+                  <div class="num-rd font-white">15</div>
                 </div>
               </div>
             </div>
@@ -245,11 +245,11 @@ export default {
         tooltip: {
           trigger: 'item',
           confine: true,
-          formatter: '{a} <br/>{b}: {c} ({d}%)'
+          formatter: '{b}: {c}'
         },
         series: [
           {
-            name: '机位预计',
+            name: '预占用',
             type: 'pie',
             radius: ['62%', '70%'],
             avoidLabelOverlap: false,
@@ -260,8 +260,8 @@ export default {
               }
             },
             data: [
-              {value: 16, name: '空闲', itemStyle: {color: '#03A786', borderColor: '#071622', borderWidth: 2}},
-              {value: 74, name: '占用', itemStyle: {color: '#7A939E', borderColor: '#071622', borderWidth: 2}}
+              {value: 16, name: '预占用', itemStyle: {color: '#03A786', borderColor: '#071622', borderWidth: 2}}
+              // {value: 74, name: '占用', itemStyle: {color: '#7A939E', borderColor: '#071622', borderWidth: 2}}
             ]
           }
         ]
@@ -311,6 +311,7 @@ export default {
   /* width: 30%; 机位统计 圆环 */
   display: flex;
   justify-content: center;
+  overflow: hidden;
 }
 .body-top>div:last-child {
   flex-grow: 1;
@@ -396,5 +397,10 @@ export default {
   overflow: hidden;
   white-space: nowrap;
   width: fit-content;
+}
+.one-hour {
+  background-color: rgba(60, 166, 200, 0.1);
+  border: 1px solid rgba(60, 166, 200, 0.5);
+  box-shadow: 0 0 30px rgba(60, 166, 200, 0.25);
 }
 </style>

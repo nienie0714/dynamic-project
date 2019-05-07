@@ -19,7 +19,7 @@
             <div>
               <div class="font-rd font-gray">登机总人数</div>
               <div class="num-nd font-white">1060
-                <div class="font-rs font-gray">-5</div>
+                <!-- <div class="font-rs font-gray">-5</div> -->
               </div>
             </div>
             <div>
@@ -31,22 +31,22 @@
             <div>
               <div class="time-icon icon-1"></div>
               <div class="font-rs font-gray">&lt;45min</div>
-              <div class="num-rd color-1">230</div>
+              <div class="num-rd color-1">—</div>
             </div>
             <div>
               <div class="time-icon icon-2"></div>
               <div class="font-rs font-gray">45~90min</div>
-              <div class="num-rd color-2">230</div>
+              <div class="num-rd color-2">—</div>
             </div>
             <div>
               <div class="time-icon icon-3"></div>
               <div class="font-rs font-gray">90~150min</div>
-              <div class="num-rd color-3">230</div>
+              <div class="num-rd color-3">—</div>
             </div>
             <div>
               <div class="time-icon icon-4"></div>
               <div class="font-rs font-gray">&gt;150min</div>
-              <div class="num-rd color-4">230</div>
+              <div class="num-rd color-4">—</div>
             </div>
           </div>
         </div>
@@ -65,7 +65,7 @@
             <div>
               <div class="font-rd font-gray">实达总人数</div>
               <div class="num-nd font-white">2061
-                <div class="font-rs font-gray">+29</div>
+                <!-- <div class="font-rs font-gray">+29</div> -->
               </div>
             </div>
           </div>
@@ -73,22 +73,22 @@
             <div>
               <div class="time-icon icon-1"></div>
               <div class="font-rs font-gray">&lt;45min</div>
-              <div class="num-rd color-1">230</div>
+              <div class="num-rd color-1">—</div>
             </div>
             <div>
               <div class="time-icon icon-2"></div>
               <div class="font-rs font-gray">45~90min</div>
-              <div class="num-rd color-2">230</div>
+              <div class="num-rd color-2">—</div>
             </div>
             <div>
               <div class="time-icon icon-3"></div>
               <div class="font-rs font-gray">90~150min</div>
-              <div class="num-rd color-3">230</div>
+              <div class="num-rd color-3">—</div>
             </div>
             <div>
               <div class="time-icon icon-4"></div>
               <div class="font-rs font-gray">&gt;150min</div>
-              <div class="num-rd color-4">230</div>
+              <div class="num-rd color-4">—</div>
             </div>
           </div>
         </div>

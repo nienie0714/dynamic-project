@@ -14,9 +14,6 @@
             <div class="absolute-tag font-rd" :class="toRate > 0.5 ? 'bg-green' : 'bg-yellow'">{{toRate > 0.5 ? '正常' : '偏低'}}</div>
           </div>
         </div>
-        <!-- <div class="green-echart">
-          <div id="greenRate" class="green-canvas"></div>
-        </div> -->
       </div>
       <div class="body-bottom">
         <div>
@@ -49,8 +46,6 @@
         </div>
       </div>
     </div>
-    <!-- <div class="absolute-title font-st">当日放行正常率</div>
-    <div class="absolute-tag font-rd" :class="toRate > 0.5 ? 'bg-green' : 'bg-yellow'">{{toRate > 0.5 ? '正常' : '偏低'}}</div> -->
   </div>
 </template>
 
@@ -65,40 +60,98 @@ export default {
     return {
       toRate: 0,
       greenRate: null,
-      greenRateOption: {
-        // title: {
-        //   text: '航班靠桥率',
-        //   textAlign: 'center',
-        //   padding: [70, 170],
-        //   textStyle: {
-        //     color: '#fff',
-        //     fontSize: 14
-        //   }
-        // },
+      greenCircleEl: null,
+      fontSizeTh: 0,
+      greenRateOption: {},
+      yesRate: 0.3,
+      yesCircleEl: null,
+      yesCircle: null,
+      monthRate: 0.7,
+      monthCircleEl: null,
+      monthCircle: null
+    }
+  },
+  mounted () {
+    this.greenCircleEl = document.getElementById('greenRate')
+    this.greenRate = this.$echarts.init(this.greenCircleEl)
+    this.updateGreenOption()
+
+    this.yesCircleEl = document.getElementById('yesCircle')
+    this.yesCircle = this.$echarts.init(this.yesCircleEl)
+    this.monthCircleEl = document.getElementById('monthCircle')
+    this.monthCircle = this.$echarts.init(this.monthCircleEl)
+    this.updateOption()
+    this.$nextTick(() => {
+      let Opts = {
+        height: 'auto',
+        width: this.greenCircleEl.clientHeight
+      }
+      this.greenRate.resize(Opts)
+      this.fontSizeTh = this.$store.getters.getFontSizeTh([this.greenCircleEl.clientWidth, 390])
+      this.updateGreenOption()
+
+      let outOpts = {
+        height: 'auto',
+        width: this.yesCircleEl.clientHeight
+      }
+      this.yesCircle.resize(outOpts)
+
+      let inOpts = {
+        height: 'auto',
+        width: this.monthCircleEl.clientHeight
+      }
+      this.monthCircle.resize(inOpts)
+      this.updateOption()
+    })
+  },
+  created () {
+    this.queryGreenRate()
+  },
+  methods: {
+    resizeMeth () {
+      let Opts2 = {
+        height: 'auto',
+        width: this.greenCircleEl.clientHeight
+      }
+      this.greenRate.resize(Opts2)
+      let outOpts2 = {
+        height: 'auto',
+        width: this.yesCircleEl.clientHeight
+      }
+      this.yesCircle.resize(outOpts2)
+      let inOpts2 = {
+        height: 'auto',
+        width: this.monthCircleEl.clientHeight
+      }
+      this.fontSizeTh = this.$store.getters.getFontSizeTh([this.greenCircleEl.clientWidth, 420])
+      this.monthCircle.resize(inOpts2)
+      this.updateOption()
+      this.updateGreenOption()
+    },
+    updateGreenOption () {
+      this.greenRateOption = {
         series: [
           {
             name: '业务指标',
             type: 'gauge',
-            radius: '90%',
-            startAngle: 359,
-            endAngle: 0,
-            splitNumber: 100,
+            radius: '95%',
+            startAngle: 180,
+            endAngle: 180,
             // 仪表盘轴线(轮廓线)相关配置。
             axisLine: {
                 show: true,
                 lineStyle: {
-                    width: 8,
-                    color: [[1, '#2B404A']]
+                    width: 12
                 }
             },
             // 分隔线样式。
             splitLine: {
               show: true,
-              interval: 100,
-              length: 8,
+              // interval: 100,
+              length: this.fontSizeTh,
               lineStyle: {
                 color: '#2F7F9E',
-                width: 2
+                width: 1.5
               }
             },
             // 刻度样式。
@@ -123,110 +176,24 @@ export default {
             itemStyle: {
               color: '#3DA6CC'
             },
-            // 仪表盘详情，用于显示数据
-            detail: {
-                show: false,
-                offsetCenter: [0, 10],
-                formatter: function (value) {
-                  value = value + ''
-                  return `{start|${value}}{end|%}`
-                },
-                textStyle: {
-                  fontSize: 30
-                },
-                rich: {
-                  start: {
-                    color: '#fff',
-                    fontSize: 40,
-                    height: 40,
-                    verticalAlign: 'top'
-                  },
-                  end: {
-                    color: '#fff',
-                    fontSize: 20,
-                    height: 50,
-                    verticalAlign: 'center'
-                  }
-                }
-            },
             data: [{
-                value: 53.96
+                value: 0
             }]
           }
         ]
-      },
-      yesRate: 0.3,
-      yesCircleEl: null,
-      yesCircle: null,
-      monthRate: 0.7,
-      monthCircleEl: null,
-      monthCircle: null
-    }
-  },
-  mounted () {
-    this.greenRate = this.$echarts.init(document.getElementById('greenRate'))
-    this.greenRate.setOption(this.greenRateOption)
-    window.addEventListener('resize', () => {
-      this.$nextTick(() => {
-        this.greenRate.resize()
-      })
-     })
-
-    this.yesCircleEl = document.getElementById('yesCircle')
-    this.yesCircle = this.$echarts.init(this.yesCircleEl)
-    this.monthCircleEl = document.getElementById('monthCircle')
-    this.monthCircle = this.$echarts.init(this.monthCircleEl)
-    this.updateOption()
-    this.$nextTick(() => {
-      let outOpts = {
-        height: 'auto',
-        width: this.yesCircleEl.clientHeight
       }
-      this.yesCircle.resize(outOpts)
-
-      let inOpts = {
-        height: 'auto',
-        width: this.monthCircleEl.clientHeight
-      }
-      this.monthCircle.resize(inOpts)
-    })
-  },
-  created () {
-    this.queryGreenRate()
-  },
-  methods: {
-    resizeMeth () {
-      let outOpts2 = {
-        height: 'auto',
-        width: this.yesCircleEl.clientHeight
-      }
-      this.yesCircle.resize(outOpts2)
-      let inOpts2 = {
-        height: 'auto',
-        width: this.monthCircleEl.clientHeight
-      }
-      this.monthCircle.resize(inOpts2)
+      this.greenRate.setOption(this.greenRateOption, true)
     },
     queryGreenRate () {
       let that = this
-      // setTimeout(() => {
-      //   let temp = that.greenRateOption
-      //   temp.series[0].data = []
-      //   that.greenRate.setOption(temp)
-      // }, 100)
       setTimeout(() => {
         let temp = that.greenRateOption
         var random = (Math.random() * 100).toFixed(2)
-        var color = null
         that.toRate = random / 100
-        if (random / 100 > 0.5) {
-          color = [[random / 100, '#03A786'], [1, '#071722']]
-        } else {
-          color = [[random / 100, '#FDCF53'], [1, '#071722']]
-        }
-        // var color = [[0.2, '#91c7ae'], [0.8, '#FDCF53'], [1, '#2B404A']]
+        var color = [[1, '#071622']]
         temp.series[0].axisLine.lineStyle.color = color
-        temp.series[0].data[0].value = random
+        temp.series[0].endAngle = 180 - that.toRate * 360 + 1
+        temp.series[0].splitNumber = parseInt(170 * that.toRate)
         that.greenRate.setOption(temp)
       }, 100)
     },
@@ -332,7 +299,7 @@ export default {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  background-size: 67% 90%;
+  background-size: 65% auto;
 }
 .passenger>.body>.body-bottom {
   display: flex;
@@ -407,5 +374,9 @@ export default {
 }
 .progress-circle > .margin > div {
   margin-top: calc(100% / 420 * 10)
+}
+.progress-circle>.circle {
+    display: flex;
+    justify-content: center;
 }
 </style>

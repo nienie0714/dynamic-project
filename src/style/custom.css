@@ -692,6 +692,9 @@ input[type="number"] {
 .font-color-3 {
   color: #e65069;
 }
+.el-progress-bar__outer {
+  background-color: #2E434D;
+}
 /* 资源甘特图 */
 /* 计划 */
 .dot-color-5_1 {
