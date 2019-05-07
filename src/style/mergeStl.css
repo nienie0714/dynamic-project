@@ -29,11 +29,14 @@
 .font-yellow {
   color: #FDCF53;
 }
+.font-green {
+  color: #03A786;
+}
 .num-st, .num-nd {
   font-weight: bold;
 }
 .num-st, .num-nd, .num-rd {
-  font-family: Square721;
+  font-family: dinRegular;
 }
 .progress-circle {
   height: 100%;

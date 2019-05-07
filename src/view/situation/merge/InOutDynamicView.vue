@@ -39,6 +39,10 @@
               <div class="font-rs font-gray">出港正常率 %</div>
               <div class="pro-trans">
                 <div :class="['pro-trans-val', (percD>50)?'pro-trans-val-nrm':'pro-trans-val-arm']" :style="`height: ${percD}%;`"></div>
+                <div class="pro-text container cross">
+                  <div :class="['font-rs', (percD>50) ? 'font-green' : 'font-yellow']">{{(percD>50) ? '正常' : '偏低'}}</div>
+                  <div class="num-rd font-white">{{percD}}</div>
+                </div>
               </div>
             </div>
           </div>
@@ -76,6 +80,10 @@
               <div class="font-rs font-gray">进港正常率 %</div>
               <div class="pro-trans">
                 <div :class="['pro-trans-val', (percA>50)?'pro-trans-val-nrm':'pro-trans-val-arm']" :style="`height: ${percA}%;`"></div>
+                <div class="pro-text container cross">
+                  <div :class="['font-rs', (percA>50) ? 'font-green' : 'font-yellow']">{{(percA>50) ? '正常' : '偏低'}}</div>
+                  <div class="num-rd font-white">{{percA}}</div>
+                </div>
               </div>
             </div>
           </div>
@@ -107,7 +115,8 @@ export default {
       fontSizeSt: 0,
       fontSizeRs: 0,
       percD: 30,
-      percA: 68
+      percA: 68,
+      properc: 15
     }
   },
   mounted () {
@@ -249,7 +258,7 @@ export default {
           left: 100 / 1065 * 40 + '%',
           right: 100 / 1065 * 45 + '%',
           top: 100 / 224 * 40 + '%',
-          bottom: 100 / 224 * 20 + '%',
+          bottom: 100 / 224 * 10 + '%',
           containLabel: true
         },
         toolbox: {
@@ -455,7 +464,7 @@ export default {
   display: flex;
 }
 .body>.dymc-block:first-child {
-  margin-top: 20px;
+  margin-right: calc(100% / 1058 * 20);
 }
 .body>.dymc-block:first-child>div {
   width: 50%;
@@ -479,7 +488,7 @@ export default {
 .progress-info>div:last-child {
   width: 40%;
   align-items: flex-start;
-  padding-left: calc(100% / 120 * 5);
+  padding-left: calc(100% / 120 * 3);
   box-sizing: border-box;
 }
 .progress-info>div:last-child>div:last-child {
@@ -520,6 +529,12 @@ export default {
   top: -10px;
   left: 10px;
   border-radius: 100% 0 0 0;
+}
+.pro-text {
+  position: absolute;
+  bottom: 0;
+  left: calc(100% / 66 * 20 + 10px);
+  z-index: 1;
 }
 .hour-takeoff-land {
   width: 100%;

@@ -2,6 +2,15 @@
   font-family: Square721;
   src: url(../assets/font/TT0248M_.ttf) format("truetype")
 }
+@font-face {
+  font-family: dinRegular;
+  src: url(../assets/font/DINPRO-REGULAR.otf) format("truetype");
+}
+@font-face {
+  font-family: dinRegular;
+  src: url(../assets/font/DINPRO-MEDIUM.otf) format("truetype");
+  font-weight: bold;
+}
 html, body, #app, .body-view {
   height: 100%;
 }

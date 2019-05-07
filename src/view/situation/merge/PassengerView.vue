@@ -7,8 +7,8 @@
     <div class="body">
       <div class="pass-block">
         <div>
-          <div class="font-st">出港旅客统计</div>
-          <div class="font-nd">机上等待时间/航班数</div>
+          <div class="font-nd">出港旅客统计</div>
+          <div class="font-rd">机上等待时间/航班数</div>
         </div>
         <div>
           <div class="count">
@@ -18,7 +18,9 @@
             </div>
             <div>
               <div class="font-rd font-gray">登机总人数</div>
-              <div class="num-nd font-white">1060</div>
+              <div class="num-nd font-white">1060
+                <div class="font-rs font-gray">-5</div>
+              </div>
             </div>
             <div>
               <div class="font-rd font-gray">隔离区人数</div>
@@ -51,18 +53,20 @@
       </div>
       <div class="pass-block">
         <div>
-          <div class="font-st">进港旅客统计</div>
-          <div class="font-nd">机上等待时间/航班数</div>
+          <div class="font-nd">进港旅客统计</div>
+          <div class="font-rd">机上等待时间/航班数</div>
         </div>
         <div>
           <div class="count">
             <div>
-              <div class="font-rd font-gray">值机总人数</div>
-              <div class="num-nd font-white">1065</div>
+              <div class="font-rd font-gray">计达总人数</div>
+              <div class="num-nd font-white">2032</div>
             </div>
             <div>
-              <div class="font-rd font-gray">登机总人数</div>
-              <div class="num-nd font-white">1060</div>
+              <div class="font-rd font-gray">实达总人数</div>
+              <div class="num-nd font-white">2061
+                <div class="font-rs font-gray">+29</div>
+              </div>
             </div>
           </div>
           <div class="time">
@@ -119,11 +123,12 @@
 }
 .pass-block>div:first-child {
   width: 100%;
-  height: 40px;
+  height: calc(100% / 150 * 30);
   display: flex;
   justify-content: space-between;
 }
 .pass-block>div:last-child {
+  padding-top: calc(100% / 758 * 20);
   width: 100%;
   flex-grow: 1;
   display: flex;
@@ -146,8 +151,16 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-evenly;
   align-items: flex-start;
+}
+.count>div>div:last-child {
+  position: relative;
+}
+.count>div>div:last-child>div {
+  display: inline-block;
+  vertical-align: top;
+  margin-top: 4%;
 }
 .time>div {
   width: calc(100% / 4);

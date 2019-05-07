@@ -91,8 +91,8 @@
           </div>
         </div>
       </div>
-      <div class="body-bottom merge-block one-hour" :style="{height: '46%'}">
-        <div class="header" :style="{height: 'calc(200% / 570 * 60)'}">
+      <div class="body-bottom merge-block one-hour">
+        <div class="header" :style="`height: calc(100% / 275 * 60);`">
           <div class="header-title font-nd">1 小时内机位占用情况（预计）</div>
         </div>
         <div class="body">
@@ -285,14 +285,14 @@ export default {
   line-height: calc(100% / 570 * 60);
 }
 .passenger>.body {
-  margin: 0 calc(100% / 800 * 20) 0 calc(100% / 800 * 20);
-  height: calc(100% - (100% / 530 * 60));
+  margin: 0 calc(100% / 800 * 20) calc(100% / 800 * 20) calc(100% / 800 * 20);
+  height: calc(100% - (100% / 570 * 60) - calc(100% / 570 * 20));
   display: flex;
   flex-direction: column;
 }
 .passenger>.body>div {
   box-sizing: border-box;
-  height: 47%;
+  height: calc(50% + 100% / 570 * 60);
 }
 .passenger>.body>div:first-child {
   display: flex;
@@ -301,8 +301,11 @@ export default {
   display: flex;
   height: 100%;
 }
+.one-hour>.body> .body-top > div:last-child {
+  margin-left: calc(100% / 715 * 50);
+}
 .one-hour > .body {
-  padding-right: calc(100% / 800 * 20)
+  padding: 0 calc(100% / 800 * 20)
 }
 .body-top>div:first-child {
   /* width: 30%; 机位统计 圆环 */
@@ -310,9 +313,10 @@ export default {
   justify-content: center;
 }
 .body-top>div:last-child {
-  flex: 1;
+  flex-grow: 1;
   display: flex;
   flex-direction: column;
+  margin-left: calc(100% / 755 * 20);
 }
 .stand-row {
   height: 50%;

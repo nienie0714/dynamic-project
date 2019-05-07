@@ -9,6 +9,10 @@
         <div class="gauge-title font-rd font-white">航班靠桥率</div>
         <div class="gauge-echart">
           <div id="bybridgeFltRate" class="gauge-canvas"></div>
+          <div class="text">
+            <div class="num-st font-white">95.</div>
+            <div class="num-rd font-white">28</div>
+          </div>
         </div>
         <div class="gauge-subtitle font-rd font-gray">已靠桥 / 总数 (架)</div>
         <div class="gauge-value num-rd font-white">110 / 128</div>
@@ -17,6 +21,10 @@
         <div class="gauge-title font-rd font-white">旅客靠桥率</div>
         <div class="gauge-echart">
           <div id="bybridgePasRate" class="gauge-canvas"></div>
+          <div class="text">
+            <div class="num-st font-white">52.</div>
+            <div class="num-rd font-white">28</div>
+          </div>
         </div>
         <div class="gauge-subtitle font-rd font-gray">已靠桥 / 总数 (人)</div>
         <div class="gauge-value num-rd font-white">110 / 128</div>
@@ -36,270 +44,20 @@ export default {
       pasRate: 0,
       bybridgeFltRate: null,
       bybridgeFltRateEl: null,
-      bybridgeFltRateOption: {
-        series: [
-          {
-            name: '航班靠桥率',
-            type: 'gauge',
-            radius: '90%',
-            // 仪表盘轴线(轮廓线)相关配置。
-            axisLine: {
-                show: true,
-                lineStyle: {
-                    width: 6,
-                    color: [[1, '#2B404A']]
-                }
-            },
-            // 分隔线样式。
-            splitLine: {
-                show: false
-            },
-            // 刻度样式。
-            axisTick: {
-              show: false
-            },
-            // 刻度标签。
-            axisLabel: {
-              show: true,
-              distance: -12, // 标签与刻度线的距离,默认 5。
-              color: '#fff',
-              padding: 3,
-              fontSize: 12,
-              formatter: function (value) {
-                if (value == 0 || value == 100) {
-                  return ''
-                }
-                return value + ''
-              }
-            },
-            // 仪表盘指针。
-            markPoint: {
-              symbol: 'circle',
-              sumbolSize: 20
-            },
-            pointer: {
-                show: true,
-                // 指针长度
-                length: '10%',
-                width: 0
-            },
-            itemStyle: {
-              color: '#3DA6CC'
-            },
-            // 仪表盘详情，用于显示数据
-            detail: {
-                show: true,
-                offsetCenter: [0, 0],
-                formatter: function (value) {
-                  value = value + ''
-                  if (value.indexOf('.') != -1) {
-                    let arr = value.split('.')
-                    let start = arr[0] + '.'
-                    let end = arr[1]
-                    return [`{start|${start}}{end|${end}}`]
-                  }
-                  return `{start|${value}}`
-                },
-                textStyle: {
-                  fontSize: 30
-                },
-                rich: {
-                  start: {
-                    color: '#fff',
-                    fontSize: 40,
-                    height: 40,
-                    verticalAlign: 'top'
-                  },
-                  end: {
-                    color: '#fff',
-                    fontSize: 20,
-                    height: 50,
-                    verticalAlign: 'center'
-                  }
-                }
-            },
-            data: [{
-                value: 53.96
-            }]
-          },
-          {
-            type: 'gauge',
-            radius: '75%',
-            z: '-1',
-            // 仪表盘轴线(轮廓线)相关配置。
-            axisLine: {
-              show: true,
-              lineStyle: {
-                width: 18,
-                color: [[1, 'rgba(122,147,160, 0.15)']]
-              }
-            },
-            // 分隔线样式。
-            splitLine: {
-                show: false
-            },
-            // 刻度样式。
-            axisTick: {
-              show: false
-            },
-            // 刻度标签。
-            axisLabel: {
-              show: false
-            },
-            pointer: {
-                show: false,
-                // 指针长度
-                length: '10%',
-                width: 0
-            },
-            // 仪表盘详情，用于显示数据
-            detail: {
-              show: false
-            },
-            data: [{
-                value: 100
-            }]
-          }
-        ]
-      },
+      bybridgeFltRateOption: null,
+      fontSizeTh: 0,
       bybridgePasRate: null,
       bybridgePasRateEl: null,
-      bybridgePasRateOption: {
-        series: [
-          {
-            name: '旅客靠桥率',
-            type: 'gauge',
-            radius: '90%',
-            // 仪表盘轴线(轮廓线)相关配置。
-            axisLine: {
-                show: true,
-                lineStyle: {
-                    width: 6,
-                    color: [[1, '#2B404A']]
-                }
-            },
-            // 分隔线样式。
-            splitLine: {
-                show: false
-            },
-            // 刻度样式。
-            axisTick: {
-              show: false
-            },
-            // 刻度标签。
-            axisLabel: {
-              show: true,
-              distance: -12, // 标签与刻度线的距离,默认 5。
-              color: '#fff',
-              padding: 3,
-              fontSize: 12,
-              formatter: function (value) {
-                if (value == 0 || value == 100) {
-                  return ''
-                }
-                return value + ''
-              }
-            },
-            // 仪表盘指针。
-            markPoint: {
-              symbol: 'circle',
-              sumbolSize: 20
-            },
-            pointer: {
-                show: false,
-                // 指针长度
-                length: '10%',
-                width: 0
-            },
-            itemStyle: {
-              color: '#3DA6CC'
-            },
-            // 仪表盘详情，用于显示数据
-            detail: {
-              show: true,
-              offsetCenter: [0, 0],
-              formatter: function (value) {
-                value = value + ''
-                if (value.indexOf('.') != -1) {
-                  let arr = value.split('.')
-                  let start = arr[0] + '.'
-                  let end = arr[1]
-                  return [`{start|${start}}{end|${end}}`]
-                }
-                return `{start|${value}}`
-              },
-              textStyle: {
-                fontSize: 30
-              },
-              rich: {
-                start: {
-                  color: '#fff',
-                  fontSize: 40,
-                  height: 40,
-                  verticalAlign: 'top'
-                },
-                end: {
-                  color: '#fff',
-                  fontSize: 20,
-                  height: 50,
-                  verticalAlign: 'center'
-                }
-              }
-            },
-            data: [{
-                value: 53.96
-            }]
-          },
-          {
-            type: 'gauge',
-            radius: '75%',
-            z: '-1',
-            // 仪表盘轴线(轮廓线)相关配置。
-            axisLine: {
-              show: true,
-              lineStyle: {
-                width: 18,
-                color: [[1, 'rgba(122,147,160, 0.15)']]
-              }
-            },
-            // 分隔线样式。
-            splitLine: {
-                show: false
-            },
-            // 刻度样式。
-            axisTick: {
-              show: false
-            },
-            // 刻度标签。
-            axisLabel: {
-              show: false
-            },
-            pointer: {
-                show: false,
-                // 指针长度
-                length: '10%',
-                width: 0
-            },
-            // 仪表盘详情，用于显示数据
-            detail: {
-              show: false
-            },
-            data: [{
-                value: 100
-            }]
-          }
-        ]
-      }
+      bybridgePasRateOption: null
     }
   },
   mounted () {
     this.bybridgeFltRateEl = document.getElementById('bybridgeFltRate')
     this.bybridgeFltRate = this.$echarts.init(this.bybridgeFltRateEl)
-    this.bybridgeFltRate.setOption(this.bybridgeFltRateOption)
 
     this.bybridgePasRateEl = document.getElementById('bybridgePasRate')
     this.bybridgePasRate = this.$echarts.init(this.bybridgePasRateEl)
-    this.bybridgePasRate.setOption(this.bybridgePasRateOption)
+    this.updatedOption()
 
     this.$nextTick(() => {
       let outOpts = {
@@ -313,20 +71,9 @@ export default {
         width: this.bybridgePasRateEl.clientHeight
       }
       this.bybridgePasRate.resize(inOpts)
-      // this.$nextTick(() => {
-      //   window.onresize = () => {
-      //     let outOpts2 = {
-      //       height: 'auto',
-      //       width: this.bybridgeFltRateEl.clientHeight
-      //     }
-      //     this.bybridgeFltRate.resize(outOpts2)
-      //     let inOpts2 = {
-      //       height: 'auto',
-      //       width: this.bybridgePasRateEl.clientHeight
-      //     }
-      //     this.bybridgePasRate.resize(inOpts2)
-      //   }
-      // })
+      this.fontSizeTh = this.$store.getters.getFontSizeTh([this.bybridgeFltRateEl.clientWidth * 2, 650])
+      console.log(this.fontSizeTh)
+      this.updatedOption()
     })
   },
   created () {
@@ -334,24 +81,223 @@ export default {
   },
   methods: {
     resizeMeth () {
-      let outOpts2 = {
-        height: 'auto',
-        width: this.bybridgeFltRateEl.clientHeight
+      this.$nextTick(() => {
+        let outOpts2 = {
+          height: 'auto',
+          width: this.bybridgeFltRateEl.clientHeight
+        }
+        this.bybridgeFltRate.resize(outOpts2)
+        let inOpts2 = {
+          height: 'auto',
+          width: this.bybridgePasRateEl.clientHeight
+        }
+        this.fontSizeTh = this.$store.getters.getFontSizeTh([this.bybridgeFltRateEl.clientWidth * 2, 650])
+        this.bybridgePasRate.resize(inOpts2)
+        this.updatedOption()
+      })
+    },
+    updatedOption () {
+      this.bybridgeFltRateOption = {
+        series: [
+          {
+            name: '航班靠桥率',
+            type: 'gauge',
+            radius: '100%',
+            // 仪表盘轴线(轮廓线)相关配置。
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    width: 6,
+                    color: [[1, '#2B404A']]
+                }
+            },
+            // 分隔线样式。
+            splitLine: {
+                show: false
+            },
+            // 刻度样式。
+            axisTick: {
+              show: false
+            },
+            // 刻度标签。
+            axisLabel: {
+              show: false
+            },
+            // 仪表盘指针。
+            markPoint: {
+              symbol: 'circle',
+              sumbolSize: 20
+            },
+            pointer: {
+                show: true,
+                // 指针长度
+                length: '10%',
+                width: 0
+            },
+            itemStyle: {
+              color: '#3DA6CC'
+            },
+            // 仪表盘详情，用于显示数据
+            detail: {
+              show: false
+            },
+            data: [{
+                value: 53.96
+            }]
+          },
+          {
+            type: 'gauge',
+            radius: '85%',
+            z: '-1',
+            // 仪表盘轴线(轮廓线)相关配置。
+            axisLine: {
+              show: true,
+              lineStyle: {
+                width: 25,
+                color: [[1, 'rgba(122,147,160, 0.15)']]
+              }
+            },
+            // 分隔线样式。
+            splitLine: {
+                show: false
+            },
+            // 刻度样式。
+            axisTick: {
+              show: false
+            },
+            // 刻度标签。
+            axisLabel: {
+              show: true,
+              distance: -27, // 标签与刻度线的距离,默认 5。
+              color: '#7a939e',
+              padding: 3,
+              fontSize: this.fontSizeTh,
+              formatter: function (value) {
+                if (value == 0 || value == 100) {
+                  return ''
+                }
+                return value + ''
+              }
+            },
+            pointer: {
+                show: false,
+                // 指针长度
+                length: '10%',
+                width: 0
+            },
+            // 仪表盘详情，用于显示数据
+            detail: {
+              show: false
+            },
+            data: [{
+                value: 100
+            }]
+          }
+        ]
       }
-      this.bybridgeFltRate.resize(outOpts2)
-      let inOpts2 = {
-        height: 'auto',
-        width: this.bybridgePasRateEl.clientHeight
+      this.bybridgeFltRate.setOption(this.bybridgeFltRateOption, true)
+      this.bybridgePasRateOption = {
+        series: [
+          {
+            name: '旅客靠桥率',
+            type: 'gauge',
+            radius: '100%',
+            // 仪表盘轴线(轮廓线)相关配置。
+            axisLine: {
+                show: true,
+                lineStyle: {
+                    width: 6,
+                    color: [[1, '#2B404A']]
+                }
+            },
+            // 分隔线样式。
+            splitLine: {
+                show: false
+            },
+            // 刻度样式。
+            axisTick: {
+              show: false
+            },
+            // 刻度标签。
+            axisLabel: {
+              show: false
+            },
+            // 仪表盘指针。
+            markPoint: {
+              symbol: 'circle',
+              sumbolSize: 20
+            },
+            pointer: {
+                show: false,
+                // 指针长度
+                length: '10%',
+                width: 0
+            },
+            itemStyle: {
+              color: '#3DA6CC'
+            },
+            // 仪表盘详情，用于显示数据
+            detail: {
+              show: false
+            },
+            data: [{
+                value: 53.96
+            }]
+          },
+          {
+            type: 'gauge',
+            radius: '85%',
+            z: '-1',
+            // 仪表盘轴线(轮廓线)相关配置。
+            axisLine: {
+              show: true,
+              lineStyle: {
+                width: 25,
+                color: [[1, 'rgba(122,147,160, 0.15)']]
+              }
+            },
+            // 分隔线样式。
+            splitLine: {
+                show: false
+            },
+            // 刻度样式。
+            axisTick: {
+              show: false
+            },
+            // 刻度标签。
+            axisLabel: {
+              show: true,
+              distance: -27, // 标签与刻度线的距离,默认 5。
+              color: '#7a939e',
+              padding: 3,
+              fontSize: this.fontSizeTh,
+              formatter: function (value) {
+                if (value == 0 || value == 100) {
+                  return ''
+                }
+                return value + ''
+              }
+            },
+            pointer: {
+                show: false,
+                // 指针长度
+                length: '10%',
+                width: 0
+            },
+            // 仪表盘详情，用于显示数据
+            detail: {
+              show: false
+            },
+            data: [{
+                value: 100
+            }]
+          }
+        ]
       }
-      this.bybridgePasRate.resize(inOpts2)
+      this.bybridgePasRate.setOption(this.bybridgePasRateOption, true)
     },
     queryByBridge () {
       let that = this
-      // setTimeout(() => {
-      //   let temp = that.bybridgeFltRateOption
-      //   temp.series[0].data = []
-      //   that.bybridgeFltRate.setOption(temp)
-      // }, 100)
       setTimeout(function () {
         let temp = that.bybridgeFltRateOption
         let temp2 = that.bybridgePasRateOption
@@ -419,13 +365,28 @@ export default {
 .gauge-echart {
   height: calc(100% / 420 * 250);
   width: 100%;
+  position: relative;
 }
-.gauge-echart > div {
+.gauge-echart > .gauge-canvas {
   height: 100%;
 }
 .gauge-canvas {
   display: flex;
   justify-content: center;
+}
+.gauge-echart>.text {
+  position: absolute;
+  width: fit-content;
+  height: fit-content;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  pointer-events: none;
 }
 .gauge-subtitle {
   text-align: center;

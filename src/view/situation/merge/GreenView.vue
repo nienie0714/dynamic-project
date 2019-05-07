@@ -6,9 +6,17 @@
     </div>
     <div class="body">
       <div class="body-top">
-        <div class="green-echart">
-          <div id="greenRate" class="green-canvas"></div>
+        <div class="progress-circle">
+          <div id="greenRate" class="circle"></div>
+          <div class="text margin">
+            <div class="font-st font-white">当日放行正常率</div>
+            <div class="num-st font-white">{{(toRate*100).toFixed(2)}}<span class="num-rd">%</span></div>
+            <div class="absolute-tag font-rd" :class="toRate > 0.5 ? 'bg-green' : 'bg-yellow'">{{toRate > 0.5 ? '正常' : '偏低'}}</div>
+          </div>
         </div>
+        <!-- <div class="green-echart">
+          <div id="greenRate" class="green-canvas"></div>
+        </div> -->
       </div>
       <div class="body-bottom">
         <div>
@@ -41,8 +49,8 @@
         </div>
       </div>
     </div>
-    <div class="absolute-title font-st">当日放行正常率</div>
-    <div class="absolute-tag font-rd" :class="toRate > 0.5 ? 'bg-green' : 'bg-yellow'">{{toRate > 0.5 ? '正常' : '偏低'}}</div>
+    <!-- <div class="absolute-title font-st">当日放行正常率</div>
+    <div class="absolute-tag font-rd" :class="toRate > 0.5 ? 'bg-green' : 'bg-yellow'">{{toRate > 0.5 ? '正常' : '偏低'}}</div> -->
   </div>
 </template>
 
@@ -117,11 +125,10 @@ export default {
             },
             // 仪表盘详情，用于显示数据
             detail: {
-                show: true,
+                show: false,
                 offsetCenter: [0, 10],
                 formatter: function (value) {
                   value = value + ''
-                  // value = '92'
                   return `{start|${value}}{end|%}`
                 },
                 textStyle: {
@@ -374,16 +381,14 @@ export default {
   color:#fff;
 }
 .absolute-tag {
-  position: absolute;
-  top: 55%;
-  left: 42%;
-  width: 17%;
-  height: 5%;
-  background-color: #03A786;
+  background-color: #ff6959;
   text-align: center;
-  padding: 1% 1%;
-  border-radius: 15px;
+  padding: calc(100% / 227 * 3) calc(100% / 227 * 8);
+  border-radius: 20% / 50%;
   font-weight: bold;
+  overflow: hidden;
+  white-space: nowrap;
+  width: fit-content;
 }
 .progress-circle>.text>div:last-child {
   margin-top: 0;
@@ -399,5 +404,8 @@ export default {
 }
 .bg-yellow {
   background-color: #FDCF53;
+}
+.progress-circle > .margin > div {
+  margin-top: calc(100% / 420 * 10)
 }
 </style>
