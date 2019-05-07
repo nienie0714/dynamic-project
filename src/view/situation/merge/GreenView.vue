@@ -213,9 +213,9 @@ export default {
         var color = null
         that.toRate = random / 100
         if (random / 100 > 0.5) {
-          color = [[random / 100, '#03A786'], [1, '#2e434c']]
+          color = [[random / 100, '#03A786'], [1, '#071722']]
         } else {
-          color = [[random / 100, '#FDCF53'], [1, '#2e434c']]
+          color = [[random / 100, '#FDCF53'], [1, '#071722']]
         }
         // var color = [[0.2, '#91c7ae'], [0.8, '#FDCF53'], [1, '#2B404A']]
         temp.series[0].axisLine.lineStyle.color = color
@@ -316,7 +316,7 @@ export default {
 }
 .passenger>.body>.body-top {
   width: 100%;
-  height: 75%;
+  height: calc(100% / 420 * 280);
 }
 .passenger>.body>.body-top > div {
   width: 100%;
@@ -329,7 +329,8 @@ export default {
 }
 .passenger>.body>.body-bottom {
   display: flex;
-  height: 30%;
+  height: calc(100% / 420 * 110);
+  padding: calc(100% / 420 * 20) 0;
 }
 .passenger>.body>.body-bottom>div {
   width: 50%;
@@ -337,7 +338,7 @@ export default {
   margin: 2% 0;
 }
 .passenger>.body>.body-bottom>div:nth-child(1) {
-  border-right: 1px solid blue;
+  border-right: 1px solid rgba(60, 166, 200, 0.3);
 }
 
 .body-bottom-left {
@@ -365,7 +366,7 @@ export default {
 }
 .absolute-title {
   position: absolute;
-  top: 32%;
+  top: 30%;
   left: 31%;
   width: 40%;
   height: 6%;
