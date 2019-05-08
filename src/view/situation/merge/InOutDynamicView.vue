@@ -409,6 +409,7 @@ export default {
     }
   },
   mounted () {
+    this.pecBase = this.$store.getters.getCfgVal('fltRag')
     this.outCircleEl = document.getElementById('outCircle')
     this.outCircle = this.$echarts.init(this.outCircleEl)
     this.inCircleEl = document.getElementById('inCircle')

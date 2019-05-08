@@ -92,7 +92,13 @@ var router = new Router({
         {
           path: 'merge',
           name: '态势分析',
-          component: r => require.ensure([], () => r(require('@/view/situation/MergeView'), 'MergeView'))
+          component: r => require.ensure([], () => r(require('@/view/situation/MergeView'), 'MergeView')),
+          beforeEnter: (to, from, next) => {
+            postData('sysconfig/listSysParams', null).then(res => {
+              store.commit('setConfigs', res.data.data)
+              next()
+            })
+          }
         }
       ]
     },

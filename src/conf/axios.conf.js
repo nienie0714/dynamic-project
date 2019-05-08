@@ -9,6 +9,17 @@ const forwardURLStat = '/stat'
 // const forwardURL = ''
 // const forwardOtherURL = ''
 // const forwardURLStat = ''
+const CancelToken = axios.CancelToken
+let pending = []
+let removePending = (ever) => {
+  for (let p in pending) {
+    if ((pending[p].url == ever.url) && (pending[p].method == ever.method) && (pending[p].data == ever.data)) {
+    // if(pending[p].u === ever.url + '&' + ever.method + '&' + ever.data) { //当当前请求在数组中存在时执行函数体
+      pending[p].f()
+      pending.splice(p, 1)
+    }
+  }
+}
 
 axios.defaults.timeout = 100000
 axios.defaults.baseURL = forwardURL + '/'
@@ -17,6 +28,16 @@ function request (request) {
   if (request.url != 'auth') {
     request.headers.Authorization = localStorage.getItem('token')
   }
+  removePending(request)
+  request.cancelToken = new CancelToken((c) => {
+    pending.push({
+      url: request.url,
+      method: request.method,
+      data: request.data,
+      f: c
+    })
+      // u: request.url + '&' + request.method + '&' + request.data, f: c})
+  })
   return request
 }
 
@@ -39,6 +60,11 @@ function requestError (error) {
 }
 
 function response (response) {
+  removePending({
+    url: response.config.url,
+    method: response.config.method,
+    data: response.config.data
+  })
   if (response.data.code == -1 && response.data.msg == 'diffToken') {
     router.push({path: '/'})
     return Promise.reject(response.data.msg)
@@ -168,4 +194,4 @@ const upload = axios.create({
 upload.interceptors.request.use(request, requestError)
 upload.interceptors.response.use(response, responseErr)
 
-export {axiosReq, axiosReqStat, axiosNoneReq, axiosOtherReq, axiosDfs, upload}
+export {removePending, axiosReq, axiosReqStat, axiosNoneReq, axiosOtherReq, axiosDfs, upload}

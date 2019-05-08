@@ -4,7 +4,9 @@ export default {
       {key: 'wsUrl', classify: 'websocket_url', name: 'aoms-job', value: ''},
       {key: 'mqUrl', classify: 'web_mq_url', name: 'aoms-webmq', value: ''},
       {key: 'dfsUrl', classify: 'download_url', name: 'aoms-dfs', value: ''},
-      {key: 'aptLoc', classify: 'apt_loc', name: 'aptIata-loc', value: ''}
+      {key: 'aptLoc', classify: 'apt_loc', name: 'aptIata-loc', value: ''},
+      {key: 'fltRag', classify: 'flight_stat_range', name: 'flight-stat', value: ''},
+      {key: 'stdRag', classify: 'stand_stat_range', name: 'stand-stat', value: ''}
     ],
     configValue: ''
   },
@@ -14,6 +16,13 @@ export default {
     },
     getConfigValue: state => {
       return state.configValue
+    },
+    getCfgVal: (state) => (key) => {
+      for (var i = 0; i < state.configs.length; i++) {
+        if (key === state.configs[i].key) {
+          return state.configs[i].value
+        }
+      }
     }
   },
   mutations: {

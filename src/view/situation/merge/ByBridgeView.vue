@@ -55,10 +55,10 @@ export default {
       bybridgePasRateEl: null,
       bybridgePasRateOption: null,
       data: {
-        'bridgedFlight': 180, // 已靠桥航班
-        'enableBridgeFlight': 200, // 可以靠桥航班(总数)
-        'bridgedPassenger': 2600, // 已靠桥旅客
-        'enableBridgePassenger': 2860 // 可以靠桥的旅客(总数)
+        'bridgedFlight': 0, // 已靠桥航班
+        'enableBridgeFlight': 0, // 可以靠桥航班(总数)
+        'bridgedPassenger': 0, // 已靠桥旅客
+        'enableBridgePassenger': 0 // 可以靠桥的旅客(总数)
       }
     }
   },

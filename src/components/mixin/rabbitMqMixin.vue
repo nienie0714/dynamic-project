@@ -13,13 +13,13 @@ export default {
     this.connect()
   },
   mounted () {
-    this.timer = setInterval(function () {
-      getQueryAll('/', null).then(res => {
-        if (res.data.status == 'OK') {
-          console.log('请求成功')
-        }
-      })
-    }, this.intervalTime)
+    // this.timer = setInterval(function () {
+    //   getQueryAll('/', null).then(res => {
+    //     if (res.data.status == 'OK') {
+    //       console.log('请求成功')
+    //     }
+    //   })
+    // }, this.intervalTime)
   },
   methods: {
     connect () {

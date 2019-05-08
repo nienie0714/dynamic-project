@@ -65,7 +65,8 @@ export default {
       clickTaskDiv: false,
       oprPopoverDirect: '',
       oprPopoverIndex: null,
-      showTaskDivId: null
+      showTaskDivId: null,
+      axiosArr: []
     }
   },
   mounted () {
@@ -74,6 +75,12 @@ export default {
       bodyView.style[item.key] = item.value
     })
     this.scrollTable()
+  },
+  destroyed () {
+    this.axiosArr.forEach(ever => {
+      this.removePending(ever)
+    })
+    this.axiosArr = []
   },
   methods: {
     handleCtrlFButton () {
@@ -96,10 +103,19 @@ export default {
     // 发送查询请求
     queryDataReq (status) {
       /* this.tableData.loading = true */
+      this.axiosArr.forEach(ever => {
+        this.removePending(ever)
+      })
+      this.axiosArr = []
       if (status != 1) {
         this.getQueryData()
       }
       this.customQueryMethod()
+      this.axiosArr.push({
+        url: this.queryUrl,
+        method: 'post',
+        data: this.queryData
+      })
       postData(this.queryUrl, this.queryData).then(response => {
         this.tableData.loading = false
         if (response.data.code == 0) {
