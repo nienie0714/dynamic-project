@@ -19,7 +19,7 @@ module.exports = {
         }
       },
       '/stat': {
-        target: 'http://10.255.1.15:9091/',
+        target: 'http://10.254.0.115:9094/',
         // target: 'http://10.255.1.5:9090/',
         changeOrigin: false,
         pathRewrite: {

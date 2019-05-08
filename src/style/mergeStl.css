@@ -38,7 +38,7 @@
 .num-st, .num-nd {
   font-weight: bold;
 }
-.num-st, .num-nd, .num-rd {
+.num-st, .num-nd, .num-rd, .num-rs {
   font-family: dinRegular;
 }
 .progress-circle {
@@ -90,6 +90,9 @@
   .num-rd {
     font-size: 34px;
   }
+  .num-rs {
+    font-size: 24px;
+  }
 }
 @media (min-width: 1920px) {
   .font-st {
@@ -112,6 +115,9 @@
   }
   .num-rd {
     font-size: 24px;
+  }
+  .num-rs {
+    font-size: 19px;
   }
 }
 @media (min-width: 2048px) {
@@ -136,6 +142,9 @@
   .num-rd {
     font-size: 26px;
   }
+  .num-rs {
+    font-size: 20px;
+  }
 }
 @media (min-width: 2304px) {
   .font-st {
@@ -158,6 +167,9 @@
   }
   .num-rd {
     font-size: 34px;
+  }
+  .num-rs {
+    font-size: 24px;
   }
 }
 @media (min-width: 2560px) {
@@ -182,6 +194,9 @@
   .num-rd {
     font-size: 38px;
   }
+  .num-rs {
+    font-size: 26px;
+  }
 }
 @media (min-width: 3072px) {
   .font-st {
@@ -203,7 +218,10 @@
     font-size: 52px;
   }
   .num-rd {
-    font-size: 44px;
+    font-size: 42px;
+  }
+  .num-rs {
+    font-size: 29px;
   }
 }
 @media (min-width: 3264px) {
@@ -226,7 +244,10 @@
     font-size: 56px;
   }
   .num-rd {
-    font-size: 48px;
+    font-size: 46px;
+  }
+  .num-rs {
+    font-size: 31px;
   }
 }
 @media (min-width: 3552px) {
@@ -249,7 +270,10 @@
     font-size: 60px;
   }
   .num-rd {
-    font-size: 52px;
+    font-size: 50px;
+  }
+  .num-rs {
+    font-size: 33px;
   }
 }
 @media (min-width: 3640px) {
@@ -272,7 +296,10 @@
     font-size: 64px;
   }
   .num-rd {
-    font-size: 56px;
+    font-size: 54px;
+  }
+  .num-rs {
+    font-size: 35px;
   }
 }
 @media (min-width: 3840px) {
@@ -295,6 +322,9 @@
     font-size: 70px;
   }
   .num-rd {
-    font-size: 62px;
+    font-size: 60px;
+  }
+  .num-rs {
+    font-size: 38px;
   }
 }

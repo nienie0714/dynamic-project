@@ -11,12 +11,12 @@
           <div id="bybridgeFltRate" class="gauge-canvas"></div>
           <div class="absolute-div font-rd bg-yellow" v-if="fltRate < 0.5">偏低</div>
           <div class="text">
-            <div class="num-st font-white">{{parseInt(fltRate*100)}}.</div>
-            <div class="num-rd font-white">1</div>
+            <div class="num-st font-white">{{splitFltRate[0]}}.</div>
+            <div class="num-rs font-white">{{splitFltRate[1]}}</div>
           </div>
         </div>
         <div class="gauge-subtitle font-rd font-gray">已靠桥 / 总数 (架)</div>
-        <div class="gauge-value num-rd font-white">110 / 128</div>
+        <div class="gauge-value num-rd font-white">{{data.bridgedFlight}} / {{data.enableBridgeFlight}}</div>
       </div>
       <div class="gauge-right-content">
         <div class="gauge-title font-rd font-white">旅客靠桥率</div>
@@ -24,32 +24,42 @@
           <div id="bybridgePasRate" class="gauge-canvas"></div>
           <div class="absolute-div font-rd bg-yellow" v-if="fltRate < 0.5">偏低</div>
           <div class="text">
-            <div class="num-st font-white">--.</div>
-            <div class="num-rd font-white">--</div>
+            <div class="num-st font-white">{{splitPasRate[0]}}.</div>
+            <div class="num-rs font-white">{{splitPasRate[1]}}</div>
           </div>
         </div>
         <div class="gauge-subtitle font-rd font-gray">已靠桥 / 总数 (人)</div>
-        <div class="gauge-value num-rd font-white">-- / --</div>
+        <div class="gauge-value num-rd font-white">{{data.bridgedPassenger}} / {{data.enableBridgePassenger}}</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { queryAllStat } from '@/api/base'
 export default {
-  props: ['resize'],
+  props: ['resize', 'refrush'],
   data () {
     return {
+      queryUrl: '/basicdata/flightInOutStat/queryBridgeStat',
       fltRate: 0,
+      splitFltRate: [],
       fltRateStr: '',
       pasRate: 0,
+      splitPasRate: [],
       bybridgeFltRate: null,
       bybridgeFltRateEl: null,
       bybridgeFltRateOption: null,
       fontSizeTh: 0,
       bybridgePasRate: null,
       bybridgePasRateEl: null,
-      bybridgePasRateOption: null
+      bybridgePasRateOption: null,
+      data: {
+        'bridgedFlight': 180, // 已靠桥航班
+        'enableBridgeFlight': 200, // 可以靠桥航班(总数)
+        'bridgedPassenger': 2600, // 已靠桥旅客
+        'enableBridgePassenger': 2860 // 可以靠桥的旅客(总数)
+      }
     }
   },
   mounted () {
@@ -77,9 +87,40 @@ export default {
     })
   },
   created () {
-    this.queryByBridge()
   },
   methods: {
+    updateData () {
+      let that = this
+      queryAllStat(this.queryUrl).then(res => {
+        if (res.data.code == 0) {
+          let tmp = res.data.data[0]
+          that.data.bridgedFlight = Number.isNaN(tmp.bridgedFlight) ? '-' : tmp.bridgedFlight
+          that.data.enableBridgeFlight = Number.isNaN(tmp.enableBridgeFlight) ? '-' : tmp.enableBridgeFlight
+          that.data.bridgedPassenger = Number.isNaN(tmp.bridgedPassenger) ? '-' : tmp.bridgedPassenger
+          that.data.enableBridgePassenger = Number.isNaN(tmp.enableBridgePassenger) ? '-' : tmp.enableBridgePassenger
+          that.fltRate = that.data.bridgedFlight / that.data.enableBridgeFlight
+          that.splitFltRate = that.splitFloat(that.fltRate)
+          that.pasRate = that.data.bridgedPassenger / that.data.enableBridgePassenger
+          that.splitPasRate = that.splitFloat(that.pasRate)
+
+          that.queryByBridge()
+        }
+      })
+    },
+    splitFloat (num) {
+      if (Number.isNaN(num)) {
+        return ['--', '--']
+      }
+      let ret = []
+      ret[0] = parseInt(num * 100)
+      let temp = (num * 100).toFixed(2) + ''
+      if (temp.includes('.')) {
+        ret[1] = temp.split('.')[1]
+      } else {
+        ret[1] = '00'
+      }
+      return ret
+    },
     resizeMeth () {
       this.$nextTick(() => {
         let outOpts2 = {
@@ -94,6 +135,7 @@ export default {
         this.fontSizeTh = this.$store.getters.getFontSizeTh([this.bybridgeFltRateEl.clientWidth * 2, 650])
         this.bybridgePasRate.resize(inOpts2)
         this.updatedOption()
+        this.queryByBridge()
       })
     },
     updatedOption () {
@@ -303,36 +345,39 @@ export default {
     },
     queryByBridge () {
       let that = this
-      setTimeout(function () {
+      this.$nextTick(() => {
         let temp = that.bybridgeFltRateOption
         let temp2 = that.bybridgePasRateOption
-        var random = (Math.random() * 100).toFixed(2)
-        that.fltRate = random / 100
-        let tmp = that.fltRate * 100 + ''
-        // that.fltRateStr = tmp.substring(0, tmp.indexOf('.') + 3)
-        // console.log(that.fltRateStr)
-        // that.pasRate = random / 100
-        that.pasRate = 0
         var color = null
-        if (random / 100 > 0.5) {
-          color = [[random / 100, '#3da6cc'], [1, '#2e434c']]
+        if (that.fltRate / 100 > 0.5) {
+          color = [[that.fltRate, '#3da6cc'], [1, '#2e434c']]
         } else {
-          color = [[random / 100, '#FDCF53'], [1, '#2e434c']]
+          color = [[that.fltRate, '#FDCF53'], [1, '#2e434c']]
+        }
+        temp.series[0].axisLine.lineStyle.color = color
+        temp.series[0].data[0].value = that.fltRate
+        that.bybridgeFltRate.setOption(temp, true)
+        if (that.pasRate / 100 > 0.5) {
+          color = [[that.pasRate, '#3da6cc'], [1, '#2e434c']]
+        } else {
+          color = [[that.pasRate, '#FDCF53'], [1, '#2e434c']]
         }
         // 3da6cc 蓝色  FDCF53 黄色
-        temp.series[0].axisLine.lineStyle.color = color
-        temp.series[0].data[0].value = random
-        that.bybridgeFltRate.setOption(temp)
-        temp2.series[0].axisLine.lineStyle.color = [[1, '#2e434c']]
-        temp2.series[0].data[0].value = 0
+        temp2.series[0].axisLine.lineStyle.color = color
+        temp2.series[0].data[0].value = this.pasRate
         that.bybridgePasRate.setOption(temp2)
-      }, 100)
+      })
     }
   },
   watch: {
     resize: {
       handler (value) {
         this.resizeMeth()
+      }
+    },
+    refrush: {
+      handler (value) {
+        this.updateData()
       }
     }
   }

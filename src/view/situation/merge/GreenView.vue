@@ -10,7 +10,7 @@
           <div id="greenRate" class="circle"></div>
           <div class="text margin">
             <div class="font-st font-white">当日放行正常率</div>
-            <div class="num-st font-white">{{(toRate*100).toFixed(2)}}<span class="num-rd">%</span></div>
+            <div class="num-st font-white">{{(toRate * 100).toFixed(2)}}<span class="num-rd">%</span></div>
             <div class="absolute-tag font-rd" :class="toRate > 0.5 ? 'bg-green' : 'bg-yellow'">{{toRate > 0.5 ? '正常' : '偏低'}}</div>
           </div>
         </div>
@@ -26,13 +26,13 @@
             </div>
           </div>
           <div class="body-bottom-right">
-            <div class="num-rd font-white">78.32</div>
+            <div class="num-rd font-white">{{(data.ydayRlsFlight / data.ydayTotalRlsFlight * 100).toFixed(2)}}</div>
             <div class="font-rd" :class="yesRate > 0.5 ? 'font-green' : 'font-yellow'">{{yesRate > 0.5 ? '正常' : '偏低'}}</div>
           </div>
         </div>
         <div>
           <div class="body-bottom-right">
-            <div class="num-rd font-white" :style="{'text-align': 'right'}">78.32</div>
+            <div class="num-rd font-white" :style="{'text-align': 'right'}">{{(data.tmonRlsFlight / data.tmonTotalRlsFlight * 100).toFixed(2)}}</div>
             <div class="font-rd" :class="monthRate > 0.5 ? 'font-green' : 'font-yellow'" :style="{'text-align': 'right'}">{{monthRate > 0.5 ? '正常' : '偏低'}}</div>
           </div>
           <div class="body-bottom-left">
@@ -51,13 +51,15 @@
 
 <script>
 import Progrs from '@/components/common/ProgressView'
+import { queryAllStat } from '@/api/base'
 export default {
-  props: ['resize'],
+  props: ['resize', 'refrush'],
   components: {
     Progrs
   },
   data () {
     return {
+      queryUrl: '/basicdata/flightInOutStat/queryBridgeStat',
       toRate: 0,
       greenRate: null,
       greenCircleEl: null,
@@ -68,7 +70,15 @@ export default {
       yesCircle: null,
       monthRate: 0.7,
       monthCircleEl: null,
-      monthCircle: null
+      monthCircle: null,
+      data: {
+        'tdayRlsFlight': 0, // 当日正常放行航班
+        'tdayTotalRlsFlight': 0, // 当日总航班
+        'ydayRlsFlight': 0, // 昨日正常放行航班
+        'ydayTotalRlsFlight': 0, // 昨日总航班
+        'tmonRlsFlight': 0, // 当月正常放行航班
+        'tmonTotalRlsFlight': 0 // 当月总航班
+      }
     }
   },
   mounted () {
@@ -105,9 +115,37 @@ export default {
     })
   },
   created () {
-    this.queryGreenRate()
   },
   methods: {
+    updateData () {
+      let that = this
+      queryAllStat(this.queryUrl).then(res => {
+        if (res.data.code == 0) {
+          let tmp = res.data.data[0]
+          console.log(11, tmp)
+          // Number.isNaN(undefined) //false  Number.isNaN(NaN) //true  Number.isNaN('qwer') //false  Number.isNaN(123) //false
+          that.data.tdayRlsFlight = Number.isNaN(tmp.tdayRlsFlight) ? '-' : tmp.tdayRlsFlight
+          that.data.tdayTotalRlsFlight = Number.isNaN(tmp.tdayTotalRlsFlight) ? '-' : tmp.tdayTotalRlsFlight
+          that.data.ydayRlsFlight = Number.isNaN(tmp.ydayRlsFlight) ? '-' : tmp.ydayRlsFlight
+          that.data.ydayTotalRlsFlight = Number.isNaN(tmp.ydayTotalRlsFlight) ? '-' : tmp.ydayTotalRlsFlight
+          that.data.tmonRlsFlight = Number.isNaN(tmp.tmonRlsFlight) ? '-' : tmp.tmonRlsFlight
+          that.data.tmonTotalRlsFlight = Number.isNaN(tmp.tmonTotalRlsFlight) ? '-' : tmp.tmonTotalRlsFlight
+
+          this.queryByBridge()
+          that.updateOption()
+        }
+      })
+    },
+    queryByBridge () {
+      let that = this
+      this.$nextTick(() => {
+        let temp = that.greenRateOption
+        that.toRate = (that.data.tdayRlsFlight / that.data.tdayTotalRlsFlight).toFixed(2)
+        that.endAngle = 180 - that.toRate * 360 + 1
+        that.splitNumber = parseInt(170 * that.toRate)
+        that.updateGreenOption()
+      })
+    },
     resizeMeth () {
       let Opts2 = {
         height: 'auto',
@@ -132,16 +170,17 @@ export default {
       this.greenRateOption = {
         series: [
           {
-            name: '业务指标',
             type: 'gauge',
             radius: '95%',
             startAngle: 180,
-            endAngle: 180,
+            endAngle: this.endAngle,
+            splitNumber: this.splitNumber,
             // 仪表盘轴线(轮廓线)相关配置。
             axisLine: {
                 show: true,
                 lineStyle: {
-                    width: 12
+                    width: 12,
+                    color: [[1, '#071622']]
                 }
             },
             // 分隔线样式。
@@ -176,26 +215,16 @@ export default {
             itemStyle: {
               color: '#3DA6CC'
             },
-            data: [{
-                value: 0
-            }]
+            // data: [{
+            //     value: 0
+            // }],
+            detail: {
+              show: false
+            }
           }
         ]
       }
       this.greenRate.setOption(this.greenRateOption, true)
-    },
-    queryGreenRate () {
-      let that = this
-      setTimeout(() => {
-        let temp = that.greenRateOption
-        var random = (Math.random() * 100).toFixed(2)
-        that.toRate = random / 100
-        var color = [[1, '#071622']]
-        temp.series[0].axisLine.lineStyle.color = color
-        temp.series[0].endAngle = 180 - that.toRate * 360 + 1
-        temp.series[0].splitNumber = parseInt(170 * that.toRate)
-        that.greenRate.setOption(temp)
-      }, 100)
     },
     updateOption () {
       let yesColor = ''
@@ -223,8 +252,8 @@ export default {
               }
             },
             data: [
-              {value: 12, name: '未执行', itemStyle: {color: '#060D14'}},
-              {value: 121, name: '已执行', itemStyle: {color: yesColor}}
+              {value: this.data.ydayTotalRlsFlight - this.data.ydayRlsFlight, name: '未执行', itemStyle: {color: '#060D14'}},
+              {value: this.data.ydayRlsFlight, name: '已执行', itemStyle: {color: yesColor}}
             ]
           }
         ]
@@ -255,8 +284,8 @@ export default {
               }
             },
             data: [
-              {value: 16, name: '未执行', itemStyle: {color: '#060D14'}}, // 黑色圈
-              {value: 74, name: '已执行', itemStyle: {color: monthColor}} // 绿色
+              {value: this.data.tmonTotalRlsFlight - this.data.tmonRlsFlight, name: '当月未放行航班', itemStyle: {color: '#060D14'}}, // 黑色圈
+              {value: this.data.tmonRlsFlight, name: '当月正常放行航班', itemStyle: {color: monthColor}} // 绿色
             ]
           }
         ]
@@ -268,6 +297,11 @@ export default {
     resize: {
       handler (value) {
         this.resizeMeth()
+      }
+    },
+    refrush: {
+      handler (value) {
+        this.updateData()
       }
     }
   }

@@ -31,22 +31,22 @@
             <div>
               <div class="time-icon icon-1"></div>
               <div class="font-rs font-gray">&lt;45min</div>
-              <div class="num-rd color-1">—</div>
+              <div class="num-rd color-1">-</div>
             </div>
             <div>
               <div class="time-icon icon-2"></div>
               <div class="font-rs font-gray">45~90min</div>
-              <div class="num-rd color-2">—</div>
+              <div class="num-rd color-2">-</div>
             </div>
             <div>
               <div class="time-icon icon-3"></div>
               <div class="font-rs font-gray">90~150min</div>
-              <div class="num-rd color-3">—</div>
+              <div class="num-rd color-3">-</div>
             </div>
             <div>
               <div class="time-icon icon-4"></div>
               <div class="font-rs font-gray">&gt;150min</div>
-              <div class="num-rd color-4">—</div>
+              <div class="num-rd color-4">-</div>
             </div>
           </div>
         </div>
@@ -73,22 +73,22 @@
             <div>
               <div class="time-icon icon-1"></div>
               <div class="font-rs font-gray">&lt;45min</div>
-              <div class="num-rd color-1">—</div>
+              <div class="num-rd color-1">-</div>
             </div>
             <div>
               <div class="time-icon icon-2"></div>
               <div class="font-rs font-gray">45~90min</div>
-              <div class="num-rd color-2">—</div>
+              <div class="num-rd color-2">-</div>
             </div>
             <div>
               <div class="time-icon icon-3"></div>
               <div class="font-rs font-gray">90~150min</div>
-              <div class="num-rd color-3">—</div>
+              <div class="num-rd color-3">-</div>
             </div>
             <div>
               <div class="time-icon icon-4"></div>
               <div class="font-rs font-gray">&gt;150min</div>
-              <div class="num-rd color-4">—</div>
+              <div class="num-rd color-4">-</div>
             </div>
           </div>
         </div>
@@ -106,11 +106,11 @@ export default {
     return {
       queryUrl: '/basicdata/flightInOutStat/queryPsgStat',
       data: {
-        checkinNum: '—',
-        boardNum: '—',
-        isolationNum: '—',
-        planArrivalNum: '—',
-        actArrivalNum: '—'
+        checkinNum: '--',
+        boardNum: '--',
+        isolationNum: '--',
+        planArrivalNum: '--',
+        actArrivalNum: '--'
       }
     }
   },
@@ -119,11 +119,26 @@ export default {
   },
   methods: {
     updateData () {
-      // queryAllStat(this.queryUrl).then(res => {
-      //   if (res.data.code == 0) {
-      //     // this.data = res.data.data
-      //   }
-      // })
+      queryAllStat(this.queryUrl).then(res => {
+        if (res.data.code == 0) {
+          if (res.data.data) {
+            for (let key in this.data) {
+              this.data[key] = (res.data.data[key] != null) ? res.data.data[key] : '--'
+            }
+          } else {
+            this.restoreData()
+          }
+        }
+      })
+    },
+    restoreData () {
+      this.data = {
+        checkinNum: '--',
+        boardNum: '--',
+        isolationNum: '--',
+        planArrivalNum: '--',
+        actArrivalNum: '--'
+      }
     }
   },
   watch: {
@@ -176,6 +191,8 @@ export default {
 .pass-block>div:first-child>div  {
   height: 100%;
   color: #fff;
+  overflow: hidden;
+  white-space: nowrap;
 }
 .pass-block>div:last-child>div {
   box-sizing: border-box;

@@ -12,7 +12,7 @@
             <div class="absolute-tag font-rs">机位紧张</div>
             <div class="text">
               <div class="font-st font-gray">空闲 / 占用</div>
-              <div class="num-st font-white">{{data.nFree}} / {{data.nUsed}}</div>
+              <div class="num-st font-white">{{data.nFree || '-'}} / {{data.nUsed || '-'}}</div>
             </div>
           </div>
         </div>
@@ -21,11 +21,11 @@
             <div>
               <div class="stand-title font-rd font-gray">
                 <div class="stand-icon bg-b"></div>
-                <div>类机位{{(data.nData && data.nData.B && data.nData.B.usedNum)/(data.nData && data.nData.B && data.nData.B.totalNum)*100}}</div>
+                <div>类机位</div>
               </div>
-              <div class="num-rd font-white">{{data.nData && data.nData.B && data.nData.B.freeNum }} / {{data.nData && data.nData.B && data.nData.B.usedNum }}</div>
+              <div class="num-rd font-white">{{data.nData.B.freeNum }} / {{data.nData.B.usedNum }}</div>
               <div>
-                <progrs :type="'line'" :percentage="parseInt((data.nData && data.nData.B && data.nData.B.usedNum)/(data.nData && data.nData.B && data.nData.B.totalNum)*100)" :width="132" color="#03A786"></progrs>
+                <progrs :type="'line'" :percentage="parseInt((data.nData.B.usedNum)/(data.nData.B.totalNum)*100) || 0" :width="132" color="#03A786"></progrs>
               </div>
             </div>
             <div>
@@ -33,9 +33,9 @@
                 <div class="stand-icon bg-c"></div>
                 <div>类机位</div>
               </div>
-              <div class="num-rd font-white">{{data.nData && data.nData.C && data.nData.C.freeNum }} / {{data.nData && data.nData.C && data.nData.C.usedNum }}</div>
+              <div class="num-rd font-white">{{data.nData.C.freeNum }} / {{data.nData.C.usedNum }}</div>
               <div>
-                <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
+                <progrs :type="'line'" :percentage="parseInt((data.nData.C.usedNum)/(data.nData.C.totalNum)*100) || 0" :width="132" color="#03A786"></progrs>
               </div>
             </div>
             <div>
@@ -43,9 +43,9 @@
                 <div class="stand-icon bg-d"></div>
                 <div>类机位</div>
               </div>
-              <div class="num-rd font-white">{{data.nData && data.nData.D && data.nData.D.freeNum }} / {{data.nData && data.nData.D && data.nData.D.usedNum }}</div>
+              <div class="num-rd font-white">{{data.nData.D.freeNum }} / {{data.nData.D.usedNum }}</div>
               <div>
-                <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
+                <progrs :type="'line'" :percentage="parseInt((data.nData.D.usedNum)/(data.nData.D.totalNum)*100) || 0" :width="132" color="#03A786"></progrs>
               </div>
             </div>
             <div>
@@ -53,46 +53,46 @@
                 <div class="stand-icon bg-e"></div>
                 <div>类机位</div>
               </div>
-              <div class="num-rd font-white">{{data.nData && data.nData.E && data.nData.E.freeNum }} / {{data.nData && data.nData.E && data.nData.E.usedNum }}</div>
+              <div class="num-rd font-white">{{data.nData.E.freeNum }} / {{data.nData.E.usedNum }}</div>
               <div>
-                <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
+                <progrs :type="'line'" :percentage="parseInt((data.nData.E.usedNum)/(data.nData.E.totalNum)*100) || 0" :width="132" color="#03A786"></progrs>
               </div>
             </div>
           </div>
           <div class="stand-row">
             <div>
               <div class="font-rd font-gray">廊桥位</div>
-              <div class="num-rd font-white">{{data.nData && data.nData.L && data.nData.L.freeNum }} / {{data.nData && data.nData.L && data.nData.L.usedNum }}</div>
+              <div class="num-rd font-white">{{data.nData.L.freeNum }} / {{data.nData.L.usedNum }}</div>
               <div>
-                <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
+                <progrs :type="'line'" :percentage="parseInt((data.nData.L.usedNum)/(data.nData.L.totalNum)*100) || 0" :width="132" color="#03A786"></progrs>
               </div>
             </div>
             <div>
               <div class="font-rd font-gray">远机位</div>
-              <div class="num-rd font-white">{{data.nData && data.nData.Y && data.nData.Y.freeNum }} / {{data.nData && data.nData.Y && data.nData.Y.usedNum }}</div>
+              <div class="num-rd font-white">{{data.nData.Y.freeNum }} / {{data.nData.Y.usedNum }}</div>
               <div>
-                <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
+                <progrs :type="'line'" :percentage="parseInt((data.nData.Y.usedNum)/(data.nData.Y.totalNum)*100) || 0" :width="132" color="#03A786"></progrs>
               </div>
             </div>
             <div>
               <div class="font-rd font-gray">货运位</div>
-              <div class="num-rd font-white">{{data.nData && data.nData.H && data.nData.H.freeNum }} / {{data.nData && data.nData.H && data.nData.H.usedNum }}</div>
+              <div class="num-rd font-white">{{data.nData.H.freeNum }} / {{data.nData.H.usedNum }}</div>
               <div>
-                <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
+                <progrs :type="'line'" :percentage="parseInt((data.nData.H.usedNum)/(data.nData.H.totalNum)*100) || 0" :width="132" color="#03A786"></progrs>
               </div>
             </div>
             <div>
               <div class="font-rd font-gray">除冰位</div>
-              <div class="num-rd font-white">{{data.nData && data.nData.I && data.nData.I.freeNum }} / {{data.nData && data.nData.I && data.nData.I.usedNum }}</div>
+              <div class="num-rd font-white">{{data.nData.I.freeNum }} / {{data.nData.I.usedNum }}</div>
               <div>
-                <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
+                <progrs :type="'line'" :percentage="parseInt((data.nData.I.usedNum)/(data.nData.I.totalNum)*100) || 0" :width="132" color="#03A786"></progrs>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="body-bottom merge-block one-hour">
-        <div class="header" :style="`height: calc(100% / 275 * 60);`">
+        <div class="header" :style="`height: calc(100% / 275 * 50)`">
           <div class="header-title font-nd">1 小时内机位预占用情况</div>
         </div>
         <div class="body">
@@ -103,7 +103,7 @@
                 <!-- <div class="absolute-tag font-rs">机位紧张</div> -->
                 <div class="text">
                   <div class="font-nd font-gray">预占用</div>
-                  <div class="num-rd font-white">10</div>
+                  <div class="num-rd font-white">{{data.nUsed || '-'}}</div>
                 </div>
               </div>
             </div>
@@ -114,46 +114,46 @@
                     <div class="stand-icon bg-b"></div>
                     <div>类机位</div>
                   </div>
-                  <div class="num-rd font-white">{{data.pData && data.pData.B && data.pData.B.usedNum || '--' }}</div>
+                  <div class="num-rd font-white">{{data.pData.B.usedNum }}</div>
                 </div>
                 <div>
                   <div class="stand-title font-rd font-gray">
                     <div class="stand-icon bg-c"></div>
                     <div>类机位</div>
                   </div>
-                  <div class="num-rd font-white">{{data.pData && data.pData.C && data.pData.C.usedNum || '--' }}</div>
+                  <div class="num-rd font-white">{{data.pData.C.usedNum }}</div>
                 </div>
                 <div>
                   <div class="stand-title font-rd font-gray">
                     <div class="stand-icon bg-d"></div>
                     <div>类机位</div>
                   </div>
-                  <div class="num-rd font-white">{{data.pData && data.pData.D && data.pData.D.usedNum || '--' }}</div>
+                  <div class="num-rd font-white">{{data.pData.D.usedNum }}</div>
                 </div>
                 <div>
                   <div class="stand-title font-rd font-gray">
                     <div class="stand-icon bg-e"></div>
                     <div>类机位</div>
                   </div>
-                  <div class="num-rd font-white">{{data.pData && data.pData.E && data.pData.E.usedNum || '--' }}</div>
+                  <div class="num-rd font-white">{{data.pData.E.usedNum }}</div>
                 </div>
               </div>
               <div class="stand-row">
                 <div>
                   <div class="font-rd font-gray">廊桥位</div>
-                  <div class="num-rd font-white">{{data.pData && data.pData.L && data.pData.L.usedNum || '--' }}</div>
+                  <div class="num-rd font-white">{{data.pData.L.usedNum }}</div>
                 </div>
                 <div>
                   <div class="font-rd font-gray">远机位</div>
-                  <div class="num-rd font-white">{{data.pData && data.pData.Y && data.pData.Y.usedNum || '--' }}</div>
+                  <div class="num-rd font-white">{{data.pData.Y.usedNum }}</div>
                 </div>
                 <div>
                   <div class="font-rd font-gray">货运位</div>
-                  <div class="num-rd font-white">{{data.pData && data.pData.H && data.pData.H.usedNum || '--' }}</div>
+                  <div class="num-rd font-white">{{data.pData.H.usedNum }}</div>
                 </div>
                 <div>
                   <div class="font-rd font-gray">除冰位</div>
-                  <div class="num-rd font-white">{{data.pData && data.pData.I && data.pData.I.usedNum || '--' }}</div>
+                  <div class="num-rd font-white">{{data.pData.I.usedNum}}</div>
                 </div>
               </div>
             </div>
@@ -180,64 +180,32 @@ export default {
       oneCircleEl: null,
       oneCircle: null,
       queryUrl: '/basicdata/flightInOutStat/queryStandStat',
-      data: [
-        {
-          'standType': 'B',
-          'usedNum': 0,
-          'freeNum': 0,
-          'totalNum': 0,
-          'rate': 0
+      data: {
+        nData: {
+          B: {},
+          C: {},
+          D: {},
+          E: {},
+          L: {},
+          Y: {},
+          H: {},
+          I: {}
         },
-        {
-          'standType': 'C',
-          'usedNum': 0,
-          'freeNum': 0,
-          'totalNum': 0,
-          'rate': 0
+        pData: {
+          B: {},
+          C: {},
+          D: {},
+          E: {},
+          L: {},
+          Y: {},
+          H: {},
+          I: {}
         },
-        {
-          'standType': 'D',
-          'usedNum': 0,
-          'freeNum': 0,
-          'totalNum': 0,
-          'rate': 0
-        },
-        {
-          'standType': 'E',
-          'usedNum': 0,
-          'freeNum': 0,
-          'totalNum': 0,
-          'rate': 0
-        },
-        {
-          'standType': 'L',
-          'usedNum': 0,
-          'freeNum': 0,
-          'totalNum': 0,
-          'rate': 0
-        },
-        {
-          'standType': 'Y',
-          'usedNum': 0,
-          'freeNum': 0,
-          'totalNum': 0,
-          'rate': 0
-        },
-        {
-          'standType': 'I',
-          'usedNum': 0,
-          'freeNum': 0,
-          'totalNum': 0,
-          'rate': 0
-        },
-        {
-          'standType': 'H',
-          'usedNum': 0,
-          'freeNum': 0,
-          'totalNum': 0,
-          'rate': 0
-        }
-      ]
+        nUsed: 0,
+        nFree: 0,
+        pUsed: 0,
+        pFree: 0
+      }
     }
   },
   mounted () {
@@ -265,8 +233,27 @@ export default {
       let that = this
       queryAllStat(this.queryUrl).then(res => {
         if (res.data.code == 0) {
-          that.data = res.data.data
-          console.log(this.data)
+          // data.pData.I.usedNum
+          for (let k in res.data.data.pData) {
+            for (let j in that.data.pData) {
+              if (k == j) {
+                that.data.pData[j] = res.data.data.pData[k]
+              }
+            }
+          }
+          for (let k in res.data.data.nData) {
+            for (let j in that.data.nData) {
+              if (k == j) {
+                that.data.nData[j] = res.data.data.nData[k]
+              }
+            }
+          }
+          that.data.nUsed = res.data.data.nUsed
+          that.data.nFree = res.data.data.nFree
+          that.data.pUsed = res.data.data.pUsed
+          that.data.pFree = res.data.data.pFree
+
+          that.updateOption()
         }
       })
     },
@@ -293,7 +280,7 @@ export default {
           {
             name: '机位统计',
             type: 'pie',
-            radius: ['62%', '70%'],
+            radius: ['68%', '76%'],
             avoidLabelOverlap: false,
             label: {
               normal: {
@@ -302,8 +289,8 @@ export default {
               }
             },
             data: [
-              {value: 10, name: '空闲', itemStyle: {color: '#FF6959', borderColor: '#071622', borderWidth: 2}},
-              {value: 100, name: '占用', itemStyle: {color: '#7A939E', borderColor: '#071622', borderWidth: 2}}
+              {value: this.data.nFree, name: '空闲', itemStyle: {color: '#FF6959', borderColor: '#071622', borderWidth: 2}},
+              {value: this.data.nUsed, name: '占用', itemStyle: {color: '#7A939E', borderColor: '#071622', borderWidth: 2}}
             ]
           }
         ]
@@ -329,7 +316,7 @@ export default {
               }
             },
             data: [
-              {value: 16, name: '预占用', itemStyle: {color: '#03A786', borderColor: '#071622', borderWidth: 2}}
+              {value: this.data.pUsed, name: '预占用', itemStyle: {color: '#03A786', borderColor: '#071622', borderWidth: 2}}
             ]
           }
         ]
@@ -360,15 +347,18 @@ export default {
 .passenger>.body {
   margin: 0 calc(100% / 800 * 20) calc(100% / 800 * 20) calc(100% / 800 * 20);
   height: calc(100% - (100% / 570 * 60) - calc(100% / 570 * 20));
+  /* height: calc(100% / 275 * 215); */
   display: flex;
   flex-direction: column;
 }
 .passenger>.body>div {
   box-sizing: border-box;
-  height: calc(50% + 100% / 570 * 60);
+  height: calc(50% + 50% / 570 * 60 - 100% / 758 * 10);
+  margin-bottom: calc(100% / 758 * 10);
 }
 .passenger>.body>div:first-child {
   display: flex;
+  height: calc(50% - 50% / 570 * 60);
 }
 .one-hour>.body>div:first-child {
   display: flex;
@@ -378,7 +368,9 @@ export default {
   margin-left: calc(100% / 715 * 50);
 }
 .one-hour > .body {
-  padding: 0 calc(100% / 800 * 20)
+  height: calc(100% / 270 * 200);
+  padding: 0 calc(100% / 800 * 20);
+  margin-bottom: calc(100% / 756 * 20);
 }
 .body-top>div:first-child {
   /* width: 30%; 机位统计 圆环 */
@@ -395,6 +387,9 @@ export default {
 .stand-row {
   height: 50%;
   display: flex;
+}
+.one-hour .body-top>div:last-child {
+  width: calc(100% / 800 * 565);
 }
 .stand-row-top {
   border-bottom: 1px solid rgba(60, 166, 200, 0.3);

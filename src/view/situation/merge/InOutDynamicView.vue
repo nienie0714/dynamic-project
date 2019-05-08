@@ -11,37 +11,37 @@
             <div id="outCircle" class="circle"></div>
             <div class="text">
               <div class="font-st font-white">出港计划</div>
-              <div class="num-st font-white">128</div>
+              <div class="num-st font-white">{{data.flightStatD.totalFlight}}</div>
             </div>
           </div>
           <div class="progress-info">
             <div>
               <div class="info-block">
                 <div class="font-rs font-gray">已执行</div>
-                <div class="num-nd font-white">121</div>
+                <div class="num-nd font-white">{{data.flightStatD.execFlight}}</div>
               </div>
               <div class="info-block">
                 <div class="font-rs font-gray">未执行</div>
-                <div class="num-nd font-white">12</div>
+                <div class="num-nd font-white">{{data.flightStatD.noExecFlight}}</div>
               </div>
             </div>
             <div>
               <div class="info-block">
                 <div class="font-rs font-gray">取消</div>
-                <div class="num-nd font-white">12</div>
+                <div class="num-nd font-white">{{data.flightStatD.canFlight}}</div>
               </div>
               <div class="info-block">
                 <div class="font-rs font-gray">延误</div>
-                <div class="num-nd font-yellow">3</div>
+                <div class="num-nd font-yellow">{{data.flightStatD.dlyFlight}}</div>
               </div>
             </div>
             <div class="info-block">
               <div class="font-rs font-gray">出港正常率 %</div>
               <div class="pro-trans">
-                <div :class="['pro-trans-val', (percD>50)?'pro-trans-val-nrm':'pro-trans-val-arm']" :style="`height: ${percD}%;`"></div>
+                <div :class="['pro-trans-val', (data.flightStatD.normalPec>=pecBase)?'pro-trans-val-nrm':'pro-trans-val-arm']" :style="`height: ${data.flightStatD.normalPec}%;`"></div>
                 <div class="pro-text container cross">
-                  <div :class="['font-rs', (percD>50) ? 'font-green' : 'font-yellow']">{{(percD>50) ? '正常' : '偏低'}}</div>
-                  <div class="num-rd font-white">{{percD}}</div>
+                  <div v-if="data.flightStatD.normalPec != '--'" :class="['font-rs', (data.flightStatD.normalPec>=pecBase) ? 'font-green' : 'font-yellow']">{{(data.flightStatD.normalPec>=pecBase) ? '正常' : '偏低'}}</div>
+                  <div class="num-rd font-white">{{data.flightStatD.normalPec}}</div>
                 </div>
               </div>
             </div>
@@ -52,37 +52,37 @@
             <div id="inCircle" class="circle"></div>
             <div class="text">
               <div class="font-st font-white">进港计划</div>
-              <div class="num-st font-white">90</div>
+              <div class="num-st font-white">{{data.flightStatA.totalFlight}}</div>
             </div>
           </div>
           <div class="progress-info">
             <div>
               <div class="info-block">
                 <div class="font-rs font-gray">已执行</div>
-                <div class="num-nd font-white">76</div>
+                <div class="num-nd font-white">{{data.flightStatA.execFlight}}</div>
               </div>
               <div class="info-block">
                 <div class="font-rs font-gray">未执行</div>
-                <div class="num-nd font-white">14</div>
+                <div class="num-nd font-white">{{data.flightStatA.noExecFlight}}</div>
               </div>
             </div>
             <div>
               <div class="info-block">
                 <div class="font-rs font-gray">取消</div>
-                <div class="num-nd font-white">12</div>
+                <div class="num-nd font-white">{{data.flightStatA.canFlight}}</div>
               </div>
               <div class="info-block">
                 <div class="font-rs font-gray">延误</div>
-                <div class="num-nd font-yellow">3</div>
+                <div class="num-nd font-yellow">{{data.flightStatA.dlyFlight}}</div>
               </div>
             </div>
             <div class="info-block">
               <div class="font-rs font-gray">进港正常率 %</div>
               <div class="pro-trans">
-                <div :class="['pro-trans-val', (percA>50)?'pro-trans-val-nrm':'pro-trans-val-arm']" :style="`height: ${percA}%;`"></div>
+                <div :class="['pro-trans-val', (data.flightStatA.normalPec>=pecBase)?'pro-trans-val-nrm':'pro-trans-val-arm']" :style="`height: ${data.flightStatA.normalPec}%;`"></div>
                 <div class="pro-text container cross">
-                  <div :class="['font-rs', (percA>50) ? 'font-green' : 'font-yellow']">{{(percA>50) ? '正常' : '偏低'}}</div>
-                  <div class="num-rd font-white">{{percA}}</div>
+                  <div v-if="data.flightStatA.normalPec != '--'" :class="['font-rs', (data.flightStatA.normalPec>=pecBase) ? 'font-green' : 'font-yellow']">{{(data.flightStatA.normalPec>=pecBase) ? '正常' : '偏低'}}</div>
+                  <div class="num-rd font-white">{{data.flightStatA.normalPec}}</div>
                 </div>
               </div>
             </div>
@@ -99,13 +99,13 @@
 </template>
 
 <script>
+import { queryAllStat } from '@/api/base'
 import _ from 'lodash'
 
 export default {
-  props: ['resize'],
+  props: ['resize', 'refrush'],
   data () {
     return {
-      fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`,
       outCircleEl: null,
       outCircle: null,
       inCircleEl: null,
@@ -114,59 +114,41 @@ export default {
       lineZoom: null,
       fontSizeSt: 0,
       fontSizeRs: 0,
-      percD: 30,
-      percA: 68,
-      properc: 15
-    }
-  },
-  mounted () {
-    this.outCircleEl = document.getElementById('outCircle')
-    this.outCircle = this.$echarts.init(this.outCircleEl)
-    this.inCircleEl = document.getElementById('inCircle')
-    this.inCircle = this.$echarts.init(this.inCircleEl)
-    this.lineZoomEl = document.getElementById('lineZoom')
-    this.lineZoom = this.$echarts.init(this.lineZoomEl)
-    this.updateOption()
-    this.$nextTick(() => {
-      let outOpts = {
-        height: 'auto',
-        width: this.outCircleEl.clientHeight
-      }
-      this.outCircle.resize(outOpts)
-
-      let inOpts = {
-        height: 'auto',
-        width: this.inCircleEl.clientHeight
-      }
-      this.inCircle.resize(inOpts)
-      this.fontSizeSt = this.$store.getters.getFontSizeSt([this.lineZoomEl.clientWidth, 1060])
-      this.fontSizeRs = this.$store.getters.getFontSizeRs([this.lineZoomEl.clientWidth, 1060])
-      this.updateLineOption()
-    })
-  },
-  methods: {
-    resizeMeth () {
-      let outOpts2 = {
-        height: 'auto',
-        width: this.outCircleEl.clientHeight
-      }
-      this.outCircle.resize(outOpts2)
-      let inOpts2 = {
-        height: 'auto',
-        width: this.inCircleEl.clientHeight
-      }
-      this.inCircle.resize(inOpts2)
-      this.fontSizeSt = this.$store.getters.getFontSizeSt([this.lineZoomEl.clientWidth, 1060])
-      this.fontSizeRs = this.$store.getters.getFontSizeRs([this.lineZoomEl.clientWidth, 1060])
-      this.lineZoom.resize()
-      this.updateLineOption()
-    },
-    updateOption () {
-      let outOptions = {
+      pecBase: 50,
+      queryUrl: '/basicdata/flightInOutStat/queryFlightStat',
+      data: {
+        flightStatD: {
+          totalFlight: '-',
+          execFlight: '-',
+          noExecFlight: '-',
+          canFlight: '-',
+          dlyFlight: '-',
+          normalPec: 0
+        },
+        flightStatA: {
+          totalFlight: '-',
+          execFlight: '-',
+          noExecFlight: '-',
+          canFlight: '-',
+          dlyFlight: '-',
+          normalPec: 0
+        },
+        perFlight: {
+          in: [],
+          time: [],
+          out: []
+        }
+      },
+      outOptions: {
         tooltip: {
           trigger: 'item',
           confine: true,
-          formatter: '{a} <br/>{b}: {c} ({d}%)'
+          formatter: '{a} <br/>{b}: {c} ({d}%)',
+          extraCssText:
+            `background-color: rgba(19, 47, 64, 0.96);
+            border: 1px solid rgba(60, 166, 200, 0.7);
+            box-shadow: 0 0 30px rgba(60, 166, 200, 0.4) inset, 0 8px 20px rgba(6, 13, 20, 0.9);
+            border-radius: 8px;`
         },
         series: [
           {
@@ -181,18 +163,22 @@ export default {
               }
             },
             data: [
-              {value: 12, name: '未执行', itemStyle: {color: '#7A939E', borderColor: '#071622', borderWidth: 2}},
-              {value: 121, name: '已执行', itemStyle: {color: '#3DA6CC', borderColor: '#071622', borderWidth: 2}}
+              {value: 0, name: '未执行', itemStyle: {color: '#7A939E', borderColor: '#071622', borderWidth: 2}},
+              {value: 0, name: '已执行', itemStyle: {color: '#3DA6CC', borderColor: '#071622', borderWidth: 2}}
             ]
           }
         ]
-      }
-      this.outCircle.setOption(outOptions, true)
-      let inOptions = {
+      },
+      inOptions: {
         tooltip: {
           trigger: 'item',
           confine: true,
-          formatter: '{a} <br/>{b}: {c} ({d}%)'
+          formatter: '{a} <br/>{b}: {c} ({d}%)',
+          extraCssText:
+            `background-color: rgba(19, 47, 64, 0.96);
+            border: 1px solid rgba(60, 166, 200, 0.7);
+            box-shadow: 0 0 30px rgba(60, 166, 200, 0.4) inset, 0 8px 20px rgba(6, 13, 20, 0.9);
+            border-radius: 8px;`
         },
         series: [
           {
@@ -207,30 +193,13 @@ export default {
               }
             },
             data: [
-              {value: 16, name: '未执行', itemStyle: {color: '#7A939E', borderColor: '#071622', borderWidth: 2}},
-              {value: 74, name: '已执行', itemStyle: {color: '#3DA6CC', borderColor: '#071622', borderWidth: 2}}
+              {value: 0, name: '未执行', itemStyle: {color: '#7A939E', borderColor: '#071622', borderWidth: 2}},
+              {value: 0, name: '已执行', itemStyle: {color: '#3DA6CC', borderColor: '#071622', borderWidth: 2}}
             ]
           }
         ]
-      }
-      this.inCircle.setOption(inOptions, true)
-    },
-    updateLineOption () {
-      let data = []
-      for (let i = 12; i > -12; i--) {
-        let num = ((16 - i) > 24) ? (16 - i - 24) : (16 - i)
-        data.push({
-          time: num + ':00',
-          value: num + 60 - i
-        })
-      }
-      let xData = _.map(data, 'time')
-      let yData = _.map(data, 'value')
-      let yDatb = []
-      yData.forEach((item, index) => {
-        yDatb.push(item + 2 * index - 20)
-      })
-      let lineOptions = {
+      },
+      lineOptions: {
         title: {
           text: '每小时起降架次',
           textAlign: 'left',
@@ -238,19 +207,18 @@ export default {
           textStyle: {
             color: '#fff',
             fontWeight: 'normal',
-            fontSize: this.fontSizeSt,
-            fontFamily: this.fontFamily
+            fontSize: 0, // this.fontSizeSt,
+            fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
           }
         },
         legend: {
           align: 'auto',
-          // right: 100 / 1065 * 20 + '%',
           inactiveColor: 'rgba(122, 147, 158, 0.6)',
           itemGap: 20,
           textStyle: {
             color: '#7a939e',
-            fontSize: this.fontSizeRs,
-            fontFamily: this.fontFamily
+            fontSize: 0, // this.fontSizeRs,
+            fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
           },
           data: ['出港', '进港']
         },
@@ -263,7 +231,7 @@ export default {
         },
         toolbox: {
           right: 100 / 1065 * 35 + '%',
-          itemSize: this.fontSizeRs,
+          itemSize: 0, // this.fontSizeRs,
           iconStyle: {
             borderColor: '#7a939e'
           },
@@ -275,8 +243,18 @@ export default {
           }
         },
         tooltip: {
-          trigger: 'item',
-          confine: true
+          trigger: 'axis',
+          confine: true,
+          extraCssText:
+            `background-color: rgba(19, 47, 64, 0.96);
+            border: 1px solid rgba(60, 166, 200, 0.7);
+            box-shadow: 0 0 30px rgba(60, 166, 200, 0.4) inset, 0 8px 20px rgba(6, 13, 20, 0.9);
+            border-radius: 8px;`,
+          axisPointer: {
+            lineStyle: {
+              color: 'rgba(60,166,200,0.7)'
+            }
+          }
         },
         xAxis: {
           boundaryGap: false,
@@ -291,13 +269,10 @@ export default {
           axisLabel: {
             margin: 15,
             color: '#fff',
-            fontSize: this.fontSizeRs,
-            fontFamily: this.fontFamily
+            fontSize: 0, // this.fontSizeRs,
+            fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
           },
-          // data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-          data: xData
-          // min: 'dataMin',
-          // max: 'dataMax'
+          data: []
         },
         yAxis: {
           min: 'dataMin',
@@ -316,15 +291,15 @@ export default {
           axisLabel: {
             margin: 15,
             color: '#7a939e',
-            fontSize: this.fontSizeRs,
-            fontFamily: this.fontFamily
+            fontSize: 0, // this.fontSizeRs,
+            fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
           }
         },
         dataZoom: [{
           type: 'inside',
           filterMode: 'none',
-          start: 25,
-          end: 75
+          startValue: -24,
+          end: 100
         }],
         series: [
           {
@@ -334,6 +309,7 @@ export default {
             symbol: 'circle',
             symbolSize: 8,
             smooth: true,
+            connectNulls: true,
             itemStyle: {
               normal: {
                 color: 'rgb(3, 167, 134)',
@@ -378,16 +354,15 @@ export default {
               formatter: '{c}',
               backgroundColor: 'rgb(3, 167, 134)',
               textStyle: {
-                fontSize: this.fontSizeRs,
-                fontFamily: this.fontFamily
+                fontSize: 0, // this.fontSizeRs,
+                fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
               }
             },
-            data: yDatb
+            data: []
           },
           {
             name: '进港',
             type: 'line',
-            // data: [120, 132, 101, 134, 90, 230, 210]
             symbol: 'circle',
             symbolSize: 8,
             smooth: true,
@@ -419,31 +394,129 @@ export default {
                 }
               }
             },
-            // label: {
-            //   normal: {
-            //     show: false,
-            //     position: 'center'
-            //   }
-            // },
             tooltip: {
               formatter: '{c}',
               backgroundColor: 'rgb(60, 166, 200)',
               textStyle: {
-                fontSize: this.fontSizeRs,
-                fontFamily: this.fontFamily
+                fontSize: 0, // this.fontSizeRs,
+                fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
               }
             },
-            data: yData
+            data: []
           }
         ]
       }
-      this.lineZoom.setOption(lineOptions, true)
+    }
+  },
+  mounted () {
+    this.outCircleEl = document.getElementById('outCircle')
+    this.outCircle = this.$echarts.init(this.outCircleEl)
+    this.inCircleEl = document.getElementById('inCircle')
+    this.inCircle = this.$echarts.init(this.inCircleEl)
+    this.lineZoomEl = document.getElementById('lineZoom')
+    this.lineZoom = this.$echarts.init(this.lineZoomEl)
+    this.updateView()
+    this.$nextTick(() => {
+      let outOpts = {
+        height: 'auto',
+        width: this.outCircleEl.clientHeight
+      }
+      this.outCircle.resize(outOpts)
+
+      let inOpts = {
+        height: 'auto',
+        width: this.inCircleEl.clientHeight
+      }
+      this.inCircle.resize(inOpts)
+      this.fontSizeSt = this.$store.getters.getFontSizeSt([this.lineZoomEl.clientWidth, 1060])
+      this.fontSizeRs = this.$store.getters.getFontSizeRs([this.lineZoomEl.clientWidth, 1060])
+      setTimeout(() => this.lineZoom.setOption(this.lineOptions, true), 100)
+    })
+  },
+  methods: {
+    resizeMeth () {
+      let outOpts2 = {
+        height: 'auto',
+        width: this.outCircleEl.clientHeight
+      }
+      this.outCircle.resize(outOpts2)
+      let inOpts2 = {
+        height: 'auto',
+        width: this.inCircleEl.clientHeight
+      }
+      this.inCircle.resize(inOpts2)
+      this.fontSizeSt = this.$store.getters.getFontSizeSt([this.lineZoomEl.clientWidth, 1060])
+      this.fontSizeRs = this.$store.getters.getFontSizeRs([this.lineZoomEl.clientWidth, 1060])
+      this.lineZoom.resize()
+      setTimeout(() => this.lineZoom.setOption(this.lineOptions, true), 100)
+    },
+    updateData () {
+      queryAllStat(this.queryUrl).then(res => {
+        if (res.data.code == 0) {
+          for (let key in this.data) {
+            if (res.data.data[key]) {
+              for (let name in this.data[key]) {
+                if (name == 'normalPec') {
+                  if (res.data.data[key]['totalFlight'] && (res.data.data[key]['execFlight'] != null)) {
+                    this.data[key]['normalPec'] = '--'
+                  } else {
+                    this.data[key]['normalPec'] = Math.floor(res.data.data[key]['execFlight'] / res.data.data[key]['totalFlight'] * 100)
+                  }
+                } else {
+                  this.data[key][name] = (res.data.data[key].hasOwnProperty(name)) ? res.data.data[key][name] : '-'
+                }
+              }
+            }
+          }
+        } else {
+          this.restore()
+        }
+        this.lineOptions.xAxis.data = this.data.perFlight.time
+        this.lineOptions.series[0].data = this.data.perFlight.out
+        this.lineOptions.series[1].data = this.data.perFlight.in
+        this.updateView()
+      }).catch(() => {
+        this.restore()
+        this.lineOptions.xAxis.data = this.data.perFlight.time
+        this.lineOptions.series[0].data = this.data.perFlight.out
+        this.lineOptions.series[1].data = this.data.perFlight.in
+        this.updateView()
+      })
+    },
+    updateView () {
+      this.outCircle.setOption(this.outOptions, true)
+      this.inCircle.setOption(this.inOptions, true)
+      this.lineZoom.setOption(this.lineOptions, true)
     }
   },
   watch: {
     resize: {
       handler (value) {
         this.resizeMeth()
+      }
+    },
+    refrush: {
+      handler (value) {
+        this.updateData()
+      }
+    },
+    fontSizeSt: {
+      handler (value) {
+        this.lineOptions.title.textStyle.fontSize = value
+      }
+    },
+    fontSizeRs: {
+      handler (value) {
+        this.lineOptions.legend.textStyle.fontSize = value
+        this.lineOptions.toolbox.itemSize = value
+        this.lineOptions.xAxis.axisLabel.fontSize = value
+        this.lineOptions.yAxis.axisLabel.fontSize = value
+        this.lineOptions.series[0].tooltip.textStyle.fontSize = value
+        this.lineOptions.series[0].symbolSize = value / 2
+        this.lineOptions.series[0].itemStyle.normal.borderWidth = value / 10
+        this.lineOptions.series[1].tooltip.textStyle.fontSize = value
+        this.lineOptions.series[1].symbolSize = value / 2
+        this.lineOptions.series[1].itemStyle.normal.borderWidth = value / 10
       }
     }
   }
