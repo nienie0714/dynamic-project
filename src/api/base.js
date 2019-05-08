@@ -98,6 +98,17 @@ export function queryAll (url, data) {
   })
 }
 
+export function queryAllStat (url, data) {
+  if (!data) {
+    data = {}
+  }
+  return vue.axiosStat({
+    url: url,
+    method: 'post',
+    data: data
+  })
+}
+
 export function dfsPost (url, data, callback) {
   return vue.dfs({
     url: url,

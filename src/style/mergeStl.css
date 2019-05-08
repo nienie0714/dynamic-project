@@ -32,6 +32,9 @@
 .font-green {
   color: #03A786;
 }
+.font-red {
+  color: #ff6959;
+}
 .num-st, .num-nd {
   font-weight: bold;
 }

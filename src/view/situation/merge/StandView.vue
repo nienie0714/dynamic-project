@@ -12,7 +12,7 @@
             <div class="absolute-tag font-rs">机位紧张</div>
             <div class="text">
               <div class="font-st font-gray">空闲 / 占用</div>
-              <div class="num-st font-white">8 / 40</div>
+              <div class="num-st font-white">{{data.nFree}} / {{data.nUsed}}</div>
             </div>
           </div>
         </div>
@@ -21,11 +21,11 @@
             <div>
               <div class="stand-title font-rd font-gray">
                 <div class="stand-icon bg-b"></div>
-                <div>类机位</div>
+                <div>类机位{{(data.nData && data.nData.B && data.nData.B.usedNum)/(data.nData && data.nData.B && data.nData.B.totalNum)*100}}</div>
               </div>
-              <div class="num-rd font-white">15 / 23</div>
+              <div class="num-rd font-white">{{data.nData && data.nData.B && data.nData.B.freeNum }} / {{data.nData && data.nData.B && data.nData.B.usedNum }}</div>
               <div>
-                <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
+                <progrs :type="'line'" :percentage="parseInt((data.nData && data.nData.B && data.nData.B.usedNum)/(data.nData && data.nData.B && data.nData.B.totalNum)*100)" :width="132" color="#03A786"></progrs>
               </div>
             </div>
             <div>
@@ -33,7 +33,7 @@
                 <div class="stand-icon bg-c"></div>
                 <div>类机位</div>
               </div>
-              <div class="num-rd font-white">15 / 23</div>
+              <div class="num-rd font-white">{{data.nData && data.nData.C && data.nData.C.freeNum }} / {{data.nData && data.nData.C && data.nData.C.usedNum }}</div>
               <div>
                 <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
               </div>
@@ -43,7 +43,7 @@
                 <div class="stand-icon bg-d"></div>
                 <div>类机位</div>
               </div>
-              <div class="num-rd font-white">15 / 23</div>
+              <div class="num-rd font-white">{{data.nData && data.nData.D && data.nData.D.freeNum }} / {{data.nData && data.nData.D && data.nData.D.usedNum }}</div>
               <div>
                 <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
               </div>
@@ -53,7 +53,7 @@
                 <div class="stand-icon bg-e"></div>
                 <div>类机位</div>
               </div>
-              <div class="num-rd font-white">15 / 23</div>
+              <div class="num-rd font-white">{{data.nData && data.nData.E && data.nData.E.freeNum }} / {{data.nData && data.nData.E && data.nData.E.usedNum }}</div>
               <div>
                 <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
               </div>
@@ -62,28 +62,28 @@
           <div class="stand-row">
             <div>
               <div class="font-rd font-gray">廊桥位</div>
-              <div class="num-rd font-white">15 / 23</div>
+              <div class="num-rd font-white">{{data.nData && data.nData.L && data.nData.L.freeNum }} / {{data.nData && data.nData.L && data.nData.L.usedNum }}</div>
               <div>
                 <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
               </div>
             </div>
             <div>
               <div class="font-rd font-gray">远机位</div>
-              <div class="num-rd font-white">15 / 23</div>
+              <div class="num-rd font-white">{{data.nData && data.nData.Y && data.nData.Y.freeNum }} / {{data.nData && data.nData.Y && data.nData.Y.usedNum }}</div>
               <div>
                 <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
               </div>
             </div>
             <div>
               <div class="font-rd font-gray">货运位</div>
-              <div class="num-rd font-white">15 / 23</div>
+              <div class="num-rd font-white">{{data.nData && data.nData.H && data.nData.H.freeNum }} / {{data.nData && data.nData.H && data.nData.H.usedNum }}</div>
               <div>
                 <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
               </div>
             </div>
             <div>
               <div class="font-rd font-gray">除冰位</div>
-              <div class="num-rd font-white">15 / 23</div>
+              <div class="num-rd font-white">{{data.nData && data.nData.I && data.nData.I.freeNum }} / {{data.nData && data.nData.I && data.nData.I.usedNum }}</div>
               <div>
                 <progrs :type="'line'" :percentage="24" :width="132" color="#03A786"></progrs>
               </div>
@@ -114,46 +114,46 @@
                     <div class="stand-icon bg-b"></div>
                     <div>类机位</div>
                   </div>
-                  <div class="num-rd font-white">15</div>
+                  <div class="num-rd font-white">{{data.pData && data.pData.B && data.pData.B.usedNum || '--' }}</div>
                 </div>
                 <div>
                   <div class="stand-title font-rd font-gray">
                     <div class="stand-icon bg-c"></div>
                     <div>类机位</div>
                   </div>
-                  <div class="num-rd font-white">15</div>
+                  <div class="num-rd font-white">{{data.pData && data.pData.C && data.pData.C.usedNum || '--' }}</div>
                 </div>
                 <div>
                   <div class="stand-title font-rd font-gray">
                     <div class="stand-icon bg-d"></div>
                     <div>类机位</div>
                   </div>
-                  <div class="num-rd font-white">15</div>
+                  <div class="num-rd font-white">{{data.pData && data.pData.D && data.pData.D.usedNum || '--' }}</div>
                 </div>
                 <div>
                   <div class="stand-title font-rd font-gray">
                     <div class="stand-icon bg-e"></div>
                     <div>类机位</div>
                   </div>
-                  <div class="num-rd font-white">15</div>
+                  <div class="num-rd font-white">{{data.pData && data.pData.E && data.pData.E.usedNum || '--' }}</div>
                 </div>
               </div>
               <div class="stand-row">
                 <div>
                   <div class="font-rd font-gray">廊桥位</div>
-                  <div class="num-rd font-white">15</div>
+                  <div class="num-rd font-white">{{data.pData && data.pData.L && data.pData.L.usedNum || '--' }}</div>
                 </div>
                 <div>
                   <div class="font-rd font-gray">远机位</div>
-                  <div class="num-rd font-white">15</div>
+                  <div class="num-rd font-white">{{data.pData && data.pData.Y && data.pData.Y.usedNum || '--' }}</div>
                 </div>
                 <div>
                   <div class="font-rd font-gray">货运位</div>
-                  <div class="num-rd font-white">15</div>
+                  <div class="num-rd font-white">{{data.pData && data.pData.H && data.pData.H.usedNum || '--' }}</div>
                 </div>
                 <div>
                   <div class="font-rd font-gray">除冰位</div>
-                  <div class="num-rd font-white">15</div>
+                  <div class="num-rd font-white">{{data.pData && data.pData.I && data.pData.I.usedNum || '--' }}</div>
                 </div>
               </div>
             </div>
@@ -166,9 +166,10 @@
 
 <script>
 import Progrs from '@/components/common/ProgressView'
+import { queryAllStat } from '@/api/base'
 
 export default {
-  props: ['resize'],
+  props: ['resize', 'refrush'],
   components: {
     Progrs
   },
@@ -177,7 +178,66 @@ export default {
       standCircleEl: null,
       standCircle: null,
       oneCircleEl: null,
-      oneCircle: null
+      oneCircle: null,
+      queryUrl: '/basicdata/flightInOutStat/queryStandStat',
+      data: [
+        {
+          'standType': 'B',
+          'usedNum': 0,
+          'freeNum': 0,
+          'totalNum': 0,
+          'rate': 0
+        },
+        {
+          'standType': 'C',
+          'usedNum': 0,
+          'freeNum': 0,
+          'totalNum': 0,
+          'rate': 0
+        },
+        {
+          'standType': 'D',
+          'usedNum': 0,
+          'freeNum': 0,
+          'totalNum': 0,
+          'rate': 0
+        },
+        {
+          'standType': 'E',
+          'usedNum': 0,
+          'freeNum': 0,
+          'totalNum': 0,
+          'rate': 0
+        },
+        {
+          'standType': 'L',
+          'usedNum': 0,
+          'freeNum': 0,
+          'totalNum': 0,
+          'rate': 0
+        },
+        {
+          'standType': 'Y',
+          'usedNum': 0,
+          'freeNum': 0,
+          'totalNum': 0,
+          'rate': 0
+        },
+        {
+          'standType': 'I',
+          'usedNum': 0,
+          'freeNum': 0,
+          'totalNum': 0,
+          'rate': 0
+        },
+        {
+          'standType': 'H',
+          'usedNum': 0,
+          'freeNum': 0,
+          'totalNum': 0,
+          'rate': 0
+        }
+      ]
     }
   },
   mounted () {
@@ -201,6 +261,15 @@ export default {
     })
   },
   methods: {
+    updateData () {
+      let that = this
+      queryAllStat(this.queryUrl).then(res => {
+        if (res.data.code == 0) {
+          that.data = res.data.data
+          console.log(this.data)
+        }
+      })
+    },
     resizeMeth () {
       let outOpts2 = {
         height: 'auto',
@@ -233,8 +302,8 @@ export default {
               }
             },
             data: [
-              {value: 12, name: '空闲', itemStyle: {color: '#FF6959', borderColor: '#071622', borderWidth: 2}},
-              {value: 121, name: '占用', itemStyle: {color: '#7A939E', borderColor: '#071622', borderWidth: 2}}
+              {value: 10, name: '空闲', itemStyle: {color: '#FF6959', borderColor: '#071622', borderWidth: 2}},
+              {value: 100, name: '占用', itemStyle: {color: '#7A939E', borderColor: '#071622', borderWidth: 2}}
             ]
           }
         ]
@@ -261,7 +330,6 @@ export default {
             },
             data: [
               {value: 16, name: '预占用', itemStyle: {color: '#03A786', borderColor: '#071622', borderWidth: 2}}
-              // {value: 74, name: '占用', itemStyle: {color: '#7A939E', borderColor: '#071622', borderWidth: 2}}
             ]
           }
         ]
@@ -273,6 +341,11 @@ export default {
     resize: {
       handler (value) {
         this.resizeMeth()
+      }
+    },
+    refrush: {
+      handler (value) {
+        this.updateData()
       }
     }
   }

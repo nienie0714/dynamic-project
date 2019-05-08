@@ -5,8 +5,10 @@ import Vue from 'vue'
 
 const forwardURL = '/api'
 const forwardOtherURL = '/other'
+const forwardURLStat = '/stat'
 // const forwardURL = ''
 // const forwardOtherURL = ''
+// const forwardURLStat = ''
 
 axios.defaults.timeout = 100000
 axios.defaults.baseURL = forwardURL + '/'
@@ -103,6 +105,21 @@ axiosReq.spread = axios.spread
 axiosReq.interceptors.request.use(request, requestError)
 axiosReq.interceptors.response.use(response, responseErr)
 
+const axiosReqStat = axios.create({
+  baseURL: forwardURLStat + '/aoms-statistics',
+  headers: {
+    'Content-Type': 'application/json;charset-UTF-8',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Credentials': 'true',
+    'Access-Control-Allow-Headers': 'x-requested-with,content-type'
+    // 'Authorization': 'eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ3eSIsImVtcElkIjoxMTExLCJJUCI6IjA6MDowOjA6MDowOjA6MSIsImVtcE5hbWUiOiLnjovlqpsiLCJleHAiOjE1NDczMzE5NTEsInVzZXJJZCI6ImZlMjZkYjIzNGQ4NDRiMTU4NWZjZTAwZjQ5N2RmNTE4In0._UuDoi5W1hPAQeozrk-2I_05WEPALF1LaDbDDOIyHkkbnKCISyQHqb84SDz75fG-1bY9beHESU2PulpeUn2QNQ'
+  }
+})
+axiosReqStat.all = axios.all
+axiosReqStat.spread = axios.spread
+axiosReqStat.interceptors.request.use(request, requestError)
+axiosReqStat.interceptors.response.use(response, responseErr)
+
 const axiosNoneReq = axios.create({
   headers: {
     'Content-Type': 'application/json;charset-UTF-8',
@@ -151,4 +168,4 @@ const upload = axios.create({
 upload.interceptors.request.use(request, requestError)
 upload.interceptors.response.use(response, responseErr)
 
-export {axiosReq, axiosNoneReq, axiosOtherReq, axiosDfs, upload}
+export {axiosReq, axiosReqStat, axiosNoneReq, axiosOtherReq, axiosDfs, upload}

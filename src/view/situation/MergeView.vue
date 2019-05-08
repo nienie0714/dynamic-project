@@ -7,23 +7,23 @@
     </progrs> -->
     <div class="left">
       <div class="top">
-        <Dynamic :resize="resize"></Dynamic>
+        <Dynamic :resize="resize" :refrush="refrush"></Dynamic>
       </div>
       <div class="bottom">
         <div class="lb-left">
-          <Green :resize="resize"></Green>
+          <Green :resize="resize" :refrush="refrush"></Green>
         </div>
         <div class="lb-right">
-          <Bridge :resize="resize"></Bridge>
+          <Bridge :resize="resize" :refrush="refrush"></Bridge>
         </div>
       </div>
     </div>
     <div class="right">
       <div class="top">
-        <Passenger></Passenger>
+        <Passenger :refrush="refrush"></Passenger>
       </div>
       <div class="bottom">
-        <Stand :resize="resize"></Stand>
+        <Stand :resize="resize" :refrush="refrush"></Stand>
       </div>
     </div>
   </div>
@@ -56,7 +56,9 @@ export default {
         key: 'background-color',
         value: '#060d14'
       }],
-      resize: false
+      resize: false,
+      intervalTime: 60 * 1000,
+      refrush: false
     }
   },
   mounted () {
@@ -64,6 +66,8 @@ export default {
     this.pageStyle.forEach(item => {
       bodyView.style[item.key] = item.value
     })
+    this.refrushTime()
+    this.timer = setInterval(this.refrushTime, this.intervalTime)
     window.onresize = () => {
       this.$nextTick(() => {
         this.resize = !this.resize
@@ -71,6 +75,9 @@ export default {
     }
   },
   methods: {
+    refrushTime () {
+      this.refrush = !this.refrush
+    }
   }
 }
 </script>

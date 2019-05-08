@@ -11,7 +11,7 @@
           <div id="bybridgeFltRate" class="gauge-canvas"></div>
           <div class="absolute-div font-rd bg-yellow" v-if="fltRate < 0.5">偏低</div>
           <div class="text">
-            <div class="num-st font-white">{{(fltRate*100)}}.</div>
+            <div class="num-st font-white">{{parseInt(fltRate*100)}}.</div>
             <div class="num-rd font-white">1</div>
           </div>
         </div>

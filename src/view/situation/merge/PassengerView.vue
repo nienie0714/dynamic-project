@@ -7,24 +7,24 @@
     <div class="body">
       <div class="pass-block">
         <div>
-          <div class="font-nd">出港旅客统计</div>
+          <div class="font-nd"><img :src="require('@img/merge/icon_departure_4k.png')" height="100%" style="display: inline-block; vertical-align: top;"/> 出港旅客统计</div>
           <div class="font-rd">机上等待时间/航班数</div>
         </div>
         <div>
           <div class="count">
             <div>
               <div class="font-rd font-gray">值机总人数</div>
-              <div class="num-nd font-white">1065</div>
+              <div class="num-nd font-white">{{data.checkinNum}}</div>
             </div>
             <div>
               <div class="font-rd font-gray">登机总人数</div>
-              <div class="num-nd font-white">1060
+              <div class="num-nd font-white">{{data.boardNum}}
                 <!-- <div class="font-rs font-gray">-5</div> -->
               </div>
             </div>
             <div>
               <div class="font-rd font-gray">隔离区人数</div>
-              <div class="num-nd font-white">190</div>
+              <div class="num-nd font-white">{{data.isolationNum}}</div>
             </div>
           </div>
           <div class="time">
@@ -53,18 +53,18 @@
       </div>
       <div class="pass-block">
         <div>
-          <div class="font-nd">进港旅客统计</div>
+          <div class="font-nd"><img :src="require('@img/merge/icon_arrival_4k.png')" height="100%" style="display: inline-block; vertical-align: top;"/> 进港旅客统计</div>
           <div class="font-rd">机上等待时间/航班数</div>
         </div>
         <div>
           <div class="count">
             <div>
               <div class="font-rd font-gray">计达总人数</div>
-              <div class="num-nd font-white">2032</div>
+              <div class="num-nd font-white">{{data.planArrivalNum}}</div>
             </div>
             <div>
               <div class="font-rd font-gray">实达总人数</div>
-              <div class="num-nd font-white">2061
+              <div class="num-nd font-white">{{data.actArrivalNum}}
                 <!-- <div class="font-rs font-gray">+29</div> -->
               </div>
             </div>
@@ -96,6 +96,45 @@
     </div>
   </div>
 </template>
+
+<script>
+import { queryAllStat } from '@/api/base'
+
+export default {
+  props: ['refrush'],
+  data () {
+    return {
+      queryUrl: '/basicdata/flightInOutStat/queryPsgStat',
+      data: {
+        checkinNum: '—',
+        boardNum: '—',
+        isolationNum: '—',
+        planArrivalNum: '—',
+        actArrivalNum: '—'
+      }
+    }
+  },
+  mounted () {
+
+  },
+  methods: {
+    updateData () {
+      // queryAllStat(this.queryUrl).then(res => {
+      //   if (res.data.code == 0) {
+      //     // this.data = res.data.data
+      //   }
+      // })
+    }
+  },
+  watch: {
+    refrush: {
+      handler (value) {
+        this.updateData()
+      }
+    }
+  }
+}
+</script>
 
 <style scoped>
 .merge-block > .header {
