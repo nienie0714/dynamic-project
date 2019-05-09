@@ -94,10 +94,11 @@ export default {
       queryAllStat(this.queryUrl).then(res => {
         if (res.data.code == 0) {
           let tmp = res.data.data[0]
-          that.data.bridgedFlight = Number.isNaN(tmp.bridgedFlight) ? '-' : tmp.bridgedFlight
-          that.data.enableBridgeFlight = Number.isNaN(tmp.enableBridgeFlight) ? '-' : tmp.enableBridgeFlight
-          that.data.bridgedPassenger = Number.isNaN(tmp.bridgedPassenger) ? '-' : tmp.bridgedPassenger
-          that.data.enableBridgePassenger = Number.isNaN(tmp.enableBridgePassenger) ? '-' : tmp.enableBridgePassenger
+          that.data.bridgedFlight = Number.isInteger(tmp.bridgedFlight) ? tmp.bridgedFlight : '-'
+          that.data.enableBridgeFlight = Number.isInteger(tmp.enableBridgeFlight) ? tmp.enableBridgeFlight : '-'
+          that.data.bridgedPassenger = Number.isInteger(tmp.bridgedPassenger) ? tmp.bridgedPassenger : '-'
+          that.data.enableBridgePassenger = Number.isInteger(tmp.enableBridgePassenger) ? tmp.enableBridgePassenger : '-'
+
           that.fltRate = that.data.bridgedFlight / that.data.enableBridgeFlight
           that.splitFltRate = that.splitFloat(that.fltRate)
           that.pasRate = that.data.bridgedPassenger / that.data.enableBridgePassenger

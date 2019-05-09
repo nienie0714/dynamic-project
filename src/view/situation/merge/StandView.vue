@@ -274,7 +274,12 @@ export default {
         tooltip: {
           trigger: 'item',
           confine: true,
-          formatter: '{a} <br/>{b}: {c} ({d}%)'
+          formatter: '{a} <br/>{b}: {c} ({d}%)',
+          extraCssText:
+            `background-color: rgba(19, 47, 64, 0.96);
+            border: 1px solid rgba(60, 166, 200, 0.7);
+            box-shadow: 0 0 30px rgba(60, 166, 200, 0.4) inset, 0 8px 20px rgba(6, 13, 20, 0.9);
+            border-radius: 8px;`
         },
         series: [
           {
@@ -301,7 +306,12 @@ export default {
         tooltip: {
           trigger: 'item',
           confine: true,
-          formatter: '{b}: {c}'
+          formatter: '{b}: {c}',
+          extraCssText:
+            `background-color: rgba(19, 47, 64, 0.96);
+            border: 1px solid rgba(60, 166, 200, 0.7);
+            box-shadow: 0 0 30px rgba(60, 166, 200, 0.4) inset, 0 8px 20px rgba(6, 13, 20, 0.9);
+            border-radius: 8px;`
         },
         series: [
           {

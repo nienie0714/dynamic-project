@@ -121,15 +121,15 @@ export default {
       let that = this
       queryAllStat(this.queryUrl).then(res => {
         if (res.data.code == 0) {
-          let tmp = res.data.data[0]
+          let tmp = Object.assign(res.data.data[0])
           console.log(11, tmp)
           // Number.isNaN(undefined) //false  Number.isNaN(NaN) //true  Number.isNaN('qwer') //false  Number.isNaN(123) //false
-          that.data.tdayRlsFlight = Number.isNaN(tmp.tdayRlsFlight) ? '-' : tmp.tdayRlsFlight
-          that.data.tdayTotalRlsFlight = Number.isNaN(tmp.tdayTotalRlsFlight) ? '-' : tmp.tdayTotalRlsFlight
-          that.data.ydayRlsFlight = Number.isNaN(tmp.ydayRlsFlight) ? '-' : tmp.ydayRlsFlight
-          that.data.ydayTotalRlsFlight = Number.isNaN(tmp.ydayTotalRlsFlight) ? '-' : tmp.ydayTotalRlsFlight
-          that.data.tmonRlsFlight = Number.isNaN(tmp.tmonRlsFlight) ? '-' : tmp.tmonRlsFlight
-          that.data.tmonTotalRlsFlight = Number.isNaN(tmp.tmonTotalRlsFlight) ? '-' : tmp.tmonTotalRlsFlight
+          that.data.tdayRlsFlight = Number.isInteger(tmp.tdayRlsFlight) ? tmp.tdayRlsFlight : '-'
+          that.data.tdayTotalRlsFlight = Number.isInteger(tmp.tdayTotalRlsFlight) ? tmp.tdayTotalRlsFlight : '-'
+          that.data.ydayRlsFlight = Number.isInteger(tmp.ydayRlsFlight) ? tmp.ydayRlsFlight : '-'
+          that.data.ydayTotalRlsFlight = Number.isInteger(tmp.ydayTotalRlsFlight) ? tmp.ydayTotalRlsFlight : '-'
+          that.data.tmonRlsFlight = Number.isInteger(tmp.tmonRlsFlight) ? tmp.tmonRlsFlight : '-'
+          that.data.tmonTotalRlsFlight = Number.isInteger(tmp.tmonTotalRlsFlight) ? tmp.tmonTotalRlsFlight : '-'
 
           this.queryByBridge()
           that.updateOption()
