@@ -9,7 +9,7 @@
         <div>
           <div class="progress-circle">
             <div id="standCircle" class="circle"></div>
-            <div class="absolute-tag font-rs">机位紧张</div>
+            <div class="absolute-tag font-rs" v-if="data.nFree / (data.nUsed + data.nFree) <= pecBase">机位紧张</div>
             <div class="text">
               <div class="font-st font-gray">空闲 / 占用</div>
               <div class="num-st font-white">{{data.nFree || '-'}} / {{data.nUsed || '-'}}</div>
@@ -180,6 +180,7 @@ export default {
       oneCircleEl: null,
       oneCircle: null,
       queryUrl: '/basicdata/flightInOutStat/queryStandStat',
+      pecBase: 50,
       data: {
         nData: {
           B: {},
@@ -209,6 +210,7 @@ export default {
     }
   },
   mounted () {
+    this.pecBase = this.$store.getters.getCfgVal('fltRag')
     this.standCircleEl = document.getElementById('standCircle')
     this.standCircle = this.$echarts.init(this.standCircleEl)
     this.oneCircleEl = document.getElementById('oneCircle')

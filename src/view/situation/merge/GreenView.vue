@@ -10,8 +10,8 @@
           <div id="greenRate" class="circle"></div>
           <div class="text margin">
             <div class="font-st font-white">当日放行正常率</div>
-            <div class="num-st font-white">{{(toRate * 100).toFixed(2)}}<span class="num-rd">%</span></div>
-            <div class="absolute-tag font-rd" :class="toRate > 0.5 ? 'bg-green' : 'bg-yellow'">{{toRate > 0.5 ? '正常' : '偏低'}}</div>
+            <div class="num-st font-white">{{ data.toRate }}<span class="num-rd">%</span></div>
+            <div class="absolute-tag font-rd" v-if="data.toRate != '--.--'" :class="data.toRate >= pecBase ? 'bg-green' : 'bg-yellow'">{{data.toRate  >= pecBase ? '正常' : '偏低'}}</div>
           </div>
         </div>
       </div>
@@ -26,14 +26,14 @@
             </div>
           </div>
           <div class="body-bottom-right">
-            <div class="num-rd font-white">{{(data.ydayRlsFlight / data.ydayTotalRlsFlight * 100).toFixed(2)}}</div>
-            <div class="font-rd" :class="yesRate > 0.5 ? 'font-green' : 'font-yellow'">{{yesRate > 0.5 ? '正常' : '偏低'}}</div>
+            <div class="num-rd font-white">{{data.ydayRate}}</div>
+            <div class="font-rd" v-if="data.ydayRate != '--.--'" :class="data.ydayRate >= pecBase ? 'font-green' : 'font-yellow'">{{data.ydayRate >= pecBase ? '正常' : '偏低'}}</div>
           </div>
         </div>
         <div>
           <div class="body-bottom-right">
-            <div class="num-rd font-white" :style="{'text-align': 'right'}">{{(data.tmonRlsFlight / data.tmonTotalRlsFlight * 100).toFixed(2)}}</div>
-            <div class="font-rd" :class="monthRate > 0.5 ? 'font-green' : 'font-yellow'" :style="{'text-align': 'right'}">{{monthRate > 0.5 ? '正常' : '偏低'}}</div>
+            <div class="num-rd font-white" :style="{'text-align': 'right'}">{{data.tmonRate}}</div>
+            <div class="font-rd" v-if="data.tmonRate != '--.--'" :class="data.tmonRate >= pecBase ? 'font-green' : 'font-yellow'" :style="{'text-align': 'right'}">{{data.tmonRate >= pecBase ? '正常' : '偏低'}}</div>
           </div>
           <div class="body-bottom-left">
             <div class="progress-circle">
@@ -60,17 +60,15 @@ export default {
   data () {
     return {
       queryUrl: '/basicdata/flightInOutStat/queryBridgeStat',
-      toRate: 0,
       greenRate: null,
       greenCircleEl: null,
       fontSizeTh: 0,
       greenRateOption: {},
-      yesRate: 0.3,
       yesCircleEl: null,
       yesCircle: null,
-      monthRate: 0.7,
       monthCircleEl: null,
       monthCircle: null,
+      pecBase: 50,
       data: {
         'tdayRlsFlight': 0, // 当日正常放行航班
         'tdayTotalRlsFlight': 0, // 当日总航班
@@ -82,6 +80,7 @@ export default {
     }
   },
   mounted () {
+    this.pecBase = this.$store.getters.getCfgVal('fltRag')
     this.greenCircleEl = document.getElementById('greenRate')
     this.greenRate = this.$echarts.init(this.greenCircleEl)
     this.updateGreenOption()
@@ -121,8 +120,7 @@ export default {
       let that = this
       queryAllStat(this.queryUrl).then(res => {
         if (res.data.code == 0) {
-          let tmp = Object.assign(res.data.data[0])
-          console.log(11, tmp)
+          let tmp = typeof (res.data.data[0]) != 'undefined' ? Object.assign(res.data.data[0]) : {}
           // Number.isNaN(undefined) //false  Number.isNaN(NaN) //true  Number.isNaN('qwer') //false  Number.isNaN(123) //false
           that.data.tdayRlsFlight = Number.isInteger(tmp.tdayRlsFlight) ? tmp.tdayRlsFlight : '-'
           that.data.tdayTotalRlsFlight = Number.isInteger(tmp.tdayTotalRlsFlight) ? tmp.tdayTotalRlsFlight : '-'
@@ -130,6 +128,24 @@ export default {
           that.data.ydayTotalRlsFlight = Number.isInteger(tmp.ydayTotalRlsFlight) ? tmp.ydayTotalRlsFlight : '-'
           that.data.tmonRlsFlight = Number.isInteger(tmp.tmonRlsFlight) ? tmp.tmonRlsFlight : '-'
           that.data.tmonTotalRlsFlight = Number.isInteger(tmp.tmonTotalRlsFlight) ? tmp.tmonTotalRlsFlight : '-'
+
+          // that.$nextTick(() => {
+            if (Number.isInteger(that.data.tdayRlsFlight) && Number.isInteger(that.data.tdayTotalRlsFlight)) {
+              that.data.toRate = (that.data.tdayRlsFlight / that.data.tdayTotalRlsFlight * 100).toFixed(2)
+            } else {
+              that.data.toRate = '--.--'
+            }
+            if (Number.isInteger(that.data.tmonRlsFlight) && Number.isInteger(that.data.tmonTotalRlsFlight)) {
+              that.data.ydayRate = (that.data.ydayRlsFlight / that.data.ydayTotalRlsFlight * 100).toFixed(2)
+            } else {
+              that.data.ydayRate = '--.--'
+            }
+            if (Number.isInteger(that.data.tmonRlsFlight) && Number.isInteger(that.data.tmonTotalRlsFlight)) {
+              that.data.tmonRate = (that.data.tmonRlsFlight / that.data.tmonTotalRlsFlight * 100).toFixed(2)
+            } else {
+              that.data.tmonRate = '--.--'
+            }
+          // })
 
           this.queryByBridge()
           that.updateOption()
@@ -228,7 +244,7 @@ export default {
     },
     updateOption () {
       let yesColor = ''
-      if (this.yesRate > 0.5) {
+      if (this.data.ydayRate > this.pecBase) {
         yesColor = '#03A786'
       } else {
         yesColor = '#FDCF53'
@@ -260,7 +276,7 @@ export default {
       }
       this.yesCircle.setOption(outOptions, true)
       let monthColor = ''
-      if (this.monthRate > 0.5) {
+      if (this.data.tmonRate > this.pecBase) {
         monthColor = '#03A786'
       } else {
         monthColor = '#FDCF53'

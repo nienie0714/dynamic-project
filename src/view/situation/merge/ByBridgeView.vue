@@ -9,7 +9,7 @@
         <div class="gauge-title font-rd font-white">航班靠桥率</div>
         <div class="gauge-echart">
           <div id="bybridgeFltRate" class="gauge-canvas"></div>
-          <div class="absolute-div font-rd bg-yellow" v-if="fltRate < 0.5">偏低</div>
+          <div class="absolute-div font-rd bg-yellow" v-if="fltRate <= pecBase">偏低</div>
           <div class="text">
             <div class="num-st font-white">{{splitFltRate[0]}}.</div>
             <div class="num-rs font-white">{{splitFltRate[1]}}</div>
@@ -22,7 +22,7 @@
         <div class="gauge-title font-rd font-white">旅客靠桥率</div>
         <div class="gauge-echart">
           <div id="bybridgePasRate" class="gauge-canvas"></div>
-          <div class="absolute-div font-rd bg-yellow" v-if="fltRate < 0.5">偏低</div>
+          <div class="absolute-div font-rd bg-yellow" v-if="fltRate <= pecBase">偏低</div>
           <div class="text">
             <div class="num-st font-white">{{splitPasRate[0]}}.</div>
             <div class="num-rs font-white">{{splitPasRate[1]}}</div>
@@ -54,6 +54,7 @@ export default {
       bybridgePasRate: null,
       bybridgePasRateEl: null,
       bybridgePasRateOption: null,
+      pecBase: 50,
       data: {
         'bridgedFlight': 0, // 已靠桥航班
         'enableBridgeFlight': 0, // 可以靠桥航班(总数)
@@ -63,6 +64,7 @@ export default {
     }
   },
   mounted () {
+    this.pecBase = this.$store.getters.getCfgVal('fltRag')
     this.bybridgeFltRateEl = document.getElementById('bybridgeFltRate')
     this.bybridgeFltRate = this.$echarts.init(this.bybridgeFltRateEl)
 
@@ -94,10 +96,17 @@ export default {
       queryAllStat(this.queryUrl).then(res => {
         if (res.data.code == 0) {
           let tmp = res.data.data[0]
-          that.data.bridgedFlight = Number.isInteger(tmp.bridgedFlight) ? tmp.bridgedFlight : '-'
-          that.data.enableBridgeFlight = Number.isInteger(tmp.enableBridgeFlight) ? tmp.enableBridgeFlight : '-'
-          that.data.bridgedPassenger = Number.isInteger(tmp.bridgedPassenger) ? tmp.bridgedPassenger : '-'
-          that.data.enableBridgePassenger = Number.isInteger(tmp.enableBridgePassenger) ? tmp.enableBridgePassenger : '-'
+          if (typeof (res.data.data[0]) == 'undefined') {
+            that.data.bridgedFlight = '-'
+            that.data.enableBridgeFlight = '-'
+            that.data.bridgedPassenger = '-'
+            that.data.enableBridgePassenger = '-'
+          } else {
+            that.data.bridgedFlight = Number.isInteger(tmp.bridgedFlight) ? tmp.bridgedFlight : '-'
+            that.data.enableBridgeFlight = Number.isInteger(tmp.enableBridgeFlight) ? tmp.enableBridgeFlight : '-'
+            that.data.bridgedPassenger = Number.isInteger(tmp.bridgedPassenger) ? tmp.bridgedPassenger : '-'
+            that.data.enableBridgePassenger = Number.isInteger(tmp.enableBridgePassenger) ? tmp.enableBridgePassenger : '-'
+          }
 
           that.fltRate = that.data.bridgedFlight / that.data.enableBridgeFlight
           that.splitFltRate = that.splitFloat(that.fltRate)
@@ -350,7 +359,7 @@ export default {
         let temp = that.bybridgeFltRateOption
         let temp2 = that.bybridgePasRateOption
         var color = null
-        if (that.fltRate / 100 > 0.5) {
+        if (that.fltRate / 100 >= that.pecBase) {
           color = [[that.fltRate, '#3da6cc'], [1, '#2e434c']]
         } else {
           color = [[that.fltRate, '#FDCF53'], [1, '#2e434c']]
@@ -358,7 +367,7 @@ export default {
         temp.series[0].axisLine.lineStyle.color = color
         temp.series[0].data[0].value = that.fltRate
         that.bybridgeFltRate.setOption(temp, true)
-        if (that.pasRate / 100 > 0.5) {
+        if (that.pasRate / 100 >= that.pecBase) {
           color = [[that.pasRate, '#3da6cc'], [1, '#2e434c']]
         } else {
           color = [[that.pasRate, '#FDCF53'], [1, '#2e434c']]
