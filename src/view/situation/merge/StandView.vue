@@ -12,7 +12,7 @@
             <div class="absolute-tag font-rs" v-if="data.nFree / (data.nUsed + data.nFree) <= pecBase">机位紧张</div>
             <div class="text">
               <div class="font-st font-gray">空闲 / 占用</div>
-              <div class="num-st font-white">{{data.nFree || '-'}} / {{data.nUsed || '-'}}</div>
+              <div class="num-st font-white">{{data.nFree}} / {{data.nUsed}}</div>
             </div>
           </div>
         </div>
@@ -103,7 +103,7 @@
                 <!-- <div class="absolute-tag font-rs">机位紧张</div> -->
                 <div class="text">
                   <div class="font-nd font-gray">预占用</div>
-                  <div class="num-rd font-white">{{data.nUsed || '-'}}</div>
+                  <div class="num-rd font-white">{{data.nUsed}}</div>
                 </div>
               </div>
             </div>

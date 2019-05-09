@@ -5,7 +5,7 @@
       <header-view @select="handleHeaderMenu"></header-view>
       <el-main :class="((routerViewName!='航班查询')&&(routerViewName!='任务调度')&&(routerViewName!='态势分析'))?'home-top-main':''"><!-- ((routerViewName!='态势分析')?'merge-top-main':'') -->
         <el-container class="home-container-cent">
-          <div v-if="require('lodash').map(this.homeRouterData, 'path').includes(basicPath)" style="display: flex;">
+          <div v-if="require('lodash').map(this.homeRouterData, 'path').includes(basicPath)" style="display: flex; width: 100%;">
             <Aside-menu-view></Aside-menu-view>
             <el-main class="home-main">
               <router-view/>

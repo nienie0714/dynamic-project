@@ -159,6 +159,63 @@ var router = new Router({
               component: r => require.ensure([], () => r(require('@/view/statistics/hisdata/HisTaskView'), 'HisTaskView'))
             }
           ]
+        },
+        {
+          path: 'otherstat',
+          name: '态势统计',
+          component: Basic,
+          children: [
+            {
+              path: 'relNormal',
+              name: '航班放行正常率',
+              component: r => require.ensure([], () => r(require('@/view/situation/otherstat/ReleaseNormalView'), 'ReleaseNormalView'))
+            },
+            {
+              path: 'relDelay',
+              name: '出港航班放行延误率',
+              component: r => require.ensure([], () => r(require('@/view/situation/otherstat/ReleaseDelayView'), 'ReleaseDelayView'))
+            },
+            {
+              path: 'cityDelay',
+              name: '飞往各城市航班放行航班放行延误情况',
+              component: r => require.ensure([], () => r(require('@/view/situation/otherstat/CityDelayView'), 'CityDelayView'))
+            },
+            {
+              path: 'companyDelay',
+              name: '各航空公司航班放行延误情况',
+              component: r => require.ensure([], () => r(require('@/view/situation/otherstat/CompanyDelayView'), 'CompanyDelayView'))
+            },
+            {
+              path: 'planOut',
+              name: '计划离港时刻航班运行情况',
+              component: r => require.ensure([], () => r(require('@/view/situation/otherstat/PlanOutView'), 'PlanOutView'))
+            },
+            {
+              path: 'inDelay',
+              name: '进港航班延误情况',
+              component: r => require.ensure([], () => r(require('@/view/situation/otherstat/InDelayView'), 'InDelayView'))
+            },
+            {
+              path: 'hourTakeOffDown',
+              name: '小时航班起降架次',
+              component: r => require.ensure([], () => r(require('@/view/situation/otherstat/HourTakeOffDownView'), 'HourTakeOffDownView'))
+            },
+            {
+              path: 'hourTakeDown',
+              name: '小时航班落地架次',
+              component: r => require.ensure([], () => r(require('@/view/situation/otherstat/HourTakeDownView'), 'HourTakeDownView'))
+            },
+            {
+              path: 'hourTakeOff',
+              name: '小时航班起飞架次',
+              component: r => require.ensure([], () => r(require('@/view/situation/otherstat/HourTakeOffView'), 'HourTakeOffView'))
+            },
+            {
+              path: 'standRate',
+              name: '机位使用频率',
+              component: r => require.ensure([], () => r(require('@/view/situation/otherstat/StandRateView'), 'StandRateView'))
+            }
+          ]
         }
       ]
     },

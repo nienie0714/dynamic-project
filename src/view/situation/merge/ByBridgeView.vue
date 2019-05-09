@@ -56,10 +56,10 @@ export default {
       bybridgePasRateOption: null,
       pecBase: 50,
       data: {
-        'bridgedFlight': 0, // 已靠桥航班
-        'enableBridgeFlight': 0, // 可以靠桥航班(总数)
-        'bridgedPassenger': 0, // 已靠桥旅客
-        'enableBridgePassenger': 0 // 可以靠桥的旅客(总数)
+        'bridgedFlight': '--', // 已靠桥航班
+        'enableBridgeFlight': '--', // 可以靠桥航班(总数)
+        'bridgedPassenger': '--', // 已靠桥旅客
+        'enableBridgePassenger': '--' // 可以靠桥的旅客(总数)
       }
     }
   },
@@ -97,25 +97,42 @@ export default {
         if (res.data.code == 0) {
           let tmp = res.data.data[0]
           if (typeof (res.data.data[0]) == 'undefined') {
-            that.data.bridgedFlight = '-'
-            that.data.enableBridgeFlight = '-'
-            that.data.bridgedPassenger = '-'
-            that.data.enableBridgePassenger = '-'
+            this.restore()
           } else {
             that.data.bridgedFlight = Number.isInteger(tmp.bridgedFlight) ? tmp.bridgedFlight : '-'
             that.data.enableBridgeFlight = Number.isInteger(tmp.enableBridgeFlight) ? tmp.enableBridgeFlight : '-'
             that.data.bridgedPassenger = Number.isInteger(tmp.bridgedPassenger) ? tmp.bridgedPassenger : '-'
             that.data.enableBridgePassenger = Number.isInteger(tmp.enableBridgePassenger) ? tmp.enableBridgePassenger : '-'
+
+            that.fltRate = that.data.bridgedFlight / that.data.enableBridgeFlight
+            that.splitFltRate = that.splitFloat(that.fltRate)
+            that.pasRate = that.data.bridgedPassenger / that.data.enableBridgePassenger
+            that.splitPasRate = that.splitFloat(that.pasRate)
+
+            that.queryByBridge()
           }
-
-          that.fltRate = that.data.bridgedFlight / that.data.enableBridgeFlight
-          that.splitFltRate = that.splitFloat(that.fltRate)
-          that.pasRate = that.data.bridgedPassenger / that.data.enableBridgePassenger
-          that.splitPasRate = that.splitFloat(that.pasRate)
-
-          that.queryByBridge()
+        } else {
+          this.restore()
         }
+      }).catch(() => {
+        this.restore()
+        this.lineOptions.series[0].data = this.data.perFlight.out
+        this.lineOptions.series[1].data = this.data.perFlight.in
+        this.updateView()
       })
+    },
+    restore () {
+      this.data = {
+        'bridgedFlight': '--', // 已靠桥航班
+        'enableBridgeFlight': '--', // 可以靠桥航班(总数)
+        'bridgedPassenger': '--', // 已靠桥旅客
+        'enableBridgePassenger': '--' // 可以靠桥的旅客(总数)
+      }
+      this.splitFltRate = ['--', '--']
+      this.splitPasRate = ['--', '--']
+      this.fltRate = 1
+      this.pasRate = 1
+      this.queryByBridge()
     },
     splitFloat (num) {
       if (Number.isNaN(num)) {
@@ -356,26 +373,24 @@ export default {
     queryByBridge () {
       let that = this
       this.$nextTick(() => {
-        let temp = that.bybridgeFltRateOption
-        let temp2 = that.bybridgePasRateOption
         var color = null
         if (that.fltRate / 100 >= that.pecBase) {
           color = [[that.fltRate, '#3da6cc'], [1, '#2e434c']]
         } else {
           color = [[that.fltRate, '#FDCF53'], [1, '#2e434c']]
         }
-        temp.series[0].axisLine.lineStyle.color = color
-        temp.series[0].data[0].value = that.fltRate
-        that.bybridgeFltRate.setOption(temp, true)
+        that.bybridgeFltRateOption.series[0].axisLine.lineStyle.color = color
+        that.bybridgeFltRateOption.series[0].data[0].value = that.fltRate
+        that.bybridgeFltRate.setOption(that.bybridgeFltRateOption, true)
         if (that.pasRate / 100 >= that.pecBase) {
           color = [[that.pasRate, '#3da6cc'], [1, '#2e434c']]
         } else {
           color = [[that.pasRate, '#FDCF53'], [1, '#2e434c']]
         }
         // 3da6cc 蓝色  FDCF53 黄色
-        temp2.series[0].axisLine.lineStyle.color = color
-        temp2.series[0].data[0].value = this.pasRate
-        that.bybridgePasRate.setOption(temp2)
+        that.bybridgePasRateOption.series[0].axisLine.lineStyle.color = color
+        that.bybridgePasRateOption.series[0].data[0].value = this.pasRate
+        that.bybridgePasRate.setOption(that.bybridgePasRateOption, true)
       })
     }
   },

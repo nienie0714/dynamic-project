@@ -37,8 +37,8 @@ export default {
       this.tableData.height = window.innerHeight - targetTop2 + titleHeight2 - 30
       var asideView = this.$root.$el.querySelector('.el-aside')
       var basicContView = this.$root.$el.querySelector('.basic-resource-contain')
-      var basicWidth = window.innerWidth - asideView.offsetWidth - 40
-      basicContView.style.width = basicWidth + 'px'
+      // var basicWidth = window.innerWidth - asideView.offsetWidth - 40
+      // basicContView.style.width = basicWidth + 'px'
       window.onresize = () => {
         this.$nextTick(() => {
           return (() => {

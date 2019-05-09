@@ -129,23 +129,21 @@ export default {
           that.data.tmonRlsFlight = Number.isInteger(tmp.tmonRlsFlight) ? tmp.tmonRlsFlight : '-'
           that.data.tmonTotalRlsFlight = Number.isInteger(tmp.tmonTotalRlsFlight) ? tmp.tmonTotalRlsFlight : '-'
 
-          // that.$nextTick(() => {
-            if (Number.isInteger(that.data.tdayRlsFlight) && Number.isInteger(that.data.tdayTotalRlsFlight)) {
-              that.data.toRate = (that.data.tdayRlsFlight / that.data.tdayTotalRlsFlight * 100).toFixed(2)
-            } else {
-              that.data.toRate = '--.--'
-            }
-            if (Number.isInteger(that.data.tmonRlsFlight) && Number.isInteger(that.data.tmonTotalRlsFlight)) {
-              that.data.ydayRate = (that.data.ydayRlsFlight / that.data.ydayTotalRlsFlight * 100).toFixed(2)
-            } else {
-              that.data.ydayRate = '--.--'
-            }
-            if (Number.isInteger(that.data.tmonRlsFlight) && Number.isInteger(that.data.tmonTotalRlsFlight)) {
-              that.data.tmonRate = (that.data.tmonRlsFlight / that.data.tmonTotalRlsFlight * 100).toFixed(2)
-            } else {
-              that.data.tmonRate = '--.--'
-            }
-          // })
+          if (Number.isInteger(that.data.tdayRlsFlight) && Number.isInteger(that.data.tdayTotalRlsFlight)) {
+            that.data.toRate = (that.data.tdayRlsFlight / that.data.tdayTotalRlsFlight * 100).toFixed(2)
+          } else {
+            that.data.toRate = '--.--'
+          }
+          if (Number.isInteger(that.data.tmonRlsFlight) && Number.isInteger(that.data.tmonTotalRlsFlight)) {
+            that.data.ydayRate = (that.data.ydayRlsFlight / that.data.ydayTotalRlsFlight * 100).toFixed(2)
+          } else {
+            that.data.ydayRate = '--.--'
+          }
+          if (Number.isInteger(that.data.tmonRlsFlight) && Number.isInteger(that.data.tmonTotalRlsFlight)) {
+            that.data.tmonRate = (that.data.tmonRlsFlight / that.data.tmonTotalRlsFlight * 100).toFixed(2)
+          } else {
+            that.data.tmonRate = '--.--'
+          }
 
           this.queryByBridge()
           that.updateOption()
