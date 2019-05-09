@@ -120,41 +120,68 @@ export default {
       let that = this
       queryAllStat(this.queryUrl).then(res => {
         if (res.data.code == 0) {
-          let tmp = typeof (res.data.data[0]) != 'undefined' ? Object.assign(res.data.data[0]) : {}
-          // Number.isNaN(undefined) //false  Number.isNaN(NaN) //true  Number.isNaN('qwer') //false  Number.isNaN(123) //false
-          that.data.tdayRlsFlight = Number.isInteger(tmp.tdayRlsFlight) ? tmp.tdayRlsFlight : '-'
-          that.data.tdayTotalRlsFlight = Number.isInteger(tmp.tdayTotalRlsFlight) ? tmp.tdayTotalRlsFlight : '-'
-          that.data.ydayRlsFlight = Number.isInteger(tmp.ydayRlsFlight) ? tmp.ydayRlsFlight : '-'
-          that.data.ydayTotalRlsFlight = Number.isInteger(tmp.ydayTotalRlsFlight) ? tmp.ydayTotalRlsFlight : '-'
-          that.data.tmonRlsFlight = Number.isInteger(tmp.tmonRlsFlight) ? tmp.tmonRlsFlight : '-'
-          that.data.tmonTotalRlsFlight = Number.isInteger(tmp.tmonTotalRlsFlight) ? tmp.tmonTotalRlsFlight : '-'
+          let tmp = res.data.data[0]
+          if (typeof (res.data.data[0]) == 'undefined') {
+            this.restore()
+          } else {
+            // Number.isNaN(undefined) //false  Number.isNaN(NaN) //true  Number.isNaN('qwer') //false  Number.isNaN(123) //false
+            that.data.tdayRlsFlight = Number.isInteger(tmp.tdayRlsFlight) ? tmp.tdayRlsFlight : 0
+            that.data.tdayTotalRlsFlight = Number.isInteger(tmp.tdayTotalRlsFlight) ? tmp.tdayTotalRlsFlight : '-'
+            that.data.ydayRlsFlight = Number.isInteger(tmp.ydayRlsFlight) ? tmp.ydayRlsFlight : '-'
+            that.data.ydayTotalRlsFlight = Number.isInteger(tmp.ydayTotalRlsFlight) ? tmp.ydayTotalRlsFlight : '-'
+            that.data.tmonRlsFlight = Number.isInteger(tmp.tmonRlsFlight) ? tmp.tmonRlsFlight : '-'
+            that.data.tmonTotalRlsFlight = Number.isInteger(tmp.tmonTotalRlsFlight) ? tmp.tmonTotalRlsFlight : '-'
 
-          if (Number.isInteger(that.data.tdayRlsFlight) && Number.isInteger(that.data.tdayTotalRlsFlight)) {
-            that.data.toRate = (that.data.tdayRlsFlight / that.data.tdayTotalRlsFlight * 100).toFixed(2)
-          } else {
-            that.data.toRate = '--.--'
-          }
-          if (Number.isInteger(that.data.tmonRlsFlight) && Number.isInteger(that.data.tmonTotalRlsFlight)) {
-            that.data.ydayRate = (that.data.ydayRlsFlight / that.data.ydayTotalRlsFlight * 100).toFixed(2)
-          } else {
-            that.data.ydayRate = '--.--'
-          }
-          if (Number.isInteger(that.data.tmonRlsFlight) && Number.isInteger(that.data.tmonTotalRlsFlight)) {
-            that.data.tmonRate = (that.data.tmonRlsFlight / that.data.tmonTotalRlsFlight * 100).toFixed(2)
-          } else {
-            that.data.tmonRate = '--.--'
-          }
+            if (Number.isInteger(that.data.tdayRlsFlight) && Number.isInteger(that.data.tdayTotalRlsFlight)) {
+              that.data.toRate = (that.data.tdayRlsFlight / that.data.tdayTotalRlsFlight * 100).toFixed(2)
+            } else {
+              that.data.toRate = '--.--'
+            }
+            if (Number.isInteger(that.data.tmonRlsFlight) && Number.isInteger(that.data.tmonTotalRlsFlight)) {
+              that.data.ydayRate = (that.data.ydayRlsFlight / that.data.ydayTotalRlsFlight * 100).toFixed(2)
+            } else {
+              that.data.ydayRate = '--.--'
+            }
+            if (Number.isInteger(that.data.tmonRlsFlight) && Number.isInteger(that.data.tmonTotalRlsFlight)) {
+              that.data.tmonRate = (that.data.tmonRlsFlight / that.data.tmonTotalRlsFlight * 100).toFixed(2)
+            } else {
+              that.data.tmonRate = '--.--'
+            }
 
-          this.queryByBridge()
-          that.updateOption()
+            this.queryByBridge()
+            that.updateOption()
+          }
+        } else {
+          this.restore()
         }
+      }).catch(() => {
+        this.restore()
       })
+    },
+    restore () {
+      this.data = {
+        'tdayRlsFlight': 0, // 当日正常放行航班
+        'tdayTotalRlsFlight': 0, // 当日总航班
+        'ydayRlsFlight': 0, // 昨日正常放行航班
+        'ydayTotalRlsFlight': 0, // 昨日总航班
+        'tmonRlsFlight': 0, // 当月正常放行航班
+        'tmonTotalRlsFlight': 0, // 当月总航班
+        'toRate': '--.--',
+        'ydayRate': '--.--',
+        'tmonRate': '--.--'
+      }
+      this.queryByBridge()
     },
     queryByBridge () {
       let that = this
       this.$nextTick(() => {
-        let temp = that.greenRateOption
-        that.toRate = (that.data.tdayRlsFlight / that.data.tdayTotalRlsFlight).toFixed(2)
+        if (that.data.tdayRlsFlight == 0 && that.data.tdayTotalRlsFlight == 0) {
+          that.toRate = 1
+        } else if (that.data.tdayRlsFlight == null || that.data.tdayTotalRlsFlight == null) {
+          that.toRate = 1
+        } else {
+          that.toRate = (that.data.tdayRlsFlight / that.data.tdayTotalRlsFlight).toFixed(2)
+        }
         that.endAngle = 180 - that.toRate * 360 + 1
         that.splitNumber = parseInt(170 * that.toRate)
         that.updateGreenOption()

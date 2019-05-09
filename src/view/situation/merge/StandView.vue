@@ -210,7 +210,7 @@ export default {
     }
   },
   mounted () {
-    this.pecBase = this.$store.getters.getCfgVal('fltRag')
+    this.pecBase = this.$store.getters.getCfgVal('stdRag')
     this.standCircleEl = document.getElementById('standCircle')
     this.standCircle = this.$echarts.init(this.standCircleEl)
     this.oneCircleEl = document.getElementById('oneCircle')

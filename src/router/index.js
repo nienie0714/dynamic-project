@@ -177,7 +177,7 @@ var router = new Router({
             },
             {
               path: 'cityDelay',
-              name: '飞往各城市航班放行航班放行延误情况',
+              name: '飞往各城市航班放行延误情况',
               component: r => require.ensure([], () => r(require('@/view/situation/otherstat/CityDelayView'), 'CityDelayView'))
             },
             {

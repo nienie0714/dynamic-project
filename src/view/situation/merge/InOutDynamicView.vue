@@ -236,7 +236,7 @@ export default {
             borderColor: '#7a939e'
           },
           feature: {
-            dataView: {readOnly: false},
+            dataView: {readOnly: true},
             // magicType: {type: ['bar']},
             restore: {},
             saveAsImage: {}
@@ -488,6 +488,31 @@ export default {
       this.outCircle.setOption(this.outOptions, true)
       this.inCircle.setOption(this.inOptions, true)
       this.lineZoom.setOption(this.lineOptions, true)
+    },
+    restore () {
+      this.data = {
+        flightStatD: {
+          totalFlight: '-',
+          execFlight: '-',
+          noExecFlight: '-',
+          canFlight: '-',
+          dlyFlight: '-',
+          normalPec: 0
+        },
+        flightStatA: {
+          totalFlight: '-',
+          execFlight: '-',
+          noExecFlight: '-',
+          canFlight: '-',
+          dlyFlight: '-',
+          normalPec: 0
+        },
+        perFlight: {
+          in: [],
+          time: [],
+          out: []
+        }
+      }
     }
   },
   watch: {

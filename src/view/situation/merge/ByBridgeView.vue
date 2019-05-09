@@ -116,9 +116,6 @@ export default {
         }
       }).catch(() => {
         this.restore()
-        this.lineOptions.series[0].data = this.data.perFlight.out
-        this.lineOptions.series[1].data = this.data.perFlight.in
-        this.updateView()
       })
     },
     restore () {
