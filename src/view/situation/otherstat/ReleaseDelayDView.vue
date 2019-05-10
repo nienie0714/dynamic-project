@@ -47,7 +47,7 @@ export default {
           left: 0,
           right: 0,
           top: 60,
-          bottom: 30,
+          bottom: 10,
           containLabel: true
         },
         toolbox: {
@@ -59,7 +59,7 @@ export default {
           feature: {
             dataView: {
               title: '转换表格',
-              readOnly: false,
+              readOnly: true,
               backgroundColor: 'transparent',
               textareaColor: 'rgba(8, 25, 38, 1)',
               textareaBorderColor: 'rgba(60, 166, 200, 0.7)',
@@ -134,7 +134,10 @@ export default {
           },
           axisLabel: {
             interval: 0,
-            margin: 15,
+            margin: 40,
+            verticalAlign: 'bottom',
+            align: 'center',
+            rotate: -45,
             color: '#fff',
             fontSize: 16, // this.fontSizeRs,
             fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`

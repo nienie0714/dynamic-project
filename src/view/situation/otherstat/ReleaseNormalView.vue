@@ -1,22 +1,34 @@
 <template>
-  <div class="other-stat">
-    <div class="tool-bar">
-      <div class="left-button">
-        <el-button type="primary" icon="el-icon-search" @click="switchTime('year')">年</el-button>
-        <el-button type="primary" icon="el-icon-search" @click="switchTime('month')">月</el-button>
-        <el-button type="primary" icon="el-icon-search" @click="switchTime('day')">日</el-button>
-      </div>
+<div class="div-wrapper">
+  <div class="tool-bar">
+    <div class="left-button">
+      <!-- <el-button type="primary" icon="el-icon-search" @click="switchTime('year')">年</el-button>
+      <el-button type="primary" icon="el-icon-search" @click="switchTime('month')">月</el-button>
+      <el-button type="primary" icon="el-icon-search" @click="switchTime('day')">日</el-button> -->
+      <el-col :span="4">
+        <el-radio-group v-model="time.data" size="small" @change="radioChange">
+          <el-radio-button label="year">年</el-radio-button>
+          <el-radio-button label="month">月</el-radio-button>
+          <el-radio-button label="day">日</el-radio-button>
+        </el-radio-group>
+      </el-col>
     </div>
+  </div>
+  <div class="other-stat">
     <div class="bar-wrapper">
       <div id="normalBar" class="bar"></div>
     </div>
   </div>
+</div>
 </template>
 
 <script>
 export default {
   data () {
     return {
+      time: {
+        data: 'year'
+      },
       normalBarEl: null,
       normalBar: null,
       normalBarOption: {
@@ -37,6 +49,7 @@ export default {
           bottom: 0,
           inactiveColor: 'rgba(122, 147, 158, 0.6)',
           itemGap: 20,
+          selectedMode: false,
           textStyle: {
             color: '#7a939e',
             fontSize: 14, // this.fontSizeRs,
@@ -48,7 +61,7 @@ export default {
           left: 0,
           right: 0,
           top: 60,
-          bottom: 30,
+          bottom: 50,
           containLabel: true
         },
         toolbox: {
@@ -97,11 +110,9 @@ export default {
             }
           },
           axisLabel: {
-            show: true,
-            rotate: 0,
-            margin: 15,
+            interval: 0,
             color: '#fff',
-            fontSize: 0, // this.fontSizeRs,
+            fontSize: 16, // this.fontSizeRs,
             fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
           },
           axisTick: {
@@ -214,7 +225,7 @@ export default {
       let table = `
         <div class="echarts-view">
           <div class="close el-dialog__headerbtn">
-            <i class="el-dialog__close el-icon el-icon-close"></i>
+            <i class="el-dialog__close el-icon el-icon-close" onclick="documentElement.getElementsByClassName('echarts-view')[0].parentElement.parentElement.style.display = 'none'"></i>
           </div>
           <div class="header">
             <table class="echarts-table" border="1" cellpadding="0" cellspacing="0">
@@ -243,12 +254,12 @@ export default {
       table += '</tbody></table></div></div>'
       return table
     },
-    switchTime (time) {
-      if (time == 'year') {
+    radioChange () {
+      if (this.time.data == 'year') {
         this.normalBarOption.xAxis.data = this.data.year
-      } else if (time == 'month') {
+      } else if (this.time.data == 'month') {
         this.normalBarOption.xAxis.data = this.data.month
-      } else if (time == 'day') {
+      } else if (this.time.data == 'day') {
         this.normalBarOption.xAxis.data = this.data.day
       }
       this.updateView()
@@ -258,20 +269,24 @@ export default {
 </script>
 
 <style scoped>
-.other-stat,
-.other-stat > div:last-child {
-  width: 100%;
-  height: calc(100% - 25px);
-}
-.bar-wrapper {
-  height: 100%;
-  position: relative;
-}
-.bar-wrapper>.bar {
+.div-wrapper {
   width: 100%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 .tool-bar {
-  padding: 10px 20px;
+  margin-left: 20px;
+  height: 60px;
+}
+.other-stat>div,
+.bar {
+  width: 100%;
+  height: 100%;
+}
+.other-stat {
+  width: calc(100% - 40px);
+  height: calc(100% - 72px);
+  padding: 20px;
 }
 </style>

@@ -13,9 +13,9 @@ export default {
       companyBarEl: null,
       companyBar: null,
       data: {
-        company: ['MC', 'CA', 'CZ', 'SC', '3U', 'JR', 'MF', 'HU', '9H', 'ZH', 'JD', 'OQ', 'G5', 'QW', 'HO'],
-        total: [500, 257, 256, 255, 245, 479, 252, 251, 250, 325, 185, 175, 225, 155, 145],
-        delay: [14, 15, 16, 17, 18, 2, 5, 3, 7, 6, 3, 5, 4, 3, 2, 4, 3, 2],
+        company: ['MC', 'CA', 'CZ', 'SC', '3U', 'JR', 'MF', 'HU', '9H', 'ZH', 'JD', 'OQ', 'G5', 'QW', 'HO', 'MC', 'CA', 'CZ', 'SC', '3U', 'JR', 'MF', 'HU', '9H', 'ZH', 'JD', 'OQ', 'G5', 'QW', 'HO'],
+        total: [500, 257, 256, 255, 245, 479, 252, 251, 250, 325, 185, 175, 225, 155, 145, 500, 257, 256, 255, 245, 479, 252, 251, 250, 325, 185, 175, 225, 155, 145],
+        delay: [14, 15, 16, 17, 18, 2, 5, 3, 7, 6, 3, 5, 4, 3, 2, 4, 3, 2, 14, 15, 16, 17, 18, 2, 5, 3, 7, 6, 3, 5, 4, 3, 2, 4, 3, 2],
         rate: [],
         runRate: ['12%', '12%', '12%', '12%', '12%', '12%', '12%', '12%', '12%', '12%', '12%', '12%', '12%', '12%', '12%']
       },
@@ -49,7 +49,7 @@ export default {
           left: 0,
           right: 0,
           top: 60,
-          bottom: 30,
+          bottom: 50,
           containLabel: true
         },
         toolbox: {
@@ -111,9 +111,10 @@ export default {
         },
         yAxis: [
           {
-            name: '航班放行架次',
+            name: '架次',
             min: 0,
             max: 'dataMax',
+            nameLocation: 'start',
             splitLine: {
               lineStyle: {
                 color: 'rgba(60, 166, 200, 0.3)'
@@ -130,15 +131,22 @@ export default {
               color: '#7a939e',
               fontSize: 18, // this.fontSizeRs,
               fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
+              // formatter: function (value) {
+              //   // x轴文字的改为竖版展示
+              //   let str = value.split('')
+              //   return str.join('\n')
+              // }
             },
             nameTextStyle: {
               color: '#fff'
             }
           },
           {
-            name: '放行正常率',
+            name: '百分比',
             min: 'dataMin',
-            max: 'dataMax',
+            max: '100',
+            nameLocation: 'start',
+            padding: [0, 0, 0, 55],
             splitLine: {
               lineStyle: {
                 color: 'rgba(60, 166, 200, 0.8)'
@@ -165,14 +173,14 @@ export default {
           type: 'inside',
           filterMode: 'empty',
           startValue: 0,
-          endValue: 20
+          endValue: 30
         }],
         series: [
           {
             name: '航班放行架次',
             type: 'line',
             yAxisIndex: 0,
-            barCategoryGap: '50%',
+            barCategoryGap: '35%',
             itemStyle: {
               normal: {
                 color: 'rgba(60, 166, 200, 1)'
@@ -218,7 +226,7 @@ export default {
             name: '放行正常率',
             type: 'bar',
             yAxisIndex: 1,
-            barCategoryGap: '80%',
+            barCategoryGap: '45%',
             itemStyle: {
               normal: {
                 color: 'rgba(8, 167, 130, 1)'
@@ -275,7 +283,7 @@ export default {
       let table = `
         <div class="echarts-view">
           <div class="close el-dialog__headerbtn">
-            <i class="el-dialog__close el-icon el-icon-close"></i>
+            <i class="el-dialog__close el-icon el-icon-close" onclick="documentElement.getElementsByClassName('echarts-view')[0].parentElement.parentElement.style.display = 'none'"></i>
           </div>
           <div class="header">
             <table class="echarts-table" border="1" cellpadding="0" cellspacing="0">

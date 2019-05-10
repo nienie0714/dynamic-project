@@ -30,6 +30,7 @@ export default {
           bottom: 0,
           inactiveColor: 'rgba(122, 147, 158, 0.6)',
           itemGap: 20,
+          selectedMode: false,
           textStyle: {
             color: '#7a939e',
             fontSize: 14, // this.fontSizeRs,
@@ -41,7 +42,7 @@ export default {
           left: 0,
           right: 0,
           top: 60,
-          bottom: 30,
+          bottom: 50,
           containLabel: true
         },
         toolbox: {
@@ -92,9 +93,10 @@ export default {
           axisLabel: {
             show: true,
             interval: 0,
+            rotate: -45,
             margin: 15,
             color: '#fff',
-            fontSize: 0, // this.fontSizeRs,
+            fontSize: 16, // this.fontSizeRs,
             fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
           },
           axisTick: {
@@ -201,7 +203,7 @@ export default {
       let table = `
         <div class="echarts-view">
           <div class="close el-dialog__headerbtn">
-            <i class="el-dialog__close el-icon el-icon-close"></i>
+            <i class="el-dialog__close el-icon el-icon-close" onclick="documentElement.getElementsByClassName('echarts-view')[0].parentElement.parentElement.style.display = 'none'"></i>
           </div>
           <div class="header">
             <table class="echarts-table" border="1" cellpadding="0" cellspacing="0">
