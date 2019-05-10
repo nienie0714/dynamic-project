@@ -229,7 +229,7 @@ export default {
             barCategoryGap: '45%',
             itemStyle: {
               normal: {
-                color: 'rgba(8, 167, 130, 1)'
+                color: 'rgba(8, 167, 130, 0.8)'
               }
             },
             label: {
