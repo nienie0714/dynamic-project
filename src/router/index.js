@@ -171,9 +171,9 @@ var router = new Router({
               component: r => require.ensure([], () => r(require('@/view/situation/otherstat/ReleaseNormalView'), 'ReleaseNormalView'))
             },
             {
-              path: 'relDelay',
+              path: 'relDelayD',
               name: '出港航班放行延误率',
-              component: r => require.ensure([], () => r(require('@/view/situation/otherstat/ReleaseDelayView'), 'ReleaseDelayView'))
+              component: r => require.ensure([], () => r(require('@/view/situation/otherstat/ReleaseDelayDView'), 'ReleaseDelayDView'))
             },
             {
               path: 'cityDelay',
@@ -191,9 +191,9 @@ var router = new Router({
               component: r => require.ensure([], () => r(require('@/view/situation/otherstat/PlanOutView'), 'PlanOutView'))
             },
             {
-              path: 'inDelay',
+              path: 'relDelayA',
               name: '进港航班延误情况',
-              component: r => require.ensure([], () => r(require('@/view/situation/otherstat/InDelayView'), 'InDelayView'))
+              component: r => require.ensure([], () => r(require('@/view/situation/otherstat/ReleaseDelayAView'), 'ReleaseDelayAView'))
             },
             {
               path: 'hourTakeOffDown',

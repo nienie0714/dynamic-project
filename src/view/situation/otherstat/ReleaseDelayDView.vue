@@ -59,7 +59,7 @@ export default {
           feature: {
             dataView: {
               title: '转换表格',
-              readOnly: true,
+              readOnly: false,
               backgroundColor: 'transparent',
               textareaColor: 'rgba(8, 25, 38, 1)',
               textareaBorderColor: 'rgba(60, 166, 200, 0.7)',
