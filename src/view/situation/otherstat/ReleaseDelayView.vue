@@ -241,67 +241,28 @@ export default {
     }
   },
   methods: {
-    queryDataReq () {
-      this.barOptions.xAxis.data = this.data.flights
-      this.barOptions.series[0].data = this.data.total
-      this.barOptions.series[1].data = this.data.delay
+    queryDataReq (status) {
+      if (status) {
+        this.barOptions.series[0].data = [14, 13, 11, 10, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 16, 15, 14, 14, 16, 15, 2, 4, 3]
+      } else {
+        this.barOptions.xAxis.data = this.data.flights
+        this.barOptions.series[0].data = this.data.total
+        this.barOptions.series[1].data = this.data.delay
+      }
       this.updateView()
     },
     updateView () {
+      if (this.delayBar) {
+        this.delayBar.clear()
+      }
       this.delayBar.setOption(this.barOptions, true)
+      this.delayBar.on('legendToggleSelect', (params) => {
+        debugger
+      })
     }
   }
 }
 </script>
-
-<style>
-.echarts-view {
-  width: 100%;
-  height: 100%;
-  color: #fff;
-  overflow: hidden;
-  background-color: rgba(8, 25, 38, 1);
-  border: 1px solid rgba(60, 166, 200, 0.7);
-  box-shadow: 0 0 50px rgba(60, 166, 200, 0.4) inset;
-  border-radius: 10px;
-  box-sizing: border-box;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-.echarts-view>.close {
-  position: absolute;
-  top: 0;
-  right: 10px;
-  cursor: pointer;
-}
-.echarts-view>.header {
-  padding-right: 8px;
-  height: fit-content;
-  flex-grow: 0;
-}
-.echarts-view>.body {
-  width: 100%;
-  padding-right: 8px;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  flex-grow: 1;
-}
-.echarts-view table {
-  table-layout : fixed;
-  text-align: center;
-  margin: auto;
-  height: fit-content;
-  border-color: rgba(60, 166, 200, 0.4);
-}
-.echarts-view table:last-child {
-  margin-top: -2px;
-}
-.echarts-view td {
-  padding: 5px 0;
-}
-</style>
 
 <style scoped>
 .other-stat>div,

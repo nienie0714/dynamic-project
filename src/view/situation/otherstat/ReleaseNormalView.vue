@@ -24,41 +24,49 @@ export default {
           text: '航班放行正常率',
           x: 'center',
           y: 'top',
-          textAlign: 'center',
+          textAlign: 'left',
           textStyle: {
             color: '#fff',
             fontWeight: 'normal',
-            fontSize: 18,
+            fontSize: 20, // this.fontSizeSt,
             fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
           }
         },
         legend: {
-          show: true,
-          bottom: 10,
+          x: 'center',
+          bottom: 0,
           inactiveColor: 'rgba(122, 147, 158, 0.6)',
+          itemGap: 20,
           textStyle: {
             color: '#7a939e',
             fontSize: 14, // this.fontSizeRs,
+            lineHeight: 14,
             fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
           }
         },
         grid: {
-          left: 50,
-          right: 50,
-          top: 50,
-          bottom: 50,
+          left: 0,
+          right: 0,
+          top: 60,
+          bottom: 30,
           containLabel: true
         },
         toolbox: {
-          top: 0,
-          right: '5%',
-          itemSize: 20,
+          right: 20,
+          itemSize: 18, // this.fontSizeRs,
           iconStyle: {
             borderColor: '#7a939e'
           },
           feature: {
             dataView: {
+              title: '转换表格',
               readOnly: true,
+              backgroundColor: 'transparent',
+              textareaColor: 'rgba(8, 25, 38, 1)',
+              textareaBorderColor: 'rgba(60, 166, 200, 0.7)',
+              textColor: '#fff',
+              lang: ['', '关闭'],
+              buttonColor: 'rgba(60, 166, 200, 0.4)',
               optionToContent: this.optionToContent
             },
             restore: {},
@@ -74,8 +82,9 @@ export default {
             box-shadow: 0 0 30px rgba(60, 166, 200, 0.4) inset, 0 8px 20px rgba(6, 13, 20, 0.9);
             border-radius: 8px;`,
           axisPointer: {
-            lineStyle: {
-              color: 'rgba(60,166,200,0.7)'
+            type: 'shadow',
+            shadowStyle: {
+              color: 'rgba(60,166,200,0.2)'
             }
           }
         },
@@ -99,11 +108,10 @@ export default {
             show: false,
             alignWithLabel: true
           },
-          z: 10,
           data: []
         },
         yAxis: {
-          // min: 'dataMin',
+          min: '0',
           max: '100',
           splitLine: {
             lineStyle: {
@@ -126,54 +134,36 @@ export default {
         dataZoom: [{
           type: 'inside',
           filterMode: 'empty',
-          startValue: -24,
-          end: 100
+          startValue: 0,
+          endValue: 20
         }],
         series: [
           {
             name: '航班放行正常率',
             type: 'bar',
-            symbol: 'circle',
-            symbolSize: 8,
-            smooth: true,
-            connectNulls: true,
             barCategoryGap: '50%',
             itemStyle: {
               normal: {
-                color: 'rgb(3, 167, 134)'
+                color: 'rgba(60, 166, 200, 0.8)'
               }
             },
-            lineStyle: {
-              opacity: 0
+            label: {
+              show: true,
+              position: 'insideTop',
+              distance: 15
             },
-            areaStyle: {
-              normal: {
-                color: {
-                  type: 'linear',
-                  x: 0,
-                  y: 0,
-                  x2: 0,
-                  y2: 1,
-                  colorStops: [{
-                    offset: 0, color: 'rgba(3, 167, 134, 0.8)'
-                  }, {
-                    offset: 0.5, color: 'rgba(3, 167, 134, 0.5)'
-                  }, {
-                    offset: 1, color: 'rgba(3, 167, 134, 0.1)'
-                  }]
-                }
+            markLine: {
+              symbol: ['arrow', 'arrow'],
+              symbolSize: 10,
+              symbolOffset: [0, -2],
+              data: [
+                {type: 'max', name: '最大值', label: {position: 'end'}}
+              ],
+              lineStyle: {
+                color: 'rgba(60, 166, 200, 0.3)'
               }
             },
-            tooltip: {
-              formatter: '{c}',
-              backgroundColor: 'rgb(3, 167, 134)',
-              textStyle: {
-                fontSize: 0, // this.fontSizeRs,
-                fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
-              }
-            },
-            data: [],
-            animation: false
+            data: []
           }
         ]
       },
@@ -190,9 +180,13 @@ export default {
   mounted () {
     this.normalBarEl = document.getElementById('normalBar')
     this.normalBar = this.$echarts.init(this.normalBarEl)
-    this.$nextTick(() => {
-      this.normalBar.resize()
-    })
+
+    this.queryDataReq()
+    window.onresize = () => {
+      this.$nextTick(() => {
+        this.normalBar.resize()
+      })
+    }
   },
   created () {
     this.queryDataReq()
@@ -215,23 +209,38 @@ export default {
       this.normalBar.setOption(this.normalBarOption, true)
     },
     optionToContent (opt) {
-      var axisData = opt.xAxis[0].data
-      var series = opt.series
-      var table = '<table style="width:100%;text-align:center"><tbody><tr>' +
-                  '<td>日期</td>' +
-                  '<td>放行架次</td>' +
-                  '<td>放行延误架次</td>' +
-                  '<td>' + series[0].name + '</td>' +
-                  '</tr>'
-      for (var i = 0, l = axisData.length; i < l; i++) {
-          table += '<tr>' +
-                  '<td>' + axisData[i] + '</td>' +
-                  '<td>' + this.data.total[i] + '</td>' +
-                  '<td>' + this.data.delay[i] + '</td>' +
-                  '<td>' + series[0].data[i] + '</td>' +
-                  '</tr>'
+      let axisData = opt.xAxis[0].data
+      let series = opt.series
+      let table = `
+        <div class="echarts-view">
+          <div class="close el-dialog__headerbtn">
+            <i class="el-dialog__close el-icon el-icon-close"></i>
+          </div>
+          <div class="header">
+            <table class="echarts-table" border="1" cellpadding="0" cellspacing="0">
+              <tbody>
+                <tr>
+                  <td style="width: 180px;">日期</td>
+                  <td style="width: 180px;">放行架次</td>
+                  <td style="width: 180px;">放行延误架次</td>
+                  <td style="width: 200px;">出港航班放行正常率（%）</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="body">
+            <table class="echarts-table" border="1" cellpadding="0" cellspacing="0">
+              <tbody>`
+      for (let i = 0, l = axisData.length; i < l; i++) {
+        table += `
+          <tr>
+            <td style="width: 180px;">${axisData[i]}</td>
+            <td style="width: 180px;">${this.data.total[i]}</td>
+            <td style="width: 180px;">${this.data.delay[i]}</td>
+            <td style="width: 200px;">${series[0].data[i]}</td>
+          </tr>`
       }
-      table += '</tbody></table>'
+      table += '</tbody></table></div></div>'
       return table
     },
     switchTime (time) {
@@ -259,6 +268,7 @@ export default {
   position: relative;
 }
 .bar-wrapper>.bar {
+  width: 100%;
   height: 100%;
 }
 .tool-bar {
