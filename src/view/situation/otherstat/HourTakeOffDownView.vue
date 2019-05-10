@@ -137,7 +137,7 @@ export default {
             margin: 50,
             verticalAlign: 'bottom',
             align: 'center',
-            rotate: -90,
+            rotate: 90,
             color: '#fff',
             fontSize: 16, // this.fontSizeRs,
             fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
