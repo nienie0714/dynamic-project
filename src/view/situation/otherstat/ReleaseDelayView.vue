@@ -66,13 +66,13 @@ export default {
               textColor: '#fff',
               lang: ['', '关闭'],
               buttonColor: 'rgba(60, 166, 200, 0.4)',
-              optionToContent: (opt) => {
+              optionToContent: function (opt) {
                 let axisData = opt.xAxis[0].data
                 let series = opt.series
                 let table = `
                   <div class="echarts-view">
                     <div class="close el-dialog__headerbtn">
-                      <i class="el-dialog__close el-icon el-icon-close"></i>
+                      <i class="el-dialog__close el-icon el-icon-close" onclick="documentElement.getElementsByClassName('echarts-view')[0].parentElement.parentElement.style.display = 'none'"></i>
                     </div>
                     <div class="header">
                       <table class="echarts-table" border="1" cellpadding="0" cellspacing="0">
@@ -256,9 +256,6 @@ export default {
         this.delayBar.clear()
       }
       this.delayBar.setOption(this.barOptions, true)
-      this.delayBar.on('legendToggleSelect', (params) => {
-        debugger
-      })
     }
   }
 }
