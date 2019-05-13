@@ -111,37 +111,6 @@ export default {
         },
         yAxis: [
           {
-            name: '架次',
-            min: 0,
-            max: 'dataMax',
-            nameLocation: 'start',
-            splitLine: {
-              lineStyle: {
-                color: 'rgba(60, 166, 200, 0.3)'
-              }
-            },
-            axisLine: {
-              show: false
-            },
-            axisTick: {
-              show: false
-            },
-            axisLabel: {
-              margin: 15,
-              color: '#7a939e',
-              fontSize: 18, // this.fontSizeRs,
-              fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
-              // formatter: function (value) {
-              //   // x轴文字的改为竖版展示
-              //   let str = value.split('')
-              //   return str.join('\n')
-              // }
-            },
-            nameTextStyle: {
-              color: '#fff'
-            }
-          },
-          {
             name: '百分比',
             min: 'dataMin',
             max: '100',
@@ -167,6 +136,35 @@ export default {
             nameTextStyle: {
               color: '#fff'
             }
+          },
+          {
+            name: '架次',
+            min: 0,
+            max: 'dataMax',
+            nameLocation: 'start',
+            splitLine: {
+              show: false
+            },
+            axisLine: {
+              show: false
+            },
+            axisTick: {
+              show: false
+            },
+            axisLabel: {
+              margin: 15,
+              color: '#7a939e',
+              fontSize: 18, // this.fontSizeRs,
+              fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
+              // formatter: function (value) {
+              //   // x轴文字的改为竖版展示
+              //   let str = value.split('')
+              //   return str.join('\n')
+              // }
+            },
+            nameTextStyle: {
+              color: '#fff'
+            }
           }
         ],
         dataZoom: [{
@@ -179,7 +177,7 @@ export default {
           {
             name: '航班放行架次',
             type: 'line',
-            yAxisIndex: 0,
+            yAxisIndex: 1,
             barCategoryGap: '35%',
             itemStyle: {
               normal: {
@@ -225,7 +223,7 @@ export default {
           {
             name: '放行正常率',
             type: 'bar',
-            yAxisIndex: 1,
+            yAxisIndex: 0,
             barCategoryGap: '45%',
             itemStyle: {
               normal: {
@@ -291,7 +289,7 @@ export default {
                 <tr>
                   <td style="width: 180px;">航空公司</td>
                   <td style="width: 180px;">航班放行架次</td>
-                  <td style="width: 180px;">航班放行正常率</td>
+                  <td style="width: 180px;">航班放行正常率（%）</td>
                   <td style="width: 200px;">航班放行延误架次</td>
                   <td style="width: 200px;">运营出港航班占比（%）</td>
                 </tr>

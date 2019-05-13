@@ -211,8 +211,8 @@ export default {
                 <tr>
                   <td style="width: 180px;">航班目的地城市</td>
                   <td style="width: 180px;">执飞架次</td>
-                  <td style="width: 180px;">放行延误航班架次</td>
                   <td style="width: 200px;">城市放行正常率（%）</td>
+                  <td style="width: 180px;">放行延误航班架次</td>
                 </tr>
               </tbody>
             </table>
@@ -225,8 +225,8 @@ export default {
           <tr>
             <td style="width: 180px;">${axisData[i]}</td>
             <td style="width: 180px;">${this.data.total[i]}</td>
-            <td style="width: 180px;">${this.data.delay[i]}</td>
             <td style="width: 200px;">${series[0].data[i]}</td>
+            <td style="width: 180px;">${this.data.delay[i]}</td>
           </tr>`
       }
       table += '</tbody></table></div></div>'
