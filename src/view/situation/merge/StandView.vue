@@ -183,29 +183,93 @@ export default {
       pecBase: 50,
       data: {
         nData: {
-          B: {},
-          C: {},
-          D: {},
-          E: {},
-          L: {},
-          Y: {},
-          H: {},
-          I: {}
+          B: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          },
+          C: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          },
+          D: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          },
+          E: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          },
+          L: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          },
+          Y: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+            },
+          H: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+            },
+          I: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          }
         },
         pData: {
-          B: {},
-          C: {},
-          D: {},
-          E: {},
-          L: {},
-          Y: {},
-          H: {},
-          I: {}
+          B: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          },
+          C: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          },
+          D: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          },
+          E: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          },
+          L: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          },
+          Y: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+            },
+          H: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+            },
+          I: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          }
         },
-        nUsed: 0,
-        nFree: 0,
-        pUsed: 0,
-        pFree: 0
+        nUsed: '--',
+        nFree: '--',
+        pUsed: '--',
+        pFree: '--'
       }
     }
   },
@@ -235,29 +299,135 @@ export default {
       let that = this
       queryAllStat(this.queryUrl).then(res => {
         if (res.data.code == 0) {
-          // data.pData.I.usedNum
-          for (let k in res.data.data.pData) {
-            for (let j in that.data.pData) {
-              if (k == j) {
-                that.data.pData[j] = res.data.data.pData[k]
+          if (JSON.stringify(res.data.data) == '{}') {
+            this.restore()
+          } else {
+            for (let k in res.data.data.pData) {
+              for (let j in that.data.pData) {
+                if (k == j) {
+                  if (res.data.data.pData[k] != null) {
+                    that.data.pData[j] = res.data.data.pData[k]
+                  } else {
+                    that.data.pData[j] = '--'
+                  }
+                }
               }
             }
-          }
-          for (let k in res.data.data.nData) {
-            for (let j in that.data.nData) {
-              if (k == j) {
-                that.data.nData[j] = res.data.data.nData[k]
+            for (let k in res.data.data.nData) {
+              for (let j in that.data.nData) {
+                if (k == j) {
+                  if (res.data.data.nData[k] != null) {
+                    that.data.nData[j] = res.data.data.nData[k]
+                  } else {
+                    that.data.nData[j] = '--'
+                  }
+                }
               }
             }
+            that.data.nUsed = res.data.data.nUsed
+            that.data.nFree = res.data.data.nFree
+            that.data.pUsed = res.data.data.pUsed
+            that.data.pFree = res.data.data.pFree
+            that.updateOption()
           }
-          that.data.nUsed = res.data.data.nUsed
-          that.data.nFree = res.data.data.nFree
-          that.data.pUsed = res.data.data.pUsed
-          that.data.pFree = res.data.data.pFree
-
-          that.updateOption()
+        } else {
+          this.restore()
         }
+      }).catch(() => {
+        this.restore()
       })
+    },
+    restore () {
+      this.data = {
+        nData: {
+          B: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          },
+          C: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          },
+          D: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          },
+          E: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          },
+          L: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          },
+          Y: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+            },
+          H: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+            },
+          I: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          }
+        },
+        pData: {
+          B: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          },
+          C: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          },
+          D: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          },
+          E: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          },
+          L: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          },
+          Y: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+            },
+          H: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+            },
+          I: {
+            'usedNum': '--',
+            'freeNum': '--',
+            'totalNum': '--'
+          }
+        },
+        nUsed: '--',
+        nFree: '--',
+        pUsed: '--',
+        pFree: '--'
+      }
     },
     resizeMeth () {
       let outOpts2 = {
@@ -272,6 +442,15 @@ export default {
       this.oneCircle.resize(inOpts2)
     },
     updateOption () {
+      if (this.data.nFree == '--' || this.data.nFree == null) {
+        this.data.nFree = 0
+      }
+      if (this.data.nUsed == '--' || this.data.nUsed == null) {
+        this.data.nUsed = 0
+      }
+      if (this.data.pUsed == '--' || this.data.pUsed == null) {
+        this.data.pUsed = 0
+      }
       let outOptions = {
         tooltip: {
           trigger: 'item',

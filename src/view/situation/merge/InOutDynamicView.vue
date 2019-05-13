@@ -236,8 +236,49 @@ export default {
             borderColor: '#7a939e'
           },
           feature: {
-            dataView: {readOnly: true},
-            // magicType: {type: ['bar']},
+            dataView: {
+              title: '转换表格',
+              readOnly: true,
+              backgroundColor: 'transparent',
+              textareaColor: 'rgba(8, 25, 38, 1)',
+              textareaBorderColor: 'rgba(60, 166, 200, 0.7)',
+              textColor: '#fff',
+              lang: ['', '关闭'],
+              buttonColor: 'rgba(60, 166, 200, 0.4)',
+              optionToContent: function (opt) {
+                let axisData = opt.xAxis[0].data
+                let series = opt.series
+                let table = `
+                  <div class="echarts-view">
+                    <div class="close el-dialog__headerbtn">
+                      <i class="el-dialog__close el-icon el-icon-close" onclick="documentElement.getElementsByClassName('echarts-view')[0].parentElement.parentElement.style.display = 'none'"></i>
+                    </div>
+                    <div class="header">
+                      <table class="echarts-table" border="1" cellpadding="0" cellspacing="0">
+                        <tbody>
+                          <tr>
+                            <td style="width: 180px;">统计</td>
+                            <td style="width: 180px;">${series[0].name}</td>
+                            <td style="width: 180px;">${series[1].name}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                    <div class="body">
+                      <table class="echarts-table" border="1" cellpadding="0" cellspacing="0">
+                        <tbody>`
+                for (let i = 0, l = axisData.length; i < l; i++) {
+                  table += `
+                    <tr>
+                      <td style="width: 180px;">${axisData[i]}</td>
+                      <td style="width: 180px;">${series[0].data[i]}</td>
+                      <td style="width: 180px;">${series[1].data[i]}</td>
+                    </tr>`
+                }
+                table += '</tbody></table></div></div>'
+                return table
+              }
+            },
             restore: {},
             saveAsImage: {}
           }
