@@ -23,7 +23,7 @@
                 <div class="stand-icon bg-b"></div>
                 <div>类机位</div>
               </div>
-              <div class="num-rd font-white">{{data.nData.B.freeNum }} / {{data.nData.B.usedNum }}</div>
+              <div class="num-rd font-white">{{data.nData.B.freeNum }}<span class="font-gray"> / {{data.nData.B.usedNum }}</span></div>
               <div>
                 <progrs :type="'line'" :percentage="parseInt((data.nData.B.usedNum)/(data.nData.B.totalNum)*100) || 0" :width="132" color="#03A786"></progrs>
               </div>
@@ -33,7 +33,7 @@
                 <div class="stand-icon bg-c"></div>
                 <div>类机位</div>
               </div>
-              <div class="num-rd font-white">{{data.nData.C.freeNum }} / {{data.nData.C.usedNum }}</div>
+              <div class="num-rd font-white">{{data.nData.C.freeNum }}<span class="font-gray"> / {{data.nData.C.usedNum }}</span></div>
               <div>
                 <progrs :type="'line'" :percentage="parseInt((data.nData.C.usedNum)/(data.nData.C.totalNum)*100) || 0" :width="132" color="#03A786"></progrs>
               </div>
@@ -43,7 +43,7 @@
                 <div class="stand-icon bg-d"></div>
                 <div>类机位</div>
               </div>
-              <div class="num-rd font-white">{{data.nData.D.freeNum }} / {{data.nData.D.usedNum }}</div>
+              <div class="num-rd font-white">{{data.nData.D.freeNum }}<span class="font-gray"> / {{data.nData.D.usedNum }}</span></div>
               <div>
                 <progrs :type="'line'" :percentage="parseInt((data.nData.D.usedNum)/(data.nData.D.totalNum)*100) || 0" :width="132" color="#03A786"></progrs>
               </div>
@@ -53,7 +53,7 @@
                 <div class="stand-icon bg-e"></div>
                 <div>类机位</div>
               </div>
-              <div class="num-rd font-white">{{data.nData.E.freeNum }} / {{data.nData.E.usedNum }}</div>
+              <div class="num-rd font-white">{{data.nData.E.freeNum }}<span class="font-gray"> / {{data.nData.E.usedNum }}</span></div>
               <div>
                 <progrs :type="'line'" :percentage="parseInt((data.nData.E.usedNum)/(data.nData.E.totalNum)*100) || 0" :width="132" color="#03A786"></progrs>
               </div>
@@ -62,28 +62,28 @@
           <div class="stand-row">
             <div>
               <div class="font-rd font-gray">廊桥位</div>
-              <div class="num-rd font-white">{{data.nData.L.freeNum }} / {{data.nData.L.usedNum }}</div>
+              <div class="num-rd font-white">{{data.nData.L.freeNum }}<span class="font-gray"> / {{data.nData.L.usedNum }}</span></div>
               <div>
                 <progrs :type="'line'" :percentage="parseInt((data.nData.L.usedNum)/(data.nData.L.totalNum)*100) || 0" :width="132" color="#03A786"></progrs>
               </div>
             </div>
             <div>
               <div class="font-rd font-gray">远机位</div>
-              <div class="num-rd font-white">{{data.nData.Y.freeNum }} / {{data.nData.Y.usedNum }}</div>
+              <div class="num-rd font-white">{{data.nData.Y.freeNum }}<span class="font-gray"> / {{data.nData.Y.usedNum }}</span></div>
               <div>
                 <progrs :type="'line'" :percentage="parseInt((data.nData.Y.usedNum)/(data.nData.Y.totalNum)*100) || 0" :width="132" color="#03A786"></progrs>
               </div>
             </div>
             <div>
               <div class="font-rd font-gray">货运位</div>
-              <div class="num-rd font-white">{{data.nData.H.freeNum }} / {{data.nData.H.usedNum }}</div>
+              <div class="num-rd font-white">{{data.nData.H.freeNum }}<span class="font-gray"> / {{data.nData.H.usedNum }}</span></div>
               <div>
                 <progrs :type="'line'" :percentage="parseInt((data.nData.H.usedNum)/(data.nData.H.totalNum)*100) || 0" :width="132" color="#03A786"></progrs>
               </div>
             </div>
             <div>
               <div class="font-rd font-gray">除冰位</div>
-              <div class="num-rd font-white">{{data.nData.I.freeNum }} / {{data.nData.I.usedNum }}</div>
+              <div class="num-rd font-white">{{data.nData.I.freeNum }}<span class="font-gray"> / {{data.nData.I.usedNum }}</span></div>
               <div>
                 <progrs :type="'line'" :percentage="parseInt((data.nData.I.usedNum)/(data.nData.I.totalNum)*100) || 0" :width="132" color="#03A786"></progrs>
               </div>
