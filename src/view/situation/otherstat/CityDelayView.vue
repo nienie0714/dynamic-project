@@ -106,8 +106,11 @@ export default {
           data: []
         },
         yAxis: {
+          name: '正常率',
           min: '0',
           max: '100',
+          nameLocation: 'start',
+          padding: [0, 0, 0, 55],
           splitLine: {
             lineStyle: {
               color: 'rgba(60, 166, 200, 0.3)'
@@ -122,8 +125,11 @@ export default {
           axisLabel: {
             margin: 15,
             color: '#7a939e',
-            fontSize: 18,
+            fontSize: 18, // this.fontSizeRs,
             fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
+          },
+          nameTextStyle: {
+            color: '#7a939e'
           }
         },
         dataZoom: [{

@@ -15,7 +15,7 @@ export default {
       data: {
         company: ['MC', 'CA', 'CZ', 'SC', '3U', 'JR', 'MF', 'HU', '9H', 'ZH', 'JD', 'OQ', 'G5', 'QW', 'HO', 'MC', 'CA', 'CZ', 'SC', '3U', 'JR', 'MF', 'HU', '9H', 'ZH', 'JD', 'OQ', 'G5', 'QW', 'HO'],
         total: [500, 257, 256, 255, 245, 479, 252, 251, 250, 325, 185, 175, 225, 155, 145, 500, 257, 256, 255, 245, 479, 252, 251, 250, 325, 185, 175, 225, 155, 145],
-        delay: [14, 15, 16, 17, 18, 2, 5, 3, 7, 6, 3, 5, 4, 3, 2, 4, 3, 2, 14, 15, 16, 17, 18, 2, 5, 3, 7, 6, 3, 5, 4, 3, 2, 4, 3, 2],
+        delay: [16, 15, 16, 17, 18, 2, 5, 3, 7, 6, 3, 5, 4, 3, 2, 4, 3, 2, 14, 15, 16, 17, 18, 2, 5, 3, 7, 6, 3, 5, 4, 3, 2, 4, 3, 2],
         rate: [],
         runRate: ['12%', '12%', '12%', '12%', '12%', '12%', '12%', '12%', '12%', '12%', '12%', '12%', '12%', '12%', '12%']
       },
@@ -112,13 +112,13 @@ export default {
         yAxis: [
           {
             name: '百分比',
-            min: 'dataMin',
+            min: '0',
             max: '100',
             nameLocation: 'start',
             padding: [0, 0, 0, 55],
             splitLine: {
               lineStyle: {
-                color: 'rgba(60, 166, 200, 0.8)'
+                color: 'rgba(60, 166, 200, 0.3)'
               }
             },
             axisLine: {
@@ -134,7 +134,7 @@ export default {
               fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
             },
             nameTextStyle: {
-              color: '#fff'
+              color: '#7a939e'
             }
           },
           {
@@ -163,7 +163,7 @@ export default {
               // }
             },
             nameTextStyle: {
-              color: '#fff'
+              color: '#7a939e'
             }
           }
         ],
@@ -270,6 +270,9 @@ export default {
           let rateData = (((that.data.total[i] - that.data.delay[i]) / that.data.total[i]) * 100).toFixed(2)
           that.data.rate.push(rateData)
         }
+        that.barOptions.yAxis[0].min = Math.min(...that.data.rate) - Math.min(...that.data.rate) % 10 - 5
+        that.barOptions.yAxis[0].min = that.barOptions.yAxis[0].min > 0 ? that.barOptions.yAxis[0].min : 0
+        // that.barOptions.yAxis[0].splitNumber = (that.barOptions.yAxis[0].max - that.barOptions.yAxis[0].min) / 5
         that.barOptions.series[1].data = that.data.rate
         that.updateView()
       }, 100)

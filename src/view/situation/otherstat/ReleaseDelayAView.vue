@@ -145,8 +145,11 @@ export default {
           data: []
         },
         yAxis: {
+          name: '架次',
           min: 0,
           max: 'dataMax',
+          nameLocation: 'start',
+          padding: [0, 0, 0, 55],
           splitLine: {
             lineStyle: {
               color: 'rgba(60, 166, 200, 0.3)'
@@ -163,6 +166,9 @@ export default {
             color: '#7a939e',
             fontSize: 18, // this.fontSizeRs,
             fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
+          },
+          nameTextStyle: {
+            color: '#7a939e'
           }
         },
         dataZoom: [{
