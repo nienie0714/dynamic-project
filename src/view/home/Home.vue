@@ -1,7 +1,15 @@
 <template>
   <div class="body-view">
     <el-container direction="vertical" ref="homeBodyViewContainer">
-      <div class="home-return-main-img" @click="returnMainPage()"></div>
+      <div class="home-return-main-img" @click="returnMainPage()" v-if="!isMergeView"></div>
+      <!-- 态势时钟 -->
+      <div class="merge-time-wrapper"  v-if="isMergeView">
+        <div class="merge-date">
+          <div class="time-rs font-blue">{{latestDate.split('/')[0]}}/{{latestDate.split('/')[1]}}/{{latestDate.split('/')[2]}}</div>
+          <div class="time-rs font-blue">星期{{latestWeek}}</div>
+        </div>
+        <div class="merge-time time-st font-blue">20:18</div>
+      </div>
       <header-view @select="handleHeaderMenu"></header-view>
       <el-main :class="((routerViewName!='航班查询')&&(routerViewName!='任务调度')&&(routerViewName!='态势分析'))?'home-top-main':''"><!-- ((routerViewName!='态势分析')?'merge-top-main':'') -->
         <el-container class="home-container-cent">
@@ -21,8 +29,10 @@
 <script>
 import AsideMenuView from './AsideMenuView'
 import HeaderView from './HeaderView'
+import baseMixin from '@/components/mixin/baseMixin'
 
 export default {
+  mixins: [baseMixin],
   components: {
     AsideMenuView,
     HeaderView
@@ -32,11 +42,13 @@ export default {
       basicPath: '',
       // 命名视图名称
       routerViewName: this.$route.name,
-      homeRouterData: []
+      homeRouterData: [],
+      isMergeView: false
     }
   },
   created () {
     this.basicPath = this.$route.matched[0].path
+    this.isMergeView = this.basicPath == '/situation'
     this.homeRouterData = this.$store.getters.getHomeRouterData
   },
   methods: {
@@ -90,5 +102,25 @@ export default {
   background-image: url(../../assets/img/btn_home.png);
   z-index: 99;
   cursor: pointer;
+}
+.merge-time-wrapper {
+  margin-top: 15px;
+  margin-right: 20px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+}
+.merge-date {
+  margin-right: 15px;
+}
+.merge-date > div {
+  text-align: right;
+}
+.time-st {
+  font-size: 42px;
+}
+.time-rs {
+  font-size: 19px;
 }
 </style>

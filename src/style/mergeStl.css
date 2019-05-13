@@ -35,6 +35,9 @@
 .font-red {
   color: #ff6959;
 }
+.font-blue {
+  color: #6CDEFF;
+}
 .num-st, .num-nd {
   font-weight: bold;
 }
