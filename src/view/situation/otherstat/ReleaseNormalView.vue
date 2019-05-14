@@ -5,12 +5,14 @@
       <!-- <el-button type="primary" icon="el-icon-search" @click="switchTime('year')">年</el-button>
       <el-button type="primary" icon="el-icon-search" @click="switchTime('month')">月</el-button>
       <el-button type="primary" icon="el-icon-search" @click="switchTime('day')">日</el-button> -->
-      <el-col :span="4">
-        <el-radio-group v-model="time.data" size="small" @change="radioChange">
+      <el-col :span="4" style="margin-right: 20px">
+        <el-radio-group v-model="time.type" size="small" @change="radioChange">
           <el-radio-button label="year">年度</el-radio-button>
           <el-radio-button label="month">月度</el-radio-button>
-          <!-- <el-radio-button label="day">日</el-radio-button> -->
         </el-radio-group>
+      </el-col>
+      <el-col :span="4">
+        <el-date-picker v-model="time.statDate" type="date" placeholder="请选择日期" :editable="false" :clearable="true" :default-value="time.statDate" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
       </el-col>
     </div>
   </div>
@@ -25,13 +27,16 @@
 <script>
 import baseMixin from '@/components/mixin/baseMixin'
 import { exportPDF } from '@/util/util.js'
+import { queryAllStat } from '@/api/base'
 
 export default {
   mixins: [baseMixin],
   data () {
     return {
+      queryUrl: '/basicdata/flightInOutStat/queryFlightReleaseStat',
       time: {
-        data: 'year'
+        type: 'year',
+        statDate: ''
       },
       normalBarEl: null,
       normalBar: null,
@@ -193,9 +198,7 @@ export default {
         ]
       },
       data: {
-        day: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16'],
-        month: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-        year: ['2019-1', '2019-2', '2019-3', '2019-4', '2019-5', '2019-6', '2019-7', '2019-8', '2019-1', '2019-2', '2019-3', '2019-4', '2019-5', '2019-6', '2019-7', '2019-8'],
+        unit: ['2019-1', '2019-2', '2019-3', '2019-4', '2019-5', '2019-6', '2019-7', '2019-8', '2019-1', '2019-2', '2019-3', '2019-4', '2019-5', '2019-6', '2019-7', '2019-8'],
         total: [28, 31, 28, 29, 31, 31, 30, 18, 28, 31, 28, 29, 31, 31, 30, 18],
         delay: [21, 21, 12, 12, 11, 11, 9, 7, 21, 21, 12, 12, 11, 11, 9, 7],
         rate: []
@@ -206,29 +209,44 @@ export default {
     this.normalBarEl = document.getElementById('normalBar')
     this.normalBar = this.$echarts.init(this.normalBarEl)
 
-    this.queryDataReq()
     window.onresize = () => {
       this.$nextTick(() => {
         this.normalBar.resize()
       })
     }
   },
-  created () {
-    this.queryDataReq()
-  },
   methods: {
     queryDataReq () {
       let that = this
-      setTimeout(() => {
-        that.normalBarOption.xAxis.data = that.data.year
-        for (let i = 0; i < that.data.total.length; i++) {
-          let rateData = (((that.data.total[i] - that.data.delay[i]) / that.data.total[i]) * 100).toFixed(2)
-          that.data.rate.push(rateData)
+      queryAllStat(this.queryUrl, this.time).then(res => {
+        if (res.data.code == 0) {
+          that.normalBarOption.xAxis.data = res.data.data.unit
+          that.data.unit = res.data.data.unit
+          that.data.total = res.data.data.total
+          that.data.delay = res.data.data.delay
+          for (let i = 0; i < that.data.total.length; i++) {
+            let rateData = (((that.data.total[i] - that.data.delay[i]) / that.data.total[i]) * 100).toFixed(2)
+            that.data.rate.push(rateData)
+          }
+          that.normalBarOption.series[0].data = that.data.rate
+          that.setLastUpdateTime()
+          that.updateView()
+        } else {
+          this.restore()
+          that.updateView()
         }
-        that.normalBarOption.series[0].data = that.data.rate
-        that.setLastUpdateTime()
-        that.updateView()
-      }, 100)
+      }).catch(() => {
+        this.restore()
+          that.updateView()
+      })
+    },
+    restore () {
+      this.data = {
+        unit: [],
+        total: [],
+        delay: [],
+        rate: []
+      }
     },
     updateView () {
       this.normalBar.clear()
@@ -270,13 +288,7 @@ export default {
       return table
     },
     radioChange () {
-      if (this.time.data == 'year') {
-        this.normalBarOption.xAxis.data = this.data.year
-      } else if (this.time.data == 'month') {
-        this.normalBarOption.xAxis.data = this.data.month
-      } else if (this.time.data == 'day') {
-        this.normalBarOption.xAxis.data = this.data.day
-      }
+      this.queryDataReq()
       this.updateView()
     },
     exportBefore () {
@@ -284,6 +296,19 @@ export default {
       let arrs = [this.data.year, this.data.total, this.data.delay, this.data.rate]
       let widths = [80, 110, 110, 200]
       exportPDF(this.normalBar, titles, arrs, widths, this.normalBarOption.title.text)
+    }
+  },
+  watch: {
+    latestDate: {
+      handler (value) {
+        this.time.statDate = value.replace(/\//g, '-')
+      },
+      immediate: false
+    },
+    'time.statDate': {
+      handler (value) {
+        this.queryDataReq()
+      }
     }
   }
 }
