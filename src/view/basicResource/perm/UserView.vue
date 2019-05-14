@@ -119,6 +119,17 @@ export default {
           inputText: '员工',
           getOptions: '/organization/employee/queryAll',
           span: 4
+        }, {
+          // 'p': '部门',
+          key: 'deptId',
+          value: null,
+          type: 'select',
+          filterable: true,
+          optKey: 'deptId',
+          optLabel: 'deptName',
+          inputText: '部门',
+          getOptions: '/organization/department/queryAll',
+          span: 4
         }
       ],
       // 列表设置
