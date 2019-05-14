@@ -49,8 +49,9 @@ export function flattenDeep (arr, tmpArr, pNode) {
   }
 }
 
-export function exportPDF (echarts, titles, arrs, widths, groupSize) {
+export function exportPDF (echarts, titles, arrs, widths, fileName, groupSize) {
   groupSize = groupSize || 24
+  fileName = fileName || '统计数据导出'
   // a4纸的尺寸[595.28,841.89]
   let opts = {
     type: 'png',
@@ -97,7 +98,7 @@ export function exportPDF (echarts, titles, arrs, widths, groupSize) {
       if (x < datas.length - 1) {
         doc.addPage('a4', 'p')
       } else {
-        doc.save('test.pdf')
+        doc.save(fileName + '.pdf')
       }
     })
   })
