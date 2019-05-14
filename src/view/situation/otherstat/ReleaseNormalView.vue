@@ -166,8 +166,7 @@ export default {
             },
             label: {
               show: true,
-              position: 'insideTop',
-              distance: 15
+              position: 'top'
             },
             markLine: {
               symbol: ['arrow', 'arrow'],
