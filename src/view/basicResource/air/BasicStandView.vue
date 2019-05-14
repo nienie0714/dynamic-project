@@ -74,8 +74,23 @@ export default {
           {key: 'isUseable', label: '是否可用', type: 'tabs', tabsKey: 'isYOrN'},
           /* {key: 'nouseSTime', label: '机位开始时间', type: 'input'},
           {key: 'nouseETime', label: '机位结束时间', type: 'input'}, */
-          {key: 'sortkey', label: '排序码', type: 'input'},
           {key: 'azimuth', label: '方向角/度', type: 'input'},
+          {
+            key: 'reserved1',
+            label: '机位分类',
+            type: 'checkbox',
+            filterable: true,
+            class: 'auto-width',
+            itemKey: 'key',
+            itemLabel: 'value',
+            options: [
+              {key: 1, value: '廊桥位'},
+              {key: 2, value: '远机位'},
+              {key: 3, value: '货运位'},
+              {key: 4, value: '除冰位'}
+            ]
+          },
+          {key: 'sortkey', label: '排序码', type: 'input'},
           {key: 'remark', label: '备注', type: 'textarea', autosize: true, maxlength: 100}
         ],
         rules: {
@@ -119,6 +134,9 @@ export default {
           ],
           azimuth: [
             {validator: degreePos, trigger: 'blur'}
+          ],
+          reserved1: [
+            {required: true, message: '必填项', trigger: 'change'}
           ]
         }
       },
@@ -211,6 +229,45 @@ export default {
     }
   },
   methods: {
+    // 编辑
+    handleEdit (row) {
+      for (let i = 0; i < this.formData.formData.length; i++) {
+        if (this.formData.formData[i].type == 'dateRangePicker') {
+          let data = {}
+          this.$set(data, this.formData.formData[i].key1, null)
+          this.$set(data, this.formData.formData[i].key2, null)
+          this.$set(this.formData.formData[i], 'value', data)
+          this.formData.formData[i].value[this.formData.formData[i].key1] = row[this.formData.formData[i].key1]
+          this.formData.formData[i].value[this.formData.formData[i].key2] = row[this.formData.formData[i].key2]
+        } else {
+          if (this.formData.formData[i].key == 'reserved1') {
+            let tmp = []
+            if (row[this.formData.formData[i].key]) {
+              tmp = row[this.formData.formData[i].key].split('')
+            }
+            let arr = []
+            tmp.forEach((value, index) => {
+              if (value == '1') {
+                arr.push(index + 1)
+              }
+            })
+            this.$set(this.formData.formData[i], 'value', arr)
+          } else {
+            this.$set(this.formData.formData[i], 'value', row[this.formData.formData[i].key])
+          }
+        }
+      }
+      this.formData.title = '编辑'
+      this.formData.visible = true
+    },
+    customSaveBefore (data) {
+      let strArr = [0, 0, 0, 0]
+      data['reserved1'].forEach(value => {
+        strArr[value - 1] = 1
+      })
+      data['reserved1'] = strArr.join('')
+      return data
+    },
     // 列表选中事件
     tableChange (data) {
       if (data.currentRow) {

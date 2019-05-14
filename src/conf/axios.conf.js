@@ -28,16 +28,18 @@ function request (request) {
   if (request.url != 'auth') {
     request.headers.Authorization = localStorage.getItem('token')
   }
-  removePending(request)
-  request.cancelToken = new CancelToken((c) => {
-    pending.push({
-      url: request.url,
-      method: request.method,
-      data: request.data,
-      f: c
+  if (request.url != '/') {
+    removePending(request)
+    request.cancelToken = new CancelToken((c) => {
+      pending.push({
+        url: request.url,
+        method: request.method,
+        data: request.data,
+        f: c
+      })
+        // u: request.url + '&' + request.method + '&' + request.data, f: c})
     })
-      // u: request.url + '&' + request.method + '&' + request.data, f: c})
-  })
+  }
   return request
 }
 
@@ -60,11 +62,13 @@ function requestError (error) {
 }
 
 function response (response) {
-  removePending({
-    url: response.config.url,
-    method: response.config.method,
-    data: response.config.data
-  })
+  if (response.config.url != '/') {
+    removePending({
+      url: response.config.url,
+      method: response.config.method,
+      data: response.config.data
+    })
+  }
   if (response.data.code == -1 && response.data.msg == 'diffToken') {
     router.push({path: '/'})
     return Promise.reject(response.data.msg)
