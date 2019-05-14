@@ -140,7 +140,6 @@ export default {
           min: '0',
           max: '100',
           nameLocation: 'start',
-          padding: [0, 0, 0, 55],
           splitLine: {
             lineStyle: {
               color: 'rgba(60, 166, 200, 0.3)'
@@ -159,6 +158,7 @@ export default {
             fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
           },
           nameTextStyle: {
+            padding: [0, 0, 0, -55],
             color: '#7a939e'
           }
         },
@@ -219,6 +219,7 @@ export default {
     queryDataReq () {
       let that = this
       queryAllStat(this.queryUrl, this.time).then(res => {
+        this.restore()
         if (res.data.code == 0) {
           that.normalBarOption.xAxis.data = res.data.data.unit
           that.data.unit = res.data.data.unit
@@ -232,7 +233,6 @@ export default {
           that.setLastUpdateTime()
           that.updateView()
         } else {
-          this.restore()
           that.updateView()
         }
       }).catch(() => {

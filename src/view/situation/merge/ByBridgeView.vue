@@ -373,16 +373,20 @@ export default {
         var color = null
         if (that.fltRate / 100 >= that.pecBase) {
           color = [[that.fltRate, '#3da6cc'], [1, '#2e434c']]
-        } else {
+        } else if (that.fltRate / 100 < that.pecBase) {
           color = [[that.fltRate, '#FDCF53'], [1, '#2e434c']]
+        } else {
+          color = [[1, '#7a939e']]
         }
         that.bybridgeFltRateOption.series[0].axisLine.lineStyle.color = color
         that.bybridgeFltRateOption.series[0].data[0].value = that.fltRate
         that.bybridgeFltRate.setOption(that.bybridgeFltRateOption, true)
         if (that.pasRate / 100 >= that.pecBase) {
           color = [[that.pasRate, '#3da6cc'], [1, '#2e434c']]
-        } else {
+        } else if (that.pasRate / 100 < that.pecBase) {
           color = [[that.pasRate, '#FDCF53'], [1, '#2e434c']]
+        } else {
+           color = [[1, '#7a939e']]
         }
         // 3da6cc 蓝色  FDCF53 黄色
         that.bybridgePasRateOption.series[0].axisLine.lineStyle.color = color

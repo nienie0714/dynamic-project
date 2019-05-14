@@ -178,6 +178,7 @@ export default {
             fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
           },
           nameTextStyle: {
+            padding: [0, 0, 0, -40],
             color: '#7a939e'
           }
         },
