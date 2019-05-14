@@ -7,6 +7,8 @@
 </template>
 
 <script>
+import { exportPDF } from '@/util/util.js'
+
 export default {
   data () {
     return {
@@ -15,7 +17,8 @@ export default {
       data: {
         flights: ['CA1257', 'HO1335', 'CZ6961', 'JR1517', 'CZ6963', 'SC8752', 'MU2872', 'CZ6118', 'MF8614', 'CZ1786', 'CZ3270', 'ZH9232', 'JD5394', '3U8027', 'MU5692', 'JD5394A', '3U8027A', 'MU5692A', 'JD5394B', '3U8027B', 'MU5692B', 'JD5394C', '3U8027C', 'MU5692C'],
         total: [28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 16, 15, 14, 14, 16, 15, 2, 4, 3],
-        delay: [14, 15, 16, 17, 18, 2, 5, 3, 7, 6, 3, 5, 4, 3, 2, 4, 3, 2, 2, 4, 3, 2, 4, 3]
+        delay: [14, 15, 16, 17, 18, 2, 5, 3, 7, 6, 3, 5, 4, 3, 2, 4, 3, 2, 2, 4, 3, 2, 4, 3],
+        rate: []
       },
       barOptions: {
         title: {
@@ -104,7 +107,12 @@ export default {
             },
             // magicType: {type: ['bar']},
             restore: {},
-            saveAsImage: {}
+            mySavePDF: {
+              show: true,
+              title: '导出pdf',
+              icon: 'path://M4.7,22.9L29.3,45.5L54.7,23.4M4.6,43.6L4.6,58L53.8,58L53.8,43.6M29.2,45.1L29.2,0',
+              onclick: this.exportBefore
+            }
           }
         },
         tooltip: {
@@ -255,6 +263,11 @@ export default {
         this.barOptions.xAxis.data = this.data.flights
         this.barOptions.series[0].data = this.data.total
         this.barOptions.series[1].data = this.data.delay
+        this.barOptions.title.text = '3月进港延误的重点保障航班'
+        this.data.flights.forEach((item, i) => {
+          let rateData = Math.floor((this.data.total[i] - this.data.delay[i]) / this.data.total[i] * 10000) / 100
+          this.data.rate.push(rateData >= 0 ? rateData : '-')
+        })
       }
       this.updateView()
     },
@@ -266,6 +279,12 @@ export default {
       this.delayBar.on('legendToggleSelect', (params) => {
         debugger
       })
+    },
+    exportBefore () {
+      let titles = ['进港航班', '航班进港架次', '进港延误架次', '进港航班放行正常率（%）']
+      let arrs = [this.data.flights, this.data.total, this.data.delay, this.data.rate]
+      let widths = [80, 110, 110, 200]
+      exportPDF(this.delayBar, titles, arrs, widths, this.barOptions.title.text)
     }
   }
 }

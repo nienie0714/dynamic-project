@@ -7,6 +7,8 @@
 </template>
 
 <script>
+import { exportPDF } from '@/util/util.js'
+
 export default {
   data () {
     return {
@@ -72,7 +74,12 @@ export default {
             },
             // magicType: {type: ['bar']},
             restore: {},
-            saveAsImage: {}
+            mySavePDF: {
+              show: true,
+              title: '导出pdf',
+              icon: 'path://M4.7,22.9L29.3,45.5L54.7,23.4M4.6,43.6L4.6,58L53.8,58L53.8,43.6M29.2,45.1L29.2,0',
+              onclick: this.exportBefore
+            }
           }
         },
         tooltip: {
@@ -323,6 +330,12 @@ export default {
       this.companyBar.on('legendToggleSelect', (params) => {
         debugger
       })
+    },
+    exportBefore () {
+      let titles = ['航空公司', '航班放行架次', '航班放行正常率（%）', '航班放行延误架次', '运营出港航班占比（%）']
+      let arrs = [this.data.company, this.data.total, this.data.rate, this.data.delay, this.data.runRate]
+      let widths = [100, 100, 100, 100, 100]
+      exportPDF(this.companyBar, titles, arrs, widths, this.barOptions.title.text, 22)
     }
   }
 }

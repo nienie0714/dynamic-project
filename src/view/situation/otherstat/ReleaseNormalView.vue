@@ -7,9 +7,9 @@
       <el-button type="primary" icon="el-icon-search" @click="switchTime('day')">日</el-button> -->
       <el-col :span="4">
         <el-radio-group v-model="time.data" size="small" @change="radioChange">
-          <el-radio-button label="year">年</el-radio-button>
-          <el-radio-button label="month">月</el-radio-button>
-          <el-radio-button label="day">日</el-radio-button>
+          <el-radio-button label="year">年度</el-radio-button>
+          <el-radio-button label="month">月度</el-radio-button>
+          <!-- <el-radio-button label="day">日</el-radio-button> -->
         </el-radio-group>
       </el-col>
     </div>
@@ -23,6 +23,8 @@
 </template>
 
 <script>
+import { exportPDF } from '@/util/util.js'
+
 export default {
   data () {
     return {
@@ -83,7 +85,12 @@ export default {
               optionToContent: this.optionToContent
             },
             restore: {},
-            saveAsImage: {}
+            mySavePDF: {
+              show: true,
+              title: '导出pdf',
+              icon: 'path://M4.7,22.9L29.3,45.5L54.7,23.4M4.6,43.6L4.6,58L53.8,58L53.8,43.6M29.2,45.1L29.2,0',
+              onclick: this.exportBefore
+            }
           }
         },
         tooltip: {
@@ -268,6 +275,12 @@ export default {
         this.normalBarOption.xAxis.data = this.data.day
       }
       this.updateView()
+    },
+    exportBefore () {
+      let titles = ['日期', '放行架次', '放行延误架次', '出港航班放行正常率（%）']
+      let arrs = [this.data.year, this.data.total, this.data.delay, this.data.rate]
+      let widths = [80, 110, 110, 200]
+      exportPDF(this.normalBar, titles, arrs, widths, this.normalBarOption.title.text)
     }
   }
 }

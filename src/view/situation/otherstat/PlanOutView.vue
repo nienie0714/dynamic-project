@@ -7,6 +7,8 @@
 </template>
 
 <script>
+import { exportPDF } from '@/util/util.js'
+
 export default {
   data () {
     return {
@@ -16,6 +18,7 @@ export default {
         time: ['0:00', '0:30', '1:00', '1:30', '2:00', '2:30', '3:00', '3:30', '4:00', '4:30', '5:00', '5:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30'],
         total: [28, 27, 26, 25, 18, 23, 22, 21, 17, 19, 18, 17, 16, 15, 14, 16, 15, 14, 14, 16, 28, 27, 26, 25, 24, 28, 27, 26, 25, 18, 23, 22, 21, 17, 19, 18, 17, 16, 15, 14, 16, 15, 14, 14, 16, 28, 27, 26, 25, 24],
         delay: [14, 15, 16, 17, 18, 2, 5, 3, 7, 6, 3, 5, 4, 3, 2, 4, 3, 2, 2, 4, 14, 15, 16, 17, 18, 2, 14, 15, 16, 17, 18, 2, 5, 3, 7, 6, 3, 5, 4, 3, 2, 4, 3, 2, 2, 4, 14, 15, 16, 17, 18, 2],
+        fly: [],
         rate: []
       },
       barOptions: {
@@ -71,7 +74,12 @@ export default {
             },
             // magicType: {type: ['bar']},
             restore: {},
-            saveAsImage: {}
+            mySavePDF: {
+              show: true,
+              title: '导出pdf',
+              icon: 'path://M4.7,22.9L29.3,45.5L54.7,23.4M4.6,43.6L4.6,58L53.8,58L53.8,43.6M29.2,45.1L29.2,0',
+              onclick: this.exportBefore
+            }
           }
         },
         tooltip: {
@@ -228,6 +236,9 @@ export default {
         for (let i = 0; i < this.data.total.length; i++) {
           let rateData = (((this.data.total[i] - this.data.delay[i]) / this.data.total[i]) * 100).toFixed(2)
           this.data.rate.push(rateData)
+
+          let flyData = this.data.total[i] - this.data.delay[i]
+          this.data.fly.push(flyData >= 0 ? flyData : '-')
         }
       }
       this.updateView()
@@ -253,7 +264,7 @@ export default {
                   <td style="width: 200px;">计划离港时间</td>
                   <td style="width: 200px;">航班执飞架次（已飞）</td>
                   <td style="width: 200px;">放行延误架次</td>
-                  <td style="width: 200px;">航班放行正常率</td>
+                  <td style="width: 200px;">航班放行正常率（%）</td>
                 </tr>
               </tbody>
             </table>
@@ -272,6 +283,14 @@ export default {
       }
       table += '</tbody></table></div></div>'
       return table
+    },
+    exportBefore () {
+      let titles = ['计划离港时间', '航班执飞架次（已飞）', '放行延误架次', '航班放行正常率（%）']
+      let flyNum = this.data.total - this.data.delay
+
+      let arrs = [this.data.time, this.data.fly, this.data.delay, this.data.rate]
+      let widths = [130, 150, 115, 115]
+      exportPDF(this.delayBar, titles, arrs, widths, this.barOptions.title.text, 22)
     }
   }
 }
