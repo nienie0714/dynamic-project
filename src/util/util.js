@@ -1,3 +1,6 @@
+import JsPDF from 'jspdf'
+import _ from 'lodash'
+
 export function compareNum (prop) {
   return function (obj1, obj2) {
     var val1 = obj1[prop]
@@ -44,4 +47,58 @@ export function flattenDeep (arr, tmpArr, pNode) {
       tmpArr.push(obj)
     }
   }
+}
+
+export function exportPDF (echarts, titles, arrs, widths, groupSize) {
+  groupSize = groupSize || 24
+  // a4纸的尺寸[595.28,841.89]
+  let opts = {
+    type: 'png',
+    backgroundColor: 'rgba(8, 29, 45, 0.96)',
+    excludeComponents: ['toolbox']
+  }
+  let img = echarts.getConnectedDataURL(opts)
+  var doc = new JsPDF({
+    orientation: 'l',
+    width: 595,
+    height: 842
+  })
+  doc.addImage(img, 'png', 12, 30, 273, 150)
+  doc.addPage('a4', 'p')
+  let tmpFlts = JSON.parse(JSON.stringify(arrs[0]))
+  tmpFlts.unshift(titles[0])
+  let datas = _.chunk(tmpFlts, groupSize)
+  let element = []
+  datas.forEach((data, x) => {
+    element.push(document.createElement('div'))
+    element[x].className = 'export-view'
+  })
+  datas.forEach((data, x) => {
+    let html = `
+    <table class="echarts-table" border="1" cellpadding="0" cellspacing="0">
+      <tbody>`
+    let index = x * groupSize - 1
+    data.forEach((item, i) => {
+      html += `<tr>`
+      titles.forEach((title, j) => {
+        html += `<td style="width: ${widths[j]}px;">${!x && !i ? titles[j] : arrs[j][index + i]}</td>`
+      })
+      html += `</tr>`
+    })
+    html += `
+      </tbody>
+    </table>`
+    element[x].insertAdjacentHTML('beforeend', html)
+    document.body.appendChild(element[x])
+    var options = {
+        pagesplit: false // 不分页
+    }
+    doc.addHTML(element[x], 12, 15, options, function () {
+      if (x < datas.length - 1) {
+        doc.addPage('a4', 'p')
+      } else {
+        doc.save('test.pdf')
+      }
+    })
+  })
 }

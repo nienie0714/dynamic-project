@@ -19,6 +19,7 @@
     "element-ui": "2.4.6",
     "jquery": "^3.3.1",
     "jsdom": "^13.1.0",
+    "jspdf": "^1.5.3",
     "location": "0.0.1",
     "lodash": "^4.17.10",
     "navigator": "^1.0.1",

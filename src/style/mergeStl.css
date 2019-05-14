@@ -332,20 +332,33 @@
   }
 }
 /* 其他态势统计模块 */
+.other-stat>div {
+  position: relative;
+}
+.export-view {
+  position: absolute;
+  width: fit-content;
+  height: fit-content;
+  z-index: -1;
+  /* display: none; */
+}
+.export-view,
 .echarts-view {
-  width: 100%;
-  height: 100%;
   color: #fff;
-  overflow: hidden;
   background-color: rgba(8, 25, 38, 1);
-  border: 1px solid rgba(60, 166, 200, 0.7);
-  box-shadow: 0 0 50px rgba(60, 166, 200, 0.4) inset;
-  border-radius: 10px;
   box-sizing: border-box;
   padding: 20px;
   display: flex;
   flex-direction: column;
   position: relative;
+}
+.echarts-view {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(60, 166, 200, 0.7);
+  box-shadow: 0 0 50px rgba(60, 166, 200, 0.4) inset;
+  border-radius: 10px;
 }
 .echarts-view>.toolbar {
   position: absolute;
@@ -384,6 +397,10 @@
   overflow-y: scroll;
   flex-grow: 1;
 }
+.export-view {
+  margin: 12px;
+}
+.export-view table,
 .echarts-view table {
   table-layout : fixed;
   text-align: center;
@@ -394,6 +411,7 @@
 .echarts-view table:last-child {
   margin-top: -2px;
 }
+.export-view td,
 .echarts-view td {
   padding: 5px 0;
 }

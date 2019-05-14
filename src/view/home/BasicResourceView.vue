@@ -19,7 +19,7 @@
           </div>
         </div>
       </el-header>
-      <el-main>
+      <el-main style="overflow: hidden;">
         <div class="basic-resource-main">
           <router-view ref="basicRouter"></router-view><!--  v-if="$route.matched[0].path == $store.state.homeRouterData[0].path" -->
           <!-- <router-view v-else-if="$route.matched[0].path == $store.state.homeRouterData[1].path" ref="basicRouter"></router-view>

@@ -2,20 +2,23 @@
   <div class="other-stat">
     <div>
       <div id="delayBar" class="bar"></div>
+      <!-- <embed width="100%" height="100%" name="plugin" id="plugin" :src="src" type="application/pdf" internalinstanceid="117"> -->
     </div>
   </div>
 </template>
 
 <script>
+import { exportPDF } from '@/util/util.js'
+
 export default {
   data () {
     return {
       delayBarEl: null,
       delayBar: null,
       data: {
-        flights: ['CA1257', 'HO1335', 'CZ6961', 'JR1517', 'CZ6963', 'SC8752', 'MU2872', 'CZ6118', 'MF8614', 'CZ1786', 'CZ3270', 'ZH9232', 'JD5394', '3U8027', 'MU5692', 'JD5394A', '3U8027A', 'MU5692A', 'JD5394B', '3U8027B', 'MU5692B', 'JD5394C', '3U8027C', 'MU5692C'],
-        total: [28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 16, 15, 14, 14, 16, 15, 2, 4, 3],
-        delay: [14, 15, 16, 17, 18, 2, 5, 3, 7, 6, 3, 5, 4, 3, 2, 4, 3, 2, 2, 4, 3, 2, 4, 3]
+        flights: ['CA1257', 'HO1335', 'CZ6961', 'JR1517', 'CZ6963', 'SC8752', 'MU2872', 'CZ6118', 'MF8614', 'CZ1786', 'CZ3270', 'ZH9232', 'JD5394', '3U8027', 'MU5692', 'JD5394A', '3U8027A', 'MU5692A', 'JD5394B', '3U8027B', 'MU5692B', 'JD5394C', '3U8027C', 'MU5692C', 'test', 'CA1257'],
+        total: [28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 16, 15, 14, 14, 16, 15, 2, 4, 3, 0, 28],
+        delay: [14, 15, 16, 17, 18, 2, 5, 3, 7, 6, 3, 5, 4, 3, 2, 4, 3, 2, 2, 4, 3, 2, 4, 3, 0, 14]
       },
       barOptions: {
         title: {
@@ -104,7 +107,13 @@ export default {
             },
             // magicType: {type: ['bar']},
             restore: {},
-            saveAsImage: {}
+            saveAsImage: {},
+            mySavePDF: {
+              show: true,
+              title: '导出pdf',
+              icon: 'path://M30.9,53.2C16.8,53.2,5.3,41.7,5.3,27.6S16.8,2,30.9,2C45,2,56.4,13.5,56.4,27.6S45,53.2,30.9,53.2z M30.9,3.5C17.6,3.5,6.8,14.4,6.8,27.6c0,13.3,10.8,24.1,24.101,24.1C44.2,51.7,55,40.9,55,27.6C54.9,14.4,44.1,3.5,30.9,3.5z M36.9,35.8c0,0.601-0.4,1-0.9,1h-1.3c-0.5,0-0.9-0.399-0.9-1V19.5c0-0.6,0.4-1,0.9-1H36c0.5,0,0.9,0.4,0.9,1V35.8z M27.8,35.8 c0,0.601-0.4,1-0.9,1h-1.3c-0.5,0-0.9-0.399-0.9-1V19.5c0-0.6,0.4-1,0.9-1H27c0.5,0,0.9,0.4,0.9,1L27.8,35.8L27.8,35.8z',
+              onclick: this.exportBefore
+            }
           }
         },
         tooltip: {
@@ -244,6 +253,10 @@ export default {
     window.onresize = () => {
       this.$nextTick(() => {
         this.delayBar.resize()
+        let opts = {
+          type: 'png',
+          excludeComponents: ['toolbox']
+        }
       })
     }
   },
@@ -263,6 +276,17 @@ export default {
         this.delayBar.clear()
       }
       this.delayBar.setOption(this.barOptions, true)
+    },
+    exportBefore () {
+      let percs = []
+      this.data.flights.forEach((item, i) => {
+        let perc = Math.floor((this.data.total[i] - this.data.delay[i]) / this.data.total[i] * 10000) / 100
+        percs.push(perc >= 0 ? perc : '-')
+      })
+      let titles = ['出港航班', '航班离港架次', '放行延误架次', '出港航班放行正常率（%）']
+      let arrs = [this.data.flights, this.data.total, this.data.delay, percs]
+      let widths = [80, 110, 110, 200]
+      exportPDF(this.delayBar, titles, arrs, widths)
     }
   }
 }
