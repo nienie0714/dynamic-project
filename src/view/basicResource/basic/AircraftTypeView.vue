@@ -60,6 +60,7 @@ export default {
           {key: 'briefE', label: '英文简称', type: 'input', maxlength: 50},
           {key: 'nameE', label: '英文全称', type: 'input', maxlength: 50},
           {key: 'aircraftClassify', label: '机型分类', type: 'tabs', tabsKey: 'aircraftClassify'},
+          {key: 'reserved1', label: '是否靠桥', type: 'tabs', tabsKey: 'isYOrN'},
           {key: 'sortkey', label: '排序码', type: 'input'},
           {key: 'remark', label: '备注', type: 'textarea', autosize: true, maxlength: 100}
         ],
@@ -130,6 +131,7 @@ export default {
           {prop: 'aircraftIcao', label: 'ICAO码', fixed: true, hidden: false},
           {prop: 'aircraftIata', label: 'IATA码', fixed: false, hidden: false},
           {prop: 'aircraftClassify', label: '机型分类', fixed: false, hidden: false, optionKey: 'aircraftClassify'},
+          {prop: 'reserved1', label: '是否靠桥', fixed: false, hidden: false, optionKey: 'isYOrN'},
           {prop: 'briefC', label: '中文简称', fixed: false, hidden: false},
           {prop: 'briefE', label: '英文简称', fixed: false, hidden: false}
         ]
