@@ -70,6 +70,23 @@ export default {
         var date = this.newTime
         var dateStr = `${date.getFullYear()}-${this.addZero(date.getMonth() + 1)}-${this.addZero(date.getDate())}`
         return `${dateStr}`
+    },
+    setLastUpdateTime () {
+      var now = this.newTime
+      var hour = now.getHours()
+      var min = now.getMinutes()
+      var second = now.getSeconds()
+      if (hour < 10) {
+        hour = '0' + hour
+      }
+      if (min < 10) {
+        min = '0' + min
+      }
+      if (second < 10) {
+        second = '0' + second
+      }
+      var time = hour + ':' + min + ':' + second
+      this.$store.commit('setLastUpdateTime', time)
     }
   }
 }

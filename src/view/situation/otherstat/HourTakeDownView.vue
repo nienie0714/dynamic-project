@@ -7,9 +7,11 @@
 </template>
 
 <script>
+import baseMixin from '@/components/mixin/baseMixin'
 import { exportPDF } from '@/util/util.js'
 
 export default {
+  mixins: [baseMixin],
   data () {
     return {
       delayBarEl: null,
@@ -263,6 +265,7 @@ export default {
         this.barOptions.series[0].data = this.data.max
         this.barOptions.series[1].data = this.data.avg
       }
+      this.setLastUpdateTime()
       this.updateView()
     },
     updateView () {

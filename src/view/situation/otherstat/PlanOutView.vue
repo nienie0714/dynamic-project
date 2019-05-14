@@ -7,9 +7,11 @@
 </template>
 
 <script>
+import baseMixin from '@/components/mixin/baseMixin'
 import { exportPDF } from '@/util/util.js'
 
 export default {
+  mixins: [baseMixin],
   data () {
     return {
       delayBarEl: null,
@@ -241,6 +243,7 @@ export default {
           this.data.fly.push(flyData >= 0 ? flyData : '-')
         }
       }
+      this.setLastUpdateTime()
       this.updateView()
     },
     updateView () {

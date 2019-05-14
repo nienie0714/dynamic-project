@@ -7,9 +7,11 @@
 </template>
 
 <script>
+import baseMixin from '@/components/mixin/baseMixin'
 import { exportPDF } from '@/util/util.js'
 
 export default {
+  mixins: [baseMixin],
   data () {
     return {
       companyBarEl: null,
@@ -281,6 +283,7 @@ export default {
         that.barOptions.yAxis[0].min = that.barOptions.yAxis[0].min > 0 ? that.barOptions.yAxis[0].min : 0
         // that.barOptions.yAxis[0].splitNumber = (that.barOptions.yAxis[0].max - that.barOptions.yAxis[0].min) / 5
         that.barOptions.series[1].data = that.data.rate
+        that.setLastUpdateTime()
         that.updateView()
       }, 100)
       this.updateView()

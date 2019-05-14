@@ -80,25 +80,25 @@ export default {
         }
       })
     },
-    customAfterQuery () {
-    },
-    setLastUpdateTime () {
-      var now = this.newTime
-      var hour = now.getHours()
-      var min = now.getMinutes()
-      var second = now.getSeconds()
-      if (hour < 10) {
-        hour = '0' + hour
-      }
-      if (min < 10) {
-        min = '0' + min
-      }
-      if (second < 10) {
-        second = '0' + second
-      }
-      var time = hour + ':' + min + ':' + second
-      this.$store.commit('setLastUpdateTime', time)
-    }
+    customAfterQuery () {}
+    // },
+    // setLastUpdateTime () {
+    //   var now = this.newTime
+    //   var hour = now.getHours()
+    //   var min = now.getMinutes()
+    //   var second = now.getSeconds()
+    //   if (hour < 10) {
+    //     hour = '0' + hour
+    //   }
+    //   if (min < 10) {
+    //     min = '0' + min
+    //   }
+    //   if (second < 10) {
+    //     second = '0' + second
+    //   }
+    //   var time = hour + ':' + min + ':' + second
+    //   this.$store.commit('setLastUpdateTime', time)
+    // }
   }
 }
 </script>

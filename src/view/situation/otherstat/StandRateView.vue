@@ -7,9 +7,11 @@
 </template>
 
 <script>
+import baseMixin from '@/components/mixin/baseMixin'
 import { exportPDF } from '@/util/util.js'
 
 export default {
+  mixins: [baseMixin],
   data () {
     return {
       standBarEl: null,
@@ -206,6 +208,7 @@ export default {
           that.data.rate.push(rateData)
         }
         that.standBarOption.series[0].data = that.data.rate
+        that.setLastUpdateTime()
         that.updateView()
       }, 100)
     },

@@ -7,9 +7,11 @@
 </template>
 
 <script>
+import baseMixin from '@/components/mixin/baseMixin'
 import { exportPDF } from '@/util/util.js'
 
 export default {
+  mixins: [baseMixin],
   data () {
     return {
       delayBarEl: null,
@@ -269,6 +271,7 @@ export default {
           this.data.rate.push(rateData >= 0 ? rateData : '-')
         })
       }
+      this.setLastUpdateTime()
       this.updateView()
     },
     updateView () {
