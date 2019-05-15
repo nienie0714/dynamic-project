@@ -127,8 +127,8 @@ export default {
       }
       this.splitFltRate = ['--', '--']
       this.splitPasRate = ['--', '--']
-      this.fltRate = 1
-      this.pasRate = 1
+      this.fltRate = NaN
+      this.pasRate = NaN
       this.queryByBridge()
     },
     splitFloat (num) {

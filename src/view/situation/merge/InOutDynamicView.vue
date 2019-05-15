@@ -11,7 +11,7 @@
             <div id="outCircle" class="circle"></div>
             <div class="text">
               <div class="font-st font-white">出港计划</div>
-              <div class="num-st font-white">{{data.flightStatD.totalFlight || '--'}}</div>
+              <div class="num-st font-white">{{data.flightStatD.totalExecFlight || '--'}}</div>
             </div>
           </div>
           <div class="progress-info">
@@ -52,7 +52,7 @@
             <div id="inCircle" class="circle"></div>
             <div class="text">
               <div class="font-st font-white">进港计划</div>
-              <div class="num-st font-white">{{data.flightStatA.totalFlight || '--'}}</div>
+              <div class="num-st font-white">{{data.flightStatA.totalExecFlight || '--'}}</div>
             </div>
           </div>
           <div class="progress-info">
@@ -118,7 +118,7 @@ export default {
       queryUrl: '/basicdata/flightInOutStat/queryFlightStat',
       data: {
         flightStatD: {
-          totalFlight: '-',
+          totalExecFlight: '-',
           execFlight: '-',
           noExecFlight: '-',
           canFlight: '-',
@@ -126,7 +126,7 @@ export default {
           normalPec: 0
         },
         flightStatA: {
-          totalFlight: '-',
+          totalExecFlight: '-',
           execFlight: '-',
           noExecFlight: '-',
           canFlight: '-',
@@ -500,8 +500,8 @@ export default {
             if (res.data.data[key]) {
               for (let name in this.data[key]) {
                 if (name == 'normalPec') {
-                  if (res.data.data[key]['totalFlight'] && (res.data.data[key]['execFlight'] != null)) {
-                    this.$set(this.data[key], 'normalPec', Math.floor(res.data.data[key]['execFlight'] / res.data.data[key]['totalFlight'] * 100))
+                  if (res.data.data[key]['totalExecFlight'] && (res.data.data[key]['execFlight'] != null)) {
+                    this.$set(this.data[key], 'normalPec', Math.floor(res.data.data[key]['execFlight'] / res.data.data[key]['totalExecFlight'] * 100))
                   } else {
                     this.$set(this.data[key], 'normalPec', '--')
                   }
@@ -534,7 +534,7 @@ export default {
     restore () {
       this.data = {
         flightStatD: {
-          totalFlight: '-',
+          totalExecFlight: '-',
           execFlight: '-',
           noExecFlight: '-',
           canFlight: '-',
@@ -542,7 +542,7 @@ export default {
           normalPec: 0
         },
         flightStatA: {
-          totalFlight: '-',
+          totalExecFlight: '-',
           execFlight: '-',
           noExecFlight: '-',
           canFlight: '-',

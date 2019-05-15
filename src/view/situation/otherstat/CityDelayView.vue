@@ -1,7 +1,16 @@
 <template>
-  <div class="other-stat">
-    <div class="bar-wrapper">
-      <div id="cityBar" class="bar"></div>
+  <div class="div-wrapper">
+    <div class="tool-bar">
+      <div class="left-button">
+        <el-col :span="4">
+          <el-date-picker v-model="time.statDate" type="date" placeholder="请选择日期" :editable="false" :clearable="true" :default-value="time.statDate" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
+        </el-col>
+      </div>
+    </div>
+    <div class="other-stat">
+      <div class="bar-wrapper">
+        <div id="cityBar" class="bar"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -15,9 +24,8 @@ export default {
   mixins: [baseMixin],
   data () {
     return {
-      queryUrl: '/basicdata/flightInOutStat/queryFlightReleaseStat',
+      queryUrl: '/basicdata/flightInOutStat/queryCityReleaseStat',
       time: {
-        type: 'year',
         statDate: ''
       },
       cityBarEl: null,
@@ -194,7 +202,6 @@ export default {
   mounted () {
     this.cityBarEl = document.getElementById('cityBar')
     this.cityBar = this.$echarts.init(this.cityBarEl)
-    this.queryDataReq()
     window.onresize = () => {
       this.$nextTick(() => {
         this.cityBar.resize()
@@ -213,7 +220,7 @@ export default {
           let rateData = (((this.data.total[i] - this.data.delay[i]) / this.data.total[i]) * 100).toFixed(2)
           this.data.rate.push(rateData)
         }
-        this.normalBarOption.xAxis.data = this.data.city
+        this.cityBarOption.xAxis.data = this.data.city
         this.cityBarOption.series[0].data = this.data.rate
         this.setLastUpdateTime()
         this.updateView()
@@ -282,11 +289,34 @@ export default {
       let widths = [130, 115, 150, 115]
       exportPDF(this.cityBar, titles, arrs, widths, this.cityBarOption.title.text, 21)
     }
+  },
+  watch: {
+    latestDate: {
+      handler (value) {
+        this.time.statDate = value.replace(/\//g, '-')
+      },
+      immediate: false
+    },
+    'time.statDate': {
+      handler (value) {
+        this.queryDataReq()
+      }
+    }
   }
 }
 </script>
 
 <style scoped>
+.div-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.tool-bar {
+  margin-left: 20px;
+  height: 60px;
+}
 .other-stat>div,
 .bar {
   width: 100%;
@@ -294,7 +324,7 @@ export default {
 }
 .other-stat {
   width: calc(100% - 40px);
-  height: calc(100% - 40px);
+  height: calc(100% - 72px);
   padding: 20px;
 }
 </style>

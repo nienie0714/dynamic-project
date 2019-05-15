@@ -288,6 +288,8 @@ export default {
         } else {
           this.restore()
         }
+        let month = this.time.statDate.split('-')[1].replace(/\b(0+)/gi, '')
+        this.barOptions.title.text = month + '月放行延误主要航班'
         this.barOptions.xAxis.data = this.data.flights
         this.barOptions.series[0].data = this.data.total
         this.barOptions.series[1].data = this.data.delay

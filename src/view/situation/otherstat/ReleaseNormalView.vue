@@ -7,8 +7,8 @@
       <el-button type="primary" icon="el-icon-search" @click="switchTime('day')">日</el-button> -->
       <el-col :span="4" style="margin-right: 20px">
         <el-radio-group v-model="time.type" size="small" @change="radioChange">
-          <el-radio-button label="year">年度</el-radio-button>
           <el-radio-button label="month">月度</el-radio-button>
+          <el-radio-button label="year">年度</el-radio-button>
         </el-radio-group>
       </el-col>
       <el-col :span="4">
@@ -35,7 +35,7 @@ export default {
     return {
       queryUrl: '/basicdata/flightInOutStat/queryFlightReleaseStat',
       time: {
-        type: 'year',
+        type: 'month',
         statDate: ''
       },
       normalBarEl: null,
