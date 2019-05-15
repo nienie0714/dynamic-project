@@ -415,4 +415,26 @@
 .echarts-view td {
   padding: 5px 0;
 }
+.stat-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.stat-wrapper>.tool-bar {
+  padding-left: 32px;
+  padding-right: 12px;
+  height: 56px;
+  border-bottom: 1px solid rgba(60, 166, 200, 0.3);
+}
+.other-stat {
+  width: calc(100% - 40px);
+  flex-grow: 1;
+  padding: 20px;
+}
+.other-stat>div,
+.other-stat .stat-view {
+  width: 100%;
+  height: 100%;
+}
 /* 其他态势统计模块end */

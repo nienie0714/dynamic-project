@@ -1,7 +1,16 @@
 <template>
-  <div class="other-stat">
-    <div>
-      <div id="companyBar" class="bar"></div>
+  <div class="stat-wrapper">
+    <div class="tool-bar">
+      <div class="left-button">
+        <el-col :span="3">
+          <el-date-picker v-model="time.statDate" type="month" placeholder="请选择月份" :editable="false" :clearable="false" :default-value="time.statDate" value-format="yyyy-MM-dd"></el-date-picker>
+        </el-col>
+      </div>
+    </div>
+    <div class="other-stat">
+      <div>
+        <div id="companyBar" class="stat-view"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -15,10 +24,14 @@ export default {
   mixins: [baseMixin],
   data () {
     return {
+      queryUrl: '/basicdata/flightInOutStat/queryAirlineReleaseStat',
+      time: {
+        statDate: ''
+      },
       companyBarEl: null,
       companyBar: null,
       data: {
-        company: ['MC', 'CA', 'CZ', 'SC', '3U', 'JR', 'MF', 'HU', '9H', 'ZH', 'JD', 'OQ', 'G5', 'QW', 'HO', 'MC', 'CA', 'CZ', 'SC', '3U', 'JR', 'MF', 'HU', '9H', 'ZH', 'JD', 'OQ', 'G5', 'QW', 'HO'],
+        airline: ['MC', 'CA', 'CZ', 'SC', '3U', 'JR', 'MF', 'HU', '9H', 'ZH', 'JD', 'OQ', 'G5', 'QW', 'HO', 'MC', 'CA', 'CZ', 'SC', '3U', 'JR', 'MF', 'HU', '9H', 'ZH', 'JD', 'OQ', 'G5', 'QW', 'HO'],
         total: [500, 257, 256, 255, 245, 479, 252, 251, 250, 325, 185, 175, 225, 155, 145, 500, 257, 256, 255, 245, 479, 252, 251, 250, 325, 185, 175, 225, 155, 145],
         delay: [16, 15, 16, 17, 18, 2, 5, 3, 7, 6, 3, 5, 4, 3, 2, 4, 3, 2, 14, 15, 16, 17, 18, 2, 5, 3, 7, 6, 3, 5, 4, 3, 2, 4, 3, 2],
         rate: [],
@@ -51,11 +64,11 @@ export default {
           data: ['航班放行架次', '放行正常率']
         },
         grid: {
-          left: 0,
-          right: 0,
+          left: 60,
+          right: 50,
           top: 60,
-          bottom: 50,
-          containLabel: true
+          bottom: 70,
+          containLabel: false
         },
         toolbox: {
           right: 20,
@@ -198,7 +211,8 @@ export default {
             },
             label: {
               show: true,
-              position: 'insideTop',
+              position: 'top',
+              color: '#fff',
               distance: 15
             },
             lineStyle: {
@@ -215,7 +229,15 @@ export default {
                   colorStops: [{
                     offset: 0, color: 'rgba(60, 166, 200, 1)'
                   }, {
-                    offset: 0.5, color: 'rgba(60, 166, 200, 0.7)'
+                    offset: 0.8, color: 'rgba(60, 166, 200, 0.9)'
+                  }, {
+                    offset: 0.6, color: 'rgba(60, 166, 200, 0.7)'
+                  }, {
+                    offset: 0.4, color: 'rgba(60, 166, 200, 0.5)'
+                  }, {
+                    offset: 0.3, color: 'rgba(60, 166, 200, 0.4)'
+                  }, {
+                    offset: 0.2, color: 'rgba(60, 166, 200, 0.3)'
                   }, {
                     offset: 1, color: 'rgba(60, 166, 200, 0.1)'
                   }]
@@ -239,14 +261,15 @@ export default {
             barCategoryGap: '45%',
             itemStyle: {
               normal: {
-                color: 'rgba(8, 167, 130, 0.8)'
+                color: 'rgba(8, 167, 130, 0.6)'
               }
             },
             label: {
               show: true,
               position: 'top',
               distance: 15,
-              formatter: '{c}%'
+              formatter: '{c}%',
+              color: 'rgba(8, 167, 130, 1)'
             },
             tooltip: {
               formatter: '{c}',
@@ -265,7 +288,6 @@ export default {
   mounted () {
     this.companyBarEl = document.getElementById('companyBar')
     this.companyBar = this.$echarts.init(this.companyBarEl)
-    this.queryDataReq()
     window.onresize = () => {
       this.$nextTick(() => {
         this.companyBar.resize()
@@ -275,21 +297,45 @@ export default {
   methods: {
     queryDataReq (status) {
       let that = this
-      setTimeout(() => {
-        this.barOptions.xAxis.data = this.data.company
-        that.barOptions.series[0].data = this.data.total
-        for (let i = 0; i < that.data.total.length; i++) {
-          let rateData = (((that.data.total[i] - that.data.delay[i]) / that.data.total[i]) * 100).toFixed(2)
-          that.data.rate.push(rateData)
+      queryAllStat(this.queryUrl, this.time).then(res => {
+        if (res.data.code == 0) {
+          this.restore(res.data.data)
+        } else {
+          this.restore()
         }
-        that.barOptions.yAxis[0].min = Math.min(...that.data.rate) - Math.min(...that.data.rate) % 10 - 5
-        that.barOptions.yAxis[0].min = that.barOptions.yAxis[0].min > 0 ? that.barOptions.yAxis[0].min : 0
-        // that.barOptions.yAxis[0].splitNumber = (that.barOptions.yAxis[0].max - that.barOptions.yAxis[0].min) / 5
-        that.barOptions.series[1].data = that.data.rate
-        that.setLastUpdateTime()
-        that.updateView()
-      }, 100)
-      this.updateView()
+        this.barOptions.xAxis.data = this.data.airline
+        this.barOptions.series[0].data = this.data.total
+        for (let i = 0; i < this.data.total.length; i++) {
+          let rateData = (((this.data.total[i] - this.data.delay[i]) / this.data.total[i]) * 100).toFixed(2)
+          this.data.rate.push(rateData)
+        }
+        let month = this.time.statDate.split('-')[1].replace(/\b(0+)/gi, '')
+        this.barOptions.title.text = month + '月放行延误主要航班'
+        this.barOptions.yAxis[0].min = Math.min(...this.data.rate) - Math.min(...this.data.rate) % 10 - 5
+        this.barOptions.yAxis[0].min = this.barOptions.yAxis[0].min > 0 ? this.barOptions.yAxis[0].min : 0
+        // this.barOptions.yAxis[0].splitNumber = (this.barOptions.yAxis[0].max - this.barOptions.yAxis[0].min) / 5
+        this.barOptions.series[1].data = this.data.rate
+        this.setLastUpdateTime()
+        this.updateView()
+      }).catch(() => {
+        this.restore()
+        this.updateView()
+      })
+    },
+    restore (data) {
+      if (data) {
+        this.data.airline = data.airline || []
+        this.data.total = data.total || []
+        this.data.delay = data.delay || []
+        this.data.rate = []
+      } else {
+        this.data = {
+          airline: [],
+          total: [],
+          delay: [],
+          rate: []
+        }
+      }
     },
     optionToContent (opt) {
       let axisData = opt.xAxis[0].data
@@ -339,23 +385,26 @@ export default {
     },
     exportBefore () {
       let titles = ['航空公司', '航班放行架次', '航班放行正常率（%）', '航班放行延误架次', '运营出港航班占比（%）']
-      let arrs = [this.data.company, this.data.total, this.data.rate, this.data.delay, this.data.runRate]
+      let arrs = [this.data.airline, this.data.total, this.data.rate, this.data.delay, this.data.runRate]
       let widths = [100, 100, 100, 100, 100]
       exportPDF(this.companyBar, titles, arrs, widths, this.barOptions.title.text, 22)
+    }
+  },
+  watch: {
+    latestDate: {
+      handler (value) {
+        this.time.statDate = value.replace(/\//g, '-')
+      },
+      immediate: false
+    },
+    'time.statDate': {
+      handler (value) {
+        this.queryDataReq()
+      }
     }
   }
 }
 </script>
 
 <style scoped>
-.other-stat>div,
-.bar {
-  width: 100%;
-  height: 100%;
-}
-.other-stat {
-  width: calc(100% - 40px);
-  height: calc(100% - 40px);
-  padding: 20px;
-}
 </style>

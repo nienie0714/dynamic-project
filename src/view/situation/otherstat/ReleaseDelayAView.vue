@@ -1,7 +1,16 @@
 <template>
-  <div class="other-stat">
-    <div>
-      <div id="delayBar" class="bar"></div>
+  <div class="stat-wrapper">
+    <div class="tool-bar">
+      <div class="left-button">
+        <el-col :span="3">
+          <el-date-picker v-model="time.statDate" type="month" placeholder="请选择月份" :editable="false" :clearable="false" :default-value="time.statDate" value-format="yyyy-MM-dd"></el-date-picker>
+        </el-col>
+      </div>
+    </div>
+    <div class="other-stat">
+      <div>
+        <div id="delayBar" class="stat-view"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -15,6 +24,10 @@ export default {
   mixins: [baseMixin],
   data () {
     return {
+      queryUrl: '/basicdata/flightInOutStat/queryFlightNoReleaseStat',
+      time: {
+        statDate: ''
+      },
       delayBarEl: null,
       delayBar: null,
       data: {
@@ -50,11 +63,11 @@ export default {
           data: ['航班进港架次', '进港延误架次']
         },
         grid: {
-          left: 0,
-          right: 0,
-          top: 60,
-          bottom: 10,
-          containLabel: true
+          left: 50,
+          right: 25,
+          top: 50,
+          bottom: 90,
+          containLabel: false
         },
         toolbox: {
           right: 20,
@@ -252,7 +265,6 @@ export default {
   mounted () {
     this.delayBarEl = document.getElementById('delayBar')
     this.delayBar = this.$echarts.init(this.delayBarEl)
-    this.queryDataReq()
     window.onresize = () => {
       this.$nextTick(() => {
         this.delayBar.resize()
@@ -261,20 +273,40 @@ export default {
   },
   methods: {
     queryDataReq (status) {
-      if (status) {
-        this.barOptions.series[0].data = [14, 13, 11, 10, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 16, 15, 14, 14, 16, 15, 2, 4, 3]
-      } else {
+      queryAllStat(this.queryUrl, this.time).then(res => {
+        if (res.data.code == 0) {
+          this.restore(res.data.data)
+        } else {
+          this.restore()
+        }
+        let month = this.time.statDate.split('-')[1].replace(/\b(0+)/gi, '')
+        this.barOptions.title.text = month + '月放行延误主要航班'
         this.barOptions.xAxis.data = this.data.flights
         this.barOptions.series[0].data = this.data.total
         this.barOptions.series[1].data = this.data.delay
-        this.barOptions.title.text = '3月进港延误的重点保障航班'
         this.data.flights.forEach((item, i) => {
           let rateData = Math.floor((this.data.total[i] - this.data.delay[i]) / this.data.total[i] * 10000) / 100
           this.data.rate.push(rateData >= 0 ? rateData : '-')
         })
+        this.setLastUpdateTime()
+        this.updateView()
+      }).catch(() => {
+        this.restore()
+        this.updateView()
+      })
+    },
+    restore (data) {
+      if (data) {
+        this.data.flights = data.flights || []
+        this.data.total = data.total || []
+        this.data.delay = data.delay || []
+      } else {
+        this.data = {
+          flights: [],
+          total: [],
+          delay: []
+        }
       }
-      this.setLastUpdateTime()
-      this.updateView()
     },
     updateView () {
       if (this.delayBar) {
@@ -291,19 +323,22 @@ export default {
       let widths = [80, 110, 110, 200]
       exportPDF(this.delayBar, titles, arrs, widths, this.barOptions.title.text)
     }
+  },
+  watch: {
+    latestDate: {
+      handler (value) {
+        this.time.statDate = value.replace(/\//g, '-')
+      },
+      immediate: false
+    },
+    'time.statDate': {
+      handler (value) {
+        this.queryDataReq()
+      }
+    }
   }
 }
 </script>
 
 <style scoped>
-.other-stat>div,
-.bar {
-  width: 100%;
-  height: 100%;
-}
-.other-stat {
-  width: calc(100% - 40px);
-  height: calc(100% - 40px);
-  padding: 20px;
-}
 </style>

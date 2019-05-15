@@ -1,24 +1,21 @@
 <template>
-<div class="div-wrapper">
+<div class="stat-wrapper">
   <div class="tool-bar">
     <div class="left-button">
-      <!-- <el-button type="primary" icon="el-icon-search" @click="switchTime('year')">年</el-button>
-      <el-button type="primary" icon="el-icon-search" @click="switchTime('month')">月</el-button>
-      <el-button type="primary" icon="el-icon-search" @click="switchTime('day')">日</el-button> -->
-      <el-col :span="4" style="margin-right: 20px">
+      <el-col :span="3" style="margin-right: 20px">
         <el-radio-group v-model="time.type" size="small" @change="radioChange">
           <el-radio-button label="month">月度</el-radio-button>
           <el-radio-button label="year">年度</el-radio-button>
         </el-radio-group>
       </el-col>
       <el-col :span="4">
-        <el-date-picker v-model="time.statDate" type="date" placeholder="请选择日期" :editable="false" :clearable="true" :default-value="time.statDate" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
+        <el-date-picker v-model="time.statDate" type="date" placeholder="请选择日期" :editable="false" :clearable="false" :default-value="time.statDate" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
       </el-col>
     </div>
   </div>
   <div class="other-stat">
     <div class="bar-wrapper">
-      <div id="normalBar" class="bar"></div>
+      <div id="normalBar" class="stat-view"></div>
     </div>
   </div>
 </div>
@@ -67,11 +64,11 @@ export default {
           }
         },
         grid: {
-          left: 0,
-          right: 0,
-          top: 60,
-          bottom: 50,
-          containLabel: true
+          left: 60,
+          right: 25,
+          top: 50,
+          bottom: 70,
+          containLabel: false
         },
         toolbox: {
           right: 20,
@@ -227,7 +224,6 @@ export default {
           let rateData = (((this.data.total[i] - this.data.delay[i]) / this.data.total[i]) * 100).toFixed(2)
           this.data.rate.push(rateData)
         }
-        this.normalBarOption.xAxis.data = this.data.unit
         this.normalBarOption.series[0].data = this.data.rate
         this.setLastUpdateTime()
         this.updateView()
@@ -250,6 +246,7 @@ export default {
           rate: []
         }
       }
+      this.normalBarOption.xAxis.data = this.data.unit
     },
     updateView () {
       if (this.normalBar) {
@@ -320,24 +317,4 @@ export default {
 </script>
 
 <style scoped>
-.div-wrapper {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-.tool-bar {
-  margin-left: 20px;
-  height: 60px;
-}
-.other-stat>div,
-.bar {
-  width: 100%;
-  height: 100%;
-}
-.other-stat {
-  width: calc(100% - 40px);
-  height: calc(100% - 72px);
-  padding: 20px;
-}
 </style>

@@ -1,7 +1,16 @@
 <template>
-  <div class="other-stat">
-    <div>
-      <div id="delayBar" class="bar"></div>
+  <div class="stat-wrapper">
+    <div class="tool-bar">
+      <div class="left-button">
+        <el-col :span="3">
+          <el-date-picker v-model="time.statDate" type="date" placeholder="请选择日期" :editable="false" :clearable="false" :default-value="time.statDate" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
+        </el-col>
+      </div>
+    </div>
+    <div class="other-stat">
+      <div>
+        <div id="delayBar" class="stat-view"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -15,12 +24,16 @@ export default {
   mixins: [baseMixin],
   data () {
     return {
+      queryUrl: '/basicdata/flightInOutStat/queryHalfHourStat',
+      time: {
+        statDate: ''
+      },
       delayBarEl: null,
       delayBar: null,
       data: {
-        time: ['0:00', '0:30', '1:00', '1:30', '2:00', '2:30', '3:00', '3:30', '4:00', '4:30', '5:00', '5:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '1:00', '1:30', '20:00', '20:30', '21:00', '21:30', '22:00', '22:30', '23:00', '23:30'],
-        total: [28, 27, 26, 25, 18, 23, 22, 21, 17, 19, 18, 17, 16, 15, 14, 16, 15, 14, 14, 16, 28, 27, 26, 25, 24, 28, 27, 26, 25, 18, 23, 22, 21, 17, 19, 18, 17, 16, 15, 14, 16, 15, 14, 14, 16, 28, 27, 26, 25, 24],
-        delay: [14, 15, 16, 17, 18, 2, 5, 3, 7, 6, 3, 5, 4, 3, 2, 4, 3, 2, 2, 4, 14, 15, 16, 17, 18, 2, 14, 15, 16, 17, 18, 2, 5, 3, 7, 6, 3, 5, 4, 3, 2, 4, 3, 2, 2, 4, 14, 15, 16, 17, 18, 2],
+        time: [],
+        total: [],
+        delay: [],
         fly: [],
         rate: []
       },
@@ -51,11 +64,11 @@ export default {
           data: ['计划离港架次', '放行延误架次']
         },
         grid: {
-          left: 0,
-          right: 0,
-          top: 60,
-          bottom: 10,
-          containLabel: true
+          left: 50,
+          right: 25,
+          top: 50,
+          bottom: 90,
+          containLabel: false
         },
         toolbox: {
           right: 20,
@@ -103,7 +116,7 @@ export default {
         },
         xAxis: {
           type: 'category',
-          boundaryGap: false,
+          boundaryGap: true,
           axisLine: {
             lineStyle: {
               color: 'rgba(60, 166, 200, 0.3)'
@@ -114,8 +127,8 @@ export default {
           },
           axisLabel: {
             interval: 0,
-            margin: 28,
-            verticalAlign: 'bottom',
+            margin: 35,
+            verticalAlign: 'top',
             align: 'center',
             rotate: -90,
             color: '#fff',
@@ -147,7 +160,7 @@ export default {
             fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
           },
           nameTextStyle: {
-            padding: [0, 0, 0, -30],
+            padding: [0, 0, 0, -45],
             color: '#7a939e'
           }
         },
@@ -221,7 +234,6 @@ export default {
   mounted () {
     this.delayBarEl = document.getElementById('delayBar')
     this.delayBar = this.$echarts.init(this.delayBarEl)
-    this.queryDataReq()
     window.onresize = () => {
       this.$nextTick(() => {
         this.delayBar.resize()
@@ -230,23 +242,58 @@ export default {
   },
   methods: {
     queryDataReq (status) {
-      if (status) {
-        this.barOptions.series[0].data = [14, 13, 11, 10, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 16, 15, 14, 14, 16, 15, 2, 4, 3]
-      } else {
-        this.barOptions.xAxis.data = this.data.time
-        this.barOptions.series[0].data = this.data.total
-        this.barOptions.series[1].data = this.data.delay
-
-        for (let i = 0; i < this.data.total.length; i++) {
-          let rateData = (((this.data.total[i] - this.data.delay[i]) / this.data.total[i]) * 100).toFixed(2)
+      queryAllStat(this.queryUrl, this.time).then(res => {
+        if (res.data.code == 0) {
+          this.restore(res.data.data)
+        } else {
+          this.restore()
+        }
+        this.setLastUpdateTime()
+        this.updateView()
+      }).catch(() => {
+        this.restore()
+        this.updateView()
+      })
+    },
+    restore (data) {
+      if (data) {
+        this.data.time = data.time || []
+        this.data.total = data.total || []
+        this.data.delay = data.delay || []
+        for (let i = 0; i < data.total.length; i++) {
+          let rateData = (((data.total[i] - data.delay[i]) / data.total[i]) * 100).toFixed(2)
           this.data.rate.push(rateData)
 
-          let flyData = this.data.total[i] - this.data.delay[i]
+          let flyData = data.total[i] - data.delay[i]
           this.data.fly.push(flyData >= 0 ? flyData : '-')
         }
+      } else {
+        this.data = {
+          time: [],
+          total: [],
+          delay: [],
+          fly: [],
+          rate: []
+        }
       }
-      this.setLastUpdateTime()
-      this.updateView()
+      this.barOptions.xAxis.data = this.data.time
+      this.barOptions.series[0].data = this.data.total
+      this.barOptions.series[1].data = this.data.delay
+      // if (status) {
+      //   this.barOptions.series[0].data = [14, 13, 11, 10, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 16, 15, 14, 14, 16, 15, 2, 4, 3]
+      // } else {
+      //   this.barOptions.xAxis.data = this.data.time
+      //   this.barOptions.series[0].data = this.data.total
+      //   this.barOptions.series[1].data = this.data.delay
+
+      //   for (let i = 0; i < this.data.total.length; i++) {
+      //     let rateData = (((this.data.total[i] - this.data.delay[i]) / this.data.total[i]) * 100).toFixed(2)
+      //     this.data.rate.push(rateData)
+
+      //     let flyData = this.data.total[i] - this.data.delay[i]
+      //     this.data.fly.push(flyData >= 0 ? flyData : '-')
+      //   }
+      // }
     },
     updateView () {
       if (this.delayBar) {
@@ -297,19 +344,19 @@ export default {
       let widths = [130, 150, 115, 115]
       exportPDF(this.delayBar, titles, arrs, widths, this.barOptions.title.text, 22)
     }
+  },
+  watch: {
+    latestDate: {
+      handler (value) {
+        this.time.statDate = value.replace(/\//g, '-')
+      },
+      immediate: false
+    },
+    'time.statDate': {
+      handler (value) {
+        this.queryDataReq()
+      }
+    }
   }
 }
 </script>
-
-<style scoped>
-.other-stat>div,
-.bar {
-  width: 100%;
-  height: 100%;
-}
-.other-stat {
-  width: calc(100% - 40px);
-  height: calc(100% - 40px);
-  padding: 20px;
-}
-</style>

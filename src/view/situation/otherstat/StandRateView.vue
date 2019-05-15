@@ -1,7 +1,16 @@
 <template>
-  <div class="other-stat">
-    <div class="bar-wrapper">
-      <div id="standBar" class="bar"></div>
+  <div class="stat-wrapper">
+    <div class="tool-bar">
+      <div class="left-button">
+        <el-col :span="3">
+          <el-date-picker v-model="time.statDate" type="month" placeholder="请选择月份" :editable="false" :clearable="false" :default-value="time.statDate" value-format="yyyy-MM-dd"></el-date-picker>
+        </el-col>
+      </div>
+    </div>
+    <div class="other-stat">
+      <div>
+        <div id="standBar" class="stat-view"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -14,6 +23,10 @@ export default {
   mixins: [baseMixin],
   data () {
     return {
+      queryUrl: '/basicdata/flightInOutStat/queryFlightNoReleaseStat',
+      time: {
+        statDate: ''
+      },
       standBarEl: null,
       standBar: null,
       standBarOption: {
@@ -138,6 +151,7 @@ export default {
             fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
           },
           nameTextStyle: {
+            padding: [0, 0, 0, -50],
             color: '#7a939e'
           }
         },
@@ -188,7 +202,6 @@ export default {
     this.standBarEl = document.getElementById('standBar')
     this.standBar = this.$echarts.init(this.standBarEl)
     this.data.totalTime = 0
-    this.queryDataReq()
     window.onresize = () => {
       this.$nextTick(() => {
         this.standBar.resize()
@@ -255,19 +268,19 @@ export default {
       let widths = [167, 167, 167]
       exportPDF(this.standBar, titles, arrs, widths, this.standBarOption.title.text)
     }
+  },
+  watch: {
+    latestDate: {
+      handler (value) {
+        this.time.statDate = value.replace(/\//g, '-')
+      },
+      immediate: false
+    },
+    'time.statDate': {
+      handler (value) {
+        this.queryDataReq()
+      }
+    }
   }
 }
 </script>
-
-<style scoped>
-.other-stat>div,
-.bar {
-  width: 100%;
-  height: 100%;
-}
-.other-stat {
-  width: calc(100% - 40px);
-  height: calc(100% - 40px);
-  padding: 20px;
-}
-</style>

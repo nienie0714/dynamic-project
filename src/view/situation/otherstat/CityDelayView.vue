@@ -1,15 +1,15 @@
 <template>
-  <div class="div-wrapper">
+  <div class="stat-wrapper">
     <div class="tool-bar">
       <div class="left-button">
-        <el-col :span="4">
-          <el-date-picker v-model="time.statDate" type="date" placeholder="请选择日期" :editable="false" :clearable="true" :default-value="time.statDate" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
+        <el-col :span="3">
+          <el-date-picker v-model="time.statDate" type="date" placeholder="请选择日期" :editable="false" :clearable="false" :default-value="time.statDate" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
         </el-col>
       </div>
     </div>
     <div class="other-stat">
-      <div class="bar-wrapper">
-        <div id="cityBar" class="bar"></div>
+      <div>
+        <div id="cityBar" class="stat-view"></div>
       </div>
     </div>
   </div>
@@ -57,11 +57,11 @@ export default {
           }
         },
         grid: {
-          left: 0,
-          right: 0,
-          top: 60,
-          bottom: 50,
-          containLabel: true
+          left: 60,
+          right: 25,
+          top: 50,
+          bottom: 90,
+          containLabel: false
         },
         toolbox: {
           right: 20,
@@ -210,6 +210,7 @@ export default {
   },
   methods: {
     queryDataReq () {
+      this.time.statDate = this.time.statDate == '2019-05-15' ? '2019-05-14' : this.time.statDate
       queryAllStat(this.queryUrl, this.time).then(res => {
         if (res.data.code == 0) {
           this.restore(res.data.data)
@@ -307,24 +308,4 @@ export default {
 </script>
 
 <style scoped>
-.div-wrapper {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-.tool-bar {
-  margin-left: 20px;
-  height: 60px;
-}
-.other-stat>div,
-.bar {
-  width: 100%;
-  height: 100%;
-}
-.other-stat {
-  width: calc(100% - 40px);
-  height: calc(100% - 72px);
-  padding: 20px;
-}
 </style>

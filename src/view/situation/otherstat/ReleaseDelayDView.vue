@@ -1,21 +1,15 @@
 <template>
-  <!-- <div class="other-stat">
-    <div>
-      <div id="delayBar" class="bar"></div>
-      <embed width="100%" height="100%" name="plugin" id="plugin" :src="src" type="application/pdf" internalinstanceid="117">
-    </div>
-  </div> -->
-  <div class="div-wrapper">
+  <div class="stat-wrapper">
     <div class="tool-bar">
       <div class="left-button">
-        <el-col :span="4">
-          <el-date-picker v-model="time.statDate" type="month" placeholder="请选择月份" :editable="false" :clearable="true" :default-value="time.statDate" value-format="yyyy-MM-dd"></el-date-picker>
+        <el-col :span="3">
+          <el-date-picker v-model="time.statDate" type="month" placeholder="请选择月份" :editable="false" :clearable="false" :default-value="time.statDate" value-format="yyyy-MM-dd"></el-date-picker>
         </el-col>
       </div>
     </div>
     <div class="other-stat">
-      <div class="bar-wrapper">
-        <div id="delayBar" class="bar"></div>
+      <div>
+        <div id="delayBar" class="stat-view"></div>
       </div>
     </div>
   </div>
@@ -68,11 +62,11 @@ export default {
           data: ['航班离港架次', '放行延误架次']
         },
         grid: {
-          left: 0,
-          right: 0,
-          top: 60,
-          bottom: 10,
-          containLabel: true
+          left: 50,
+          right: 25,
+          top: 50,
+          bottom: 90,
+          containLabel: false
         },
         toolbox: {
           right: 20,
@@ -290,9 +284,6 @@ export default {
         }
         let month = this.time.statDate.split('-')[1].replace(/\b(0+)/gi, '')
         this.barOptions.title.text = month + '月放行延误主要航班'
-        this.barOptions.xAxis.data = this.data.flights
-        this.barOptions.series[0].data = this.data.total
-        this.barOptions.series[1].data = this.data.delay
         this.setLastUpdateTime()
         this.updateView()
       }).catch(() => {
@@ -312,6 +303,9 @@ export default {
           delay: []
         }
       }
+      this.barOptions.xAxis.data = this.data.flights
+      this.barOptions.series[0].data = this.data.total
+      this.barOptions.series[1].data = this.data.delay
     },
     updateView () {
       if (this.delayBar) {
@@ -328,7 +322,7 @@ export default {
       let titles = ['出港航班', '航班离港架次', '放行延误架次', '出港航班放行正常率（%）']
       let arrs = [this.data.flights, this.data.total, this.data.delay, percs]
       let widths = [80, 110, 110, 200]
-      exportPDF(this.delayBar, titles, arrs, widths)
+      exportPDF(this.delayBar, titles, arrs, widths, this.barOptions.title.text)
     }
   },
   watch: {
@@ -346,26 +340,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-.div-wrapper {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-.tool-bar {
-  margin-left: 20px;
-  height: 60px;
-}
-.other-stat>div,
-.bar {
-  width: 100%;
-  height: 100%;
-}
-.other-stat {
-  width: calc(100% - 40px);
-  height: calc(100% - 72px);
-  padding: 20px;
-}
-</style>

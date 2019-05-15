@@ -1,7 +1,16 @@
 <template>
-  <div class="other-stat">
-    <div>
-      <div id="delayBar" class="bar"></div>
+  <div class="stat-wrapper">
+    <div class="tool-bar">
+      <div class="left-button">
+        <el-col :span="3">
+          <el-date-picker v-model="time.statDate" type="month" placeholder="请选择月份" :editable="false" :clearable="false" :default-value="time.statDate" value-format="yyyy-MM-dd"></el-date-picker>
+        </el-col>
+      </div>
+    </div>
+    <div class="other-stat">
+      <div>
+        <div id="delayBar" class="stat-view"></div>
+      </div>
     </div>
   </div>
 </template>
@@ -15,6 +24,10 @@ export default {
   mixins: [baseMixin],
   data () {
     return {
+      queryUrl: '/basicdata/flightInOutStat/queryFlightNoReleaseStat',
+      time: {
+        statDate: ''
+      },
       delayBarEl: null,
       delayBar: null,
       data: {
@@ -49,11 +62,11 @@ export default {
           data: ['航班小时进港架次最大值', '平均航班小时进港架次']
         },
         grid: {
-          left: 0,
-          right: 0,
-          top: 60,
-          bottom: 0,
-          containLabel: true
+          left: 50,
+          right: 25,
+          top: 50,
+          bottom: 140,
+          containLabel: false
         },
         toolbox: {
           right: 20,
@@ -144,8 +157,8 @@ export default {
           },
           axisLabel: {
             interval: 0,
-            margin: 65,
-            verticalAlign: 'bottom',
+            margin: 60,
+            verticalAlign: 'center',
             align: 'center',
             rotate: -90,
             color: '#fff',
@@ -177,7 +190,7 @@ export default {
             fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
           },
           nameTextStyle: {
-            padding: [0, 0, 0, -30],
+            padding: [0, 0, 0, -50],
             color: '#7a939e'
           }
         },
@@ -251,7 +264,6 @@ export default {
   mounted () {
     this.delayBarEl = document.getElementById('delayBar')
     this.delayBar = this.$echarts.init(this.delayBarEl)
-    this.queryDataReq()
     window.onresize = () => {
       this.$nextTick(() => {
         this.delayBar.resize()
@@ -282,19 +294,22 @@ export default {
       let widths = [162, 185, 167]
       exportPDF(this.delayBar, titles, arrs, widths, this.barOptions.title.text)
     }
+  },
+  watch: {
+    latestDate: {
+      handler (value) {
+        this.time.statDate = value.replace(/\//g, '-')
+      },
+      immediate: false
+    },
+    'time.statDate': {
+      handler (value) {
+        this.queryDataReq()
+      }
+    }
   }
 }
 </script>
 
 <style scoped>
-.other-stat>div,
-.bar {
-  width: 100%;
-  height: 100%;
-}
-.other-stat {
-  width: calc(100% - 40px);
-  height: calc(100% - 40px);
-  padding: 20px;
-}
 </style>
