@@ -217,35 +217,38 @@ export default {
   },
   methods: {
     queryDataReq () {
-      let that = this
       queryAllStat(this.queryUrl, this.time).then(res => {
-        this.restore()
         if (res.data.code == 0) {
-          that.normalBarOption.xAxis.data = res.data.data.unit
-          that.data.unit = res.data.data.unit
-          that.data.total = res.data.data.total
-          that.data.delay = res.data.data.delay
-          for (let i = 0; i < that.data.total.length; i++) {
-            let rateData = (((that.data.total[i] - that.data.delay[i]) / that.data.total[i]) * 100).toFixed(2)
-            that.data.rate.push(rateData)
-          }
-          that.normalBarOption.series[0].data = that.data.rate
-          that.setLastUpdateTime()
-          that.updateView()
+          this.restore(res.data.data)
         } else {
-          that.updateView()
+          this.restore()
         }
+        for (let i = 0; i < this.data.total.length; i++) {
+          let rateData = (((this.data.total[i] - this.data.delay[i]) / this.data.total[i]) * 100).toFixed(2)
+          this.data.rate.push(rateData)
+        }
+        this.normalBarOption.xAxis.data = this.data.unit
+        this.normalBarOption.series[0].data = this.data.rate
+        this.setLastUpdateTime()
+        this.updateView()
       }).catch(() => {
         this.restore()
-          that.updateView()
+        this.updateView()
       })
     },
-    restore () {
-      this.data = {
-        unit: [],
-        total: [],
-        delay: [],
-        rate: []
+    restore (data) {
+      if (data) {
+        this.data.unit = data.unit || []
+        this.data.total = data.total || []
+        this.data.delay = data.delay || []
+        this.data.rate = []
+      } else {
+        this.data = {
+          unit: [],
+          total: [],
+          delay: [],
+          rate: []
+        }
       }
     },
     updateView () {
@@ -295,7 +298,7 @@ export default {
     },
     exportBefore () {
       let titles = ['日期', '放行架次', '放行延误架次', '出港航班放行正常率（%）']
-      let arrs = [this.data.year, this.data.total, this.data.delay, this.data.rate]
+      let arrs = [this.data.unit, this.data.total, this.data.delay, this.data.rate]
       let widths = [80, 110, 110, 200]
       exportPDF(this.normalBar, titles, arrs, widths, this.normalBarOption.title.text)
     }

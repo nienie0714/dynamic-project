@@ -15,6 +15,11 @@ export default {
   mixins: [baseMixin],
   data () {
     return {
+      queryUrl: '/basicdata/flightInOutStat/queryFlightReleaseStat',
+      time: {
+        type: 'year',
+        statDate: ''
+      },
       cityBarEl: null,
       cityBar: null,
       cityBarOption: {
@@ -198,17 +203,39 @@ export default {
   },
   methods: {
     queryDataReq () {
-      let that = this
-      setTimeout(() => {
-        that.cityBarOption.xAxis.data = that.data.city
-        for (let i = 0; i < that.data.total.length; i++) {
-          let rateData = (((that.data.total[i] - that.data.delay[i]) / that.data.total[i]) * 100).toFixed(2)
-          that.data.rate.push(rateData >= 0 ? rateData : '-')
+      queryAllStat(this.queryUrl, this.time).then(res => {
+        if (res.data.code == 0) {
+          this.restore(res.data.data)
+        } else {
+          this.restore()
         }
-        that.cityBarOption.series[0].data = that.data.rate
-        that.setLastUpdateTime()
-        that.updateView()
-      }, 100)
+        for (let i = 0; i < this.data.total.length; i++) {
+          let rateData = (((this.data.total[i] - this.data.delay[i]) / this.data.total[i]) * 100).toFixed(2)
+          this.data.rate.push(rateData)
+        }
+        this.normalBarOption.xAxis.data = this.data.city
+        this.cityBarOption.series[0].data = this.data.rate
+        this.setLastUpdateTime()
+        this.updateView()
+      }).catch(() => {
+        this.restore()
+        this.updateView()
+      })
+    },
+    restore (data) {
+      if (data) {
+        this.data.city = data.city || []
+        this.data.total = data.total || []
+        this.data.delay = data.delay || []
+        this.data.rate = []
+      } else {
+        this.data = {
+          city: [],
+          total: [],
+          delay: [],
+          rate: []
+        }
+      }
     },
     updateView () {
       this.cityBar.clear()
