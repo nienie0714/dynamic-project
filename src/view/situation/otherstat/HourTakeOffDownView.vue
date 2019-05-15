@@ -9,6 +9,7 @@
 <script>
 import baseMixin from '@/components/mixin/baseMixin'
 import { exportPDF } from '@/util/util.js'
+import { queryAllStat } from '@/api/base'
 
 export default {
   mixins: [baseMixin],

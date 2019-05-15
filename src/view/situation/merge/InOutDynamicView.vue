@@ -11,7 +11,7 @@
             <div id="outCircle" class="circle"></div>
             <div class="text">
               <div class="font-st font-white">出港计划</div>
-              <div class="num-st font-white">{{data.flightStatD.totalFlight}}</div>
+              <div class="num-st font-white">{{data.flightStatD.totalFlight || '--'}}</div>
             </div>
           </div>
           <div class="progress-info">
@@ -52,7 +52,7 @@
             <div id="inCircle" class="circle"></div>
             <div class="text">
               <div class="font-st font-white">进港计划</div>
-              <div class="num-st font-white">{{data.flightStatA.totalFlight}}</div>
+              <div class="num-st font-white">{{data.flightStatA.totalFlight || '--'}}</div>
             </div>
           </div>
           <div class="progress-info">
@@ -318,6 +318,7 @@ export default {
         yAxis: {
           min: 'dataMin',
           max: 'dataMax',
+          minInterval: 1,
           splitLine: {
             lineStyle: {
               color: 'rgba(60, 166, 200, 0.3)'

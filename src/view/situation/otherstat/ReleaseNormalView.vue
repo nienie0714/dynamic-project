@@ -249,7 +249,9 @@ export default {
       }
     },
     updateView () {
-      this.normalBar.clear()
+      if (this.normalBar) {
+        this.normalBar.clear()
+      }
       this.normalBar.setOption(this.normalBarOption, true)
     },
     optionToContent (opt) {

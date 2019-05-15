@@ -1576,6 +1576,7 @@ div.el-upload {
 .el-picker-panel .el-date-picker__time-header {
   border-bottom: 1px solid rgba(60, 166, 200, 0.7);
 }
+.el-picker-panel .el-date-picker__header,
 .el-picker-panel .el-picker-panel__content th {
   border-bottom: 1px solid rgba(60, 166, 200, 0.4);
 }
@@ -1588,6 +1589,10 @@ div.el-upload {
 .el-date-picker__header>span {
   color: #fff;
 }
+.el-year-table td .cell:hover,
+.el-year-table td.current:not(.disabled) .cell,
+.el-month-table td .cell:hover,
+.el-month-table td.current:not(.disabled) .cell,
 .el-date-table td span:hover,
 .el-date-picker__header>button:hover,
 .el-date-picker__header>span:hover {
@@ -1600,6 +1605,10 @@ div.el-upload {
 .el-picker-panel__content tr {
   font-size: 14px;
 }
+.el-year-table td .cell,
+.el-month-table td .cell,
+.el-year-table td.current:not(.disabled) .cell,
+.el-month-table td.current:not(.disabled) .cell,
 .el-picker-panel__content .available span {
   color: #fff;
 }
@@ -1607,6 +1616,8 @@ div.el-upload {
 .el-picker-panel__content .next-month span {
   color: #7a939e;
 }
+.el-year-table td.current:not(.disabled) .cell,
+.el-month-table td.current:not(.disabled) .cell,
 .el-picker-panel__content .current span {
   background-color: rgb(60, 166, 200) !important;
   border-radius: 4px;
