@@ -9,7 +9,7 @@
         <div>
           <div class="progress-circle">
             <div id="standCircle" class="circle"></div>
-            <div class="absolute-tag font-rs" v-if="data.nFree / (data.nUsed + data.nFree) <= pecBase">机位紧张</div>
+            <div class="absolute-tag font-rs" v-if="(data.nFree / (data.nUsed + data.nFree))*100 <= pecBase">机位紧张</div>
             <div class="text">
               <div class="font-st font-gray">空闲 / 占用</div>
               <div class="num-st font-white">{{data.nFree}} / {{data.nUsed}}</div>

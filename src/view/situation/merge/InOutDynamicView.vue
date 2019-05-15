@@ -450,7 +450,7 @@ export default {
     }
   },
   mounted () {
-    this.pecBase = this.$store.getters.getCfgVal('fltRag')
+    this.pecBase = parseFloat(this.$store.getters.getCfgVal('fltRag'))
     this.outCircleEl = document.getElementById('outCircle')
     this.outCircle = this.$echarts.init(this.outCircleEl)
     this.inCircleEl = document.getElementById('inCircle')
@@ -500,12 +500,12 @@ export default {
               for (let name in this.data[key]) {
                 if (name == 'normalPec') {
                   if (res.data.data[key]['totalFlight'] && (res.data.data[key]['execFlight'] != null)) {
-                    this.data[key]['normalPec'] = '--'
+                    this.$set(this.data[key], 'normalPec', Math.floor(res.data.data[key]['execFlight'] / res.data.data[key]['totalFlight'] * 100))
                   } else {
-                    this.data[key]['normalPec'] = Math.floor(res.data.data[key]['execFlight'] / res.data.data[key]['totalFlight'] * 100)
+                    this.$set(this.data[key], 'normalPec', '--')
                   }
                 } else {
-                  this.data[key][name] = (res.data.data[key].hasOwnProperty(name)) ? res.data.data[key][name] : '-'
+                    this.$set(this.data[key], name, (res.data.data[key].hasOwnProperty(name)) ? res.data.data[key][name] : '-')
                 }
               }
             }

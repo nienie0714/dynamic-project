@@ -80,7 +80,7 @@ export default {
     }
   },
   mounted () {
-    this.pecBase = this.$store.getters.getCfgVal('fltRag')
+    this.pecBase = parseFloat(this.$store.getters.getCfgVal('fltRag'))
     this.greenCircleEl = document.getElementById('greenRate')
     this.greenRate = this.$echarts.init(this.greenCircleEl)
     this.updateGreenOption()
@@ -133,19 +133,19 @@ export default {
             that.data.tmonTotalRlsFlight = Number.isInteger(tmp.tmonTotalRlsFlight) ? tmp.tmonTotalRlsFlight : '-'
 
             if (Number.isInteger(that.data.tdayRlsFlight) && Number.isInteger(that.data.tdayTotalRlsFlight)) {
-              that.data.toRate = (that.data.tdayRlsFlight / that.data.tdayTotalRlsFlight * 100).toFixed(2)
+              this.$set(that.data, 'toRate', (that.data.tdayRlsFlight / that.data.tdayTotalRlsFlight * 100).toFixed(2))
             } else {
-              that.data.toRate = '--.--'
+              this.$set(that.data, 'toRate', '--.--')
             }
             if (Number.isInteger(that.data.tmonRlsFlight) && Number.isInteger(that.data.tmonTotalRlsFlight)) {
-              that.data.ydayRate = (that.data.ydayRlsFlight / that.data.ydayTotalRlsFlight * 100).toFixed(2)
+              this.$set(that.data, 'ydayRate', (that.data.ydayRlsFlight / that.data.ydayTotalRlsFlight * 100).toFixed(2))
             } else {
-              that.data.ydayRate = '--.--'
+              this.$set(that.data, 'ydayRate', '--.--')
             }
             if (Number.isInteger(that.data.tmonRlsFlight) && Number.isInteger(that.data.tmonTotalRlsFlight)) {
-              that.data.tmonRate = (that.data.tmonRlsFlight / that.data.tmonTotalRlsFlight * 100).toFixed(2)
+              this.$set(that.data, 'tmonRate', (that.data.tmonRlsFlight / that.data.tmonTotalRlsFlight * 100).toFixed(2))
             } else {
-              that.data.tmonRate = '--.--'
+              this.$set(that.data, 'tmonRate', '--.--')
             }
 
             this.queryByBridge()

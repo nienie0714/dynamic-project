@@ -5,8 +5,8 @@ export default {
       {key: 'mqUrl', classify: 'web_mq_url', name: 'aoms-webmq', value: ''},
       {key: 'dfsUrl', classify: 'download_url', name: 'aoms-dfs', value: ''},
       {key: 'aptLoc', classify: 'apt_loc', name: 'aptIata-loc', value: ''},
-      {key: 'fltRag', classify: 'flight_stat_range', name: 'flight-stat', value: ''},
-      {key: 'stdRag', classify: 'stand_stat_range', name: 'stand-stat', value: ''}
+      {key: 'fltRag', classify: 'flight_stat', name: 'flight_stat_range', value: ''},
+      {key: 'stdRag', classify: 'stand_stat', name: 'stand_stat_range', value: ''}
     ],
     configValue: ''
   },
