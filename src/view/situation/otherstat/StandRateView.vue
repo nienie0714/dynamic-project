@@ -220,6 +220,8 @@ export default {
           let rateData = (((that.data.time[j]) / that.data.totalTime) * 100).toFixed(2)
           that.data.rate.push(rateData)
         }
+        let month = this.time.statDate.split('-')[1].replace(/\b(0+)/gi, '')
+        this.standBarOption.title.text = month + '月各机位使用频率'
         that.standBarOption.series[0].data = that.data.rate
         that.setLastUpdateTime()
         that.updateView()

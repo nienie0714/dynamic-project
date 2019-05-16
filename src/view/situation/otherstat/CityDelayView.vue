@@ -210,7 +210,7 @@ export default {
   },
   methods: {
     queryDataReq () {
-      this.time.statDate = this.time.statDate == '2019-05-15' ? '2019-05-14' : this.time.statDate
+      this.time.statDate = this.time.statDate == '2019-05-16' ? '2019-05-14' : this.time.statDate
       queryAllStat(this.queryUrl, this.time).then(res => {
         if (res.data.code == 0) {
           this.restore(res.data.data)

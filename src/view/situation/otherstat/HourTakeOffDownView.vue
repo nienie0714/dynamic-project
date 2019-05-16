@@ -37,7 +37,7 @@ export default {
       },
       barOptions: {
         title: {
-          text: '3月航班小时起降架次最大值与平均值',
+          text: '5月航班小时起降架次最大值与平均值',
           x: 'center',
           y: 'top',
           textAlign: 'left',
