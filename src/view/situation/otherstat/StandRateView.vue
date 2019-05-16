@@ -18,12 +18,13 @@
 <script>
 import baseMixin from '@/components/mixin/baseMixin'
 import { exportPDF } from '@/util/util.js'
+import { queryAllStat } from '@/api/base'
 
 export default {
   mixins: [baseMixin],
   data () {
     return {
-      queryUrl: '/basicdata/flightInOutStat/queryFlightNoReleaseStat',
+      queryUrl: '/basicdata/flightInOutStat/queryStandUsedStat',
       time: {
         statDate: ''
       },
@@ -56,11 +57,11 @@ export default {
           }
         },
         grid: {
-          left: 0,
-          right: 0,
-          top: 60,
-          bottom: 50,
-          containLabel: true
+          left: 50,
+          right: 25,
+          top: 50,
+          bottom: 90,
+          containLabel: false
         },
         toolbox: {
           right: 20,
@@ -159,7 +160,7 @@ export default {
           type: 'inside',
           filterMode: 'empty',
           startValue: 0,
-          endValue: 25
+          endValue: 50
         }],
         series: [
           {
@@ -191,9 +192,9 @@ export default {
         ]
       },
       data: {
-        num: ['1 #', '2 #', '3 #', '4 #', '5 #', '6 #', '7 #', '8 #', '9 #', '10 #', '11 #', '12 #', '13 #', '14 #', '15 #', '16 #'],
+        stands: ['1 #', '2 #', '3 #', '4 #', '5 #', '6 #', '7 #', '8 #', '9 #', '10 #', '11 #', '12 #', '13 #', '14 #', '15 #', '16 #'],
         time: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16],
-        totalTime: 0,
+        total: 0,
         rate: []
       }
     }
@@ -201,7 +202,6 @@ export default {
   mounted () {
     this.standBarEl = document.getElementById('standBar')
     this.standBar = this.$echarts.init(this.standBarEl)
-    this.data.totalTime = 0
     window.onresize = () => {
       this.$nextTick(() => {
         this.standBar.resize()
@@ -211,21 +211,38 @@ export default {
   methods: {
     queryDataReq () {
       let that = this
-      setTimeout(() => {
-        that.standBarOption.xAxis.data = that.data.num
-        for (let i = 0; i < this.data.time.length; i++) {
-          this.data.totalTime += this.data.time[i]
-        }
-        for (let j = 0; j < that.data.time.length; j++) {
-          let rateData = (((that.data.time[j]) / that.data.totalTime) * 100).toFixed(2)
-          that.data.rate.push(rateData)
+      queryAllStat(this.queryUrl, this.time).then(res => {
+        if (res.data.code == 0) {
+          this.restore(res.data.data)
+        } else {
+          this.restore()
         }
         let month = this.time.statDate.split('-')[1].replace(/\b(0+)/gi, '')
         this.standBarOption.title.text = month + '月各机位使用频率'
-        that.standBarOption.series[0].data = that.data.rate
         that.setLastUpdateTime()
         that.updateView()
       }, 100)
+    },
+    restore (data) {
+      if (data) {
+        this.data.stands = data.stands || []
+        this.data.total = data.total[0]
+        this.data.used = data.used || []
+        this.data.rate = []
+      } else {
+        this.data = {
+          stands: [],
+          total: [],
+          used: [],
+          rate: []
+        }
+      }
+      this.standBarOption.xAxis.data = this.data.stands
+      for (let j = 0; j < this.data.used.length; j++) {
+        let rateData = (((this.data.used[j]) / this.data.total) * 100).toFixed(2)
+        this.data.rate.push(rateData)
+      }
+      this.standBarOption.series[0].data = this.data.rate
     },
     updateView () {
       this.standBar.clear()
@@ -257,7 +274,7 @@ export default {
         table += `
           <tr>
             <td style="width: 200px;">${axisData[i]}</td>
-            <td style="width: 200px;">${this.data.time[i]}</td>
+            <td style="width: 200px;">${this.data.used[i]}</td>
             <td style="width: 200px;">${series[0].data[i]}</td>
           </tr>`
       }
@@ -266,7 +283,7 @@ export default {
     },
     exportBefore () {
       let titles = ['机位编号', '机位使用次数', '机位使用频率（%）']
-      let arrs = [this.data.num, this.data.time, this.data.rate]
+      let arrs = [this.data.stands, this.data.used, this.data.rate]
       let widths = [167, 167, 167]
       exportPDF(this.standBar, titles, arrs, widths, this.standBarOption.title.text)
     }

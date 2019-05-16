@@ -26,8 +26,9 @@ export default {
     return {
       delayBarEl: null,
       delayBar: null,
-      queryUrl: '/basicdata/flightInOutStat/queryFlightNoReleaseStat',
+      queryUrl: '/basicdata/flightInOutStat/queryHourArrDepStat',
       time: {
+        inOut: 'D',
         statDate: ''
       },
       data: {
@@ -65,7 +66,7 @@ export default {
           left: 50,
           right: 25,
           top: 50,
-          bottom: 140,
+          bottom: 90,
           containLabel: false
         },
         toolbox: {
@@ -157,7 +158,7 @@ export default {
           },
           axisLabel: {
             interval: 0,
-            margin: 60,
+            margin: 32,
             verticalAlign: 'center',
             align: 'center',
             rotate: -90,
@@ -269,16 +270,35 @@ export default {
     }
   },
   methods: {
-    queryDataReq (status) {
-      if (status) {
-        this.barOptions.series[0].data = [14, 13, 11, 10, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 16, 15, 14, 14, 16, 15, 2, 4, 3]
+    queryDataReq () {
+      queryAllStat(this.queryUrl, this.time).then(res => {
+        if (res.data.code == 0) {
+          this.restore(res.data.data)
+        } else {
+          this.restore()
+        }
+        this.setLastUpdateTime()
+        this.updateView()
+      }).catch(() => {
+        this.restore()
+        this.updateView()
+      })
+    },
+    restore (data) {
+      if (data) {
+        this.data.time = data.time || []
+        this.data.max = data.max || []
+        this.data.avg = data.avg || []
       } else {
-        this.barOptions.xAxis.data = this.data.time
-        this.barOptions.series[0].data = this.data.max
-        this.barOptions.series[1].data = this.data.avg
+        this.data = {
+          time: [],
+          max: [],
+          avg: []
+        }
       }
-      this.setLastUpdateTime()
-      this.updateView()
+      this.barOptions.xAxis.data = this.data.time
+      this.barOptions.series[0].data = this.data.max
+      this.barOptions.series[1].data = this.data.avg
     },
     updateView () {
       if (this.delayBar) {
