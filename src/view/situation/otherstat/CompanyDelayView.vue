@@ -303,14 +303,8 @@ export default {
         } else {
           this.restore()
         }
-        this.barOptions.xAxis.data = this.data.airline
-        this.barOptions.series[0].data = this.data.total
         let month = this.time.statDate.split('-')[1].replace(/\b(0+)/gi, '')
         this.barOptions.title.text = month + '月主要航空公司的航班放行正常率'
-        this.barOptions.yAxis[0].min = Math.min(...this.data.rate) - Math.min(...this.data.rate) % 10 - 5
-        this.barOptions.yAxis[0].min = this.barOptions.yAxis[0].min > 0 ? this.barOptions.yAxis[0].min : 0
-        // this.barOptions.yAxis[0].splitNumber = (this.barOptions.yAxis[0].max - this.barOptions.yAxis[0].min) / 5
-        this.barOptions.series[1].data = this.data.rate
         this.setLastUpdateTime()
         this.updateView()
       }).catch(() => {
@@ -325,14 +319,6 @@ export default {
         this.data.delay = data.delay || []
         this.data.rate = []
         this.data.runRate = []
-        let totalNum = this.data.total.reduce(function (a, b) {
-          return a + b
-        })
-        for (let i = 0; i < this.data.total.length; i++) {
-          let rateData = (((this.data.total[i] - this.data.delay[i]) / this.data.total[i]) * 100).toFixed(2)
-          this.data.rate.push(rateData)
-          this.data.runRate.push((this.data.total[i] / totalNum * 100).toFixed(2))
-        }
       } else {
         this.data = {
           airline: [],
@@ -342,6 +328,23 @@ export default {
           runRate: []
         }
       }
+      let totalNum = 0
+      if (this.data.total.length > 0) {
+        totalNum = this.data.total.reduce(function (a, b) {
+          return a + b
+        })
+      }
+      for (let i = 0; i < this.data.total.length; i++) {
+        let rateData = (((this.data.total[i] - this.data.delay[i]) / this.data.total[i]) * 100).toFixed(2)
+        this.data.rate.push(rateData >= 0 ? rateData : '-')
+        this.data.runRate.push((this.data.total[i] / totalNum * 100).toFixed(2))
+      }
+      this.barOptions.xAxis.data = this.data.airline
+      this.barOptions.series[0].data = this.data.total
+      this.barOptions.yAxis[0].min = Math.min(...this.data.rate) - Math.min(...this.data.rate) % 10 - 5
+      this.barOptions.yAxis[0].min = this.barOptions.yAxis[0].min > 0 ? this.barOptions.yAxis[0].min : 0
+      // this.barOptions.yAxis[0].splitNumber = (this.barOptions.yAxis[0].max - this.barOptions.yAxis[0].min) / 5
+      this.barOptions.series[1].data = this.data.rate
     },
     optionToContent (opt) {
       let axisData = opt.xAxis[0].data

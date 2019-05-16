@@ -240,7 +240,7 @@ export default {
       this.standBarOption.xAxis.data = this.data.stands
       for (let j = 0; j < this.data.used.length; j++) {
         let rateData = (((this.data.used[j]) / this.data.total) * 100).toFixed(2)
-        this.data.rate.push(rateData)
+        this.data.rate.push(rateData >= 0 ? rateData : '-')
       }
       this.standBarOption.series[0].data = this.data.rate
     },

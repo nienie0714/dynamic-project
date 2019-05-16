@@ -260,7 +260,7 @@ export default {
         this.data.delay = data.delay || []
         for (let i = 0; i < data.total.length; i++) {
           let rateData = (((data.total[i] - data.delay[i]) / data.total[i]) * 100).toFixed(2)
-          this.data.rate.push(rateData)
+          this.data.rate.push(rateData >= 0 ? rateData : '-')
 
           let flyData = data.total[i] - data.delay[i]
           this.data.fly.push(flyData >= 0 ? flyData : '-')
@@ -277,21 +277,6 @@ export default {
       this.barOptions.xAxis.data = this.data.time
       this.barOptions.series[0].data = this.data.total
       this.barOptions.series[1].data = this.data.delay
-      // if (status) {
-      //   this.barOptions.series[0].data = [14, 13, 11, 10, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 16, 15, 14, 14, 16, 15, 2, 4, 3]
-      // } else {
-      //   this.barOptions.xAxis.data = this.data.time
-      //   this.barOptions.series[0].data = this.data.total
-      //   this.barOptions.series[1].data = this.data.delay
-
-      //   for (let i = 0; i < this.data.total.length; i++) {
-      //     let rateData = (((this.data.total[i] - this.data.delay[i]) / this.data.total[i]) * 100).toFixed(2)
-      //     this.data.rate.push(rateData)
-
-      //     let flyData = this.data.total[i] - this.data.delay[i]
-      //     this.data.fly.push(flyData >= 0 ? flyData : '-')
-      //   }
-      // }
     },
     updateView () {
       if (this.delayBar) {

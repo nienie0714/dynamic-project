@@ -219,7 +219,7 @@ export default {
         }
         for (let i = 0; i < this.data.total.length; i++) {
           let rateData = (((this.data.total[i] - this.data.delay[i]) / this.data.total[i]) * 100).toFixed(2)
-          this.data.rate.push(rateData)
+          this.data.rate.push(rateData >= 0 ? rateData : '-')
         }
         this.cityBarOption.xAxis.data = this.data.city
         this.cityBarOption.series[0].data = this.data.rate

@@ -4,8 +4,8 @@
     <div class="left-button">
       <el-col :span="3" style="margin-right: 20px">
         <el-radio-group v-model="time.type" size="small" @change="radioChange">
-          <el-radio-button label="month">月度</el-radio-button>
-          <el-radio-button label="year">年度</el-radio-button>
+          <el-radio-button label="day">月度</el-radio-button>
+          <el-radio-button label="month">年度</el-radio-button>
         </el-radio-group>
       </el-col>
       <el-col :span="4">
@@ -32,7 +32,7 @@ export default {
     return {
       queryUrl: '/basicdata/flightInOutStat/queryFlightReleaseStat',
       time: {
-        type: 'month',
+        type: 'day',
         statDate: ''
       },
       normalBarEl: null,
@@ -220,11 +220,14 @@ export default {
         } else {
           this.restore()
         }
-        for (let i = 0; i < this.data.total.length; i++) {
-          let rateData = (((this.data.total[i] - this.data.delay[i]) / this.data.total[i]) * 100).toFixed(2)
-          this.data.rate.push(rateData)
+        let name = ''
+        if (this.time.type == 'day') {
+          name = this.time.statDate.split('-')[1].replace(/\b(0+)/gi, '')
+          this.normalBarOption.title.text = name + '月航班放行正常率'
+        } else {
+          name = this.time.statDate.split('-')[0]
+          this.normalBarOption.title.text = name + '年航班放行正常率'
         }
-        this.normalBarOption.series[0].data = this.data.rate
         this.setLastUpdateTime()
         this.updateView()
       }).catch(() => {
@@ -247,6 +250,11 @@ export default {
         }
       }
       this.normalBarOption.xAxis.data = this.data.unit
+      for (let i = 0; i < this.data.total.length; i++) {
+        let rateData = (((this.data.total[i] - this.data.delay[i]) / this.data.total[i]) * 100).toFixed(2)
+        this.data.rate.push(rateData >= 0 ? rateData : '-')
+      }
+      this.normalBarOption.series[0].data = this.data.rate
     },
     updateView () {
       if (this.normalBar) {
