@@ -204,7 +204,6 @@ export default {
           {
             name: '航班小时离港架次最大值',
             type: 'line',
-            step: 'end',
             // data: [120, 132, 101, 134, 90, 230, 210]
             symbol: 'circle',
             symbolSize: 8,
@@ -233,7 +232,6 @@ export default {
           {
             name: '平均航班小时离港架次',
             type: 'line',
-            step: 'end',
             symbol: 'circle',
             symbolSize: 8,
             smooth: false,

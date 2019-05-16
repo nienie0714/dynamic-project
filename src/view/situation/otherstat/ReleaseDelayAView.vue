@@ -24,7 +24,7 @@ export default {
   mixins: [baseMixin],
   data () {
     return {
-      queryUrl: '/basicdata/flightInOutStat/queryFlightNoReleaseStat',
+      queryUrl: '/basicdata/flightInOutStat/queryAFlightDlyReleaseStat',
       time: {
         statDate: ''
       },
@@ -313,9 +313,6 @@ export default {
         this.delayBar.clear()
       }
       this.delayBar.setOption(this.barOptions, true)
-      this.delayBar.on('legendToggleSelect', (params) => {
-        debugger
-      })
     },
     exportBefore () {
       let titles = ['进港航班', '航班进港架次', '进港延误架次', '进港航班放行正常率（%）']

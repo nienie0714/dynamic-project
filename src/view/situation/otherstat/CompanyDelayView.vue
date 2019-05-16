@@ -385,9 +385,6 @@ export default {
         this.companyBar.clear()
       }
       this.companyBar.setOption(this.barOptions, true)
-      this.companyBar.on('legendToggleSelect', (params) => {
-        debugger
-      })
     },
     exportBefore () {
       let titles = ['航空公司', '航班放行架次', '航班放行正常率（%）', '航班放行延误架次', '运营出港航班占比（%）']

@@ -514,12 +514,20 @@ export default {
         } else {
           this.restore()
         }
+        this.outOptions.series[0].data[0].value = this.data.flightStatD.noExecFlight
+        this.outOptions.series[0].data[1].value = this.data.flightStatD.execFlight
+        this.inOptions.series[0].data[0].value = this.data.flightStatA.noExecFlight
+        this.inOptions.series[0].data[1].value = this.data.flightStatA.execFlight
         this.lineOptions.xAxis.data = this.data.perFlight.time
         this.lineOptions.series[0].data = this.data.perFlight.out
         this.lineOptions.series[1].data = this.data.perFlight.in
         this.updateView()
       }).catch(() => {
         this.restore()
+        this.outOptions.series[0].data[0].value = this.data.flightStatD.noExecFlight
+        this.outOptions.series[0].data[1].value = this.data.flightStatD.execFlight
+        this.inOptions.series[0].data[0].value = this.data.flightStatA.noExecFlight
+        this.inOptions.series[0].data[1].value = this.data.flightStatA.execFlight
         this.lineOptions.xAxis.data = this.data.perFlight.time
         this.lineOptions.series[0].data = this.data.perFlight.out
         this.lineOptions.series[1].data = this.data.perFlight.in

@@ -64,7 +64,7 @@ export default {
     }
   },
   mounted () {
-    this.pecBase = this.$store.getters.getCfgVal('fltRag')
+    this.pecBase = parseFloat(this.$store.getters.getCfgVal('fltRag'))
     this.bybridgeFltRateEl = document.getElementById('bybridgeFltRate')
     this.bybridgeFltRate = this.$echarts.init(this.bybridgeFltRateEl)
 
@@ -371,9 +371,9 @@ export default {
       let that = this
       this.$nextTick(() => {
         var color = null
-        if (that.fltRate / 100 >= that.pecBase) {
+        if (that.fltRate * 100 >= that.pecBase) {
           color = [[that.fltRate, '#3da6cc'], [1, '#2e434c']]
-        } else if (that.fltRate / 100 < that.pecBase) {
+        } else if (that.fltRate * 100 < that.pecBase) {
           color = [[that.fltRate, '#FDCF53'], [1, '#2e434c']]
         } else {
           color = [[1, '#7a939e']]
@@ -381,9 +381,9 @@ export default {
         that.bybridgeFltRateOption.series[0].axisLine.lineStyle.color = color
         that.bybridgeFltRateOption.series[0].data[0].value = that.fltRate
         that.bybridgeFltRate.setOption(that.bybridgeFltRateOption, true)
-        if (that.pasRate / 100 >= that.pecBase) {
+        if (that.pasRate * 100 >= that.pecBase) {
           color = [[that.pasRate, '#3da6cc'], [1, '#2e434c']]
-        } else if (that.pasRate / 100 < that.pecBase) {
+        } else if (that.pasRate * 100 < that.pecBase) {
           color = [[that.pasRate, '#FDCF53'], [1, '#2e434c']]
         } else {
            color = [[1, '#7a939e']]
