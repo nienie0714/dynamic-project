@@ -9,7 +9,7 @@
         <div class="gauge-title font-rd font-white">航班靠桥率</div>
         <div class="gauge-echart">
           <div id="bybridgeFltRate" class="gauge-canvas"></div>
-          <div class="absolute-div font-rd bg-yellow" v-if="fltRate <= pecBase">偏低</div>
+          <div class="absolute-div font-rd bg-yellow" v-if="fltRate*100 <= pecBase">偏低</div>
           <div class="text">
             <div class="num-st font-white">{{splitFltRate[0]}}.</div>
             <div class="num-rs font-white">{{splitFltRate[1]}}</div>
@@ -22,7 +22,7 @@
         <div class="gauge-title font-rd font-white">旅客靠桥率</div>
         <div class="gauge-echart">
           <div id="bybridgePasRate" class="gauge-canvas"></div>
-          <div class="absolute-div font-rd bg-yellow" v-if="pasRate <= pecBase">偏低</div>
+          <div class="absolute-div font-rd bg-yellow" v-if="pasRate*100 <= pecBase">偏低</div>
           <div class="text">
             <div class="num-st font-white">{{splitPasRate[0]}}.</div>
             <div class="num-rs font-white">{{splitPasRate[1]}}</div>

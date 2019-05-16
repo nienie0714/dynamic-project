@@ -128,7 +128,7 @@ export default {
           axisLabel: {
             interval: 0,
             margin: 35,
-            verticalAlign: 'top',
+            verticalAlign: 'center',
             align: 'center',
             rotate: -90,
             color: '#fff',
