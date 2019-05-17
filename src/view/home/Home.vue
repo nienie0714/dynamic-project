@@ -8,7 +8,7 @@
           <div class="time-rs font-blue">{{latestDate.split('/')[0]}}/{{latestDate.split('/')[1]}}/{{latestDate.split('/')[2]}}</div>
           <div class="time-rs font-blue">星期{{latestWeek}}</div>
         </div>
-        <div class="merge-time time-st font-blue">20:18</div>
+        <div class="merge-time time-st font-blue">{{latestTime}}</div>
       </div>
       <header-view @select="handleHeaderMenu"></header-view>
       <el-main :class="((routerViewName!='航班查询')&&(routerViewName!='任务调度')&&(routerViewName!='态势分析'))?'home-top-main':''"><!-- ((routerViewName!='态势分析')?'merge-top-main':'') -->
