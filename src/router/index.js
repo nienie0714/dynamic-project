@@ -216,6 +216,23 @@ var router = new Router({
               component: r => require.ensure([], () => r(require('@/view/situation/otherstat/StandRateView'), 'StandRateView'))
             }
           ]
+        },
+        {
+          path: 'vehiclestat',
+          name: '车辆统计',
+          component: Basic,
+          children: [
+            {
+              path: 'alarm',
+              name: '车辆报警统计',
+              component: r => require.ensure([], () => r(require('@/view/situation/vehiclestat/AlarmView'), 'AlarmView'))
+            },
+            {
+              path: 'inOffLine',
+              name: '车辆上线/离线统计',
+              component: r => require.ensure([], () => r(require('@/view/situation/vehiclestat/InOffLineView'), 'InOffLineView'))
+            }
+          ]
         }
       ]
     },

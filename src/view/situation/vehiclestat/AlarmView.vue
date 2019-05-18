@@ -50,26 +50,18 @@ export default {
         export: false
       },
       // 基础路径
-      baseUrl: 'basicdata/sysLog',
+      baseUrl: 'basicdata/VehicleMaintenanceRecord',
       formData: {
         title: '详情',
         visible: false,
         inline: true,
         className: 'twiceCol',
-        key: 'logId',
-        clearRulesKey: ['userName'],
+        key: 'maintenanceId',
+        clearRulesKey: [],
         formData: [
-          {key: 'logId', label: '日志Id', type: 'input', isHidden: true, maxlength: 9},
-          {key: 'logType', label: '日志类型', type: 'input', maxlength: 50},
-          {key: 'logUser', label: '操作用户', type: 'input', maxlength: 10},
-          {key: 'logSession', label: '登录会话', type: 'input', maxlength: 100},
-          {key: 'logTime', label: '日志时间', type: 'input'},
-          {key: 'logSource', label: '操作来源', type: 'input', maxlength: 100}, // 操作系统名称或客户端地址等
-          {key: 'logSummary', label: '日志概述', type: 'input', maxlength: 100},
-          {key: 'logDetail', label: '日志详细', type: 'input', maxlength: 500},
-          {key: 'createtime', label: '创建时间', type: 'date', format: 'yyyy-MM-dd HH:mm:ss', valueFormat: 'yyyy-MM-dd HH:mm:ss'},
-          {key: 'updatetime', label: '修改时间', type: 'date', format: 'yyyy-MM-dd HH:mm:ss', valueFormat: 'yyyy-MM-dd HH:mm:ss'},
-          {key: 'remark', label: '备注', type: 'textarea', autosize: true, maxlength: 100}
+          {key: 'vehicleNo', label: '车辆牌号', type: 'input', maxlength: 9},
+          {key: 'status', label: '报警类型', type: 'tabs', tabsKey: 'vehicleAlarm'},
+          {key: 'num', label: '报警次数', type: 'number', position: 'right', step: 1}
         ]
       },
       // 查询条件每行个数
@@ -77,24 +69,29 @@ export default {
       // 查询条件设置
       queryList: [
         {
-          // 'p': '用户名',
-          key: 'logType',
+          // 'p': '上线离线',
+          key: 'vehicleAlarm',
+          tabsKey: 'vehicleAlarm',
+          value: null,
+          type: 'tabs',
+          size: 'medium',
+          inputText: '',
+          options: [{
+            key: null,
+            value: '全部'
+          }],
+          'valueChange': 'attrChange',
+          'span': 5
+        },
+        {
+          // p: '车牌号',
+          key: 'vehicleNo',
           value: '',
           type: 'select',
           filterable: true,
-          optKey: 'logType',
-          optLabel: 'logType',
-          inputText: '日志类型',
-          getOptions: '/basicdata/sysLog/queryLogType',
-          span: 4
-        },
-        {
-          // 'p': '用户名',
-          key: 'logUser',
-          value: '',
-          type: 'input',
-          inputText: '操作用户',
-          span: 4
+          inputText: '请选择车辆牌号',
+          getOptions: '/basicdata/VehicleMaintenanceRecord/getVehicleNo',
+          span: 3
         },
         {
           // 'p': '开始时间',
@@ -132,15 +129,9 @@ export default {
         key: 'logId',
         multipleSelection: [],
         fields: [
-          {prop: 'logId', label: '日志Id', hidden: true},
-          {prop: 'remark', label: '备注', hidden: false},
-          {prop: 'empName', label: '操作用户', hidden: false},
-          {prop: 'logType', label: '日志类型', hidden: false},
-          {prop: 'logSession', label: '登录会话', hidden: false, overflow: true},
-          {prop: 'logSource', label: '操作来源', hidden: false},
-          {prop: 'logSummary', label: '日志概述', hidden: false},
-          {prop: 'logDetail', label: '日志详细', hidden: false, width: '350px', overflow: true},
-          {prop: 'logTime', label: '记录时间', hidden: false, formatter: this.formatterDayMin}
+          {prop: 'vehicleNo', label: '车辆牌号', fixed: true, hidden: false},
+          {prop: 'status', label: '报警类型', hidden: false},
+          {prop: 'num', label: '报警次数', hidden: false}
         ]
       }
     }
