@@ -251,7 +251,7 @@ export default {
       }
       this.normalBarOption.xAxis.data = this.data.unit
       for (let i = 0; i < this.data.total.length; i++) {
-        let rateData = (((this.data.total[i] - this.data.delay[i]) / this.data.total[i]) * 100).toFixed(2)
+        let rateData = Math.floor((this.data.total[i] - this.data.delay[i]) / this.data.total[i] * 10000) / 100
         this.data.rate.push(rateData >= 0 ? rateData : '-')
       }
       this.normalBarOption.series[0].data = this.data.rate

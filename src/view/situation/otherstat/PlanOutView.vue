@@ -259,7 +259,7 @@ export default {
         this.data.total = data.total || []
         this.data.delay = data.delay || []
         for (let i = 0; i < data.total.length; i++) {
-          let rateData = (((data.total[i] - data.delay[i]) / data.total[i]) * 100).toFixed(2)
+          let rateData = Math.floor((data.total[i] - data.delay[i]) / data.total[i] * 10000) / 100
           this.data.rate.push(rateData >= 0 ? rateData : '-')
 
           let flyData = data.total[i] - data.delay[i]

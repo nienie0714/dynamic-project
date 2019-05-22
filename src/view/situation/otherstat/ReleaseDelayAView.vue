@@ -114,7 +114,7 @@ export default {
                       <td style="width: 180px;">${axisData[i]}</td>
                       <td style="width: 180px;">${series[0].data[i]}</td>
                       <td style="width: 180px;">${series[1].data[i]}</td>
-                      <td style="width: 200px;">${(((series[0].data[i] - series[1].data[i]) / series[0].data[i]) * 100).toFixed(2)}</td>
+                      <td style="width: 200px;">${Math.floor((series[0].data[i] - series[1].data[i]) / series[0].data[i] * 10000) / 100}</td>
                     </tr>`
                 }
                 table += '</tbody></table></div></div>'
@@ -285,7 +285,7 @@ export default {
         this.barOptions.series[0].data = this.data.total
         this.barOptions.series[1].data = this.data.delay
         this.data.flights.forEach((item, i) => {
-          let rateData = (((this.data.total[i] - this.data.delay[i]) / this.data.total[i]) * 100).toFixed(2)
+          let rateData = Math.floor((this.data.total[i] - this.data.delay[i]) / this.data.total[i] * 10000) / 100
           this.data.rate.push(rateData >= 0 ? rateData : '-')
         })
         this.setLastUpdateTime()

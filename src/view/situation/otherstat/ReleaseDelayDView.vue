@@ -113,7 +113,7 @@ export default {
                       <td style="width: 180px;">${axisData[i]}</td>
                       <td style="width: 180px;">${series[0].data[i]}</td>
                       <td style="width: 180px;">${series[1].data[i]}</td>
-                      <td style="width: 200px;">${(((series[0].data[i] - series[1].data[i]) / series[0].data[i]) * 100).toFixed(2)}</td>
+                      <td style="width: 200px;">${Math.floor((series[0].data[i] - series[1].data[i]) / series[0].data[i] * 10000) / 100}</td>
                     </tr>`
                 }
                 table += '</tbody></table></div></div>'
@@ -316,7 +316,7 @@ export default {
     exportBefore () {
       let percs = []
       this.data.flights.forEach((item, i) => {
-        let perc = (((this.data.total[i] - this.data.delay[i]) / this.data.total[i]) * 100).toFixed(2)
+        let perc = Math.floor((this.data.total[i] - this.data.delay[i]) / this.data.total[i] * 10000) / 100
         percs.push(perc >= 0 ? perc : '-')
       })
       let titles = ['出港航班', '航班离港架次', '放行延误架次', '出港航班放行正常率（%）']
