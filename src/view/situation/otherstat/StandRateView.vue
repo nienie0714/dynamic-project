@@ -129,7 +129,7 @@ export default {
           data: []
         },
         yAxis: {
-          name: '频率',
+          name: '频率 %',
           min: '0',
           max: 'dataMax',
           nameLocation: 'start',
@@ -152,7 +152,7 @@ export default {
             fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
           },
           nameTextStyle: {
-            padding: [0, 0, 0, -50],
+            padding: [0, 0, 0, -60],
             color: '#7a939e'
           }
         },

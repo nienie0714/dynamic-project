@@ -134,7 +134,7 @@ export default {
         },
         yAxis: [
           {
-            name: '百分比',
+            name: '百分比 %',
             min: '0',
             max: '100',
             nameLocation: 'start',
@@ -157,7 +157,7 @@ export default {
               fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
             },
             nameTextStyle: {
-              padding: [0, 0, 0, -55],
+              padding: [0, 0, 0, -65],
               color: '#7a939e'
             }
           },
@@ -268,7 +268,7 @@ export default {
               show: true,
               position: 'top',
               distance: 15,
-              formatter: '{c}%',
+              // formatter: '{c}%',
               color: 'rgba(8, 167, 130, 1)'
             },
             tooltip: {
