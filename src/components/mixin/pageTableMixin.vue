@@ -28,6 +28,7 @@ export default {
       if (this.$route.matched[0].path == item.path) {
         // 下载文件名
         this.fileName = localStorage.getItem(item.name) + '.xls'
+        this.$set(this.importData, 'fileName', localStorage.getItem(item.name))
       }
     })
     this.$nextTick(() => {

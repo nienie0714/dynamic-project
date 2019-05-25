@@ -2445,3 +2445,74 @@ tr.tr-single {
   max-height: 100%;
 }
 /* 全屏图片设置结束 */
+/* 导入弹框样式开始 */
+/* 导入块（上侧） */
+.import-dialog .dialog-body>div:first-of-type {
+  margin-top: 20px;
+}
+.import-dialog .dialog-body>div:first-of-type>button:last-of-type {
+  margin-left: 140px;
+}
+.import-dialog .dialog-body>div:first-of-type>button {
+  margin-left: 15px;
+}
+.import-dialog .dialog-body>div:first-of-type>ul {
+  margin-top: 30px;
+}
+.import-dialog .dialog-body .el-upload-list__item {
+  border-radius: 8px;
+}
+.el-upload-list__item {
+  background-color: rgba(60,166,200,0.4) !important;
+  cursor: pointer;
+}
+.el-upload-list__item:hover .el-upload-list__item-name,
+.el-upload-list__item:hover .el-upload-list__item-name [class^=el-icon] {
+  color: #fff !important;
+}
+.el-upload-list__item-name,
+.el-upload-list__item-name [class^=el-icon] {
+  color: #7a939e !important;
+}
+.import-dialog .dialog-body .el-upload-list__item-name,
+.import-dialog .dialog-body .el-upload-list__item-name [class^=el-icon] {
+  font-size: 20px;
+}
+.import-dialog .dialog-body .el-upload-list__item-name {
+  margin-left: 20px;
+  text-align: left;
+  height: 50px;
+  line-height: 50px;
+}
+.import-dialog .dialog-body .el-upload-list__item>.el-icon-close:before {
+  line-height: 40px;
+  margin-right: 10px;
+  font-size: 20px;
+  color: #fff;
+}
+.el-upload-list--text:focus {
+  outline: 0;
+}
+.el-upload-list__item:focus {
+  outline: 0;
+}
+/* 提示块（下侧） */
+.import-dialog .dialog-body>div:not(:first-of-type) {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  text-align: left;
+}
+.import-dialog .dialog-body>.tip-font {
+  font-size: 16px;
+  color: #7a939e;
+}
+.import-dialog .dialog-body>div:not(:first-of-type):not(.tip-font) {
+  font-size: 20px;
+  color: #fff;
+}
+.import-dialog .dialog-body>div:not(:first-of-type):not(.tip-font)>div:first-of-type {
+  width: calc(100% - 116px);
+}
+/* 导入弹框样式结束 */

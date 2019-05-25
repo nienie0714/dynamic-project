@@ -1,12 +1,15 @@
 <script>
 import WarningBoxView from '../common/WarningBoxView'
-import { postData, download, queryAll } from '../../api/base'
+import ImportDialog from '../common/ImportDialogView'
+import { postData, download, queryAll } from '@/api/base'
+import {exportPDF} from '@/util/util'
 import _ from 'lodash'
 import basicMsgBoxMixin from './basicMsgBoxMixin'
 
 export default {
   components: {
-    WarningBoxView
+    WarningBoxView,
+    ImportDialog
   },
   mixins: [basicMsgBoxMixin],
   data () {
@@ -32,7 +35,8 @@ export default {
         add: false,
         update: false,
         delete: false,
-        export: false
+        export: false,
+        import: false
       },
       deleteData: {
         visible: false,
@@ -41,6 +45,13 @@ export default {
         class: ' dialog-delete-warn',
         info: '确认要删除所选数据吗？',
         data: null
+      },
+      importData: {
+        visible: false,
+        uploadUrl: '',
+        fileType: '.xls',
+        fileName: '',
+        fileUrl: ''
       },
       clickTime: '00:00'
     }
@@ -355,6 +366,15 @@ export default {
           this.downFile(response, this.fileName)
         })
       }
+    },
+    handleImport () {
+      this.importData.visible = true
+    },
+    downloadError (titles, arrs, widths, groupSize, direct) {
+      exportPDF(null, titles, arrs, widths, this.importData.fileName + '导入失败信息', groupSize || 24, direct)
+    },
+    handleRefresh () {
+      this.queryDataReq()
     },
     // 新增/编辑前操作
     customSaveBefore (data) {

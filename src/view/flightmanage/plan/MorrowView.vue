@@ -24,11 +24,8 @@
     <el-main class="whole-table-view mult-title-table">
       <div class="whole-table-header">
         <div class="whole-table-title">查询结果</div>
-        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete">
-          <template slot="button-slot-scope-pre">
-            <div v-if="permissions.import" class="tool-div-button tool-import" title="导入" @click="handleImport"></div>
-          </template>
-        </Tool-button-view>
+        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleImport="handleImport" @handleDownload="handleDownload"
+        @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
         <div class="pagination-view">
           <div class="el-pagination">
             <span class="el-pagination__total">共 {{ tableTotal }} 条</span>
@@ -121,7 +118,7 @@
       </template>
     </Edit-view>
     <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm" @handleClose="handleDeleteClose"></Warning-box-view>
-    <el-dialog :visible.sync="importData.visible" :close-on-click-modal="false" width="500px" append-to-body class="other-dialog plan-dialog" @close="closeImportDialog">
+    <el-dialog :visible.sync="importData.visible" :close-on-click-modal="false" width="500px" append-to-body class="other-dialog import-dialog" @close="closeImportDialog">
       <div slot="title" class="dialog-header">
         <img :src="require('@img/title_deco.png')" />
         <span class="header-title">导入</span>
@@ -273,14 +270,6 @@ export default {
           beginTime: '',
           endTime: ''
         }
-      },
-      // 菜单对应按钮权限
-      permissions: {
-        add: false,
-        update: false,
-        delete: false,
-        export: false,
-        import: false
       },
       // 基础路径
       baseUrl: 'planFlight',
@@ -1234,75 +1223,6 @@ export default {
 }
 .mult-title-table .el-table td {
   border: none;
-}
-/* 导入块（上侧） */
-.plan-dialog .dialog-body>div:first-of-type {
-  margin-top: 20px;
-}
-.plan-dialog .dialog-body>div:first-of-type>button:last-of-type {
-  margin-left: 140px;
-}
-.plan-dialog .dialog-body>div:first-of-type>button {
-  margin-left: 15px;
-}
-.plan-dialog .dialog-body>div:first-of-type>ul {
-  margin-top: 30px;
-}
-.plan-dialog .dialog-body .el-upload-list__item {
-  border-radius: 8px;
-}
-.el-upload-list__item {
-  background-color: rgba(60,166,200,0.4) !important;
-  cursor: pointer;
-}
-.el-upload-list__item:hover .el-upload-list__item-name,
-.el-upload-list__item:hover .el-upload-list__item-name [class^=el-icon] {
-  color: #fff !important;
-}
-.el-upload-list__item-name,
-.el-upload-list__item-name [class^=el-icon] {
-  color: #7a939e !important;
-}
-.plan-dialog .dialog-body .el-upload-list__item-name,
-.plan-dialog .dialog-body .el-upload-list__item-name [class^=el-icon] {
-  font-size: 20px;
-}
-.plan-dialog .dialog-body .el-upload-list__item-name {
-  margin-left: 20px;
-  text-align: left;
-  height: 50px;
-  line-height: 50px;
-}
-.plan-dialog .dialog-body .el-upload-list__item>.el-icon-close:before {
-  line-height: 40px;
-  margin-right: 10px;
-  font-size: 20px;
-  color: #fff;
-}
-.el-upload-list--text:focus {
-  outline: 0;
-}
-.el-upload-list__item:focus {
-  outline: 0;
-}
-/* 提示块（下侧） */
-.plan-dialog .dialog-body>div:not(:first-of-type) {
-  margin-top: 20px;
-  display: flex;
-  align-items: center;
-  margin-left: 10px;
-  text-align: left;
-}
-.plan-dialog .dialog-body>.tip-font {
-  font-size: 16px;
-  color: #7a939e;
-}
-.plan-dialog .dialog-body>div:not(:first-of-type):not(.tip-font) {
-  font-size: 20px;
-  color: #fff;
-}
-.plan-dialog .dialog-body>div:not(:first-of-type):not(.tip-font)>div:first-of-type {
-  width: calc(100% - 116px);
 }
 .plan-edit-dialog>.el-dialog {
   height: 250px;

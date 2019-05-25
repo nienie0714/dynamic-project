@@ -10,13 +10,14 @@
     <el-main class="page-table-view">
       <div class="page-table-header">
         <div class="page-table-title">查询结果</div>
-        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
+        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleImport="handleImport" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
         <Pagination-view :pageData="pageData" @sizeChange="handleSizeChange" @currentChange="handleCurrentChange"></Pagination-view>
       </div>
       <Table-view :permissions="permissions" :tableData="tableData" ref="basicTable" @handleDetail="handleDetail" @handleEdit="handleEdit" @handleDelete="handleDelete"></Table-view>
     </el-main>
     <Edit-view :formData="formData" @handleAdd="saveAdd" @handleEdit="saveEdit"></Edit-view>
     <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm" @handleClose="handleDeleteClose"></Warning-box-view>
+    <import-dialog :data="importData" @downloadErrorExcel="downloadErrorExcel" @handleRefresh="handleRefresh"></import-dialog>
   </el-container>
 </template>
 
@@ -30,7 +31,7 @@ import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
 import { queryAll } from '../../../api/base.js'
 import {twoDecimal, threeD, phoneReg, maxENReg} from '../../../util/rules.js'
-
+import _ from 'lodash'
 // const tableHeight = ''
 
 export default {
@@ -227,6 +228,12 @@ export default {
           /* {prop: 'assetNumber', label: '资产编号', fixed: false, hidden: false}, */
           {prop: 'isOnline', label: '是否在线', fixed: false, hidden: false, optionKey: 'isYOrN'}
         ]
+      },
+      importData: {
+        visible: false,
+        uploadUrl: 'vehicle',
+        fileType: '.xls',
+        fileUrl: '/dataImport/downloadExcel/vehicle'
       }
     }
   },
@@ -241,6 +248,12 @@ export default {
           })
         }
       })
+    },
+    downloadErrorExcel (data) {
+      let titles = ['车牌号', '车辆类型', '车辆型号', '投运日期', '年审日期', '所属单位', '使用区域', '驾驶资质', '管理状态', '行驶里程(KM)', '加油量(L)', '是否在线']
+      let arrs = [_.map(data, 'vehicleNo'), _.map(data, 'vTypeName'), _.map(data, 'vehicleModel'), _.map(data, 'useTime'), _.map(data, 'reviewTime'), _.map(data, 'deptName'), _.map(data, 'permissionArea'), _.map(data, 'licenseType'), _.map(data, 'status'), _.map(data, 'vehicleMileage'), _.map(data, 'fuelAmount'), _.map(data, 'isOnline')]
+      let widths = [60, 35, 55, 60, 60, 66, 45, 45, 66, 55, 55, 45]
+      this.downloadError(titles, arrs, widths, null, 'l')
     }
   }
 }

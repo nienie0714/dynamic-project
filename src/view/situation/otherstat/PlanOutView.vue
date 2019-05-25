@@ -258,6 +258,8 @@ export default {
         this.data.time = data.time || []
         this.data.total = data.total || []
         this.data.delay = data.delay || []
+        this.data.rate = []
+        this.data.fly = []
         for (let i = 0; i < data.total.length; i++) {
           let rateData = Math.floor((data.total[i] - data.delay[i]) / data.total[i] * 10000) / 100
           this.data.rate.push(rateData >= 0 ? rateData : '-')

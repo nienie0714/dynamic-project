@@ -49,23 +49,32 @@ export function flattenDeep (arr, tmpArr, pNode) {
   }
 }
 
-export function exportPDF (echarts, titles, arrs, widths, fileName, groupSize) {
+export function exportPDF (echarts, titles, arrs, widths, fileName, groupSize, direct) {
   groupSize = groupSize || 24
   fileName = fileName || '统计数据导出'
-  // a4纸的尺寸[595.28,841.89]
-  let opts = {
-    type: 'png',
-    backgroundColor: 'rgba(8, 29, 45, 0.96)',
-    excludeComponents: ['toolbox']
+  var doc
+  if (echarts) {
+    // a4纸的尺寸[595.28,841.89]
+    let opts = {
+      type: 'png',
+      backgroundColor: 'rgba(8, 29, 45, 0.96)',
+      excludeComponents: ['toolbox']
+    }
+    let img = echarts.getConnectedDataURL(opts)
+    doc = new JsPDF({
+      orientation: 'l',
+      width: 595,
+      height: 842
+    })
+    doc.addImage(img, 'png', 12, 30, 273, 150)
+    doc.addPage('a4', 'p')
+  } else {
+    doc = new JsPDF({
+      orientation: direct || 'p',
+      width: 595,
+      height: 842
+    })
   }
-  let img = echarts.getConnectedDataURL(opts)
-  var doc = new JsPDF({
-    orientation: 'l',
-    width: 595,
-    height: 842
-  })
-  doc.addImage(img, 'png', 12, 30, 273, 150)
-  doc.addPage('a4', 'p')
   let tmpFlts = JSON.parse(JSON.stringify(arrs[0]))
   tmpFlts.unshift(titles[0])
   let datas = _.chunk(tmpFlts, groupSize)
@@ -96,7 +105,7 @@ export function exportPDF (echarts, titles, arrs, widths, fileName, groupSize) {
     }
     doc.addHTML(element[x], 12, 15, options, function () {
       if (x < datas.length - 1) {
-        doc.addPage('a4', 'p')
+        doc.addPage('a4', direct || 'p')
       } else {
         doc.save(fileName + '.pdf')
       }

@@ -10,13 +10,14 @@
     <el-main class="page-table-view">
       <div class="page-table-header">
         <div class="page-table-title">查询结果</div>
-        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
+        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleImport="handleImport" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
         <Pagination-view :pageData="pageData" @sizeChange="handleSizeChange" @currentChange="handleCurrentChange"></Pagination-view>
       </div>
       <Table-view :permissions="permissions" :tableData="tableData" ref="basicTable" @handleDetail="handleDetail" @handleEdit="handleEdit" @handleDelete="handleDelete"></Table-view>
     </el-main>
     <Edit-view :formData="formData" @handleAdd="saveAdd" @handleEdit="saveEdit"></Edit-view>
     <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm" @handleClose="handleDeleteClose"></Warning-box-view>
+    <import-dialog :data="importData" @downloadErrorExcel="downloadErrorExcel" @handleRefresh="handleRefresh"></import-dialog>
   </el-container>
 </template>
 
@@ -30,6 +31,7 @@ import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
 import {postData} from '../../../api/base.js'
 import {idNumReg, sixNum, phoneReg, threeD} from '../../../util/rules.js'
+import _ from 'lodash'
 
 // const tableHeight = ''
 
@@ -149,6 +151,12 @@ export default {
           {prop: 'phone', label: '联系电话', fixed: false, hidden: false},
           {prop: 'qualification', label: '员工资质', fixed: false, hidden: false}
         ]
+      },
+      importData: {
+        visible: false,
+        uploadUrl: 'employee',
+        fileType: '.xls',
+        fileUrl: '/dataImport/downloadExcel/employee'
       }
     }
   },
@@ -181,6 +189,12 @@ export default {
       }).catch(() => {
         this.deleteData.loading = false
       })
+    },
+    downloadErrorExcel (data) {
+      let titles = ['员工编号', '员工姓名', '部门', '所属机场', '职务', '性别', '联系电话', '员工资质']
+      let arrs = [_.map(data, 'reserved2'), _.map(data, 'empName'), _.map(data, 'deptName'), _.map(data, 'airportIata'), _.map(data, 'post'), _.map(data, 'gender'), _.map(data, 'phone'), _.map(data, 'qualification')]
+      let widths = [100, 90, 90, 100, 110, 62, 100, 100]
+      this.downloadError(titles, arrs, widths, null, 'l')
     }
   }
 }

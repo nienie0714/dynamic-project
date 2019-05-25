@@ -10,13 +10,14 @@
     <el-main class="page-table-view">
       <div class="page-table-header">
         <div class="page-table-title">查询结果</div>
-        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
+        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleImport="handleImport" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
         <Pagination-view :pageData="pageData" @sizeChange="handleSizeChange" @currentChange="handleCurrentChange"></Pagination-view>
       </div>
       <Table-view :permissions="permissions" :tableData="tableData" @change="tableChange" ref="basicTable" @handleDetail="handleDetail" @handleEdit="handleEdit" @handleDelete="handleDelete"></Table-view>
     </el-main>
     <Edit-view :formData="formData" @handleAdd="saveAdd" @handleEdit="saveEdit"></Edit-view>
     <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm" @handleClose="handleDeleteClose"></Warning-box-view>
+    <import-dialog :data="importData" @downloadErrorExcel="downloadErrorExcel" @handleRefresh="handleRefresh"></import-dialog>
   </el-container>
 </template>
 
@@ -30,6 +31,7 @@ import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
 import {idNumReg, sixNum, phoneReg} from '../../../util/rules.js'
 import {queryAll} from '../../../api/base.js'
+import _ from 'lodash'
 
 // const tableHeight = ''
 
@@ -115,6 +117,12 @@ export default {
           {prop: 'pDeptName', label: '上级部门', fixed: false, hidden: false},
           {prop: 'phone', label: '联系电话', fixed: false, hidden: false}
         ]
+      },
+      importData: {
+        visible: false,
+        uploadUrl: 'department',
+        fileType: '.xls',
+        fileUrl: '/dataImport/downloadExcel/department'
       }
     }
   },
@@ -170,6 +178,12 @@ export default {
     // 自定义方法：保存成功后重新获取树
     customMethod () {
       this.$transfer.$emit('updateTree')
+    },
+    downloadErrorExcel (data) {
+      let titles = ['部门编号', '部门名称', '上级部门编号', '联系电话', '备注']
+      let arrs = [_.map(data, 'deptId'), _.map(data, 'deptName'), _.map(data, 'deptParentId'), _.map(data, 'phone'), _.map(data, 'remark')]
+      let widths = [100, 115, 100, 100, 95]
+      this.downloadError(titles, arrs, widths)
     }
   },
   watch: {
