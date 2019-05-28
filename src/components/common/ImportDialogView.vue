@@ -98,21 +98,16 @@ export default {
     },
     downloadExcel () {
       download(this.importData.fileUrl, null).then(res => {
-        this.downFile(res, this.importData.fileName)
+        this.downFile(res, this.importData.fileName, 'xls')
       }).catch(err => {
         this.showError('下载模板', '请重新尝试 !')
         console.log(err)
       })
     },
     // Blob文件转换下载
-    downFile (result, fileName, fileType) {
+    downFile (result, fileName) {
       var data = result.data
-      let type
-      if (fileType) {
-        type = fileType
-      } else {
-        type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      }
+      let type = data.type
       var blob = new Blob([data], { type: type })
       var objectUrl = URL.createObjectURL(blob)
       var a = document.createElement('a')
