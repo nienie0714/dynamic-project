@@ -188,9 +188,12 @@ export default {
             }
           }
           if (this.formData.formData[i].type == 'dateRangePicker') {
-            this.$set(this.formData.formData[i], 'value', {start: null, end: null})
-            this.formData.formData[i].value.start = data.currentRow[this.formData.formData[i].key1]
-            this.formData.formData[i].value.end = data.currentRow[this.formData.formData[i].key2]
+            let obj = {}
+            this.$set(obj, this.formData.formData[i].key1, null)
+            this.$set(obj, this.formData.formData[i].key2, null)
+            this.$set(this.formData.formData[i], 'value', obj)
+            this.formData.formData[i].value[this.formData.formData[i].key1] = data.currentRow[this.formData.formData[i].key1]
+            this.formData.formData[i].value[this.formData.formData[i].key2] = data.currentRow[this.formData.formData[i].key2]
           } else {
             this.$set(this.formData.formData[i], 'value', data.currentRow[this.formData.formData[i].key])
           }

@@ -536,7 +536,7 @@ export default {
           }
           if (item.hasOwnProperty('getOptions')) {
             var data = {}
-            if (this.$refs[item.key] && item.type == 'select' && !item.hasOwnProperty('multiple')) {
+            if (this.$refs[item.key] && (this.$refs[item.key].length > 0) && item.type == 'select' && !item.hasOwnProperty('multiple') && !item.hidden) {
               this.$refs[item.key][0].selectedLabel = this.editData[item.key]
               this.$refs[item.key][0].query = this.editData[item.key]
               this.$refs[item.key][0].cachedOptions.splice(0)
