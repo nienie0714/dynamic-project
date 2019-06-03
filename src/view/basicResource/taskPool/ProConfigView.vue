@@ -161,7 +161,7 @@
                           </div>
                           <div v-else class="tr-div-td">
                             <td v-for="field in scopeTemp.item.tabelFields" :key="field.prop" class="cont-tr-div" :width="field.width">
-                              <div v-if="field.prop=='taskTimeType'">{{item[field.prop]=='B'?'开始':(item[field.prop]=='E'?'结束':'')}}</div>
+                              <div v-if="field.prop=='taskTimeType'">{{item[field.prop]=='B'?'开始':(item[field.prop]=='E'?'结束':'无')}}</div>
                               <div v-else-if="field.prop=='reserved1'">{{item[field.prop]=='0'?'无':(item[field.prop]=='1'?'绑定':'解绑')}}</div>
                               <div v-else>{{item[field.prop]?item[field.prop]:' '}}</div>
                             </td>
@@ -281,7 +281,7 @@ export default {
               {prop: 'refNodeCn', editProp: 'refNodeNoArr', label: '参考节点', width: '110', type: 'select', filterable: true, clearable: true, saveKey: 'refNodeNo', valueKey: 'nodeNo', itemKey: 'nodeNo', itemLabel: 'nodeName', change: this.changeTempRefNo},
               {prop: 'refTimeOffset', label: '参考时间偏移', width: '100', type: 'input', min: -99999, max: 99999},
               {prop: 'updNodeCn', editProp: 'updNodeNoArr', label: '更新节点', width: '110', type: 'select', filterable: true, clearable: true, saveKey: 'updNodeNo', valueKey: 'nodeNo', itemKey: 'nodeNo', itemLabel: 'nodeName', change: this.changeTempUpdNo},
-              {prop: 'taskTimeType', label: '更新任务类型', width: '120', type: 'tabs', options: [{key: 'B', value: '开始'}, {key: 'E', value: '结束'}]},
+              {prop: 'taskTimeType', label: '更新任务类型', width: '120', type: 'tabs', options: [{key: null, value: '无'}, {key: 'B', value: '开始'}, {key: 'E', value: '结束'}]},
               {prop: 'reserved1', label: '绑定车辆', width: '120', type: 'tabs', optionKey: 'bindVehicle', options: []}
             ],
             tempTask: {},
