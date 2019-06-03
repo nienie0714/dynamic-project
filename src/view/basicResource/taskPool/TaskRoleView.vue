@@ -130,13 +130,13 @@ export default {
   },
   methods: {
     // 查询后的自定义方法
-    customAfterQuery () {
-      this.tableData.data.forEach(item => {
-        if (item.hasOwnProperty('taskNames')) {
-          this.$set(item, 'taskNameStr', item.taskNames.join(','))
-        }
-      })
-    },
+    // customAfterQuery () {
+    //   this.tableData.data.forEach(item => {
+    //     if (item.hasOwnProperty('taskNames')) {
+    //       this.$set(item, 'taskNameStr', item.taskNames.join(','))
+    //     }
+    //   })
+    // },
     customMethod () {
       this.queryList.forEach(item => {
         if (item.key == 'taskRoleId') {
