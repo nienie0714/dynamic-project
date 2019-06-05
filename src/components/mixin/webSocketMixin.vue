@@ -9,7 +9,7 @@ export default {
     this.initWebSocket()
   },
   destroyed () {
-    this.websocketClose()
+    this.websocketClose('退出登录', true)
   },
   methods: {
     // 初始化websocket
@@ -37,9 +37,11 @@ export default {
       this.customWsOnMessage(resData)
     },
     // 关闭websocket
-    websocketClose (e) {
+    websocketClose (e, status) {
       console.log('websocket关闭信息：' + e)
-      this.initWebSocket()
+      if (!status) {
+        this.initWebSocket()
+      }
     }
   }
 }

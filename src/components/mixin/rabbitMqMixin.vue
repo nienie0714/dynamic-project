@@ -21,6 +21,9 @@ export default {
     //   })
     // }, this.intervalTime)
   },
+  destroyed () {
+    this.onDisconnect()
+  },
   methods: {
     connect () {
       this.$store.commit('setConfigValue', 'mqUrl')
@@ -38,6 +41,11 @@ export default {
     },
     onError () {
       console.log('mq-error')
+    },
+    onDisconnect () {
+      this.client.disconnect(() => {
+        console.log('退出登录!rtmq')
+      })
     }
   }
 }

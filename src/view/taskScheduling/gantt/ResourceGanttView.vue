@@ -109,6 +109,7 @@ export default {
     }
   },
   mounted () {
+    let that = this
     // this.resGanttStyle.height = Math.floor((window.innerHeight - 175) / 50) * 50 + 'px'
     this.deptName = localStorage.getItem('deptName')
     this.taskArr = this.$store.getters.getTaskColOption
@@ -121,9 +122,11 @@ export default {
     this.$nextTick(() => {
       window.onresize = () => {
         var width = this.resourceGantt.getOption()
+        console.log('clientHeight --> ' + this.ganttEl.clientHeight)
+        console.log('yList.length --> ' + this.yList.length)
         var opts = {
           width: 'auto',
-          height: (this.ganttEl.clientHeight - 50) > (this.yList.length * 50 - 10) ? (this.yList.length * 50 - 10) : (this.ganttEl.clientHeight)
+          height: (this.ganttEl.clientHeight)
         }
         this.resourceGantt.resize(opts)
         this.updateOption()
@@ -360,11 +363,11 @@ export default {
         }
         if (this.dataZoomData[1]) {
           if (this.dataZoomData[1].hasOwnProperty('start')) {
-            this.$set(dataZoomY, 'start', this.dataZoomData[1].start)
-            this.$set(dataZoomY, 'end', this.dataZoomData[1].end)
+            this.$set(dataZoomY, 'start', ((this.ganttEl.clientHeight - 50) > (this.yList.length * 50)) ? 0 : this.dataZoomData[1].start)
+            this.$set(dataZoomY, 'end', ((this.ganttEl.clientHeight - 50) > (this.yList.length * 50)) ? 100 : this.dataZoomData[1].end)
           } else {
             this.$set(dataZoomY, 'startValue', this.dataZoomData[1].startValue)
-            this.$set(dataZoomY, 'endValue', this.dataZoomData[1].endValue)
+            this.$set(dataZoomY, 'endValue', ((this.ganttEl.clientHeight - 50) > (this.yList.length * 50)) ? this.yList[Math.floor((this.ganttEl.clientHeight - 40) / 50) - 1] : this.dataZoomData[1].endValue)
           }
         } else {
           this.$set(dataZoomY, 'startValue', this.yList[0])
@@ -575,7 +578,7 @@ export default {
           grid: {
             show: false,
             width: 'auto',
-            height: (this.ganttEl.clientHeight - 50) > (this.yList.length * 50 - 10) ? (this.yList.length * 50 - 10) : (this.ganttEl.clientHeight - 50),
+            height: ((this.ganttEl.clientHeight - 50) > (this.yList.length * 50)) ? (this.yList.length * 50) : (this.ganttEl.clientHeight - 40),
             top: 50,
             bottom: 0,
             left: 90,
@@ -625,6 +628,7 @@ export default {
           }],
           animation: false
         }
+        console.log(option)
         this.resourceGantt.setOption(option, true)
         this.resetDoingDiv()
         this.resourceGantt.on('datazoom', (params) => {

@@ -725,7 +725,6 @@ import $ from 'jquery'
 import QueryView from '../../components/common/QueryView'
 import WarningBoxView from '../../components/common/WarningBoxView'
 import MessageView from './MessageView'
-import TableView from '../../components/common/BaseTableView'
 import baseMixin from '../../components/mixin/baseMixin'
 import basicTableMixin from '../../components/mixin/basicTableMixin'
 import wholeTableMixin from '../../components/mixin/flightTableMixin'
@@ -1028,6 +1027,11 @@ export default {
       this.text = 'Waiting for the value to changed...'
       /* this.debouncedGetAnswer()
       console.log('value2 is changed :' + oldValue + ' to ' + newValue) */
+    },
+    $route (to, from) {
+      if (to.path == '/') {
+        this.websocketCustomClose(true)
+      }
     }
   },
   created () {
@@ -1387,6 +1391,7 @@ export default {
     customWsOnMessage (data) {
       if (data.type == 1) {
         this.queryAllData(1)
+        // location.reload()
         // this.queryDataReq()
         // this.tableData.data.splice(data.data.oldIndex, 1)
         // this.tableData.data.splice(data.data.newIndex, 0, data.data.row)
@@ -1646,6 +1651,7 @@ export default {
       let standNo = this.preData.data.STAND.map(item => item.standNo)
       let obj = {
         'taskNo': this.preData.data.TASK.TASK_NO,
+        'taskType': this.preData.data.TASK.TASK_TYPE,
         'standNos': standNo.join(),
         'beginTime': this.preData.time[0] == '' ? '00:00:00' : (this.preData.time[0] + ':00'),
         'endTime': this.preData.time[1] == '' ? '23:59:59' : (this.preData.time[1] + ':59')
@@ -1830,12 +1836,12 @@ export default {
       this.preData.preStatic[0].type = 0
 
       let {FLIGHT_NO, DYNAMIC_TASK_ID, TA, TD} = obj
-      let {TASK_NO, TASK_CN} = obj
+      let {TASK_NO, TASK_CN, TASK_TYPE} = obj
       let {EMP_IDS, EMP_NAMES, ID, NAME} = obj
       let {STAND} = obj
       let standNo = STAND
 
-      this.preData.tempObj = Object.assign({}, TASK_NO, TASK_CN)
+      this.preData.tempObj = Object.assign({}, TASK_NO, TASK_CN, TASK_TYPE)
       this.preData.preStatic[1].cn = NAME
       this.preData.preStatic[1].type = 0
       this.preData.preStatic[2].cn = STAND
@@ -1844,7 +1850,7 @@ export default {
       this.preData.preStatic[3].type = 1
       this.preData.step = 3
 
-      this.preData.data.TASK = Object.assign({}, {TASK_NO}, {TASK_CN})
+      this.preData.data.TASK = Object.assign({}, {TASK_NO}, {TASK_CN}, {TASK_TYPE})
       this.preData.data.TEAM_EMPS.push(Object.assign({}, {EMP_IDS}, {EMP_NAMES}, {ID}, {NAME}))
       this.preData.data.STAND.push(Object.assign({}, {standNo}))
       this.preData.data.FLIGHTS.push(Object.assign({}, {FLIGHT_NO}, {DYNAMIC_TASK_ID}))
