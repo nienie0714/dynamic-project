@@ -207,7 +207,7 @@ export default {
         key: 'processNo',
         multipleSelection: [],
         fields: [
-          {prop: 'processCn', label: '航班流程', fixed: true, hidden: false},
+          {prop: 'processCn', label: '航班流程', fixed: true, hidden: false, width: '200'},
           {prop: 'nodeCnStr', label: '节点', fixed: false, hidden: false, overflow: true}
         ]
       }

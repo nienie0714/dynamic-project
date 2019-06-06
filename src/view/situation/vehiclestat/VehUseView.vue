@@ -61,29 +61,16 @@ export default {
         formData: [
           {key: 'vehicleId', label: '车牌编号', type: 'pInput', maxlength: 10, isHidden: true},
           {key: 'vehicleNo', label: '车辆牌号', type: 'input', maxlength: 9},
-          {key: 'status', label: '报警类型', type: 'tabs', tabsKey: 'vehicleAlarm'},
-          {key: 'num', label: '报警次数', type: 'number', position: 'right', step: 1}
+          {key: 'travelKm', label: '行驶公里数', type: 'input'},
+          {key: 'usedNum', label: '车辆使用次数', type: 'input'},
+          {key: 'usedHour', label: '车辆使用小时数', type: 'input'},
+          {key: 'statDate', label: '统计日期', type: 'input'}
         ]
       },
       // 查询条件每行个数
       colSize: 4,
       // 查询条件设置
       queryList: [
-        {
-          // 'p': '上线离线',
-          key: 'vehicleAlarm',
-          tabsKey: 'vehicleAlarm',
-          value: null,
-          type: 'tabs',
-          size: 'medium',
-          inputText: '',
-          options: [{
-            key: null,
-            value: '全部'
-          }],
-          'valueChange': 'attrChange',
-          'span': 5
-        },
         {
           // p: '车牌号',
           key: 'vehicleNo',
@@ -131,8 +118,10 @@ export default {
         multipleSelection: [],
         fields: [
           {prop: 'vehicleNo', label: '车辆牌号', fixed: true, hidden: false},
-          {prop: 'status', label: '报警类型', hidden: false},
-          {prop: 'num', label: '报警次数', hidden: false}
+          {prop: 'travelKm', label: '行驶公里数（单位：千米）', hidden: false},
+          {prop: 'usedNum', label: '车辆使用次数', hidden: false},
+          {prop: 'usedHour', label: '车辆使用小时数', hidden: false},
+          {prop: 'statDate', label: '统计日期', hidden: false}
         ]
       }
     }

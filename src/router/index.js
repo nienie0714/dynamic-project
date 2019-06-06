@@ -231,6 +231,11 @@ var router = new Router({
               path: 'inOffLine',
               name: '车辆上线/离线统计',
               component: r => require.ensure([], () => r(require('@/view/situation/vehiclestat/InOffLineView'), 'InOffLineView'))
+            },
+            {
+              path: 'vehUse',
+              name: '车辆上线/离线统计',
+              component: r => require.ensure([], () => r(require('@/view/situation/vehiclestat/VehUseView'), 'VehUseView'))
             }
           ]
         }

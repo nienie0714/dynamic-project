@@ -63,7 +63,6 @@ export default {
           {key: 'parentDeptIds', label: '部门', saveKey: 'deptId', type: 'casc', class: 'auto-width', getOptions: '/organization/department/queryDeptTreeByUserId', props: {value: 'id', label: 'text', children: 'children'}, options: []},
           {key: 'airportIata', label: '所属机场', type: 'select', filterable: true, tabsKey: 'airport', itemKey: 'key', itemLabel: 'value'},
           {key: 'post', label: '职务', type: 'select', filterable: true, tabsKey: 'post', itemKey: 'key', itemLabel: 'value'},
-          {key: 'sortkey', label: '排序码', type: 'input'},
           {key: 'qualification', label: '员工资质', type: 'textarea', autosize: true, maxlength: 50},
           {key: 'remark', label: '备注', type: 'textarea', autosize: true, maxlength: 100}
         ], /* {key: 'taskRoleIds', label: '任务角色', type: 'select', multiple: true, class: 'auto-width', getOptions: '/taskbasic/taskRole/queryAll', itemKey: 'taskRoleId', itemLabel: 'name', autosize: true}, */
@@ -86,9 +85,6 @@ export default {
           ],
           phone: [
             {validator: phoneReg, trigger: 'blur'}
-          ],
-          sortkey: [
-            {validator: threeD, trigger: 'blur'}
           ]
         }
       },

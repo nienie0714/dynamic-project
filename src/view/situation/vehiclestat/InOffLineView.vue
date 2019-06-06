@@ -50,15 +50,16 @@ export default {
         export: false
       },
       // 基础路径
-      baseUrl: 'basicdata/VehicleMaintenanceRecord',
+      baseUrl: 'basicdata/vehicle',
       formData: {
         title: '详情',
         visible: false,
         inline: true,
         className: 'twiceCol',
-        key: 'maintenanceId',
+        key: 'vehicleId',
         clearRulesKey: [],
         formData: [
+          {key: 'vehicleId', label: '车牌编号', type: 'pInput', maxlength: 10, isHidden: true},
           {key: 'vehicleNo', label: '车辆牌号', type: 'input', maxlength: 9},
           {key: 'status', label: '车辆状态', type: 'input', maxlength: 50},
           {key: 'num', label: '上线/离线次数', type: 'number', position: 'right', step: 1}

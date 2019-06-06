@@ -113,9 +113,9 @@ export default {
         multipleSelection: [],
         fields: [
           {prop: 'unitId', label: '班组编号', fixed: true, hidden: true},
-          {prop: 'unitName', label: '班组名称', fixed: true, hidden: false},
+          {prop: 'unitName', label: '班组名称', fixed: true, hidden: false, width: '170'},
           {prop: 'teamUnitEmps', label: '班组成员', fixed: false, hidden: false, overflow: true},
-          {prop: 'phone', label: '联系电话', fixed: false, hidden: false}
+          {prop: 'phone', label: '联系电话', fixed: false, hidden: false, width: '170'}
         ]
       }
     }
