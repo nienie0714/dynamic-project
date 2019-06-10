@@ -101,6 +101,7 @@
                           <img v-if="item[field.prop]" :src="require('@img/icon_heart_liked.png')" @click.self.stop="cancelMarkFlight(item)" @dblclick="eventStop($event)"/>
                           <img v-else :src="require('@img/icon_heart_default.png')" @click.self.stop="markFlight(item)" @dblclick="eventStop($event)"/>
                         </div>
+                        <div v-else-if="field.prop == 'index'" :class="field.childClass">{{ index + 1 }}</div>
                         <div v-else-if="field.prop == 'stand' && item[field.prop]" :class="field.childClass">{{ item[field.prop] }}</div>
                         <div v-else-if="field.prop == 'preDepTime'" :class="`${item['preDepTimeCss']?item['preDepTimeCss']:''} time-bg`">{{ item[field.prop] ? item[field.prop] : '—:—' }}</div>
                         <div v-else-if="field.prop == 'arrvTime'" :class="`${item['arrvTimeCss']?item['arrvTimeCss']:''} time-bg`">{{ item[field.prop] ? item[field.prop] : '—:—' }}</div>
@@ -595,6 +596,7 @@ export default {
         data: [],
         fields: [
           {prop: 'mark', label: '', width: '40', fixed: true, hidden: false},
+          {prop: 'index', label: '', width: '40', minWidth: '40', fixed: true, hidden: false},
           {prop: 'flightNoA', label: '进港航班', width: '80', fixed: true, hidden: false},
           {prop: 'flightNoD', label: '出港航班', width: '80', fixed: true, hidden: false},
           {prop: 'stand', label: '机位', width: '80', childClass: 'standClass', fixed: true, hidden: false},

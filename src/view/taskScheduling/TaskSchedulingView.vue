@@ -95,6 +95,7 @@
                             <img v-if="item[field.prop]" :src="require('@img/icon_heart_liked.png')" @click.self.stop="queryData.execDateFlag != -1&&cancelMarkFlight(item)"/>
                             <img v-else :src="require('@img/icon_heart_default.png')" @click.self.stop="queryData.execDateFlag != -1&&markFlight(item)"/>
                           </div>
+                          <div v-else-if="field.prop == 'index'" :class="field.childClass">{{ index + 1 }}</div>
                           <div v-else-if="field.prop == 'stand' && item[field.prop]" :class="field.childClass">{{ item[field.prop] }}</div>
                           <div v-else-if="field.prop == 'preDepTime'" :class="item['preDepTimeCss']?item['preDepTimeCss']+' time-bg':'time-bg'">{{ item[field.prop] ? item[field.prop] : '—:—' }}</div>
                           <div v-else-if="field.prop == 'arrvTime'" :class="item['arrvTimeCss']?item['arrvTimeCss']+' time-bg':'time-bg'">{{ item[field.prop] ? item[field.prop] : '—:—' }}</div>
@@ -135,9 +136,13 @@
                     <tr v-for="(item, index) in tableData.data" :key="index" :id="item.afid" :data-flighta="item.flightNoA" :data-flightd="item.flightNoD"
                     :draggable="(queryData.execDateFlag != -1)&&(item.colourType != 1)" @dragstart="dragFlight" @drop="dropFlight" @dragover="allowDrop(item.colourType, $event)"
                     :class="tableClickRowClass[index]?'is-active':''" @click="clickRow(index)">
-                      <div v-for="taskField in tableData.taskFields" :key="taskField.prop" :class="taskField.hidden?'body-tr-div-hidden':'body-tr-div'"
-                      :style="!taskField.hidden && {width: 'calc(' + taskField.width + 'px - 10px'}">
-                        <td v-if="!taskField.hidden" :width="taskField.width - 10">
+                      <div v-for="(taskField, idx) in tableData.taskFields" :key="taskField.prop"
+                      :class="taskField.hidden?'body-tr-div-hidden':((idx >= rightAutoNum) ? 'body-tr-div' : 'body-tr-div-no-task')"
+                      :style="(idx >= rightAutoNum) ? (!taskField.hidden && {width: 'calc(' + taskField.width + 'px - 10px'}) : (!taskField.hidden && {width: taskField.width + 'px'})">
+                        <td v-if="!taskField.hidden && (idx < rightAutoNum)" :width="taskField.width" :class="taskField.class">
+                          <div>{{ item[taskField.prop] }}</div>
+                        </td>
+                        <td v-else-if="!taskField.hidden" :class="taskField.class" :width="(idx > rightAutoNum) ? (taskField.width - 10) : (taskField.width)">
                           <el-popover placement="bottom" width="160" trigger="click" class="popover-bottom"><!--  :ref="`popover-${index}-`" -->
                             <div :name="`el-popover-${index}-${taskField.prop}`" class="task-right-click-tip">
                               <div :class="queryData.execDateFlag != -1&&(item.taskDataMap[taskField.prop] && (!['NoDistribute', 'NormalFinished', 'OvertimeFinished', 'ExceptionFinished'].includes(item.taskDataMap[taskField.prop].taskDataCss)))?'tip-first':'tip-first div-disabled'"
@@ -190,12 +195,22 @@
                         <el-main>
                           <ul>
                             <div v-for="(field, index) in tableData.fields" :key="field.prop">
-                              <li v-if="index > 7" :class="((oprPopoverDirect == 'left') && (oprPopoverIndex == index)) ? 'opr-popover-li-click' : ''">
+                              <li v-if="index > (leftAutoNum - 1)" :class="((oprPopoverDirect == 'left') && (oprPopoverIndex == index)) ? 'opr-popover-li-click' : ''">
                                 <div class="opr-popover-li-left">{{ substrValue(field.label, 6) }}</div>
                                 <div class="opr-popover-li-right">
                                   <div :class="field.hidden?'button-close':'button-show'" @click="handleEye(field, index, 'left')"></div>
                                   <div class="button-up" @click="handleUp(field, index, 'left')"></div>
                                   <div class="button-top" @click="handleTop(field, index, 'left')"></div>
+                                </div>
+                              </li>
+                            </div>
+                            <div v-for="(field, index) in tableData.taskFields" :key="field.prop">
+                              <li v-if="index < 24" :class="((oprPopoverDirect == 'left') && (oprPopoverIndex == index)) ? 'opr-popover-li-click' : ''">
+                                <div class="opr-popover-li-left">{{ substrValue(field.label, 6) }}</div>
+                                <div class="opr-popover-li-right">
+                                  <div :class="field.hidden?'button-close':'button-show'" @click="handleEye(field, index, 'right')"></div>
+                                  <div class="button-up" @click="handleUp(field, index, 'right')"></div>
+                                  <div class="button-top" @click="handleTop(field, index, 'right')"></div>
                                 </div>
                               </li>
                             </div>
@@ -207,7 +222,7 @@
                         <el-main>
                           <ul>
                             <div v-for="(field, index) in tableData.taskFields" :key="field.prop">
-                              <li v-if="field.label" :class="((oprPopoverDirect == 'right') && (oprPopoverIndex == index)) ? 'opr-popover-li-click' : ''">
+                              <li v-if="index > (rightAutoNum - 1) && field.label" :class="((oprPopoverDirect == 'right') && (oprPopoverIndex == index)) ? 'opr-popover-li-click' : ''">
                                 <div class="opr-popover-li-left">{{ substrValue(field.label, 6) }}</div>
                                 <div class="opr-popover-li-right">
                                   <div :class="field.hidden?'button-close':'button-show'" @click="handleEye(field, index, 'right')"></div>
@@ -866,6 +881,7 @@ export default {
       flightType: 'all',
       // 任务类型过滤条件
       taskType: 'normal',
+      rightAutoNum: 24,
       // 列表设置
       tableData: {
         /* loading: false,
@@ -879,6 +895,7 @@ export default {
         selection: true, */
         fields: [
           {prop: 'mark', label: '', width: '40', minWidth: '40', fixed: true, hidden: false},
+          {prop: 'index', label: '', width: '40', minWidth: '40', fixed: true, hidden: false},
           {prop: 'flightNoA', label: '进港航班', width: '80', minWidth: '80', fixed: true, hidden: false},
           {prop: 'flightNoD', label: '出港航班', width: '80', minWidth: '80', fixed: true, hidden: false},
           {prop: 'stand', label: '机位', width: '80', minWidth: '80', childClass: 'standClass', fixed: true, hidden: false},
@@ -887,14 +904,39 @@ export default {
           {prop: 'preDepTime', label: '前起', width: '80', minWidth: '80', fixed: false, hidden: false, class: 'td-left-border'},
           {prop: 'arrvTime', label: '到达', width: '80', minWidth: '80', fixed: false, hidden: false, class: 'td-left-border'},
           {prop: 'deptTime', label: '起飞', width: '80', minWidth: '80', fixed: false, hidden: false, class: 'td-left-border td-left-right-border'},
-          {prop: 'pgCountA', label: '货/邮/行(进)', width: '120', fixed: true, hidden: false},
-          {prop: 'pgCountD', label: '货/邮/行(出)', width: '120', fixed: true, hidden: false},
-          {prop: 'abCountA', label: '成人/婴儿(进)', width: '120', fixed: true, hidden: false},
-          {prop: 'abCountD', label: '成人/婴儿(出)', width: '120', fixed: true, hidden: false}/* ,
+          {prop: 'pgCountA', label: '货/邮/行(进)', width: '120', minWidth: '120', fixed: true, hidden: false},
+          {prop: 'pgCountD', label: '货/邮/行(出)', width: '120', minWidth: '120', fixed: true, hidden: false},
+          {prop: 'abCountA', label: '成人/婴儿(进)', width: '120', minWidth: '120', fixed: true, hidden: false},
+          {prop: 'abCountD', label: '成人/婴儿(出)', width: '120', minWidth: '120', fixed: true, hidden: false}/* ,
           {prop: 'progressStatusNameCA', label: '进港状态', width: '100', fixed: false, hidden: false},
           {prop: 'progressStatusNameCD', label: '出港状态', width: '100', fixed: false, hidden: false} */
         ],
-        taskFields: []
+        taskFields: [
+          {prop: 'allowBoardingTime', label: '允许登机时间', width: '120', minWidth: '120', fixed: true, hidden: false},
+          {prop: 'taskNameC', label: '任务', width: '80', minWidth: '80', fixed: true, hidden: false},
+          {prop: 'attr', label: '属性', width: '80', minWidth: '80', fixed: true, hidden: false, optionKey: 'attr'},
+          {prop: 'aircraftNo', label: '机号', width: '80', minWidth: '80', fixed: true, hidden: false},
+          {prop: 'execDateA', label: '进港执行日期', width: '100', minWidth: '100', fixed: false, hidden: true, formatter: this.formatterDay},
+          {prop: 'execDateD', label: '出港执行日期', width: '100', minWidth: '100', fixed: false, hidden: true, formatter: this.formatterDay},
+          {prop: 'routeCh', label: '航线', width: '300', minWidth: '150', fixed: true, hidden: false},
+          {prop: 'sta', label: '计划到达', width: '80', minWidth: '80', fixed: false, hidden: true, formatter: this.formatterMin},
+          {prop: 'eta', label: '预计到达', width: '80', minWidth: '80', fixed: false, hidden: true, formatter: this.formatterMin},
+          {prop: 'ata', label: '实际到达', width: '80', minWidth: '80', fixed: false, hidden: true, formatter: this.formatterMin},
+          {prop: 'std', label: '计划起飞', width: '80', minWidth: '80', fixed: false, hidden: true, formatter: this.formatterMin},
+          {prop: 'etd', label: '预计起飞', width: '80', minWidth: '80', fixed: false, hidden: true, formatter: this.formatterMin},
+          {prop: 'atd', label: '实际起飞', width: '80', minWidth: '80', fixed: false, hidden: true, formatter: this.formatterMin},
+          {prop: 'gate', label: '登机口', width: '90', minWidth: '90', fixed: false, hidden: false},
+          {prop: 'belt', label: '转盘', width: '80', minWidth: '80', fixed: false, hidden: false},
+          {prop: 'progressStatusNameCA', label: '进港状态', width: '100', minWidth: '100', fixed: false, hidden: false},
+          {prop: 'abnormalStatusNameCA', label: '进港异常', width: '120', minWidth: '120', fixed: false, hidden: false},
+          {prop: 'abnormalReasonNameCA', label: '进港异常原因', width: '180', minWidth: '180', fixed: false, hidden: false},
+          {prop: 'progressStatusNameCD', label: '出港状态', width: '100', minWidth: '100', fixed: false, hidden: false},
+          {prop: 'abnormalStatusNameCD', label: '出港异常', width: '120', minWidth: '120', fixed: false, hidden: false},
+          {prop: 'abnormalReasonNameCD', label: '出港异常原因', width: '180', minWidth: '180', fixed: false, hidden: false},
+          {prop: 'shareFlightsA', label: '进港共享', width: '120', minWidth: '120', fixed: false, hidden: false},
+          {prop: 'shareFlightsD', label: '出港共享', width: '120', minWidth: '120', fixed: false, hidden: false},
+          {prop: 'terminal', label: '航站楼', width: '90', minWidth: '90', fixed: false, hidden: false}
+        ]
       },
       // 右侧班组人员查询路径
       rightUrl: 'permission/taskscheduling/task/queryEmpByTask',
@@ -920,6 +962,7 @@ export default {
       teamEmpArr: [],
       saveTaskFlightUrl: 'taskscheduling/dynamicTask/saveDistribution',
       taskFlightData: {
+        dragging: false,
         visible: false,
         loading: false,
         data: {},
@@ -1252,11 +1295,13 @@ export default {
     },
     // 拖拽触发事件相关
     dragFlight (event) {
+      this.taskFlightData.dragging = true
       event.dataTransfer.setData('afid', event.target.id)
       this.$set(this.taskFlightData.data, 'flightNoA', event.target.dataset.flighta)
       this.$set(this.taskFlightData.data, 'flightNoD', event.target.dataset.flightd)
     },
     dragData (event) {
+      this.taskFlightData.dragging = true
       event.dataTransfer.setData('dataId', event.target.id)
       event.dataTransfer.setData('type', event.target.dataset.type)
       event.dataTransfer.setData('task', event.target.dataset.task)
@@ -1264,6 +1309,7 @@ export default {
       this.$set(this.taskFlightData.data, 'taskName', event.target.dataset.taskname)
     },
     dropFlight (event) {
+      this.taskFlightData.dragging = false
       event.preventDefault()
       let dataId = event.dataTransfer.getData('dataId')
       if (dataId) {
@@ -1296,6 +1342,7 @@ export default {
       }
     },
     dropData (event) {
+      this.taskFlightData.dragging = false
       event.preventDefault()
       let afid = event.dataTransfer.getData('afid')
       if (afid) {
@@ -1974,7 +2021,7 @@ export default {
   text-decoration: underline;
 }
 /* *******任务table背景颜色开始******** */
-.right-table_body .body-tr-div {
+.right-table_body .body-tr-div:not(.body-tr-div-no-task) {
   height: 30px !important;
   padding: 9px 5px;
 }

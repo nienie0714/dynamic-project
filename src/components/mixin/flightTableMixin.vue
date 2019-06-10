@@ -66,7 +66,8 @@ export default {
       oprPopoverDirect: '',
       oprPopoverIndex: null,
       showTaskDivId: null,
-      axiosArr: []
+      axiosArr: [],
+      leftAutoNum: 9
     }
   },
   mounted () {
@@ -289,7 +290,7 @@ export default {
     saveDefaultRowReq (key) {
       var fields = []
       var otherfields = []
-      for (let i = 8; i < this.tableData.fields.length; i++) {
+      for (let i = this.leftAutoNum; i < this.tableData.fields.length; i++) {
         if (!this.tableData.fields[i].hidden) {
           fields.push(this.tableData.fields[i].prop)
         }
@@ -319,7 +320,7 @@ export default {
         if (response.data.code == 0) {
           var result = 0
           var showflightfields = []
-          var hiddenflightfields = _this.tableData.fields.slice(8)
+          let hiddenflightfields = this.tableData.fields.slice(this.leftAutoNum)
           response.data.data.flightFields.forEach(item => {
             result = -1
             for (let i = 0; i < hiddenflightfields.length; i++) {
@@ -336,29 +337,73 @@ export default {
           hiddenflightfields.forEach(item => {
             item.hidden = true
           })
-          _this.tableData.fields.splice(8, _this.tableData.fields.length - 8)
-          _this.tableData.fields = _this.tableData.fields.concat(showflightfields, hiddenflightfields)
+          this.tableData.fields.splice(this.leftAutoNum, this.tableData.fields.length - this.leftAutoNum)
+          this.tableData.fields = this.tableData.fields.concat(showflightfields, hiddenflightfields)
 
-          var key = this.customOtherFields()
-          var showotherFields = []
-          var hiddenotherFields = this.tableData[key]
-          response.data.data[key].forEach(item => {
-            result = -1
-            for (let i = 0; i < hiddenotherFields.length; i++) {
-              if (hiddenotherFields[i].prop == item) {
-                result = i
+          if (this.rightAutoNum) {
+            let key = this.customOtherFields()
+            let showFlightOtherFields = []
+            let hiddenFlightOtherfields = this.tableData[key].slice(0, this.rightAutoNum)
+
+            response.data.data.flightFields.forEach(item => {
+              result = -1
+              for (let i = 0; i < hiddenFlightOtherfields.length; i++) {
+                if (hiddenFlightOtherfields[i].prop == item) {
+                  result = i
+                }
               }
-            }
-            if (result > -1) {
-              hiddenotherFields[result].hidden = false
-              showotherFields.push(hiddenotherFields[result])
-              hiddenotherFields.splice(result, 1)
-            }
-          })
-          hiddenotherFields.forEach(item => {
-            item.hidden = true
-          })
-          this.tableData[key] = showotherFields.concat(hiddenotherFields)
+              if (result > -1) {
+                hiddenFlightOtherfields[result].hidden = false
+                showFlightOtherFields.push(hiddenFlightOtherfields[result])
+                hiddenFlightOtherfields.splice(result, 1)
+              }
+            })
+            hiddenFlightOtherfields.forEach(item => {
+              item.hidden = true
+            })
+            this.tableData[key].splice(0, this.rightAutoNum, ...showflightfields, ...hiddenFlightOtherfields)
+
+            let showotherFields = []
+            let hiddenotherFields = this.tableData[key].slice(this.rightAutoNum)
+            response.data.data[key].forEach(item => {
+              result = -1
+              for (let i = 0; i < hiddenotherFields.length; i++) {
+                if (hiddenotherFields[i].prop == item) {
+                  result = i
+                }
+              }
+              if (result > -1) {
+                hiddenotherFields[result].hidden = false
+                showotherFields.push(hiddenotherFields[result])
+                hiddenotherFields.splice(result, 1)
+              }
+            })
+            hiddenotherFields.forEach(item => {
+              item.hidden = true
+            })
+            this.tableData[key].splice(this.rightAutoNum, this.tableData[key].length - this.rightAutoNum, ...showotherFields, ...hiddenotherFields)
+          } else {
+            let key = this.customOtherFields()
+            let showotherFields = []
+            let hiddenotherFields = this.tableData[key]
+            response.data.data[key].forEach(item => {
+              result = -1
+              for (let i = 0; i < hiddenotherFields.length; i++) {
+                if (hiddenotherFields[i].prop == item) {
+                  result = i
+                }
+              }
+              if (result > -1) {
+                hiddenotherFields[result].hidden = false
+                showotherFields.push(hiddenotherFields[result])
+                hiddenotherFields.splice(result, 1)
+              }
+            })
+            hiddenotherFields.forEach(item => {
+              item.hidden = true
+            })
+            this.tableData[key] = showotherFields.concat(hiddenotherFields)
+          }
           /* var showtaskfields = []
           var hiddentaskfields = _this.tableData.taskFields
           response.data.data.taskFields.forEach(item => {
@@ -440,29 +485,43 @@ export default {
     },
     // 前置列 up点击事件
     handleUp (field, index, sign) {
-      if (sign == 'left' && index > 8) {
+      if (sign == 'left' && index > this.leftAutoNum) {
         this.tableData.fields.splice(index, 1)
         this.tableData.fields.splice(index - 1, 0, field)
         this.oprPopoverIndex = index - 1
       } else if (sign == 'right' && index > 0) {
-        var key = this.customOtherFields()
-        this.tableData[key].splice(index, 1)
-        this.tableData[key].splice(index - 1, 0, field)
-        this.oprPopoverIndex = index - 1
+        if (this.rightAutoNum && (index > this.rightAutoNum)) {
+            let key = this.customOtherFields()
+            this.tableData[key].splice(index, 1)
+            this.tableData[key].splice(this.rightAutoNum - 1, 0, field)
+            this.oprPopoverIndex = index - 1
+        } else {
+          let key = this.customOtherFields()
+          this.tableData[key].splice(index, 1)
+          this.tableData[key].splice(index - 1, 0, field)
+          this.oprPopoverIndex = index - 1
+        }
       }
       this.oprPopoverDirect = sign
     },
     // 置顶列 top点击事件
     handleTop (field, index, sign) {
-      if (sign == 'left' && index > 8) {
+      if (sign == 'left' && index > this.leftAutoNum) {
         this.tableData.fields.splice(index, 1)
-        this.tableData.fields.splice(8, 0, field)
-        this.oprPopoverIndex = 8
+        this.tableData.fields.splice(this.leftAutoNum, 0, field)
+        this.oprPopoverIndex = this.leftAutoNum
       } else if (sign == 'right' && index > 0) {
-        var key = this.customOtherFields()
-        this.tableData[key].splice(index, 1)
-        this.tableData[key].splice(0, 0, field)
-        this.oprPopoverIndex = 0
+        if (this.rightAutoNum && (index > this.rightAutoNum)) {
+          let key = this.customOtherFields()
+          this.tableData[key].splice(index, 1)
+          this.tableData[key].splice(this.rightAutoNum, 0, field)
+          this.oprPopoverIndex = this.rightAutoNum
+        } else {
+          let key = this.customOtherFields()
+          this.tableData[key].splice(index, 1)
+          this.tableData[key].splice(0, 0, field)
+          this.oprPopoverIndex = 0
+        }
       }
       this.oprPopoverDirect = sign
     }
