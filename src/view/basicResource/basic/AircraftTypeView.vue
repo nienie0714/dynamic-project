@@ -29,6 +29,7 @@ import EditView from '../../../components/common/EditView'
 import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
 import {idReg, idNumReg, threeD} from '../../../util/rules.js'
+import { postData } from '@/api/base'
 
 // const tableHeight = ''
 
@@ -50,9 +51,10 @@ export default {
         visible: false,
         inline: true,
         className: 'twiceCol',
-        key: 'aircraftIcao',
-        clearRulesKey: ['aircraftIata'],
+        key: 'aircraftTypeId',
+        // clearRulesKey: ['aircraftIata'], // 编辑页面清除规则
         formData: [
+          {key: 'aircraftTypeId', label: 'id', type: 'input', isHidden: true},
           {key: 'aircraftIcao', label: 'ICAO码', type: 'input', toUpper: true, maxlength: 10},
           {key: 'aircraftIata', label: 'IATA码', type: 'input', toUpper: true, maxlength: 10},
           {key: 'briefC', label: '中文简称', type: 'input', maxlength: 20},
@@ -68,12 +70,12 @@ export default {
           aircraftIata: [
             {required: true, message: '必填项', trigger: 'blur'},
             {validator: idReg, trigger: 'blur'},
-            {validator: this.unique, trigger: 'blur'}
+            {validator: this.uniqueAirType, trigger: 'blur'}
           ],
           aircraftIcao: [
             {required: true, message: '必填项', trigger: 'blur'},
             {validator: idReg, trigger: 'blur'},
-            {validator: this.unique, trigger: 'blur'}
+            {validator: this.uniqueAirType, trigger: 'blur'}
           ],
           sortkey: [
             {validator: threeD, trigger: 'blur'}
@@ -125,20 +127,75 @@ export default {
         highlight: true,
         headerCellClass: 'tableHeaderCell-Center',
         rowClassName: this.tableRowClassName,
-        key: 'aircraftIcao',
+        key: 'aircraftTypeId',
         multipleSelection: [],
         fields: [
-          {prop: 'aircraftIcao', label: 'ICAO码', fixed: true, hidden: false},
+          {prop: 'aircraftTypeId', label: 'id', fixed: true, hidden: true},
+          {prop: 'aircraftIcao', label: 'ICAO码', fixed: false, hidden: false},
           {prop: 'aircraftIata', label: 'IATA码', fixed: false, hidden: false},
           {prop: 'aircraftClassify', label: '机型分类', fixed: false, hidden: false, optionKey: 'aircraftClassify'},
           {prop: 'reserved1', label: '是否靠桥', fixed: false, hidden: false, optionKey: 'isYOrN'},
           {prop: 'briefC', label: '中文简称', fixed: false, hidden: false},
           {prop: 'briefE', label: '英文简称', fixed: false, hidden: false}
         ]
+      },
+      airTypeData: {
+        aircraftIcao: '',
+        aircraftIata: ''
       }
     }
   },
   methods: {
+    handleEdit (row) {
+      for (let i = 0; i < this.formData.formData.length; i++) {
+        this.$set(this.formData.formData[i], 'value', row[this.formData.formData[i].key])
+      }
+      this.airTypeData.aircraftIcao = row.aircraftIcao
+      this.airTypeData.aircraftIata = row.aircraftIata
+      this.formData.title = '编辑'
+      this.formData.visible = true
+    },
+    // 唯一性校验
+    uniqueAirType (rule, value, callback) {
+      console.log(this.airTypeData.aircraftIcao, this.airTypeData.aircraftIata)
+      if (value != '' && value != null) {
+        setTimeout(() => {
+          if (rule.field == 'aircraftIcao' && value == this.airTypeData.aircraftIcao) {
+            callback()
+          } else if (rule.field == 'aircraftIata' && value == this.airTypeData.aircraftIata) {
+            callback()
+          } else {
+            let key = rule.field
+            let data = {}
+            this.$set(data, rule.field, value)
+            postData(this.baseUrl + '/checkExist', data).then(response => {
+              if (response.data.code == 0 && response.data.data.hasOwnProperty('exist')) {
+                if (response.data.data.exist > 0) {
+                  callback(new Error('当前编号已存在'))
+                } else {
+                  callback()
+                }
+              } else {
+                callback(new Error('请求失败'))
+              }
+            })
+          }
+        }, 200)
+      } else {
+        callback()
+      }
+    }
+  },
+  watch: {
+    'formData.visible': {
+      handler (data) {
+        if (!data) {
+          this.airTypeData.aircraftIcao = ''
+          this.airTypeData.aircraftIata = ''
+        }
+      },
+      immediate: true
+    }
   }
 }
 </script>

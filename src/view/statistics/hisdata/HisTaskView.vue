@@ -237,6 +237,10 @@ export default {
   mounted () {
     this.$store.commit('setConfigValue', 'dfsUrl')
     this.dfsUrl = this.$store.getters.getConfigValue
+
+    // 页面起始修改发送参数的初始值为当日
+    this.$set(this.queryList[3], 'value', this.formatterNewtimeOfYMD())
+    this.$set(this.queryData, 'execDate', this.queryList[3].value)
   },
   methods: {
     // 详情

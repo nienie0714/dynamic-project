@@ -97,7 +97,7 @@ export default {
           key: 'empName',
           value: '',
           type: 'input',
-          inputText: '员工姓名',
+          inputText: '员工姓名/员工编号',
           span: 4
         }, {
           // 'p': '部门',

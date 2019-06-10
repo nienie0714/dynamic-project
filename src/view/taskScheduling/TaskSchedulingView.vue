@@ -1571,7 +1571,6 @@ export default {
       this.handleClearAll()
       this.preData.visible = true
       this.preButtonData.visible = false
-      this.getPreTask()
     },
     // 筛选列表
     filterDataEnter () {
@@ -1610,7 +1609,17 @@ export default {
       this.preData.preFilterArr = []
       postData(this.preData.taskUrl, {}).then(res => {
         if (res.data.code == 0) {
-          this.preData.preGetArr = res.data.data
+          // 去重
+          let b = []
+          _.forEach(res.data.data, item => {
+            let i = _.findIndex(b, function (o) {
+              return o['TASK_NO'] == item['TASK_NO']
+            })
+            if (i == -1) {
+              b.push(item)
+            }
+          })
+          this.preData.preGetArr = b
           this.filterDataEnter()
         } else {
           this.showError('获取任务列表', '请重试 !')

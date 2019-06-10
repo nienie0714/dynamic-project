@@ -698,37 +698,43 @@ export default {
       }
     },
     httpRequest (file) {
-      var reader = new FileReader()
-      var _this = this
-      reader.readAsDataURL(file.file)
-      reader.onload = () => {
-        const base = reader.result.split(',')[1]
-        let arr = file.file.name.split('.')
-        let filetype = arr[arr.length - 1]
-        let imgdata = {
-            base64fill: base,
-            filelen: _this.fileList.length,
-            filetype: filetype
-        }
-        let callback = (progress) => {
-          _this.progress = progress
-        }
-        _this.showProgress = true
-        dfsPost(_this.fileItem.action, imgdata, callback).then(res => {
-          _this.editData[_this.fileItem.key] = res.data.filePath
-          if (_this.formData.title == '新增') {
-            _this.$emit('handleAdd', _this.editData)
-          } else if (_this.formData.title == '编辑') {
-            _this.$emit('handleEdit', _this.editData)
-          } else if (_this.formData.title == '重置') {
-            _this.$emit('handleReset', _this.editData)
+      if (file.file.size) {
+        var reader = new FileReader()
+        var _this = this
+        reader.readAsDataURL(file.file)
+        reader.onload = () => {
+          const base = reader.result.split(',')[1]
+          let arr = file.file.name.split('.')
+          let filetype = arr[arr.length - 1]
+          let imgdata = {
+              base64fill: base,
+              filelen: _this.fileList.length,
+              filetype: filetype
           }
-          _this.fileList = []
-        }).catch(err => {
-          _this.formData.loading = false
-          _this.showError('上传文件', err)
-          _this.showProgress = false
-        })
+          let callback = (progress) => {
+            _this.progress = progress
+          }
+          _this.showProgress = true
+          dfsPost(_this.fileItem.action, imgdata, callback).then(res => {
+            _this.editData[_this.fileItem.key] = res.data.filePath
+            if (_this.formData.title == '新增') {
+              _this.$emit('handleAdd', _this.editData)
+            } else if (_this.formData.title == '编辑') {
+              _this.$emit('handleEdit', _this.editData)
+            } else if (_this.formData.title == '重置') {
+              _this.$emit('handleReset', _this.editData)
+            }
+            _this.fileList = []
+          }).catch(err => {
+            _this.formData.loading = false
+            _this.showError('上传文件', err)
+            _this.showProgress = false
+          })
+        }
+      } else {
+        this.formData.loading = false
+        this.showProgress = false
+        this.showError('文件大小不能为空')
       }
     },
     handleSave () {
@@ -753,7 +759,7 @@ export default {
                 if (this.formData.formData[i].type == 'tree') {
                   if (this.formData.formData[i].hasOwnProperty('saveKey')) {
                     this.editData[this.formData.formData[i].saveKey] = this.$refs['tree' + this.formData.formData[i].key][0].getCheckedKeys()
-                    this.$delete(this.editData, this.formData.formData[i].key)
+                    // this.$delete(this.editData, this.formData.formData[i].key)
                   } else {
                     this.editData[this.formData.formData[i].key] = [].concat(this.$refs['tree' + this.formData.formData[i].key][0].getCheckedKeys(), this.$refs['tree' + this.formData.formData[i].key][0].getHalfCheckedKeys())
                   }
@@ -767,7 +773,7 @@ export default {
                   if (this.formData.formData[i].hasOwnProperty('saveKey')) {
                     let arr = this.editData[this.formData.formData[i].key]
                     this.editData[this.formData.formData[i].saveKey] = arr[arr.length - 1]
-                    this.$delete(this.editData, this.formData.formData[i].key)
+                    // this.$delete(this.editData, this.formData.formData[i].key)
                   }
                 } else if (this.formData.formData[i].type == 'select' && this.formData.formData[i].multiple) {
                   if (this.formData.formData[i].hasOwnProperty('saveKey')) {
@@ -781,7 +787,7 @@ export default {
                     } else {
                       let arr = this.editData[this.formData.formData[i].key]
                       this.editData[this.formData.formData[i].saveKey] = arr
-                      this.$delete(this.editData, this.formData.formData[i].key)
+                      // this.$delete(this.editData, this.formData.formData[i].key)
                     }
                   }
                 } else if (this.formData.formData[i].type == 'select' && this.formData.formData[i].hasOwnProperty('valueKey')) {

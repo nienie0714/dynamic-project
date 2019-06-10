@@ -110,6 +110,9 @@ export default {
     }
   },
   methods: {
+    customSaveBefore (data) {
+      return data
+    }
   }
 }
 </script>
