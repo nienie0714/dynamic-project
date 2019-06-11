@@ -1279,7 +1279,6 @@ export default {
           })
           this.talk.talkData.arr[index].pageNum += 1
           this.$nextTick(() => {
-            console.log('测试')
             document.getElementsByClassName('record-cont-scroll')[0].scrollTop = document.getElementsByClassName('record-cont-scroll')[0].scrollHeight - scrollHeight
           })
           // this.scrollRecord(index, sign)

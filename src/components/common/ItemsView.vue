@@ -41,7 +41,6 @@ export default {
       selectedValue: '',
       pickerOpt: {
         disabledDate: (time) => {
-          debugger
           return true
         }
       }
@@ -65,7 +64,6 @@ export default {
         })
       }
     }
-    console.log(this.data)
   },
   methods: {
     valueChange (data) {

@@ -2698,7 +2698,6 @@ export default {
 
           this.$set(statusData.data, 'inOutFlag', 'A')
           this.$set(statusData.data, 'inOutFlagD', 'D')
-          console.log(statusData)
         }
       }
 
@@ -2988,7 +2987,6 @@ export default {
       // todo: 发送后台的数据格式和url
       let lists = this.statusData.dlyData.multipleSelection
       let data = {list: lists, intAbnormalResson: this.statusData.data.intAbnormalResson, abnormalResson: this.statusData.data.abnormalResson}
-      console.log(data)
       this.statusData.loading = true
       postData(this.statusData.url, data).then(res => {
         if (res.data.code == 0) {

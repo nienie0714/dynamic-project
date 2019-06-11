@@ -157,7 +157,6 @@ export default {
     },
     // 唯一性校验
     uniqueAirType (rule, value, callback) {
-      console.log(this.airTypeData.aircraftIcao, this.airTypeData.aircraftIata)
       if (value != '' && value != null) {
         setTimeout(() => {
           if (rule.field == 'aircraftIcao' && value == this.airTypeData.aircraftIcao) {
