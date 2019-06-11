@@ -146,6 +146,12 @@ export default {
       },
       // 查询条件每行个数
       colSize: 5,
+      // pickerOptMethod: {
+      //   disabledDate: (time) => {
+      //     debugger
+      //     return (time.getTime() < new Date(this.nowTime).getTime() - 8.64e7)
+      //   }
+      // },
       // 查询条件设置
       queryList: [
         {
@@ -190,7 +196,14 @@ export default {
           format: 'yyyy-MM-dd',
           valueFormat: 'yyyy-MM-dd',
           inputText: '航班日期',
-          span: 3
+          span: 3,
+          pickerOpt: {
+            disabledDate: (time) => {
+              var maxDate = new Date()
+              maxDate.setDate(maxDate.getDate())
+              return time.getTime() > maxDate
+            }
+          }
         }, {
           // 'p': '任务',
           key: 'taskNo',
@@ -241,6 +254,13 @@ export default {
     // 页面起始修改发送参数的初始值为当日
     this.$set(this.queryList[3], 'value', this.formatterNewtimeOfYMD())
     this.$set(this.queryData, 'execDate', this.queryList[3].value)
+
+    // for (let i = 0; i < this.queryList.length; i++) {
+    //   if (this.queryList[i].key == 'execDate') {
+    //     this.nowTime = JSON.parse(JSON.stringify(this.newTime)) // 2019-06-11T00:49:37.632Z
+    //     this.$set(this.queryList[i], 'pickerOpt', this.pickerOptMethod)
+    //   }
+    // }
   },
   methods: {
     // 详情

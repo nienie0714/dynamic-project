@@ -27,7 +27,7 @@
       <!-- yyyy-年/M、MM-月/W、WW-周/dd-日/HH-24小时制/hh-12小时制、须和A、a-am、PM使用/mm-分/ss-秒/timestamp-时间戳：组件绑定类型为number -->
       <el-date-picker v-if="data.type == 'year' || data.type == 'month' || data.type == 'date' || data.type == 'dates' || data.type == 'week' || data.type == 'datetime' || data.type == 'datetimerange' || data.type == 'daterange'"
       v-model="data.value" :type="data.type" :placeholder="data.inputText?data.inputText:''" :editable="data.editable" :clearable="data.clearable"
-      :default-value="data.defaultDate" :format="data.format" :value-format="data.valueFormat" :readonly="data.readonly" :disabled="data.disabled"></el-date-picker>
+      :default-value="data.defaultDate" :format="data.format" :value-format="data.valueFormat" :readonly="data.readonly" :disabled="data.disabled" :picker-options="data.pickerOpt"></el-date-picker>
     </el-col>
 </template>
 
@@ -38,7 +38,13 @@ export default {
   props: ['data'],
   data () {
     return {
-      selectedValue: ''
+      selectedValue: '',
+      pickerOpt: {
+        disabledDate: (time) => {
+          debugger
+          return true
+        }
+      }
     }
   },
   created () {
@@ -59,6 +65,7 @@ export default {
         })
       }
     }
+    console.log(this.data)
   },
   methods: {
     valueChange (data) {
