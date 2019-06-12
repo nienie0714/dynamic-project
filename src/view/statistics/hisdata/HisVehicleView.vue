@@ -15,7 +15,60 @@
       </div>
       <Table-view :permissions="permissions" :tableData="tableData" ref="basicTable" @handleDetail="handleDetail" @handleEdit="handleEdit" @handleDelete="handleDelete"></Table-view>
     </el-main>
-    <Edit-view :formData="formData" @handleAdd="saveAdd" @handleEdit="saveEdit"></Edit-view>
+    <div class="dialog-form-edit statistics-dialog">
+      <el-dialog :inline="formData.inline" :title="formData.title" :visible.sync="formData.visible" :append-to-body="formData.appendToBody"
+      :custom-class="formData.className" :close-on-click-modal="false" :width="formData.width?formData.width:'480px'">
+        <div slot="title" class="dialog-header">
+          <img :src="require('@img/title_deco.png')"/>
+          <span class="header-title">{{ formData.title }}</span>
+        </div>
+        <div class="dialog-body">
+          <el-row v-for="(item, index) in formData.groupData" :key="index" class="his-info-normal">
+            <el-col v-for="obj in item" :key="obj.key" :span="obj.span">
+              <div v-if="obj.type == 'label'">
+                <div class="his-info-title">{{obj.label}}</div>
+                <div class="his-info-cont">{{obj.formatter?formatter(obj.value):(obj.key=='alarmFlag'?(obj.value==null?'':(obj.value?'是':'否')):obj.value)}}</div>
+              </div>
+              <div v-else-if="obj.type == 'arr'">
+                <div class="his-info-title">{{obj.label}}</div>
+                <div class="his-info-cont his-info-arr">
+                  <div v-for="(val, index) in obj.value" :key="index" class="his-info-arr-div">{{val[obj.showKey]}}</div>
+                </div>
+              </div>
+              <div v-else-if="obj.type == 'list'" class="whole-contain">
+                <div class="his-info-list-title">{{obj.label}}</div>
+                <div class="his-info-table-div div-head">
+                  <table class="his-info-table table-head">
+                    <thead>
+                      <tr class="his-info-table-thead">
+                        <th  v-for="field in obj.tableField" :key="field.prop">{{field.label}}</th>
+                      </tr>
+                    </thead>
+                  </table>
+                </div>
+                <div class="his-info-table-div div-body">
+                  <table class="his-info-table table-body">
+                    <tbody>
+                      <tr v-for="(item, index) in obj.value" :key="index" :class="(index % 2 == 0)?'his-info-table-tr tr-single':'his-info-table-tr tr-double'">
+                        <td v-for="field in obj.tableField" :key="field.prop">
+                          <div v-if="field.type == 'files'" class="file-down-div">
+                            <a v-for="url in item[field.prop]" :key="url['tableKeyId']" class="a-download" :href="dfsUrl + url[field.urlKey]" :download="substr(url[field.urlKey])"><i class="el-icon-download"></i></a>
+                          </div>
+                          <div v-else :class="(field.prop=='operationTimeA'?'text-dec':'')">{{field.formatter?formatter(item[field.prop]):item[field.prop]}}</div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="handleClose">取 消</el-button>
+        </div>
+      </el-dialog>
+    </div>
     <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm" @handleClose="handleDeleteClose"></Warning-box-view>
   </el-container>
 </template>
@@ -59,20 +112,45 @@ export default {
         title: '详情',
         visible: false,
         inline: true,
-        className: 'twiceCol',
         width: '600px',
         key: 'reasonCode',
         formData: [
-          {key: 'vehicleNo', label: '车辆牌号', type: 'input', maxlength: 9},
-          {key: 'vehicleTypeName', label: '车辆类型', type: 'input', maxlength: 9},
-          {key: 'statDate', label: '执行日期', type: 'date', format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd'},
-          {key: 'airline', label: '航空公司', type: 'select', filterable: true, optionsKey: 'Airline', itemKey: 'airlineIata', itemLabel: 'briefC'},
-          {key: 'aircraftType', label: '机型', type: 'select', filterable: true, optionsKey: 'AircraftType', itemKey: 'aircraftIcao', itemLabel: 'aircraftIcao', change: this.changeArcftType},
-          {key: 'aircraftNo', label: '机号', type: 'select', filterable: true, optionsKey: 'Aircraft', itemKey: 'aircraftNo', itemLabel: 'aircraftNo', change: this.changeArcft},
-          {key: 'flightNo', label: '航班号', type: 'input', toUpper: true, maxlength: 5},
-          {key: 'taskCn', label: '任务名称', type: 'input', maxlength: 50},
-          {key: 'usedHours', label: '保障时长', type: 'input', maxlength: 50},
-          {key: 'teamName', label: '保障人员', type: 'input', maxlength: 50}
+          // 车辆牌号 车辆类型 执行日期 航空公司 机型 机号 航班号 任务名称 保障时长 保障人员
+          {key: 'vehicleNo', label: '车辆牌号', type: 'label', span: 6},
+          {key: 'vehicleTypeName', label: '车辆类型', type: 'label', span: 6},
+          {key: 'flightNo', label: '航班号', type: 'label', span: 6},
+          {key: 'statDate', label: '航班日期', type: 'label', span: 6},
+          {key: 'airline', label: '航空公司', type: 'label', span: 6},
+          {key: 'aircraftType', label: '机型', type: 'label', span: 6},
+          {key: 'aircraftNo', label: '机号', type: 'label', span: 6},
+          {key: 'taskCn', label: '任务名称', type: 'label', span: 6},
+          {key: 'teamName', label: '保障人员/班组', type: 'label', span: 24},
+          {key: 'a1', label: '占位', type: 'label', span: 0},
+          {key: 'a2', label: '占位', type: 'label', span: 0},
+          {key: 'a3', label: '占位', type: 'label', span: 0},
+          {key: 'currState', label: '任务状态', type: 'label', span: 6},
+          {key: 'distributeTime', label: '派发时间', type: 'label', formatter: true, span: 6},
+          {key: 'receiveTime', label: '接受时间', type: 'label', formatter: true, span: 6},
+          {key: 'beginTimeE', label: '预计开始', type: 'label', formatter: true, span: 6},
+          {key: 'endTimeE', label: '预计结束', type: 'label', formatter: true, span: 6},
+          {key: 'beginTimeA', label: '实际开始', type: 'label', formatter: true, span: 6},
+          {key: 'endTimeA', label: '实际结束', type: 'label', formatter: true, span: 6},
+          {key: 'costMinute', label: '保障时长/分', type: 'label', span: 6},
+          {key: 'alarmFlag', label: '是否超时', type: 'label', span: 6},
+          {key: 'exceptions', label: '异常信息', type: 'arr', showKey: 'exceptionDesc', span: 24},
+          {
+            key: 'operations',
+            label: '详情列表',
+            type: 'list',
+            span: 24,
+            tableField: [
+              {prop: 'operationName', label: '操作名称'},
+              {prop: 'operationTimeE', label: '预计时间', formatter: true},
+              {prop: 'operationTimeA', label: '实际时间', formatter: true},
+              {prop: 'empName', label: '操作人'},
+              {prop: 'attachments', label: '附件', type: 'files', urlKey: 'attachmentUrl'}
+            ]
+          }
         ],
         groupData: []
       },
@@ -185,9 +263,9 @@ export default {
             this.$set(this.formData.formData[i], 'value', res.data.data.task[this.formData.formData[i].key])
           }
         }
-        var arr = _.dropRight(this.formData.formData, 3)
+        var arr = _.dropRight(this.formData.formData, 2)
         this.formData.groupData = _.chunk(arr, 4)
-        arr = _.drop(this.formData.formData, this.formData.formData.length - 3)
+        arr = _.drop(this.formData.formData, this.formData.formData.length - 2)
         this.formData.groupData = _.concat(this.formData.groupData, _.chunk(arr, 1))
         this.formData.visible = true
       })

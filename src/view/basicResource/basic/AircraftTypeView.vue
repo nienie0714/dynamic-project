@@ -28,7 +28,7 @@ import ToolButtonView from '../../../components/common/ToolButtonView'
 import EditView from '../../../components/common/EditView'
 import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
-import {idReg, idNumReg, threeD} from '../../../util/rules.js'
+import {idReg, idNumReg, threeD, mustD} from '../../../util/rules.js'
 import { postData } from '@/api/base'
 
 // const tableHeight = ''
@@ -57,6 +57,7 @@ export default {
           {key: 'aircraftTypeId', label: 'id', type: 'input', isHidden: true},
           {key: 'aircraftIcao', label: 'ICAO码', type: 'input', toUpper: true, maxlength: 10},
           {key: 'aircraftIata', label: 'IATA码', type: 'input', toUpper: true, maxlength: 10},
+          {key: 'reserved2', label: '最小过站时长', type: 'input', change: this.changeNo},
           {key: 'briefC', label: '中文简称', type: 'input', maxlength: 20},
           {key: 'nameC', label: '中文全称', type: 'input', maxlength: 50},
           {key: 'briefE', label: '英文简称', type: 'input', maxlength: 50},
@@ -76,6 +77,9 @@ export default {
             {required: true, message: '必填项', trigger: 'blur'},
             {validator: idReg, trigger: 'blur'},
             {validator: this.uniqueAirType, trigger: 'blur'}
+          ],
+          reserved2: [
+            {validator: mustD, trigger: 'blur'}
           ],
           sortkey: [
             {validator: threeD, trigger: 'blur'}
@@ -133,6 +137,7 @@ export default {
           {prop: 'aircraftTypeId', label: 'id', fixed: true, hidden: true},
           {prop: 'aircraftIcao', label: 'ICAO码', fixed: false, hidden: false},
           {prop: 'aircraftIata', label: 'IATA码', fixed: false, hidden: false},
+          {prop: 'reserved2', label: '最小过站时长', fixed: false, hidden: false},
           {prop: 'aircraftClassify', label: '机型分类', fixed: false, hidden: false, optionKey: 'aircraftClassify'},
           {prop: 'reserved1', label: '是否靠桥', fixed: false, hidden: false, optionKey: 'isYOrN'},
           {prop: 'briefC', label: '中文简称', fixed: false, hidden: false},
@@ -146,9 +151,35 @@ export default {
     }
   },
   methods: {
+    changeNo (value, callback) {
+      let reserved2 = {
+        key: 'reserved2',
+        value: 0
+      }
+      value = parseInt(value)
+      if (value) {
+        if (value % 5 == 1 || value % 5 == 2) {
+          reserved2.value = value - value % 5
+        } else if (value % 5 == 3 || value % 5 == 4) {
+          reserved2.value = value + 5 - value % 5
+        } else if (value % 5 == 0) {
+          reserved2.value = value
+        }
+      }
+      callback(reserved2)
+    },
+    customSaveBefore (data) {
+      return data
+    },
     handleEdit (row) {
       for (let i = 0; i < this.formData.formData.length; i++) {
-        this.$set(this.formData.formData[i], 'value', row[this.formData.formData[i].key])
+        if (this.formData.formData[i].key == 'reserved2') {
+          if (row.reserved2 == null || row.reserved2 == '') {
+            this.$set(this.formData.formData[i], 'value', 0)
+          }
+        } else {
+          this.$set(this.formData.formData[i], 'value', row[this.formData.formData[i].key])
+        }
       }
       this.airTypeData.aircraftIcao = row.aircraftIcao
       this.airTypeData.aircraftIata = row.aircraftIata

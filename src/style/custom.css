@@ -2225,7 +2225,7 @@ div.el-upload {
   display: flex;
   flex-wrap: wrap;
   height: auto;
-  margin-bottom: 2px;
+  margin-bottom: 12px;
 }
 .statistics-dialog .his-info-arr .his-info-arr-div {
   margin: 0 30px 10px 0;
@@ -2286,7 +2286,7 @@ div.el-upload {
   padding: 0;
 }
 .statistics-dialog .his-info-table-thead th {
-  width: calc((100% - 20px) / 4);
+  width: calc((100% - 20px) / 5);
 }
 .flight-info-dialog .node-info-table-thead th {
   width: calc((100% - 20px) / 3);
@@ -2310,7 +2310,7 @@ div.el-upload {
   margin-right: -20px;
 }
 .statistics-dialog .his-info-table-tr td {
-  width: calc((100% - 20px) / 4);
+  width: calc((100% - 20px) / 5);
 }
 .flight-info-dialog .node-info-table-tr td {
   width: calc((100% - 20px) / 3);

@@ -155,12 +155,12 @@ var router = new Router({
           children: [
             {
               path: 'hisTask',
-              name: '历史任务查询',
+              name: '航班保障任务查询',
               component: r => require.ensure([], () => r(require('@/view/statistics/hisdata/HisTaskView'), 'HisTaskView'))
             },
             {
               path: 'hisVehicle',
-              name: '车辆保障详情查询',
+              name: '车辆保障任务查询',
               component: r => require.ensure([], () => r(require('@/view/statistics/hisdata/HisVehicleView'), 'HisVehicleView'))
             }
           ]

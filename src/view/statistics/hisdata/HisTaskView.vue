@@ -54,7 +54,7 @@
                           <div v-if="field.type == 'files'" class="file-down-div">
                             <a v-for="url in item[field.prop]" :key="url['tableKeyId']" class="a-download" :href="dfsUrl + url[field.urlKey]" :download="substr(url[field.urlKey])"><i class="el-icon-download"></i></a>
                           </div>
-                          <div v-else>{{field.formatter?formatter(item[field.prop]):item[field.prop]}}</div>
+                          <div v-else :class="(field.prop=='operationTimeA'?'text-dec':'')">{{field.formatter?formatter(item[field.prop]):item[field.prop]}}</div>
                         </td>
                       </tr>
                     </tbody>
@@ -115,19 +115,22 @@ export default {
         width: '600px',
         key: 'reasonCode',
         formData: [
+          {key: 'flightNo', label: '航班号', type: 'label', span: 6},
+          {key: 'execDate', label: '航班日期', type: 'label', span: 6},
           {key: 'taskName', label: '任务名称', type: 'label', span: 6},
           {key: 'currState', label: '任务状态', type: 'label', span: 6},
-          {key: 'execDate', label: '航班日期', type: 'label', span: 6},
-          {key: 'flightNo', label: '航班号', type: 'label', span: 6},
+          {key: 'teamName', label: '保障人员/班组', type: 'label', span: 24},
+          {key: 'a1', label: '占位', type: 'label', span: 0},
+          {key: 'a2', label: '占位', type: 'label', span: 0},
+          {key: 'a3', label: '占位', type: 'label', span: 0},
           {key: 'distributeTime', label: '派发时间', type: 'label', formatter: true, span: 6},
           {key: 'receiveTime', label: '接受时间', type: 'label', formatter: true, span: 6},
           {key: 'beginTimeE', label: '预计开始', type: 'label', formatter: true, span: 6},
           {key: 'endTimeE', label: '预计结束', type: 'label', formatter: true, span: 6},
           {key: 'beginTimeA', label: '实际开始', type: 'label', formatter: true, span: 6},
           {key: 'endTimeA', label: '实际结束', type: 'label', formatter: true, span: 6},
-          {key: 'costMinute', label: '耗时/分', type: 'label', span: 6},
+          {key: 'costMinute', label: '保障时长/分', type: 'label', span: 6},
           {key: 'alarmFlag', label: '是否超时', type: 'label', span: 6},
-          {key: 'teamName', label: '负责班组', type: 'label', span: 24},
           {key: 'exceptions', label: '异常信息', type: 'arr', showKey: 'exceptionDesc', span: 24},
           {
             key: 'operations',
@@ -136,7 +139,8 @@ export default {
             span: 24,
             tableField: [
               {prop: 'operationName', label: '操作名称'},
-              {prop: 'operationTime', label: '操作时间', formatter: true},
+              {prop: 'operationTimeE', label: '预计时间', formatter: true},
+              {prop: 'operationTimeA', label: '实际时间', formatter: true},
               {prop: 'empName', label: '操作人'},
               {prop: 'attachments', label: '附件', type: 'files', urlKey: 'attachmentUrl'}
             ]
@@ -145,7 +149,7 @@ export default {
         groupData: []
       },
       // 查询条件每行个数
-      colSize: 5,
+      colSize: 6,
       // 查询条件设置
       queryList: [
         {
@@ -157,18 +161,28 @@ export default {
           inputText: '航班号',
           span: 3
         }, {
-          // 'p': '机型',
-          /* key: 'aircraftIcao',
-          value: '',
-          type: 'select',
-          filterable: true,
-          inputText: '班组',
-          getOptions: '/organization/team/queryAllByUser',
-          optKey: 'teamId',
-          optLabel: 'teamName',
-          filterKeys: ['teamId', 'teamName'],
-          span: 4
-        }, { */
+          // 'p': '开始时间',
+          key: 'start',
+          value: null,
+          type: 'date',
+          editable: false,
+          clearable: true,
+          inputText: '开始时间',
+          valueFormat: 'yyyy-MM-dd',
+          format: 'yyyy-MM-dd',
+          span: 3
+        }, {
+          // 'p': '结束时间',
+          key: 'end',
+          value: null,
+          type: 'date',
+          editable: false,
+          clearable: true,
+          inputText: '结束时间',
+          valueFormat: 'yyyy-MM-dd',
+          format: 'yyyy-MM-dd',
+          span: 3
+        }, {
           // 'p': '班组',
           key: 'teamName',
           value: '',
@@ -183,22 +197,6 @@ export default {
           inputText: '人员',
           span: 3
         }, {
-          // 'p': '航班日期',
-          key: 'execDate',
-          value: '',
-          type: 'date',
-          format: 'yyyy-MM-dd',
-          valueFormat: 'yyyy-MM-dd',
-          inputText: '航班日期',
-          span: 3,
-          pickerOpt: {
-            disabledDate: (time) => {
-              var maxDate = new Date()
-              maxDate.setDate(maxDate.getDate())
-              return time.getTime() > maxDate
-            }
-          }
-        }, {
           // 'p': '任务',
           key: 'taskNo',
           value: '',
@@ -206,7 +204,7 @@ export default {
           filterable: true,
           optKey: 'taskNo',
           optLabel: 'taskCn',
-          inputText: '任务',
+          inputText: '任务名称',
           getOptions: 'taskbasic/tasks/queryAll',
           span: 3
         }
@@ -223,18 +221,18 @@ export default {
         rowClassName: this.tableRowClassName,
         multipleSelection: [],
         fields: [
-          {prop: 'taskName', label: '任务名称', fixed: true, hidden: false},
-          {prop: 'execDate', label: '航班日期', fixed: false, hidden: false},
-          {prop: 'flightNo', label: '航班号', fixed: false, hidden: false},
+          {prop: 'flightNo', label: '航班号', fixed: true, hidden: false},
+          {prop: 'execDate', label: '航班日期', fixed: false, hidden: false, width: '110'},
+          {prop: 'taskName', label: '任务名称', fixed: false, hidden: false},
           {prop: 'currState', label: '任务状态', fixed: false, hidden: false},
-          {prop: 'teamName', label: '负责班组', fixed: false, hidden: false},
+          {prop: 'teamName', label: '保障人员/班组', fixed: false, hidden: false, width: '110'},
           {prop: 'distributeTime', label: '派发时间', fixed: false, hidden: false, formatter: this.formatterMin},
           {prop: 'receiveTime', label: '接受时间', fixed: false, hidden: false, formatter: this.formatterMin},
-          {prop: 'beginTimeE', label: '预计开始', fixed: false, hidden: false, formatter: this.formatterMin},
-          {prop: 'endTimeE', label: '预计结束', fixed: false, hidden: false, formatter: this.formatterMin},
-          {prop: 'beginTimeA', label: '实际开始', fixed: false, hidden: false, formatter: this.formatterMin},
-          {prop: 'endTimeA', label: '实际结束', fixed: false, hidden: false, formatter: this.formatterMin},
-          {prop: 'costMinute', label: '耗时/分', fixed: false, hidden: false},
+          {prop: 'beginTimeE', label: '预计开始时间', fixed: false, hidden: false, formatter: this.formatterMin, width: '110'},
+          {prop: 'endTimeE', label: '预计结束时间', fixed: false, hidden: false, formatter: this.formatterMin, width: '110'},
+          {prop: 'beginTimeA', label: '实际开始时间', fixed: false, hidden: false, formatter: this.formatterMin, width: '110'},
+          {prop: 'endTimeA', label: '实际结束时间', fixed: false, hidden: false, formatter: this.formatterMin, width: '110'},
+          {prop: 'costMinute', label: '保障时长/分', fixed: false, hidden: false, width: '100'},
           {prop: 'alarmFlag', label: '是否超时', fixed: false, hidden: false, optionKey: 'isZOrO', options: [{key: 1, value: '是'}, {key: 0, value: '否'}]},
           {prop: 'exception', label: '是否异常', fixed: false, hidden: false, optionKey: 'isTOrF', options: [{key: true, value: '是'}, {key: false, value: '否'}]}
         ]
@@ -246,8 +244,10 @@ export default {
     this.dfsUrl = this.$store.getters.getConfigValue
 
     // 页面起始修改发送参数的初始值为当日
-    this.$set(this.queryList[3], 'value', this.formatterNewtimeOfYMD())
-    this.$set(this.queryData, 'execDate', this.queryList[3].value)
+    this.$set(this.queryList[1], 'value', this.formatterNewtimeOfYMD())
+    this.$set(this.queryList[2], 'value', this.formatterNewtimeOfYMD())
+    this.$set(this.queryData, 'start', this.queryList[1].value)
+    this.$set(this.queryData, 'end', this.queryList[2].value)
   },
   methods: {
     // 详情
@@ -260,9 +260,9 @@ export default {
             this.$set(this.formData.formData[i], 'value', res.data.data.task[this.formData.formData[i].key])
           }
         }
-        var arr = _.dropRight(this.formData.formData, 3)
+        var arr = _.dropRight(this.formData.formData, 2)
         this.formData.groupData = _.chunk(arr, 4)
-        arr = _.drop(this.formData.formData, this.formData.formData.length - 3)
+        arr = _.drop(this.formData.formData, this.formData.formData.length - 2)
         this.formData.groupData = _.concat(this.formData.groupData, _.chunk(arr, 1))
         this.formData.visible = true
       })

@@ -159,6 +159,20 @@ var threeD = (rule, value, callback) => {
   }
 }
 
+// 正整数
+var mustD = (rule, value, callback) => {
+  if (value != '' && value != null) {
+    let reg = /^\d+$/
+    if (!reg.test(value)) {
+      callback(new Error('必须由正整数组成'))
+    } else {
+      callback()
+    }
+  } else {
+    callback()
+  }
+}
+
 // 0~360° => 3
 var degreePos = (rule, value, callback) => {
   if (value != '' && value != null) {
@@ -298,4 +312,4 @@ var flightNumReg = (rule, value, callback) => {
   }
 }
 
-export { idReg, maxENReg, ndENReg, rdEReg, rthEReg, idNumReg, phoneReg, sevDotTwoDigit, sixDotSixDigit, threeD, degreePos, passwordReg, sixNum, intNum, twoDecimal, twoDecimalAll, IPReg, portReg, chReg, flightNumReg }
+export { idReg, maxENReg, ndENReg, rdEReg, rthEReg, idNumReg, phoneReg, sevDotTwoDigit, sixDotSixDigit, threeD, mustD, degreePos, passwordReg, sixNum, intNum, twoDecimal, twoDecimalAll, IPReg, portReg, chReg, flightNumReg }
