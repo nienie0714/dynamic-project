@@ -345,7 +345,7 @@ export default {
             let showFlightOtherFields = []
             let hiddenFlightOtherfields = this.tableData[key].slice(0, this.rightAutoNum)
 
-            response.data.data.flightFields.forEach(item => {
+            response.data.data[key].forEach(item => {
               result = -1
               for (let i = 0; i < hiddenFlightOtherfields.length; i++) {
                 if (hiddenFlightOtherfields[i].prop == item) {
@@ -361,7 +361,7 @@ export default {
             hiddenFlightOtherfields.forEach(item => {
               item.hidden = true
             })
-            this.tableData[key].splice(0, this.rightAutoNum, ...showflightfields, ...hiddenFlightOtherfields)
+            this.tableData[key].splice(0, this.rightAutoNum, ...showFlightOtherFields, ...hiddenFlightOtherfields)
 
             let showotherFields = []
             let hiddenotherFields = this.tableData[key].slice(this.rightAutoNum)

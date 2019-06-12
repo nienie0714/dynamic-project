@@ -142,7 +142,7 @@
                         <td v-if="!taskField.hidden && (idx < rightAutoNum)" :width="taskField.width" :class="taskField.class">
                           <div>{{ item[taskField.prop] }}</div>
                         </td>
-                        <td v-else-if="!taskField.hidden" :class="taskField.class" :width="(idx > rightAutoNum) ? (taskField.width - 10) : (taskField.width)">
+                        <td v-else-if="!taskField.hidden" :class="taskField.class" :width="taskField.width - 10">
                           <el-popover placement="bottom" width="160" trigger="click" class="popover-bottom"><!--  :ref="`popover-${index}-`" -->
                             <div :name="`el-popover-${index}-${taskField.prop}`" class="task-right-click-tip">
                               <div :class="queryData.execDateFlag != -1&&(item.taskDataMap[taskField.prop] && (!['NoDistribute', 'NormalFinished', 'OvertimeFinished', 'ExceptionFinished'].includes(item.taskDataMap[taskField.prop].taskDataCss)))?'tip-first':'tip-first div-disabled'"
