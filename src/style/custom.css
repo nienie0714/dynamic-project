@@ -374,6 +374,7 @@ input[type="number"] {
   flex-grow: 1;
 }
 .basic-resource-contain .query-contain .left-button {
+  min-width: 182.5px;
   line-height: 30px;
 }
 /* 基础数据header最新时间 */

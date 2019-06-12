@@ -157,6 +157,11 @@ var router = new Router({
               path: 'hisTask',
               name: '历史任务查询',
               component: r => require.ensure([], () => r(require('@/view/statistics/hisdata/HisTaskView'), 'HisTaskView'))
+            },
+            {
+              path: 'hisVehicle',
+              name: '车辆保障详情查询',
+              component: r => require.ensure([], () => r(require('@/view/statistics/hisdata/HisVehicleView'), 'HisVehicleView'))
             }
           ]
         },
@@ -234,7 +239,7 @@ var router = new Router({
             },
             {
               path: 'vehUse',
-              name: '车辆上线/离线统计',
+              name: '车辆使用统计',
               component: r => require.ensure([], () => r(require('@/view/situation/vehiclestat/VehUseView'), 'VehUseView'))
             }
           ]

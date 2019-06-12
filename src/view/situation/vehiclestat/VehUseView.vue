@@ -50,21 +50,22 @@ export default {
         export: false
       },
       // 基础路径
-      baseUrl: 'basicdata/vehicle',
+      baseUrl: 'statistics/aomsVehicleStat/queryVehicleUsedStat',
+      queryUrl: 'statistics/aomsVehicleStat/queryVehicleUsedStat',
       formData: {
         title: '详情',
         visible: false,
         inline: true,
         className: 'twiceCol',
-        key: 'vehicleId',
+        // key: 'vehicleId',
         clearRulesKey: [],
         formData: [
-          {key: 'vehicleId', label: '车牌编号', type: 'pInput', maxlength: 10, isHidden: true},
           {key: 'vehicleNo', label: '车辆牌号', type: 'input', maxlength: 9},
-          {key: 'travelKm', label: '行驶公里数', type: 'input'},
-          {key: 'usedNum', label: '车辆使用次数', type: 'input'},
+          {key: 'vehicleTypeName', label: '车辆类型', type: 'input', maxlength: 9},
+          // {key: 'travelKm', label: '行驶公里数', type: 'input'},
+          {key: 'usedNum', label: '保障次数', type: 'input'},
           {key: 'usedHour', label: '车辆使用小时数', type: 'input'},
-          {key: 'statDate', label: '统计日期', type: 'input'}
+          {key: 'statDate', label: '执行日期', type: 'date', format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd'}
         ]
       },
       // 查询条件每行个数
@@ -72,36 +73,45 @@ export default {
       // 查询条件设置
       queryList: [
         {
+          key: 'vehicleType',
+          value: '',
+          type: 'select',
+          inputText: '车型名称',
+          getOptions: '/basicdata/vehicleType/queryAll',
+          span: 4,
+          optKey: 'vTypeNo',
+          optLabel: 'vTypeName',
+          filterable: true
+        },
+        {
           // p: '车牌号',
           key: 'vehicleNo',
           value: '',
-          type: 'select',
-          filterable: true,
-          inputText: '请选择车辆牌号',
-          getOptions: '/basicdata/VehicleMaintenanceRecord/getVehicleNo',
-          span: 3
+          type: 'input',
+          inputText: '车辆牌号',
+          span: 4
         },
         {
           // 'p': '开始时间',
-          key: 'beginDate',
+          key: 'start',
           value: null,
-          type: 'datetime',
+          type: 'date',
           editable: false,
           clearable: true,
           inputText: '开始时间',
-          valueFormat: 'yyyy-MM-dd HH:mm',
-          format: 'yyyy-MM-dd HH:mm',
+          valueFormat: 'yyyy-MM-dd',
+          format: 'yyyy-MM-dd',
           span: 4
         }, {
           // 'p': '结束时间',
-          key: 'endDate',
+          key: 'end',
           value: null,
-          type: 'datetime',
+          type: 'date',
           editable: false,
           clearable: true,
           inputText: '结束时间',
-          valueFormat: 'yyyy-MM-dd HH:mm',
-          format: 'yyyy-MM-dd HH:mm',
+          valueFormat: 'yyyy-MM-dd',
+          format: 'yyyy-MM-dd',
           span: 4
         }
       ],
@@ -114,19 +124,43 @@ export default {
         highlight: true,
         headerCellClass: 'tableHeaderCell-Center',
         rowClassName: this.tableRowClassName,
-        key: 'vehicleId',
+        // key: 'vehicleId',
         multipleSelection: [],
         fields: [
           {prop: 'vehicleNo', label: '车辆牌号', fixed: true, hidden: false},
-          {prop: 'travelKm', label: '行驶公里数（单位：千米）', hidden: false},
-          {prop: 'usedNum', label: '车辆使用次数', hidden: false},
+          {prop: 'vehicleTypeName', label: '车辆类型', fixed: false, hidden: false},
+          // {prop: 'travelKm', label: '行驶公里数（单位：千米）', hidden: false},
+          {prop: 'usedNum', label: '保障次数', hidden: false},
           {prop: 'usedHour', label: '车辆使用小时数', hidden: false},
-          {prop: 'statDate', label: '统计日期', hidden: false}
+          {prop: 'statDate', label: '执行日期', hidden: false, formatter: this.formatterDay}
         ]
       }
     }
   },
+  mounted () {
+    // 页面起始修改发送参数的初始值为当日
+    this.$set(this.queryList[2], 'value', this.formatterNewtimeOfYMD())
+    this.$set(this.queryList[3], 'value', this.formatterNewtimeOfYMD())
+    this.$set(this.queryData, 'start', this.queryList[2].value)
+    this.$set(this.queryData, 'end', this.queryList[3].value)
+  },
+  created () {
+  },
   methods: {
+    customBeforeQuery () {
+      let result = null
+      if (this.queryData.start && this.queryData.end) {
+        result = new Date(this.queryData.start) <= new Date(this.queryData.end)
+        if (result) {
+          return true
+        } else {
+          this.showError('请求', '开始时间必须小于结束时间 !')
+          return false
+        }
+      } else {
+        return true
+      }
+    }
   }
 }
 </script>

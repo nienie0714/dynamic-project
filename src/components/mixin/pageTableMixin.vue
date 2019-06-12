@@ -54,6 +54,9 @@ export default {
     })
   },
   methods: {
+    customBeforeQuery () {
+      return true
+    },
     // 发送分页查询请求
     queryDataReq (status) {
       if (status != 1) {
@@ -65,21 +68,24 @@ export default {
         pageSize: this.pageData.pageSize ? this.pageData.pageSize : 10,
         data: this.queryData
       }
-      queryPageDataList(this.queryUrl, data).then(response => {
-        this.setLastUpdateTime()
-        /* this.tableData.loading = false */
-        if (response.data.code == 0) {
-          if (response.data.data.hasOwnProperty('rows')) {
-            this.tableData.data = response.data.data.rows
-            if (response.data.data.hasOwnProperty('total')) {
-              this.pageData.total = response.data.data.total
+      let result = this.customBeforeQuery()
+      if (result) {
+        queryPageDataList(this.queryUrl, data).then(response => {
+          this.setLastUpdateTime()
+          /* this.tableData.loading = false */
+          if (response.data.code == 0) {
+            if (response.data.data.hasOwnProperty('rows')) {
+              this.tableData.data = response.data.data.rows
+              if (response.data.data.hasOwnProperty('total')) {
+                this.pageData.total = response.data.data.total
+              }
+              this.customAfterQuery()
             }
-            this.customAfterQuery()
+          } else {
+            this.showError('获取列表数据', '请重新尝试')
           }
-        } else {
-          this.showError('获取列表数据', '请重新尝试')
-        }
-      })
+        })
+      }
     },
     customAfterQuery () {}
     // },
