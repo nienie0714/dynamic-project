@@ -734,7 +734,7 @@ export default {
       } else {
         this.formData.loading = false
         this.showProgress = false
-        this.showError('文件大小不能为空')
+        this.showError('文件上传', '文件大小不能为空')
       }
     },
     handleSave () {

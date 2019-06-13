@@ -536,7 +536,7 @@ input[type="number"] {
 .div-left-table_body td {
   height: 48px;
 }
-.tasksched-table-container .div-right-table_body td {
+.tasksched-table-container .div-right-table_body tr>div:not(.body-tr-div-no-task)>td {
   padding: 9px 5px 9px 5px;
 }
 .div-right-table_body td {

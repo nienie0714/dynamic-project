@@ -115,12 +115,11 @@ export default {
         width: '600px',
         key: 'reasonCode',
         formData: [
-          // 车辆牌号 车辆类型 执行日期 航空公司 机型 机号 航班号 任务名称 保障时长 保障人员
           {key: 'vehicleNo', label: '车辆牌号', type: 'label', span: 6},
           {key: 'vehicleTypeName', label: '车辆类型', type: 'label', span: 6},
           {key: 'flightNo', label: '航班号', type: 'label', span: 6},
-          {key: 'statDate', label: '航班日期', type: 'label', span: 6},
-          {key: 'airline', label: '航空公司', type: 'label', span: 6},
+          {key: 'execDate', label: '航班日期', type: 'label', span: 6},
+          {key: 'airlineCn', label: '航空公司', type: 'label', span: 6},
           {key: 'aircraftType', label: '机型', type: 'label', span: 6},
           {key: 'aircraftNo', label: '机号', type: 'label', span: 6},
           {key: 'taskCn', label: '任务名称', type: 'label', span: 6},
@@ -231,13 +230,13 @@ export default {
           {prop: 'vehicleNo', label: '车辆牌号', fixed: true, hidden: false},
           {prop: 'vehicleTypeName', label: '车辆类型', hidden: false},
           {prop: 'execDate', label: '执行日期', hidden: false, formatter: this.formatterDay},
-          {prop: 'airlineName', label: '航空公司', hidden: false},
+          {prop: 'airlineCn', label: '航空公司', hidden: false},
           {prop: 'aircraftType', label: '机型', width: 100, hidden: false},
           {prop: 'aircraftNo', label: '机号', width: 80, hidden: false},
           {prop: 'flightNo', label: '航班号', width: 80, hidden: false},
           {prop: 'taskCn', label: '任务名称', hidden: false},
-          {prop: 'costTime', label: '保障时长', hidden: false},
-          {prop: 'teamName', label: '保障人员', hidden: false}
+          {prop: 'costTime', label: '保障时长/分', hidden: false},
+          {prop: 'teamName', label: '保障人员/班组', hidden: false}
         ]
       }
     }
@@ -253,6 +252,15 @@ export default {
     this.$set(this.queryData, 'end', this.queryList[4].value)
   },
   methods: {
+    customAfterQuery () {
+      this.tableData.data.forEach(item => {
+        if (item.teamName) {
+          this.$set(item, 'teamName', item.teamName)
+        } else {
+          this.$set(item, 'teamName', item.empName)
+        }
+      })
+    },
     // 详情
     handleDetail (row) {
       queryAll('/taskscheduling/hisDynamicTaskRecord/queryTaskDetail', row).then(res => {
@@ -260,7 +268,11 @@ export default {
           if (['exceptions', 'operations'].includes(this.formData.formData[i].key)) {
             this.$set(this.formData.formData[i], 'value', res.data.data[this.formData.formData[i].key])
           } else {
-            this.$set(this.formData.formData[i], 'value', res.data.data.task[this.formData.formData[i].key])
+            if (['vehicleNo', 'vehicleTypeName', 'flightNo', 'execDate', 'airlineCn', 'aircraftType', 'aircraftNo', 'taskCn', 'teamName'].includes(this.formData.formData[i].key)) {
+              this.$set(this.formData.formData[i], 'value', row[this.formData.formData[i].key])
+            } else {
+              this.$set(this.formData.formData[i], 'value', res.data.data.task[this.formData.formData[i].key])
+            }
           }
         }
         var arr = _.dropRight(this.formData.formData, 2)

@@ -115,7 +115,7 @@
                   <table cellpadding="0" cellspacing="0" class="right-table_header" :style="rightTableWidthStyle">
                     <thead>
                       <tr>
-                        <th v-show="!item.hidden" v-for="(item, index) in tableData.taskFields" :key="index" :width="item.width" :style="{minWidth: item.minWidth + 'px'}">{{item.label}}</th>
+                        <th v-show="!item.hidden" v-for="(item, index) in tableData.taskFields" :key="index" :style="{minWidth: item.minWidth + 'px', width: item.width + 'px'}">{{item.label}}</th>
                       </tr>
                     </thead>
                   </table>
@@ -136,9 +136,9 @@
                     <tr v-for="(item, index) in tableData.data" :key="index" :id="item.afid" :data-flighta="item.flightNoA" :data-flightd="item.flightNoD"
                     :draggable="(queryData.execDateFlag != -1)&&(item.colourType != 1)" @dragstart="dragFlight" @drop="dropFlight" @dragover="allowDrop(item.colourType, $event)"
                     :class="tableClickRowClass[index]?'is-active':''" @click="clickRow(index)">
-                      <div v-for="(taskField, idx) in tableData.taskFields" :key="taskField.prop"
+                      <div v-show="!taskField.hidden" v-for="(taskField, idx) in tableData.taskFields" :key="taskField.prop"
                       :class="taskField.hidden?'body-tr-div-hidden':((idx >= rightAutoNum) ? 'body-tr-div' : 'body-tr-div-no-task')"
-                      :style="(idx >= rightAutoNum) ? (!taskField.hidden && {width: 'calc(' + taskField.width + 'px - 10px'}) : (!taskField.hidden && {width: taskField.width + 'px'})">
+                      :style="(idx >= rightAutoNum) ? {width: 'calc(' + taskField.width + 'px - 10px'} : {width: taskField.width + 'px', minWidth: taskField.minWidth + 'px'}">
                         <td v-if="!taskField.hidden && (idx < rightAutoNum)" :width="taskField.width" :class="taskField.class">
                           <div>{{ item[taskField.prop] }}</div>
                         </td>
@@ -205,7 +205,7 @@
                               </li>
                             </div>
                             <div v-for="(field, index) in tableData.taskFields" :key="field.prop">
-                              <li v-if="index < 24" :class="((oprPopoverDirect == 'left') && (oprPopoverIndex == index)) ? 'opr-popover-li-click' : ''">
+                              <li v-if="index < rightAutoNum" :class="((oprPopoverDirect == 'left') && (oprPopoverIndex == index)) ? 'opr-popover-li-click' : ''">
                                 <div class="opr-popover-li-left">{{ substrValue(field.label, 6) }}</div>
                                 <div class="opr-popover-li-right">
                                   <div :class="field.hidden?'button-close':'button-show'" @click="handleEye(field, index, 'right')"></div>
@@ -1998,7 +1998,7 @@ export default {
 .right-table_body_block tr {
   background-color: #0e3042;
 }
-.right-table_body td {
+.right-table_body tr>div:not(.body-tr-div-no-task)>td {
   color: #081a25;
   overflow: hidden;
   padding: 0;
@@ -2009,9 +2009,13 @@ export default {
   text-decoration: underline;
 }
 /* *******任务table背景颜色开始******** */
-.right-table_body .body-tr-div:not(.body-tr-div-no-task) {
+.right-table_body tr>div:not(.body-tr-div-no-task) {
   height: 30px !important;
   padding: 9px 5px;
+}
+.right-table_body tr>.body-tr-div-no-task,
+.right-table_body tr>.body-tr-div-no-task>td>div {
+  height: 48px !important;
 }
 .right-table_body .body-tr-div-hidden {
   padding: 0;

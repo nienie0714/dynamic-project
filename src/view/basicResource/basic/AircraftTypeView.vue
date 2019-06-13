@@ -176,6 +176,8 @@ export default {
         if (this.formData.formData[i].key == 'reserved2') {
           if (row.reserved2 == null || row.reserved2 == '') {
             this.$set(this.formData.formData[i], 'value', 0)
+          } else {
+            this.$set(this.formData.formData[i], 'value', row[this.formData.formData[i].key])
           }
         } else {
           this.$set(this.formData.formData[i], 'value', row[this.formData.formData[i].key])
