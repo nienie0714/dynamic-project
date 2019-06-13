@@ -52,6 +52,7 @@ export default {
       // 基础路径
       baseUrl: 'statistics/aomsVehicleStat/queryVehicleAlarmStat',
       queryUrl: 'statistics/aomsVehicleStat/queryVehicleAlarmStat',
+      exportUrl: '/statistics/aomsVehicleStat/alarmStat/exportExcel',
       formData: {
         title: '详情',
         visible: false,
@@ -62,9 +63,9 @@ export default {
         formData: [
           {key: 'vehicleNo', label: '车辆牌号', type: 'input', maxlength: 9},
           {key: 'vehicleTypeName', label: '车辆类型', type: 'input', maxlength: 9},
+          {key: 'statDate', label: '执行日期', type: 'date', format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd'},
           {key: 'alarmType', label: '报警类型', type: 'tabs', tabsKey: 'vehicleAlarm'},
-          {key: 'alarmNum', label: '报警次数', type: 'number', position: 'right', step: 1},
-          {key: 'statDate', label: '执行日期', type: 'date', format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd'}
+          {key: 'alarmNum', label: '报警次数', type: 'number', position: 'right', step: 1}
         ]
       },
       // 查询条件每行个数
@@ -143,9 +144,9 @@ export default {
         fields: [
           {prop: 'vehicleNo', label: '车辆牌号', fixed: true, hidden: false},
           {prop: 'vehicleTypeName', label: '车辆类型', fixed: false, hidden: false},
+          {prop: 'statDate', label: '执行日期', hidden: false, formatter: this.formatterDay},
           {prop: 'alarmType', label: '报警类型', hidden: false, optionKey: 'vehicleAlarm'},
-          {prop: 'alarmNum', label: '报警次数', hidden: false},
-          {prop: 'statDate', label: '执行日期', hidden: false, formatter: this.formatterDay}
+          {prop: 'alarmNum', label: '报警次数', hidden: false}
         ]
       }
     }

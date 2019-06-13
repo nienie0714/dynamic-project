@@ -52,6 +52,7 @@ export default {
       // 基础路径
       baseUrl: 'statistics/aomsVehicleStat/queryVehicleUsedStat',
       queryUrl: 'statistics/aomsVehicleStat/queryVehicleUsedStat',
+      exportUrl: '/statistics/aomsVehicleStat/usedStat/exportExcel',
       formData: {
         title: '详情',
         visible: false,
@@ -63,9 +64,9 @@ export default {
           {key: 'vehicleNo', label: '车辆牌号', type: 'input', maxlength: 9},
           {key: 'vehicleTypeName', label: '车辆类型', type: 'input', maxlength: 9},
           // {key: 'travelKm', label: '行驶公里数', type: 'input'},
-          {key: 'usedNum', label: '保障次数', type: 'input'},
-          {key: 'usedHour', label: '车辆使用小时数', type: 'input'},
-          {key: 'statDate', label: '执行日期', type: 'date', format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd'}
+          {key: 'statDate', label: '执行日期', type: 'date', format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd'},
+          {key: 'usedHour', label: '保障时长', type: 'input'},
+          {key: 'usedNum', label: '保障次数', type: 'input'}
         ]
       },
       // 查询条件每行个数
@@ -129,10 +130,10 @@ export default {
         fields: [
           {prop: 'vehicleNo', label: '车辆牌号', fixed: true, hidden: false},
           {prop: 'vehicleTypeName', label: '车辆类型', fixed: false, hidden: false},
+          {prop: 'statDate', label: '执行日期', hidden: false, formatter: this.formatterDay},
           // {prop: 'travelKm', label: '行驶公里数（单位：千米）', hidden: false},
-          {prop: 'usedNum', label: '保障次数', hidden: false},
-          {prop: 'usedHour', label: '车辆使用小时数', hidden: false},
-          {prop: 'statDate', label: '执行日期', hidden: false, formatter: this.formatterDay}
+          {prop: 'usedHour', label: '保障时长', hidden: false},
+          {prop: 'usedNum', label: '保障次数', hidden: false}
         ]
       }
     }

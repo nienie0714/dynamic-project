@@ -72,7 +72,7 @@ export default {
         ]
       },
       // 查询条件每行个数
-      colSize: 4,
+      colSize: 5,
       // 查询条件设置
       queryList: [
         {
@@ -93,6 +93,14 @@ export default {
           value: '',
           type: 'input',
           inputText: '操作用户',
+          span: 4
+        },
+        {
+          // 'p': '用户名',
+          key: 'logDetail',
+          value: '',
+          type: 'input',
+          inputText: '航班号',
           span: 4
         },
         {

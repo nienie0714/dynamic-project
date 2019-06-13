@@ -52,6 +52,7 @@ export default {
       // 基础路径
       baseUrl: 'statistics/aomsVehicleStat/queryVehicleLineStat',
       queryUrl: 'statistics/aomsVehicleStat/queryVehicleLineStat',
+      exportUrl: '/statistics/aomsVehicleStat/lineStat/exportExcel',
       formData: {
         title: '详情',
         visible: false,
@@ -61,8 +62,8 @@ export default {
         formData: [
           {key: 'vehicleNo', label: '车辆牌号', type: 'input', maxlength: 9},
           {key: 'vehicleTypeName', label: '车辆类型', type: 'input', maxlength: 9},
-          {key: 'onOffLineNum', label: '上线/离线次数', type: 'number', position: 'right', step: 1},
-          {key: 'statDate', label: '执行日期', type: 'date', format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd'}
+          {key: 'statDate', label: '执行日期', type: 'date', format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd'},
+          {key: 'onOffLineNum', label: '上线/离线次数', type: 'number', position: 'right', step: 1}
         ]
       },
       // 查询条件每行个数

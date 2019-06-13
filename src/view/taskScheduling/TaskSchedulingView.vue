@@ -881,7 +881,7 @@ export default {
       flightType: 'all',
       // 任务类型过滤条件
       taskType: 'normal',
-      rightAutoNum: 24,
+      rightAutoNum: 12,
       // 列表设置
       tableData: {
         /* loading: false,
@@ -912,13 +912,6 @@ export default {
           {prop: 'progressStatusNameCD', label: '出港状态', width: '100', fixed: false, hidden: false} */
         ],
         taskFields: [
-          {prop: 'allowBoardingTime', label: '允许登机时间', width: '120', minWidth: '120', fixed: true, hidden: false},
-          {prop: 'taskNameC', label: '任务', width: '80', minWidth: '80', fixed: true, hidden: false},
-          {prop: 'attr', label: '属性', width: '80', minWidth: '80', fixed: true, hidden: false, optionKey: 'attr'},
-          {prop: 'aircraftNo', label: '机号', width: '80', minWidth: '80', fixed: true, hidden: false},
-          {prop: 'execDateA', label: '进港执行日期', width: '100', minWidth: '100', fixed: false, hidden: true, formatter: this.formatterDay},
-          {prop: 'execDateD', label: '出港执行日期', width: '100', minWidth: '100', fixed: false, hidden: true, formatter: this.formatterDay},
-          {prop: 'routeCh', label: '航线', width: '300', minWidth: '150', fixed: true, hidden: false},
           {prop: 'sta', label: '计划到达', width: '80', minWidth: '80', fixed: false, hidden: true, formatter: this.formatterMin},
           {prop: 'eta', label: '预计到达', width: '80', minWidth: '80', fixed: false, hidden: true, formatter: this.formatterMin},
           {prop: 'ata', label: '实际到达', width: '80', minWidth: '80', fixed: false, hidden: true, formatter: this.formatterMin},
@@ -929,13 +922,8 @@ export default {
           {prop: 'belt', label: '转盘', width: '80', minWidth: '80', fixed: false, hidden: false},
           {prop: 'progressStatusNameCA', label: '进港状态', width: '100', minWidth: '100', fixed: false, hidden: false},
           {prop: 'abnormalStatusNameCA', label: '进港异常', width: '120', minWidth: '120', fixed: false, hidden: false},
-          {prop: 'abnormalReasonNameCA', label: '进港异常原因', width: '180', minWidth: '180', fixed: false, hidden: false},
           {prop: 'progressStatusNameCD', label: '出港状态', width: '100', minWidth: '100', fixed: false, hidden: false},
-          {prop: 'abnormalStatusNameCD', label: '出港异常', width: '120', minWidth: '120', fixed: false, hidden: false},
-          {prop: 'abnormalReasonNameCD', label: '出港异常原因', width: '180', minWidth: '180', fixed: false, hidden: false},
-          {prop: 'shareFlightsA', label: '进港共享', width: '120', minWidth: '120', fixed: false, hidden: false},
-          {prop: 'shareFlightsD', label: '出港共享', width: '120', minWidth: '120', fixed: false, hidden: false},
-          {prop: 'terminal', label: '航站楼', width: '90', minWidth: '90', fixed: false, hidden: false}
+          {prop: 'abnormalStatusNameCD', label: '出港异常', width: '120', minWidth: '120', fixed: false, hidden: false}
         ]
       },
       // 右侧班组人员查询路径

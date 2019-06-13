@@ -54,7 +54,7 @@
                           <div v-if="field.type == 'files'" class="file-down-div">
                             <a v-for="url in item[field.prop]" :key="url['tableKeyId']" class="a-download" :href="dfsUrl + url[field.urlKey]" :download="substr(url[field.urlKey])"><i class="el-icon-download"></i></a>
                           </div>
-                          <div v-else :class="(field.prop=='operationTimeA'?'text-dec':'')">{{field.formatter?formatter(item[field.prop]):item[field.prop]}}</div>
+                          <div v-else :class="(field.prop=='operationTimeA' && item[field.prop] != null?'text-dec':'')">{{field.formatter?formatter(item[field.prop]):item[field.prop]}}</div>
                         </td>
                       </tr>
                     </tbody>
@@ -224,8 +224,8 @@ export default {
           {prop: 'flightNo', label: '航班号', fixed: true, hidden: false},
           {prop: 'execDate', label: '航班日期', fixed: false, hidden: false, width: '110'},
           {prop: 'taskName', label: '任务名称', fixed: false, hidden: false},
-          {prop: 'currState', label: '任务状态', fixed: false, hidden: false},
-          {prop: 'teamName', label: '保障人员/班组', fixed: false, hidden: false, width: '110'},
+          {prop: 'currState', label: '任务状态', fixed: false, hidden: false, width: '110'},
+          {prop: 'taskOrEmpName', label: '保障人员/班组', fixed: false, hidden: false, width: '110'},
           {prop: 'distributeTime', label: '派发时间', fixed: false, hidden: false, formatter: this.formatterMin},
           {prop: 'receiveTime', label: '接受时间', fixed: false, hidden: false, formatter: this.formatterMin},
           {prop: 'beginTimeE', label: '预计开始时间', fixed: false, hidden: false, formatter: this.formatterMin, width: '110'},
@@ -250,14 +250,32 @@ export default {
     this.$set(this.queryData, 'end', this.queryList[2].value)
   },
   methods: {
+    customAfterQuery () {
+      this.tableData.data.forEach(item => {
+        if (item.teamName) {
+          this.$set(item, 'taskOrEmpName', item.teamName)
+        } else {
+          this.$set(item, 'taskOrEmpName', item.empName)
+        }
+      })
+    },
     // 详情
     handleDetail (row) {
+      let that = this
       queryAll('/taskscheduling/hisDynamicTaskRecord/queryTaskDetail', row).then(res => {
         for (let i = 0; i < this.formData.formData.length; i++) {
           if (['exceptions', 'operations'].includes(this.formData.formData[i].key)) {
             this.$set(this.formData.formData[i], 'value', res.data.data[this.formData.formData[i].key])
           } else {
-            this.$set(this.formData.formData[i], 'value', res.data.data.task[this.formData.formData[i].key])
+            if (['teamName'].includes(that.formData.formData[i].key)) {
+              if (res.data.data.task.teamName) {
+                that.$set(that.formData.formData[i], 'value', res.data.data.task[that.formData.formData[i].key])
+              } else {
+                that.$set(that.formData.formData[i], 'value', res.data.data.task.empName)
+              }
+            } else {
+              that.$set(that.formData.formData[i], 'value', res.data.data.task[that.formData.formData[i].key])
+            }
           }
         }
         var arr = _.dropRight(this.formData.formData, 2)
@@ -272,7 +290,7 @@ export default {
     },
     // 格式化 HH:MM
     formatter (value) {
-      return value ? value.substr(11, 5) : ''
+      return value ? value.substr(11, 5) : '--:--'
     },
     substr (url) {
       var arr = url.split('/')

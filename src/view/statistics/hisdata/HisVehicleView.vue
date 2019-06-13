@@ -98,7 +98,7 @@ export default {
   data () {
     return {
       // 基础路径
-      baseUrl: 'taskscheduling/hisDynamicTaskRecord',
+      baseUrl: '/taskscheduling/hisDynamicVehicleRecord',
       // 分页参数
       pageData: {
         currentPage: 1,
@@ -230,13 +230,13 @@ export default {
         fields: [
           {prop: 'vehicleNo', label: '车辆牌号', fixed: true, hidden: false},
           {prop: 'vehicleTypeName', label: '车辆类型', hidden: false},
-          {prop: 'statDate', label: '执行日期', hidden: false, formatter: this.formatterDay},
+          {prop: 'execDate', label: '执行日期', hidden: false, formatter: this.formatterDay},
           {prop: 'airlineName', label: '航空公司', hidden: false},
           {prop: 'aircraftType', label: '机型', width: 100, hidden: false},
           {prop: 'aircraftNo', label: '机号', width: 80, hidden: false},
           {prop: 'flightNo', label: '航班号', width: 80, hidden: false},
           {prop: 'taskCn', label: '任务名称', hidden: false},
-          {prop: 'usedHours', label: '保障时长', hidden: false},
+          {prop: 'costTime', label: '保障时长', hidden: false},
           {prop: 'teamName', label: '保障人员', hidden: false}
         ]
       }
@@ -275,7 +275,7 @@ export default {
     },
     // 格式化 HH:MM
     formatter (value) {
-      return value ? value.substr(11, 5) : ''
+      return value ? value.substr(11, 5) : '--:--'
     },
     substr (url) {
       var arr = url.split('/')
