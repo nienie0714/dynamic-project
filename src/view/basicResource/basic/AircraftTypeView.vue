@@ -154,7 +154,7 @@ export default {
     changeNo (value, callback) {
       let reserved2 = {
         key: 'reserved2',
-        value: 0
+        value: null
       }
       value = parseInt(value)
       if (value) {

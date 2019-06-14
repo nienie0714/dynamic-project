@@ -215,26 +215,26 @@ export default {
         data: [],
         stripe: true,
         height: window.innerHeight,
-        // type: 'selection',
+        oprWidth: 120,
         highlight: true,
         headerCellClass: 'tableHeaderCell-Center',
         rowClassName: this.tableRowClassName,
         multipleSelection: [],
         fields: [
-          {prop: 'flightNo', label: '航班号', fixed: true, hidden: false},
+          {prop: 'flightNo', label: '航班号', fixed: true, hidden: false, width: '180'},
           {prop: 'execDate', label: '航班日期', fixed: false, hidden: false, width: '110'},
           {prop: 'taskName', label: '任务名称', fixed: false, hidden: false},
           {prop: 'currState', label: '任务状态', fixed: false, hidden: false, width: '110'},
           {prop: 'taskOrEmpName', label: '保障人员/班组', fixed: false, hidden: false, width: '110'},
-          {prop: 'distributeTime', label: '派发时间', fixed: false, hidden: false, formatter: this.formatterMin},
-          {prop: 'receiveTime', label: '接受时间', fixed: false, hidden: false, formatter: this.formatterMin},
-          {prop: 'beginTimeE', label: '预计开始时间', fixed: false, hidden: false, formatter: this.formatterMin, width: '110'},
-          {prop: 'endTimeE', label: '预计结束时间', fixed: false, hidden: false, formatter: this.formatterMin, width: '110'},
-          {prop: 'beginTimeA', label: '实际开始时间', fixed: false, hidden: false, formatter: this.formatterMin, width: '110'},
-          {prop: 'endTimeA', label: '实际结束时间', fixed: false, hidden: false, formatter: this.formatterMin, width: '110'},
+          {prop: 'distributeTime', label: '派发时间', fixed: false, hidden: false, formatter: this.formatterMin, width: '85'},
+          {prop: 'receiveTime', label: '接受时间', fixed: false, hidden: false, formatter: this.formatterMin, width: '85'},
+          {prop: 'beginTimeE', label: '预计开始', fixed: false, hidden: false, formatter: this.formatterMin, width: '85'},
+          {prop: 'endTimeE', label: '预计结束', fixed: false, hidden: false, formatter: this.formatterMin, width: '85'},
+          {prop: 'beginTimeA', label: '实际开始', fixed: false, hidden: false, formatter: this.formatterMin, width: '85'},
+          {prop: 'endTimeA', label: '实际结束', fixed: false, hidden: false, formatter: this.formatterMin, width: '85'},
           {prop: 'costMinute', label: '保障时长/分', fixed: false, hidden: false, width: '100'},
-          {prop: 'alarmFlag', label: '是否超时', fixed: false, hidden: false, optionKey: 'isZOrO', options: [{key: 1, value: '是'}, {key: 0, value: '否'}]},
-          {prop: 'exception', label: '是否异常', fixed: false, hidden: false, optionKey: 'isTOrF', options: [{key: true, value: '是'}, {key: false, value: '否'}]}
+          {prop: 'alarmFlag', label: '是否超时', fixed: false, hidden: false, optionKey: 'isZOrO', options: [{key: 1, value: '是'}, {key: 0, value: '否'}], width: '85'},
+          {prop: 'exception', label: '是否异常', fixed: false, hidden: false, optionKey: 'isTOrF', options: [{key: true, value: '是'}, {key: false, value: '否'}], width: '85'}
         ]
       }
     }

@@ -221,6 +221,7 @@ export default {
         data: [],
         stripe: true,
         height: window.innerHeight,
+        oprWidth: 120,
         // type: 'selection',
         highlight: true,
         headerCellClass: 'tableHeaderCell-Center',

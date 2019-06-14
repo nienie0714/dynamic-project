@@ -71,7 +71,7 @@ export default {
       // 查询条件设置
       queryList: [
         {
-          key: 'vTypeNo',
+          key: 'vehicleType',
           value: '',
           type: 'select',
           inputText: '车型名称',
