@@ -169,6 +169,9 @@ export default {
       callback(reserved2)
     },
     customSaveBefore (data) {
+      if (data.reserved2 == null) {
+        data.reserved2 = 0
+      }
       return data
     },
     handleEdit (row) {

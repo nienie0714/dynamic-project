@@ -230,7 +230,8 @@
               <div>
                 <div class="record-voice"></div>
                 <div class="record-emoji"></div>
-                <el-upload :action="talk.talkData.imgData.action" :accept="talk.talkData.imgData.accept" :http-request="httpRequest" :file-list="talk.talkData.imgData.fileList" :on-change="imgFileChange">
+                <el-upload :action="talk.talkData.imgData.action" :accept="talk.talkData.imgData.accept" :http-request="httpRequest" :show-file-list="false"
+                :file-list="talk.talkData.imgData.fileList" :on-change="imgFileChange">
                   <div class="record-pic"></div>
                 </el-upload>
                 <div class="record-words"></div>

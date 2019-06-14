@@ -54,7 +54,7 @@
                           <div v-if="field.type == 'files'" class="file-down-div">
                             <a v-for="url in item[field.prop]" :key="url['tableKeyId']" class="a-download" :href="dfsUrl + url[field.urlKey]" :download="substr(url[field.urlKey])"><i class="el-icon-download"></i></a>
                           </div>
-                          <div v-else :class="(field.prop=='operationTimeA'?'text-dec':'')">{{field.formatter?formatter(item[field.prop]):item[field.prop]}}</div>
+                          <div v-else :class="(field.prop=='operationTimeA' && item[field.prop] != null?'text-dec':'')">{{field.formatter?formatter(item[field.prop]):item[field.prop]}}</div>
                         </td>
                       </tr>
                     </tbody>
@@ -146,8 +146,8 @@ export default {
               {prop: 'operationName', label: '操作名称'},
               {prop: 'operationTimeE', label: '预计时间', formatter: true},
               {prop: 'operationTimeA', label: '实际时间', formatter: true},
-              {prop: 'empName', label: '操作人'},
-              {prop: 'attachments', label: '附件', type: 'files', urlKey: 'attachmentUrl'}
+              {prop: 'empName', label: '操作人'}
+              // {prop: 'attachments', label: '附件', type: 'files', urlKey: 'attachmentUrl'}
             ]
           }
         ],
@@ -227,15 +227,15 @@ export default {
         rowClassName: this.tableRowClassName,
         multipleSelection: [],
         fields: [
-          {prop: 'vehicleNo', label: '车辆牌号', fixed: true, hidden: false},
-          {prop: 'vehicleTypeName', label: '车辆类型', hidden: false},
-          {prop: 'execDate', label: '执行日期', hidden: false, formatter: this.formatterDay},
+          {prop: 'vehicleNo', label: '车辆牌号', fixed: true, width: 150, hidden: false},
+          {prop: 'vehicleTypeName', label: '车辆类型', width: 150, hidden: false},
+          {prop: 'execDate', label: '执行日期', width: 110, hidden: false, formatter: this.formatterDay},
           {prop: 'airlineCn', label: '航空公司', hidden: false},
           {prop: 'aircraftType', label: '机型', width: 100, hidden: false},
-          {prop: 'aircraftNo', label: '机号', width: 80, hidden: false},
-          {prop: 'flightNo', label: '航班号', width: 80, hidden: false},
+          {prop: 'aircraftNo', label: '机号', width: 100, hidden: false},
+          {prop: 'flightNo', label: '航班号', width: 110, hidden: false},
           {prop: 'taskCn', label: '任务名称', hidden: false},
-          {prop: 'costTime', label: '保障时长/分', hidden: false},
+          {prop: 'costTime', label: '保障时长/分', width: 100, hidden: false},
           {prop: 'teamName', label: '保障人员/班组', hidden: false}
         ]
       }

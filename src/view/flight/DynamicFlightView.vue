@@ -144,8 +144,8 @@
                         <div v-if="other.prop == 'attr'">
                           {{ formatterOption(other, item) }}
                         </div>
-                        <div v-else-if="other.prop == 'allowBoardingTime'" class="td-input-div td-time-div" @click="eventStop($event)" @dblclick="eventStop($event)">
-                          <div v-if="item.flightNoD != null && editable.hasOwnProperty(index) && editable[index]  == true">
+                        <div v-else-if="other.prop == 'allowBoardingTime'" class="td-input-div td-time-div">
+                          <div v-if="item.flightNoD != null && editable.hasOwnProperty(index) && editable[index]  == true" @click="eventStop($event)" @dblclick="eventStop($event)">
                             <el-time-picker v-model="editTempItem[other.prop]" :clearable="false" format="HH:mm" value-format="HH:mm" :picker-options="{selectableRange: editReg.range}"></el-time-picker>
                             <div class="td-time-now-icon" @click="getAllowBoardTimeRange(index)">当前</div>
                           </div>

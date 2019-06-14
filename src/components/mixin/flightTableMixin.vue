@@ -121,14 +121,19 @@ export default {
         this.tableData.loading = false
         if (response.data.code == 0) {
           if (response.data.data.hasOwnProperty('rows')) {
-            this.tableData.data = response.data.data.rows
+            let data = this.customResBefore(response.data.data.rows)
+            this.tableData.data = data
           } else {
-            this.tableData.data = response.data.data
+            let data = this.customResBefore(response.data.data)
+            this.tableData.data = data
           }
         } else {
           this.showError('获取列表数据', '请重新尝试')
         }
       })
+    },
+    customResBefore (data) {
+      return data
     },
     updateTableWidth () {
       var key = this.customOtherFields()
@@ -246,8 +251,8 @@ export default {
       document.getElementsByClassName('div-opr-table_body')[0].scrollTop = scrollTop
       this.clickRow(this.ctrlFList[this.ctrlFTouchTime].lineNum, 'scroll')
     },
-    tableRowClassName (data) {
-      switch (data.row.colourType) {
+    tableRowClassName ({row, rowIndex}) {
+      switch (row.colourType) {
         case '1' : return 'color-1-row'
         case '2' : return 'color-2-row'
         case '3' : return 'color-3-row'
@@ -493,13 +498,8 @@ export default {
         if (this.rightAutoNum && (index > this.rightAutoNum)) {
             let key = this.customOtherFields()
             this.tableData[key].splice(index, 1)
-            this.tableData[key].splice(this.rightAutoNum - 1, 0, field)
+            this.tableData[key].splice(index - 1, 0, field)
             this.oprPopoverIndex = index - 1
-        } else {
-          let key = this.customOtherFields()
-          this.tableData[key].splice(index, 1)
-          this.tableData[key].splice(index - 1, 0, field)
-          this.oprPopoverIndex = index - 1
         }
       }
       this.oprPopoverDirect = sign

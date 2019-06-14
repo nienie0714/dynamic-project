@@ -1307,12 +1307,7 @@ export default {
         let taskNo = event.dataTransfer.getData('task')
         let afid = event.currentTarget.id
         let item = null
-        for (let i = 0; i < this.tableData.data.length; i++) {
-          if (this.tableData.data[i].afid == afid) {
-            item = this.tableData.data[i]
-            break
-          }
-        }
+        item = _.find(this.tableData.data, ['afid', afid])
         if (item != null) {
           if (item.taskDataMap.hasOwnProperty(taskNo)) {
             this.taskFlightData.queryData = {

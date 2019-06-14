@@ -141,8 +141,8 @@ export default {
               {prop: 'operationName', label: '操作名称'},
               {prop: 'operationTimeE', label: '预计时间', formatter: true},
               {prop: 'operationTimeA', label: '实际时间', formatter: true},
-              {prop: 'empName', label: '操作人'},
-              {prop: 'attachments', label: '附件', type: 'files', urlKey: 'attachmentUrl'}
+              {prop: 'empName', label: '操作人'}
+              // {prop: 'attachments', label: '附件', type: 'files', urlKey: 'attachmentUrl'}
             ]
           }
         ],
