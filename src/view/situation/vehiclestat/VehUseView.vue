@@ -65,7 +65,7 @@ export default {
           {key: 'vehicleTypeName', label: '车辆类型', type: 'input', maxlength: 9},
           // {key: 'travelKm', label: '行驶公里数', type: 'input'},
           {key: 'statDate', label: '执行日期', type: 'date', format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd'},
-          {key: 'usedHour', label: '保障时长', type: 'input'},
+          {key: 'usedHour', label: '保障时长/分', type: 'input'},
           {key: 'usedNum', label: '保障次数', type: 'input'}
         ]
       },
@@ -132,7 +132,7 @@ export default {
           {prop: 'vehicleTypeName', label: '车辆类型', fixed: false, hidden: false},
           {prop: 'statDate', label: '执行日期', hidden: false, formatter: this.formatterDay},
           // {prop: 'travelKm', label: '行驶公里数（单位：千米）', hidden: false},
-          {prop: 'usedHour', label: '保障时长', hidden: false},
+          {prop: 'usedHour', label: '保障时长/分', hidden: false},
           {prop: 'usedNum', label: '保障次数', hidden: false}
         ]
       }

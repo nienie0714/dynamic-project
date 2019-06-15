@@ -257,6 +257,11 @@ export default {
         } else {
           this.$set(item, 'taskOrEmpName', item.empName)
         }
+        if (item.endTimeE || item.endTimeA) {
+          item.alarmFlag = item.endTimeA > item.endTimeE ? 1 : 0
+        } else {
+          item.alarmFlag = 0
+        }
       })
     },
     // 详情
@@ -272,6 +277,13 @@ export default {
                 that.$set(that.formData.formData[i], 'value', res.data.data.task[that.formData.formData[i].key])
               } else {
                 that.$set(that.formData.formData[i], 'value', res.data.data.task.empName)
+              }
+            } else if (['alarmFlag'].includes(that.formData.formData[i].key)) {
+              if (res.data.data.task.endTimeE || res.data.data.task.endTimeA) {
+                let num = res.data.data.task.endTimeA > res.data.data.task.endTimeE ? 1 : 0
+                that.$set(that.formData.formData[i], 'value', num)
+              } else {
+                that.$set(that.formData.formData[i], 'value', 0)
               }
             } else {
               that.$set(that.formData.formData[i], 'value', res.data.data.task[that.formData.formData[i].key])

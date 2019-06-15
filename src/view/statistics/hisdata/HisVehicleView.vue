@@ -271,6 +271,13 @@ export default {
           } else {
             if (['vehicleNo', 'vehicleTypeName', 'flightNo', 'execDate', 'airlineCn', 'aircraftType', 'aircraftNo', 'taskCn', 'teamName'].includes(this.formData.formData[i].key)) {
               this.$set(this.formData.formData[i], 'value', row[this.formData.formData[i].key])
+            } else if (['alarmFlag'].includes(this.formData.formData[i].key)) {
+              if (res.data.data.task.endTimeE || res.data.data.task.endTimeA) {
+                let num = res.data.data.task.endTimeA > res.data.data.task.endTimeE ? 1 : 0
+                this.$set(this.formData.formData[i], 'value', num)
+              } else {
+                this.$set(this.formData.formData[i], 'value', 0)
+              }
             } else {
               this.$set(this.formData.formData[i], 'value', res.data.data.task[this.formData.formData[i].key])
             }

@@ -895,7 +895,7 @@ export default {
         selection: true, */
         fields: [
           {prop: 'mark', label: '', width: '40', minWidth: '40', fixed: true, hidden: false},
-          {prop: 'index', label: '', width: '40', minWidth: '40', fixed: true, hidden: false},
+          {prop: 'index', label: '序号', width: '40', minWidth: '40', fixed: true, hidden: false},
           {prop: 'flightNoA', label: '进港航班', width: '80', minWidth: '80', fixed: true, hidden: false},
           {prop: 'flightNoD', label: '出港航班', width: '80', minWidth: '80', fixed: true, hidden: false},
           {prop: 'stand', label: '机位', width: '80', minWidth: '80', childClass: 'standClass', fixed: true, hidden: false},
@@ -903,11 +903,11 @@ export default {
           /* {prop: 'routeCh', label: '航线', width: '240', fixed: true, hidden: false}, */
           {prop: 'preDepTime', label: '前起', width: '80', minWidth: '80', fixed: false, hidden: false, class: 'td-left-border'},
           {prop: 'arrvTime', label: '到达', width: '80', minWidth: '80', fixed: false, hidden: false, class: 'td-left-border'},
-          {prop: 'deptTime', label: '起飞', width: '80', minWidth: '80', fixed: false, hidden: false, class: 'td-left-border td-left-right-border'},
-          {prop: 'pgCountA', label: '货/邮/行(进)', width: '120', minWidth: '120', fixed: true, hidden: false},
+          {prop: 'deptTime', label: '起飞', width: '80', minWidth: '80', fixed: false, hidden: false, class: 'td-left-border td-left-right-border'}
+          /* {prop: 'pgCountA', label: '货/邮/行(进)', width: '120', minWidth: '120', fixed: true, hidden: false},
           {prop: 'pgCountD', label: '货/邮/行(出)', width: '120', minWidth: '120', fixed: true, hidden: false},
           {prop: 'abCountA', label: '成人/婴儿(进)', width: '120', minWidth: '120', fixed: true, hidden: false},
-          {prop: 'abCountD', label: '成人/婴儿(出)', width: '120', minWidth: '120', fixed: true, hidden: false}/* ,
+          {prop: 'abCountD', label: '成人/婴儿(出)', width: '120', minWidth: '120', fixed: true, hidden: false},
           {prop: 'progressStatusNameCA', label: '进港状态', width: '100', fixed: false, hidden: false},
           {prop: 'progressStatusNameCD', label: '出港状态', width: '100', fixed: false, hidden: false} */
         ],
@@ -1336,12 +1336,7 @@ export default {
         let taskNo = target.dataset.task
         let type = target.dataset.type
         let item = null
-        for (let i = 0; i < this.tableData.data.length; i++) {
-          if (this.tableData.data[i].afid == afid) {
-            item = this.tableData.data[i]
-            break
-          }
-        }
+        item = _.find(this.tableData.data, ['afid', afid])
         if (item != null) {
           if (item.taskDataMap.hasOwnProperty(taskNo)) {
             this.taskFlightData.queryData = {
