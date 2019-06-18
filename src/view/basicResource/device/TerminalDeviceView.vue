@@ -10,13 +10,14 @@
     <el-main class="page-table-view">
       <div class="page-table-header">
         <div class="page-table-title">查询结果</div>
-        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
+        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleImport="handleImport" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
         <Pagination-view :pageData="pageData" @sizeChange="handleSizeChange" @currentChange="handleCurrentChange"></Pagination-view>
       </div>
       <Table-view :permissions="permissions" :tableData="tableData" ref="basicTable" @handleDetail="handleDetail" @handleEdit="handleEdit" @handleDelete="handleDelete"></Table-view>
     </el-main>
     <Edit-view :formData="formData" @handleAdd="saveAdd" @handleEdit="saveEdit"></Edit-view>
     <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm" @handleClose="handleDeleteClose"></Warning-box-view>
+    <import-dialog :data="importData" @downloadErrorExcel="downloadErrorExcel" @handleRefresh="handleRefresh"></import-dialog>
   </el-container>
 </template>
 
@@ -55,7 +56,7 @@ export default {
         key: 'deviceNo',
         formData: [
           {key: 'deviceNo', label: '设备编号', type: 'input', toUpper: true, maxlength: 20},
-          {key: 'deviceModel', label: '设备型号', type: 'input'},
+          {key: 'deviceModel', label: '设备型号', type: 'input', maxlength: 20},
           {key: 'deviceType', label: '设备类型', type: 'select', filterable: true, tabsKey: 'deviceType', itemKey: 'key', itemLabel: 'value'},
           {key: 'versionNumber', label: '版本号', type: 'input', maxlength: 10},
           {key: 'nouseTimeRange', key1: 'productionTime', key2: 'distributionTime', label: '日期选择', label1: '生产日期', label2: '配发日期', type: 'dateRangePicker', required: 3, requiredInfo: '生产日期和配送日期不能为空', dateType: 'date', format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd', class: 'auto-width'},
@@ -153,6 +154,12 @@ export default {
           {prop: 'phoneNumber', label: '手机号', fixed: false, hidden: false},
           {prop: 'simSerialNumber', label: 'SIM卡序列号', fixed: false, hidden: false}
         ]
+      },
+      importData: {
+        visible: false,
+        uploadUrl: 'terminal_device',
+        fileType: '.xls',
+        fileUrl: '/importExcel/terminalDevice'// todo
       }
     }
   },
@@ -245,6 +252,12 @@ export default {
           }
         }
       }
+    },
+    downloadErrorExcel (data) {
+      let titles = ['设备编号', '设备型号', '设备类型', '生产日期', '配发日期', '版本号', '配发单位', '责任人', '手机号', 'SIM卡序列号(KM)']
+      let arrs = [_.map(data, 'deviceNo'), _.map(data, 'deviceModel'), _.map(data, 'deviceType'), _.map(data, 'productionTime'), _.map(data, 'distributionTime'), _.map(data, 'versionNumber'), _.map(data, 'deptName'), _.map(data, 'empName'), _.map(data, 'phoneNumber'), _.map(data, 'simSerialNumber')]
+      let widths = [100, 55, 55, 60, 60, 66, 45, 45, 66, 100]
+      this.downloadError(titles, arrs, widths, null, 'l')
     }
   }
 }

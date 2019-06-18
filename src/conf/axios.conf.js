@@ -3,12 +3,12 @@ import axios from 'axios'
 import router from '../router/index'
 import Vue from 'vue'
 
-// const forwardURL = '/api'
-// const forwardOtherURL = '/other'
-// const forwardURLStat = '/stat'
-const forwardURL = ''
-const forwardOtherURL = ''
-const forwardURLStat = ''
+const forwardURL = '/api'
+const forwardOtherURL = '/other'
+const forwardURLStat = '/stat'
+// const forwardURL = ''
+// const forwardOtherURL = ''
+// const forwardURLStat = ''
 const CancelToken = axios.CancelToken
 let pending = []
 let removePending = (ever) => {

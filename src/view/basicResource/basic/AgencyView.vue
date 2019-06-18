@@ -56,6 +56,7 @@ export default {
           {key: 'code', label: '代理代码', type: 'input', toUpper: true, maxlength: 10},
           {key: 'briefC', label: '代理中文', type: 'input', maxlength: 20},
           {key: 'briefE', label: '代理英文', type: 'input', maxlength: 20},
+          {key: 'agency', label: '代理航空公司', type: 'select', filterable: true, multiple: true, getOptions: '/sys/role/getEnabledAll', itemKey: 'roleId', itemLabel: 'name'}, // todo
           {key: 'sortkey', label: '排序码', type: 'input'},
           {key: 'remark', label: '备注', type: 'textarea', autosize: true, maxlength: 100}
         ],
@@ -92,6 +93,18 @@ export default {
           type: 'input',
           inputText: '代理中文',
           span: 4
+        },
+        {
+          // 'p': '代理航空公司', // todo
+          key: 'agency',
+          value: null,
+          type: 'select',
+          filterable: true,
+          optKey: 'deptId',
+          optLabel: 'deptName',
+          inputText: '代理航空公司',
+          getOptions: '/organization/department/queryAll',
+          span: 4
         }
       ],
       // 列表设置
@@ -109,7 +122,8 @@ export default {
         fields: [
           {prop: 'code', label: '代理代码', fixed: true, hidden: false},
           {prop: 'briefC', label: '代理中文', fixed: false, hidden: false},
-          {prop: 'briefE', label: '代理英文', fixed: false, hidden: false}
+          {prop: 'briefE', label: '代理英文', fixed: false, hidden: false},
+          {prop: 'agency', label: '代理航空公司', fixed: false, hidden: false} // todo
         ]
       }
     }

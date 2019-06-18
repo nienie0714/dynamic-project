@@ -30,7 +30,7 @@ import EditView from '../../../components/common/EditView'
 import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
 import {idNumReg, sixNum, phoneReg} from '../../../util/rules.js'
-import {queryAll} from '../../../api/base.js'
+import {queryAll, postData} from '../../../api/base.js'
 import _ from 'lodash'
 
 // const tableHeight = ''
@@ -75,6 +75,9 @@ export default {
           ],
           phone: [
             {validator: phoneReg, trigger: 'blur'}
+          ],
+          parentIds: [
+            {required: true, message: '必填项', trigger: 'change'}
           ]
         }
       },
@@ -185,6 +188,22 @@ export default {
       let widths = [100, 115, 100, 100, 95]
       this.downloadError(titles, arrs, widths)
     }
+    // handleDeleteConfirm () {
+    //   this.deleteData.loading = true
+    //   postData(this.deleteUrl, this.deleteData.data).then(response => {
+    //     if (response.data.code == 0) {
+    //       this.showSuccess('删除')
+    //       this.customMethod()
+    //       this.queryDataReq(1)
+    //       this.handleDeleteClose()
+    //     } else {
+    //       this.showError('删除', '该部门存在人员')
+    //     }
+    //     this.deleteData.loading = false
+    //   }).catch(() => {
+    //     this.deleteData.loading = false
+    //   })
+    // }
   },
   watch: {
     deptParentId: function (newValue, oldValue) {

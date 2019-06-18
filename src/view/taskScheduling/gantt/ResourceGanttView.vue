@@ -122,8 +122,6 @@ export default {
     this.$nextTick(() => {
       window.onresize = () => {
         var width = this.resourceGantt.getOption()
-        console.log('clientHeight --> ' + this.ganttEl.clientHeight)
-        console.log('yList.length --> ' + this.yList.length)
         var opts = {
           width: 'auto',
           height: (this.ganttEl.clientHeight)
@@ -628,7 +626,6 @@ export default {
           }],
           animation: false
         }
-        console.log(option)
         this.resourceGantt.setOption(option, true)
         this.resetDoingDiv()
         this.resourceGantt.on('datazoom', (params) => {

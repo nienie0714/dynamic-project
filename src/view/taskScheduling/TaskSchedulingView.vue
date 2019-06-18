@@ -87,7 +87,8 @@
               <div class="div-left-table_body" :style="divTableBodyStyle" @mousewheel="scrollEvent">
                 <table cellpadding="0" cellspacing="0" class="left-table_body" ref="wholeTable">
                   <tbody>
-                    <tr v-for="(item, index) in tableData.data" :key="index" :id="item.afid" :data-flighta="item.flightNoA" :data-flightd="item.flightNoD" :draggable="(queryData.execDateFlag != -1)&&item.colourType != 1" @dragstart="dragFlight" @drop="dropFlight" @dragover="allowDrop(item.colourType, $event)"
+                    <tr v-for="(item, index) in tableData.data" :key="index" :id="item.afid" :data-flighta="item.flightNoA" :data-flightd="item.flightNoD"
+                    :draggable="(queryData.execDateFlag != -1)&&item.colourType != 1" @dragstart="dragFlight" @drop="dropFlight" @dragenter.stop="(item.colourType != 1) && allowDrop($event)" @dragover.stop="(item.colourType != 1) && allowDrop($event)"
                     :class="[tableRowClassName({'row': item, 'rowIndex': index}), tableClickRowClass[index]?'is-active':'']" @click="clickRow(index)">
                       <div v-for="field in tableData.fields" :key="field.prop" :class="field.hidden?'body-tr-div':'body-tr-div show-field'" :style="!field.hidden && {width: field.width + 'px'}">
                         <td v-if="!field.hidden" :width="field.width" :class="field.class">
@@ -125,7 +126,7 @@
                 <table cellpadding="0" cellspacing="0" class="right-table_body_block">
                   <tbody>
                     <tr v-for="(item, index) in tableData.data" :key="index" :id="item.afid" :data-flighta="item.flightNoA" :data-flightd="item.flightNoD"
-                    :draggable="(queryData.execDateFlag != -1)&&(item.colourType != 1)" @dragstart="dragFlight" @drop="dropFlight" @dragover="allowDrop(item.colourType, $event)"
+                    :draggable="(queryData.execDateFlag != -1)&&(item.colourType != 1)" @dragstart="dragFlight" @drop="dropFlight" @dragenter.stop="(item.colourType != 1) && allowDrop($event)" @dragover.stop="(item.colourType != 1) && allowDrop($event)"
                     :class="tableClickRowClass[index]?'is-active':''" @click="clickRow(index)">
                       <div class="body-tr-div" :style="{width: '100%'}"></div>
                     </tr>
@@ -134,7 +135,7 @@
                 <table cellpadding="0" cellspacing="0" class="right-table_body" :style="rightTableWidthStyle">
                   <tbody>
                     <tr v-for="(item, index) in tableData.data" :key="index" :id="item.afid" :data-flighta="item.flightNoA" :data-flightd="item.flightNoD"
-                    :draggable="(queryData.execDateFlag != -1)&&(item.colourType != 1)" @dragstart="dragFlight" @drop="dropFlight" @dragover="allowDrop(item.colourType, $event)"
+                    :draggable="(queryData.execDateFlag != -1)&&(item.colourType != 1)" @dragstart="dragFlight" @drop="dropFlight" @dragenter.stop="(item.colourType != 1) && allowDrop($event)" @dragover.stop="(item.colourType != 1) && allowDrop($event)"
                     :class="tableClickRowClass[index]?'is-active':''" @click="clickRow(index)">
                       <div v-show="!taskField.hidden" v-for="(taskField, idx) in tableData.taskFields" :key="taskField.prop"
                       :class="taskField.hidden?'body-tr-div-hidden':((idx >= rightAutoNum) ? 'body-tr-div' : 'body-tr-div-no-task')"
@@ -252,7 +253,7 @@
                 <table cellpadding="0" cellspacing="0">
                   <tbody>
                     <tr v-for="(item, index) in tableData.data" :key="index" :id="item.afid" :data-flighta="item.flightNoA" :data-flightd="item.flightNoD"
-                    :draggable="(queryData.execDateFlag != -1)&&(item.colourType != 1)" @dragstart="dragFlight" @drop="dropFlight" @dragover="allowDrop(item.colourType, $event)"
+                    :draggable="(queryData.execDateFlag != -1)&&(item.colourType != 1)" @dragstart="dragFlight" @drop="dropFlight" @dragenter.stop="(item.colourType != 1) && allowDrop($event)" @dragover.stop="(item.colourType != 1) && allowDrop($event)"
                     :class="tableClickRowClass[index]?'is-active':''" @click="clickRow(index)">
                       <td width="90">
                         <div class="div-opr-i">
@@ -274,7 +275,7 @@
           <el-header class="tasksched-header">
             <div class="table-header">
               <img :src="require('@img/title_deco.png')"/>
-              <span class="header-title">{{deptName}}</span>
+              <span class="header-title" :title="deptName">{{deptName}}</span>
             </div>
             <div class="header-button">
               <div class="opr-header-button" @click="skipToResGantt()">资源甘特图</div>
@@ -293,7 +294,8 @@
             <el-main class="tasksched-task-body">
               <div class="task-body-ul">
                 <ul>
-                  <li v-for="item in rightDrag" :key="item.index" :id="item.id" :data-type="item.type" :data-task="item.taskNo" :data-taskname="item.taskName" :data-name="item.name" :draggable="queryData.execDateFlag != -1" @dragstart="dragData" @drop="dropData" @dragover="allowDrop(null, $event)">
+                  <li v-for="item in rightDrag" :key="item.index" :id="item.id" :data-type="item.type" :data-task="item.taskNo" :data-taskname="item.taskName" :data-name="item.name"
+                  :draggable="queryData.execDateFlag != -1" @dragstart="dragData" @drop="dropData" @dragenter.stop="allowDrop($event)" @dragover.stop="allowDrop($event)">
                     <div v-if="((!taskOnline) && (!taskFree)) || (taskOnline && item.online && (!taskFree)) || (taskFree && (!item.taskCount) && !taskOnline) || (taskFree && (!item.taskCount) && taskOnline && item.online)" class="task-list-li">
                       <div class="li-head">
                         <div :class="`${item.online?'':'head-no-online '}${item.type}`"></div>
@@ -675,7 +677,7 @@
         <Warning-box-view :data="preButtonData" @handleConfirm="handleConfirmDia"></Warning-box-view>
       </el-dialog>
     </div>
-    <el-dialog v-if="taskFlightData.visible" :visible.sync="taskFlightData.visible" :close-on-click-modal="false" width="660px" append-to-body class="other-dialog dialog-task-flight-warn" @close="clearAllTaskFlightData">
+    <el-dialog :visible="taskFlightData.visible" :close-on-click-modal="false" width="660px" append-to-body class="other-dialog dialog-task-flight-warn" @close="clearAllTaskFlightData">
       <div slot="title" class="dialog-header">
         <img :src="require('@img/title_deco.png')"/>
         <span class="header-title">提示</span>
@@ -884,15 +886,7 @@ export default {
       rightAutoNum: 12,
       // 列表设置
       tableData: {
-        /* loading: false,
-        isOperat: 0,
-        height: tableHeight, */
         data: [],
-        /* stripe: true,
-        highlight: true,
-        headerCellClass: 'tableHeaderCell-Center',
-        rowClassName: this.tableRowClassName,
-        selection: true, */
         fields: [
           {prop: 'mark', label: '', width: '40', minWidth: '40', fixed: true, hidden: false},
           {prop: 'index', label: '序号', width: '40', minWidth: '40', fixed: true, hidden: false},
@@ -900,16 +894,13 @@ export default {
           {prop: 'flightNoD', label: '出港航班', width: '80', minWidth: '80', fixed: true, hidden: false},
           {prop: 'stand', label: '机位', width: '80', minWidth: '80', childClass: 'standClass', fixed: true, hidden: false},
           {prop: 'aircraftType', label: '机型', width: '100', minWidth: '100', fixed: true, hidden: false},
-          /* {prop: 'routeCh', label: '航线', width: '240', fixed: true, hidden: false}, */
           {prop: 'preDepTime', label: '前起', width: '80', minWidth: '80', fixed: false, hidden: false, class: 'td-left-border'},
           {prop: 'arrvTime', label: '到达', width: '80', minWidth: '80', fixed: false, hidden: false, class: 'td-left-border'},
           {prop: 'deptTime', label: '起飞', width: '80', minWidth: '80', fixed: false, hidden: false, class: 'td-left-border td-left-right-border'}
           /* {prop: 'pgCountA', label: '货/邮/行(进)', width: '120', minWidth: '120', fixed: true, hidden: false},
           {prop: 'pgCountD', label: '货/邮/行(出)', width: '120', minWidth: '120', fixed: true, hidden: false},
           {prop: 'abCountA', label: '成人/婴儿(进)', width: '120', minWidth: '120', fixed: true, hidden: false},
-          {prop: 'abCountD', label: '成人/婴儿(出)', width: '120', minWidth: '120', fixed: true, hidden: false},
-          {prop: 'progressStatusNameCA', label: '进港状态', width: '100', fixed: false, hidden: false},
-          {prop: 'progressStatusNameCD', label: '出港状态', width: '100', fixed: false, hidden: false} */
+          {prop: 'abCountD', label: '成人/婴儿(出)', width: '120', minWidth: '120', fixed: true, hidden: false}, */
         ],
         taskFields: [
           {prop: 'sta', label: '计划到达', width: '80', minWidth: '80', fixed: false, hidden: true, formatter: this.formatterMin},
@@ -950,7 +941,6 @@ export default {
       teamEmpArr: [],
       saveTaskFlightUrl: 'taskscheduling/dynamicTask/saveDistribution',
       taskFlightData: {
-        dragging: false,
         visible: false,
         loading: false,
         data: {},
@@ -1080,15 +1070,15 @@ export default {
     this.$store.commit('setConfigValue', 'dfsUrl')
     this.dfsUrl = this.$store.getters.getConfigValue
     // this.$nextTick(() => {
-      var resizeMain = this.$refs['resize-table'].$el.querySelector('.el-main')
-      var top1 = resizeMain.getBoundingClientRect().top
+      let resizeMain = this.$refs['resize-table'].$el.querySelector('.el-main')
+      let top1 = resizeMain.getBoundingClientRect().top
       this.wholeMounted(top1)
       resizeMain.style.height = window.innerHeight - top1 - 20 + 'px'
       $('.left-table_header').colResizable(this.resizeConf)
       window.onresize = () => {
         this.$nextTick(() => {
           return (() => {
-            var top2 = resizeMain.getBoundingClientRect().top
+            let top2 = resizeMain.getBoundingClientRect().top
             resizeMain.style.height = window.innerHeight - top2 - 20 + 'px'
             this.wholeMounted(top1)
             this.taskButtonData.style['max-height'] = window.innerHeight - 590 + 'px'
@@ -1124,18 +1114,18 @@ export default {
       this.getPreFlight()
     },
     skipToResGantt () {
-      var name = '资源甘特图'
+      let name = '资源甘特图'
       const {href} = this.$router.resolve({
         name: name
       })
       this.resGanttOpenWin = window.open(href, name)
     },
     skipToFlightGantt (item) {
-      var name = '航班保障甘特图'
+      let name = '航班保障甘特图'
       localStorage.setItem('flightGanttA', item.dynamicFlightIdA)
       localStorage.setItem('flightGanttD', item.dynamicFlightIdD)
       if (this.flightGanttOpenWin) {
-        var pushData = {
+        let pushData = {
           type: 4
         }
         postDataOther(this.pushWebsocketUrl, pushData).then(res => {
@@ -1150,7 +1140,7 @@ export default {
       this.flightGanttOpenWin = window.open(href, name)
     },
     addSpecialTask (item) {
-      var data = {
+      let data = {
         dynamicFlightIdA: item.dynamicFlightIdA,
         dynamicFlightIdD: item.dynamicFlightIdD
       }
@@ -1162,7 +1152,7 @@ export default {
       })
     },
     selectSpecialTask (item) {
-      var index = _.findIndex(this.specialTaskData.selectArr, ['taskNo', item.taskNo])
+      let index = _.findIndex(this.specialTaskData.selectArr, ['taskNo', item.taskNo])
       if (~index) {
         this.specialTaskData.selectArr.splice(index, 1)
       } else {
@@ -1170,7 +1160,7 @@ export default {
       }
     },
     saveSpecialTask () {
-      var data = {
+      let data = {
         dynamicTaskIds: _.map(this.specialTaskData.selectArr, 'dynamicTaskId'),
         taskNos: _.map(this.specialTaskData.selectArr, 'taskNo')
       }
@@ -1188,7 +1178,7 @@ export default {
     },
     showSpecialTask (taskNos) {
       _.forEach(taskNos, (taskNo) => {
-        var index = _.findIndex(this.tableData[this.customOtherFields()], ['prop', taskNo])
+        let index = _.findIndex(this.tableData[this.customOtherFields()], ['prop', taskNo])
         if (~index) {
           this.handleEye(this.tableData[this.customOtherFields()][index], index, 'right', true)
         }
@@ -1248,7 +1238,7 @@ export default {
       queryAll(this.rightUrl, this.rightQueryData).then(response => {
         if (response.data.code == 0) {
           if (flag == 'change') {
-            var pushData = {
+            let pushData = {
               type: 3,
               data: this.rightQueryData
             }
@@ -1275,7 +1265,7 @@ export default {
       }
     },
     getTaskCol () {
-      var options = this.$store.getters.getTaskColOption
+      let options = this.$store.getters.getTaskColOption
       options.forEach(item => {
         let obj = {prop: item.key, label: item.label, width: '117', minWidth: '117', fixed: false, hidden: false, formatter: this.formatterMin}
         this.tableData.taskFields.push(obj)
@@ -1283,13 +1273,11 @@ export default {
     },
     // 拖拽触发事件相关
     dragFlight (event) {
-      this.taskFlightData.dragging = true
       event.dataTransfer.setData('afid', event.target.id)
       this.$set(this.taskFlightData.data, 'flightNoA', event.target.dataset.flighta)
       this.$set(this.taskFlightData.data, 'flightNoD', event.target.dataset.flightd)
     },
     dragData (event) {
-      this.taskFlightData.dragging = true
       event.dataTransfer.setData('dataId', event.target.id)
       event.dataTransfer.setData('type', event.target.dataset.type)
       event.dataTransfer.setData('task', event.target.dataset.task)
@@ -1297,7 +1285,6 @@ export default {
       this.$set(this.taskFlightData.data, 'taskName', event.target.dataset.taskname)
     },
     dropFlight (event) {
-      this.taskFlightData.dragging = false
       event.preventDefault()
       let dataId = event.dataTransfer.getData('dataId')
       if (dataId) {
@@ -1325,7 +1312,6 @@ export default {
       }
     },
     dropData (event) {
-      this.taskFlightData.dragging = false
       event.preventDefault()
       let afid = event.dataTransfer.getData('afid')
       if (afid) {
@@ -1352,10 +1338,11 @@ export default {
         }
       }
     },
-    allowDrop (colorType, event) {
-      if (colorType != 1) {
+    allowDrop (event) {
+      // if (colorType != 1) {
         event.preventDefault()
-      }
+        return false
+      // }
     },
     clearAllTaskFlightData () {
       this.taskFlightData = {
@@ -1377,13 +1364,13 @@ export default {
     },
     // 调整列宽事件
     onTableResized (event) {
-      var tableClass = event.currentTarget.classList[0]
-      var classArr = tableClass.split('-')
-      var fields = []
-      var columns = $(event.currentTarget).find('th')
-      var JCLRgrips = $(event.currentTarget.parentElement).find('.JCLRgrips')
-      var table = $(event.currentTarget.parentElement).find('table')
-      var widthSum = 0
+      let tableClass = event.currentTarget.classList[0]
+      let classArr = tableClass.split('-')
+      let fields = []
+      let columns = $(event.currentTarget).find('th')
+      let JCLRgrips = $(event.currentTarget.parentElement).find('.JCLRgrips')
+      let table = $(event.currentTarget.parentElement).find('table')
+      let widthSum = 0
       let count = 0
       switch (classArr[0]) {
         case 'left':fields = this.tableData.fields
@@ -1405,7 +1392,7 @@ export default {
         this.divRightTableStyle.width = 'calc(100% - ' + this.divLeftTableStyle.width + ' - ' + this.divOprTableStyle.width + ')'
         /* table.css('margin-left', '1px') */
       } else if (classArr[0] == 'right') {
-        var rightTableBody = $(event.currentTarget.parentElement).parent().parent().find('table')
+        let rightTableBody = $(event.currentTarget.parentElement).parent().parent().find('table')
         rightTableBody.splice(1, 1)
         rightTableBody.width(widthSum)
         JCLRgrips.width(widthSum + 1)
@@ -1430,14 +1417,14 @@ export default {
       if (taskSort) {
         this.taskSortSelect = taskSort.label
       }
-      var sort = ''
+      let sort = ''
       this.taskSorts.forEach(item => {
         if (this.taskSortSelect == item.label) {
           sort = item.key
         }
       })
       if (flag == 'change') {
-        var pushData = {
+        let pushData = {
           type: 3,
           sort: sort
         }
@@ -1470,7 +1457,7 @@ export default {
     },
     // 修改时间 点击按钮触发事件
     editTaskButtonClick (data) {
-      var _this = this
+      let _this = this
       queryAll(this.taskButtonUrl, {'dynamicTaskId': data.dynamicTaskId}).then(res => {
         if (res.data.code == 0) {
           _this.taskButtonData.data = res.data.data
@@ -1505,7 +1492,7 @@ export default {
     // 撤销分配 撤销按钮事件
     handleCancelButtonSave () {
       this.taskButtonData.loading = true
-      var data = {
+      let data = {
         dynamicTaskId: this.taskButtonData.data.dynamicTaskId,
         reserved1: this.taskButtonData.formData.button
       }
@@ -1537,7 +1524,7 @@ export default {
         this.taskButtonData.visible = true
       } else if (this.taskButtonData.type == 2) {
         this.taskButtonData.outLoading = true
-        var edit = {
+        let edit = {
           dynamicTaskId: this.taskButtonData.data.dynamicTaskId,
           beginTimeA: this.taskButtonData.timeData.startTime,
           endTimeA: this.taskButtonData.timeData.endTime

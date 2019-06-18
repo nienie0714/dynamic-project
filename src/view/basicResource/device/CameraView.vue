@@ -10,13 +10,14 @@
     <el-main class="page-table-view">
       <div class="page-table-header">
         <div class="page-table-title">查询结果</div>
-        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
+        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleImport="handleImport" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
         <Pagination-view :pageData="pageData" @sizeChange="handleSizeChange" @currentChange="handleCurrentChange"></Pagination-view>
       </div>
       <Table-view :permissions="permissions" :tableData="tableData" ref="basicTable" @handleDetail="handleDetail" @handleEdit="handleEdit" @handleDelete="handleDelete"></Table-view>
     </el-main>
     <Edit-view :formData="formData" @handleAdd="saveAdd" @handleEdit="saveEdit"></Edit-view>
     <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm" @handleClose="handleDeleteClose"></Warning-box-view>
+    <import-dialog :data="importData" @downloadErrorExcel="downloadErrorExcel" @handleRefresh="handleRefresh"></import-dialog>
   </el-container>
 </template>
 
@@ -29,6 +30,7 @@ import EditView from '../../../components/common/EditView'
 import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
 import {twoDecimalAll, IPReg, portReg, threeD} from '../../../util/rules.js'
+import _ from 'lodash'
 
 // const tableHeight = ''
 
@@ -132,10 +134,22 @@ export default {
           {prop: 'username', label: '用户名', fixed: false, hidden: false, overflow: true},
           {prop: 'password', label: '密码', fixed: false, hidden: false, overflow: true}
         ]
+      },
+      importData: {
+        visible: false,
+        uploadUrl: 'camera',
+        fileType: '.xls',
+        fileUrl: '/importExcel/camera'// todo
       }
     }
   },
   methods: {
+    downloadErrorExcel (data) {
+      let titles = ['摄像头编号', '摄像头名称', 'X坐标', 'Y坐标', 'IP地址', '端口', '用户名', '密码']
+      let arrs = [_.map(data, 'cameraNo'), _.map(data, 'cameraCn'), _.map(data, 'longitude'), _.map(data, 'latitude'), _.map(data, 'ip'), _.map(data, 'port'), _.map(data, 'username'), _.map(data, 'password')]
+      let widths = [160, 65, 55, 60, 60, 66, 60, 60]
+      this.downloadError(titles, arrs, widths, null, 'l')
+    }
   }
 }
 </script>

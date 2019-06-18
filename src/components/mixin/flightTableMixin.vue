@@ -34,6 +34,9 @@ export default {
       rightTableWidthStyle: {
         width: '0px'
       },
+      rightTableBlockWidthStyle: {
+        width: '0px'
+      },
       // table的body样式
       divTableBodyStyle: {
         height: '0px'
@@ -455,6 +458,7 @@ export default {
             }
           } */
         }
+        this.setShowFields(2)
         this.updateTableWidth()
       })
     },
@@ -487,7 +491,9 @@ export default {
       }
       this.oprPopoverDirect = sign
       this.oprPopoverIndex = index
+      this.setShowFields(2)
     },
+    setShowFields () {},
     // 前置列 up点击事件
     handleUp (field, index, sign) {
       if (sign == 'left' && index > this.leftAutoNum) {
@@ -495,11 +501,15 @@ export default {
         this.tableData.fields.splice(index - 1, 0, field)
         this.oprPopoverIndex = index - 1
       } else if (sign == 'right' && index > 0) {
+        let key = this.customOtherFields()
         if (this.rightAutoNum && (index > this.rightAutoNum)) {
-            let key = this.customOtherFields()
-            this.tableData[key].splice(index, 1)
-            this.tableData[key].splice(index - 1, 0, field)
-            this.oprPopoverIndex = index - 1
+          this.tableData[key].splice(index, 1)
+          this.tableData[key].splice(index - 1, 0, field)
+          this.oprPopoverIndex = index - 1
+        } else {
+          this.tableData[key].splice(index, 1)
+          this.tableData[key].splice(index - 1, 0, field)
+          this.oprPopoverIndex = index - 1
         }
       }
       this.oprPopoverDirect = sign

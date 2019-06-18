@@ -294,6 +294,7 @@ input[type="number"] {
 }
 /* 列表 */
 .flight-contain .el-table, .el-table th, .el-table tr,
+.critical-contain .el-table, .el-table th, .el-table tr,
 .tasksched-contain .el-table, .el-table th, .el-table tr,
 .basic-resource-contain .el-table, .el-table th, .el-table tr,
 .menu-status-dialog .el-table, .el-table th, .el-table tr,
@@ -352,6 +353,7 @@ input[type="number"] {
 }
 /* *下侧边框 */
 .flight-contain .el-table td, .el-table th.is-leaf,
+.critical-contain .el-table td, .el-table th.is-leaf,
 .tasksched-contain .el-table td, .el-table th.is-leaf,
 .basic-resource-contain .el-table td, .el-table th.is-leaf,
 .basic-resource-contain .el-table td, .el-table th.gutter,
@@ -499,11 +501,19 @@ input[type="number"] {
   height: 40px;
   color: #73c7e6;
 }
+.critical-contain .flight-table-container .div-left-table_header tr th,
+.critical-contain .flight-table-container .div-right-table_header tr th {
+  height: 30px;
+}
 .flight-table-container .div-left-table_header tr th,
 .flight-table-container .div-right-table_header tr th,
 .tasksched-table-container1 .div-left-table_header th {
   font-size: 16px;
   font-weight: normal;
+}
+.critical-contain .flight-table-container .div-left-table_header tr th,
+.critical-contain .flight-table-container .div-right-table_header tr th {
+  font-size: 14px;
 }
 .flight-table-container .div-right-table_header th,
 .tasksched-table-container1 .div-right-table_header th {
@@ -622,6 +632,14 @@ input[type="number"] {
   font-size: 1.5em;
   padding-right: 40px;
 }
+.tasksched-header .table-header {
+  width: calc(100% - 122px);
+}
+.tasksched-header .header-title {
+  padding-right: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
 /* 列表标注 色点/文字 */
 .dot-font {
   margin-right: 20px;
@@ -728,6 +746,10 @@ input[type="number"] {
   height: 48px;
   border-top: 2px solid #081a25;
 }
+.critical-contain .flight-table-container table tbody tr {
+  height: 32px;
+  border-top: 1px solid #081a25;
+}
 /* *********左侧冻结table样式结束******* */
 /* *********右侧滚动table样式开始******* */
 /* table宽高边框设置 */
@@ -740,10 +762,16 @@ input[type="number"] {
   height: 40px;
   overflow: hidden;
 }
+.critical-contain .div-right-table_header {
+  height: 30px;
+}
 .div-right-table_body {
   width: 100%;
   overflow-y: hidden;
   position: relative;
+}
+.critical-contain .div-right-table_body {
+  overflow-y: auto;
 }
 .div-right-table_body .right-table_body_block {
   position: absolute;
@@ -752,6 +780,11 @@ input[type="number"] {
 }
 .body-tr-div {
   height: 48px;
+}
+.critical-contain .flight-table-container .body-tr-div,
+.critical-contain .flight-table-container .body-tr-div div:not(.el-input) {
+  height: 32px;
+  line-height: 32px;
 }
 .task-doing-animation {
   width: calc(50%) !important;
@@ -1056,10 +1089,18 @@ input[type="number"] {
   border-left: 2px solid #081a25;
   border-right: 2px solid #081a25;
 }
+.critical-contain  .td-left-border {
+  border-left: 1px solid #081a25;
+}
+.critical-contain .td-left-right-border {
+  border-left: 1px solid #081a25;
+  border-right: 1px solid #081a25;
+}
 /* *********右侧冻结操作table结束******* */
 /* ************************航班列表样式结束********************** */
 /* *表格内容颜色相关 */
 .flight-contain .el-table .el-table__body,
+.critical-contain .el-table .el-table__body,
 .tasksched-contain .el-table .el-table__body,
 .basic-resource-contain .el-table .el-table__body,
 .menu-status-dialog .el-table .el-table__body,
@@ -1067,6 +1108,7 @@ input[type="number"] {
   color: #fff;
 }/* #091B29 */
 .flight-contain  .el-table .el-table__header th,
+.critical-contain  .el-table .el-table__header th,
 .tasksched-contain  .el-table .el-table__header th {
   background: #091B29 !important
 }
@@ -1170,11 +1212,16 @@ input[type="number"] {
 .el-cascader__label {
   line-height: 32px;
 }
+.critical-contain .td-input-div>div>span>.el-input>.el-input__inner,
+.critical-contain .td-input-div>div>.el-date-editor>input.el-input__inner {
+  height: 24px !important;
+  min-height: 24px !important;
+}
 *:not(.el-select):not(.login-div-main)>.el-input-number:first-child>.el-input>.el-input__inner,
-*:not(.el-select):not(.login-div-main)>.el-input:not(.el-pagination__editor):first-child>.el-input__inner,
+*:not(.el-select):not(.login-div-main):not(span)>.el-input:not(.el-pagination__editor):first-child>.el-input__inner,
 .el-select>.el-input:first-child>.el-input__inner,
 .el-form-item:not(.auto-height) .el-textarea .el-textarea__inner {
-  height: 32px !important;
+  height: 32px;
   text-align: left;
 }
 *:not(.el-select):not(.login-div-main)>.el-input-number:first-child {
@@ -1208,12 +1255,29 @@ input[type="number"] {
 .td-input-div>div {
   display: flex;
 }
+.td-input-div .el-input.error-input>.el-input__inner:hover,
+.td-input-div .el-input.error-input>.el-input__inner:focus {
+  border-color: #e65069 !important;
+}
 .td-input-div .el-input>.el-input__inner {
   height: 32px;
+}
+.critical-contain .td-input-div .el-input>.el-input__inner {
+  height: 24px;
+  box-sizing: border-box;
+}
+.critical-contain .td-input-div span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 .td-time-div {
   padding: 0 5px;
   width: calc(100% - 10px) !important;
+}
+.critical-contain .td-time-div {
+  padding: 0;
+  width: calc(100%) !important;
 }
 .td-time-div i {
   text-align: left;
@@ -1223,6 +1287,10 @@ input[type="number"] {
 }
 .td-input-div.td-time-div .el-input__inner {
   padding-right: 15px !important;
+}
+.critical-contain .td-input-div.td-time-div .el-input--prefix .el-input__inner {
+  padding-left: 5px !important;
+  padding-right: 5px !important;
 }
 .td-time-div .td-time-now-icon {
   width: 30px;
@@ -2088,6 +2156,20 @@ div.el-upload {
   /* background: rgba(136, 147, 255, 0.4); */
   background-color: #3A4879;
 }
+/* 临界航班提示 */
+.color-critical-tip-row {
+  /* background: rgba(136, 147, 255, 0.4); */
+  background-color: #696034;
+}
+/* 临界航班告警 */
+.color-critical-warn-row {
+  /* background: rgba(136, 147, 255, 0.4); */
+  background-color: #602D3D;
+}
+/* 临界航班默认 */
+.color-cretical-default {
+  background-color: #0e3042;
+}
 .flight-history-container .div-left-table_body tr,
 .flight-history-container .div-right-table_body tr {
   /* background: rgba(122, 147, 158, 0.4); */
@@ -2124,8 +2206,12 @@ div.el-upload {
 }
 /* *****机位列结束***** */
 /* *****时间列开始***** */
-.time-bg {
+.tasksched-contain .time-bg,
+.flight-contain .time-bg {
   background: rgba(6, 13, 20, 0.4)
+}
+.critical-contain .time-bg {
+  background: rgba(6, 13, 20, .3)
 }
 .at.time-bg {
   color: #00e5b8;
@@ -2517,3 +2603,7 @@ tr.tr-single {
   width: calc(100% - 116px);
 }
 /* 导入弹框样式结束 */
+.drop-rect {
+  position: absolute;
+  z-index: 99;
+}

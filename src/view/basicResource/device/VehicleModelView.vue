@@ -10,13 +10,14 @@
     <el-main class="page-table-view">
       <div class="page-table-header">
         <div class="page-table-title">查询结果</div>
-        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
+        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleImport="handleImport" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
         <Pagination-view :pageData="pageData" @sizeChange="handleSizeChange" @currentChange="handleCurrentChange"></Pagination-view>
       </div>
       <Table-view :permissions="permissions" :tableData="tableData" ref="basicTable" @handleDetail="handleDetail" @handleEdit="handleEdit" @handleDelete="handleDelete"></Table-view>
     </el-main>
     <Edit-view :formData="formData" @handleAdd="saveAdd" @handleEdit="saveEdit"></Edit-view>
     <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm" @handleClose="handleDeleteClose"></Warning-box-view>
+    <import-dialog :data="importData" @downloadErrorExcel="downloadErrorExcel" @handleRefresh="handleRefresh"></import-dialog>
   </el-container>
 </template>
 
@@ -29,7 +30,8 @@ import EditView from '../../../components/common/EditView'
 import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
 import {threeD, maxENReg, chReg} from '../../../util/rules.js'
-import { queryAll } from '../../../api/base.js'
+import { postData, queryAll } from '../../../api/base.js'
+import _ from 'lodash'
 
 export default {
   components: {
@@ -116,6 +118,12 @@ export default {
           {prop: 'vTypeBrief', label: '车型简称', fixed: false},
           {prop: 'vTypeUrl', label: '车型图标', type: 'img', fixed: false, hidden: false}
         ]
+      },
+      importData: {
+        visible: false,
+        uploadUrl: 'vehicle_type',
+        fileType: '.xls',
+        fileUrl: '/importExcel/vehicle_type'
       }
     }
   },
@@ -130,6 +138,30 @@ export default {
           })
         }
       })
+    },
+    handleDeleteConfirm (event) {
+      if ((event && event.keyCode == 13) || !event) {
+        this.deleteData.loading = true
+        postData(this.deleteUrl, this.deleteData.data).then(response => {
+          if (response.data.code == 0) {
+            this.showSuccess('删除')
+            this.customMethod()
+            this.queryDataReq(1)
+            this.handleDeleteClose()
+          } else {
+            this.showError('删除', response.data.msg)
+          }
+          this.deleteData.loading = false
+        }).catch(() => {
+          this.deleteData.loading = false
+        })
+      }
+    },
+    downloadErrorExcel (data) {
+      let titles = ['车型名称', '车型简称']
+      let arrs = [_.map(data, 'vTypeName'), _.map(data, 'vTypeBrief')]
+      let widths = [250, 250]
+      this.downloadError(titles, arrs, widths)
     }
   }
 }

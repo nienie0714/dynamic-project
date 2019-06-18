@@ -71,8 +71,8 @@ export default {
             {validator: sixNum, trigger: 'blur'},
             {validator: this.uniqueKey, trigger: 'blur'}
           ],
-          deptId: [
-            {validator: idNumReg, trigger: 'blur'}
+          parentDeptIds: [
+            {required: true, message: '必填项', trigger: 'change'}
           ],
           empName: [
             {required: true, message: '必填项', trigger: 'blur'}

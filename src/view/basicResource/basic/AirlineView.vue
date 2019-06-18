@@ -30,6 +30,7 @@ import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
 import {ndENReg, rdEReg, threeD} from '../../../util/rules.js'
 import {queryAll} from '../../../api/base.js'
+import _ from 'lodash'
 
 // const tableHeight = ''
 
@@ -60,6 +61,7 @@ export default {
           {key: 'briefE', label: '英文简称', type: 'input', maxlength: 50},
           {key: 'nameC', label: '中文全称', type: 'input', maxlength: 50},
           {key: 'nameE', label: '英文全称', type: 'input', maxlength: 50},
+          {key: 'aabb', label: '主航空公司', type: 'select', filterable: true, clearable: true, getOptions: '/basicdata/vehicleDeviceRelation/queryVehicleWithoutBindDevice', itemKey: 'vehicleId', itemLabel: 'vehicleNo'}, // todo
           {key: 'sortkey', label: '排序码', type: 'input'},
           {key: 'remark', label: '备注', type: 'textarea', autosize: true, maxlength: 100}
         ],
@@ -74,7 +76,8 @@ export default {
           ],
           airlineIcao: [
             {required: true, message: '必填项', trigger: 'blur'},
-            {validator: rdEReg, trigger: 'blur'}
+            {validator: rdEReg, trigger: 'blur'},
+            {validator: this.unique, trigger: 'blur'}
           ],
           briefC: [
             {required: true, message: '必填项', trigger: 'blur'}
@@ -136,12 +139,86 @@ export default {
           {prop: 'airlineIcao', label: 'ICAO码', fixed: false, hidden: false},
           {prop: 'attr', label: '属性', fixed: false, hidden: false, optionKey: 'attr'},
           {prop: 'briefC', label: '中文简称', fixed: false, hidden: false},
-          {prop: 'briefE', label: '英文简称', fixed: false, hidden: false}
+          {prop: 'briefE', label: '英文简称', fixed: false, hidden: false},
+          {prop: 'aabb', label: '主航空公司', fixed: false, hidden: false} // todo
         ]
       }
     }
   },
   methods: {
+    // 编辑
+    handleEdit (row) {
+      for (let i = 0; i < this.formData.formData.length; i++) {
+        if (['aabb'].includes(this.formData.formData[i].key)) {
+          this.$set(this.formData.formData[i], 'optionsQuery', {'airlineIata': row.airlineIata})
+          this.$set(this.formData.formData[i], 'getOptions', '/organization/employee/queryAllForHandHeldTerminal')
+        }
+        this.$set(this.formData.formData[i], 'value', row[this.formData.formData[i].key])
+      }
+      this.formData.title = '编辑'
+      this.formData.visible = true
+    },
+    // 详情
+    handleDetail (row) {
+      for (let i = 0; i < this.formData.formData.length; i++) {
+        if (['aabb'].includes(this.formData.formData[i].key)) {
+          this.$set(this.formData.formData[i], 'optionsQuery', {'airlineIata': row.airlineIata})
+          this.$set(this.formData.formData[i], 'getOptions', '/organization/employee/queryAllForHandHeldTerminal')
+        }
+        this.$set(this.formData.formData[i], 'value', row[this.formData.formData[i].key])
+      }
+      this.formData.title = '详情'
+      this.formData.visible = true
+    },
+    // 新增
+    handleAdd () {
+      for (let i = 0; i < this.formData.formData.length; i++) {
+        if (['aabb'].includes(this.formData.formData[i].key)) {
+          this.$set(this.formData.formData[i], 'optionsQuery', {'airlineIata': null})
+          this.$set(this.formData.formData[i], 'getOptions', '/organization/employee/queryAllForHandHeldTerminal')
+        }
+      }
+      this.formData.title = '新增'
+      this.formData.visible = true
+    }
+    // changeDept (value, callback) {
+    //   var data = {
+    //     deptId: ''
+    //   }
+    //   if (!_.isEmpty(value)) {
+    //     data.deptId = _.last(value)
+    //     queryAll('/organization/employee/queryAllForHandHeldTerminal', data).then(response => {
+    //       let emp = {
+    //         key: 'empId',
+    //         value: null
+    //       }
+    //       if (response.data.code == 0) {
+    //         for (let i = 0; i < this.formData.formData.length; i++) {
+    //           if (this.formData.formData[i].key == 'empId') {
+    //             this.$set(this.formData.formData[i], 'options', response.data.data)
+    //             callback(emp)
+    //             return
+    //           }
+    //         }
+    //       } else {
+    //         callback(emp)
+    //         return null
+    //       }
+    //     })
+    //   } else {
+    //     let emp = {
+    //       key: 'empId',
+    //       value: null
+    //     }
+    //     for (let i = 0; i < this.formData.formData.length; i++) {
+    //       if (this.formData.formData[i].key == 'empId') {
+    //         this.$set(this.formData.formData[i], 'options', [])
+    //         callback(emp)
+    //         return null
+    //       }
+    //     }
+    //   }
+    // }
   }
 }
 </script>

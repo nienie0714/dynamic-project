@@ -596,7 +596,7 @@ export default {
         data: [],
         fields: [
           {prop: 'mark', label: '', width: '40', fixed: true, hidden: false},
-          {prop: 'index', label: '', width: '40', minWidth: '40', fixed: true, hidden: false},
+          {prop: 'index', label: '序号', width: '40', minWidth: '40', fixed: true, hidden: false},
           {prop: 'flightNoA', label: '进港航班', width: '80', fixed: true, hidden: false},
           {prop: 'flightNoD', label: '出港航班', width: '80', fixed: true, hidden: false},
           {prop: 'stand', label: '机位', width: '80', childClass: 'standClass', fixed: true, hidden: false},
