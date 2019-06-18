@@ -10,13 +10,14 @@
     <el-main class="page-table-view">
       <div class="page-table-header">
         <div class="page-table-title">查询结果</div>
-        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
+        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleImport="handleImport" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
         <Pagination-view :pageData="pageData" @sizeChange="handleSizeChange" @currentChange="handleCurrentChange"></Pagination-view>
       </div>
       <Table-view :permissions="permissions" :tableData="tableData" ref="basicTable" @handleDetail="handleDetail" @handleEdit="handleEdit" @handleDelete="handleDelete"></Table-view>
     </el-main>
     <Edit-view :formData="formData" @handleAdd="saveAdd" @handleEdit="saveEdit"></Edit-view>
     <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm" @handleClose="handleDeleteClose"></Warning-box-view>
+    <import-dialog :data="importData" @downloadErrorExcel="downloadErrorExcel" @handleRefresh="handleRefresh"></import-dialog>
   </el-container>
 </template>
 
@@ -29,6 +30,7 @@ import EditView from '../../../components/common/EditView'
 import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
 import {idReg, sevDotTwoDigit, sixDotSixDigit, threeD, degreePos} from '../../../util/rules.js'
+import _ from 'lodash'
 
 // const tableHeight = ''
 
@@ -140,10 +142,22 @@ export default {
           {prop: 'isDoubleBridge', label: '双桥头标识', fixed: false, hidden: false, optionKey: 'isYOrN'},
           {prop: 'isUseable', label: '是否可用', fixed: false, hidden: false, optionKey: 'isYOrN'}
         ]
+      },
+      importData: {
+        visible: false,
+        uploadUrl: 'bridge',
+        fileType: '.xls',
+        fileUrl: '/dataImport/downloadExcel/bridge'
       }
     }
   },
   methods: {
+    downloadErrorExcel (data) {
+      let titles = ['廊桥编号', '登机口编号', '机位编号', '属性', '双桥头标识', '是否可用']
+      let arrs = [_.map(data, 'bridgeNo'), _.map(data, 'gateNo'), _.map(data, 'standNo'), _.map(data, 'attr'), _.map(data, 'isDoubleBridge'), _.map(data, 'isUseable')]
+      let widths = [82, 82, 82, 82, 82, 82]
+      this.downloadError(titles, arrs, widths)
+    }
   }
 }
 </script>

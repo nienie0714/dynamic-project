@@ -10,13 +10,14 @@
     <el-main class="page-table-view">
       <div class="page-table-header">
         <div class="page-table-title">查询结果</div>
-        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
+        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleImport="handleImport" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
         <Pagination-view :pageData="pageData" @sizeChange="handleSizeChange" @currentChange="handleCurrentChange"></Pagination-view>
       </div>
       <Table-view :permissions="permissions" :tableData="tableData" ref="basicTable" @handleDetail="handleDetail" @handleEdit="handleEdit" @handleDelete="handleDelete"></Table-view>
     </el-main>
     <Edit-view :formData="formData" @handleAdd="saveAdd" @handleEdit="saveEdit"></Edit-view>
     <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm" @handleClose="handleDeleteClose"></Warning-box-view>
+    <import-dialog :data="importData" @downloadErrorExcel="downloadErrorExcel" @handleRefresh="handleRefresh"></import-dialog>
   </el-container>
 </template>
 
@@ -30,6 +31,7 @@ import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
 import {idReg, idNumReg, threeD, mustD} from '../../../util/rules.js'
 import { postData } from '@/api/base'
+import _ from 'lodash'
 
 // const tableHeight = ''
 
@@ -147,6 +149,12 @@ export default {
       airTypeData: {
         aircraftIcao: '',
         aircraftIata: ''
+      },
+      importData: {
+        visible: false,
+        uploadUrl: 'aircraftType',
+        fileType: '.xls',
+        fileUrl: '/importExcel/aircraftType'
       }
     }
   },
@@ -219,6 +227,12 @@ export default {
       } else {
         callback()
       }
+    },
+    downloadErrorExcel (data) {
+      let titles = ['ICAO码', 'IATA码', '最小过站时长', '机型分类', '是否靠桥', '中文简称', '英文简称']
+      let arrs = [_.map(data, 'aircraftIcao'), _.map(data, 'aircraftIata'), _.map(data, 'reserved2'), _.map(data, 'aircraftClassify'), _.map(data, 'reserved1'), _.map(data, 'briefC'), _.map(data, 'briefE')]
+      let widths = [87, 87, 87, 87, 87, 87, 87]
+      this.downloadError(titles, arrs, widths, null, 'l')
     }
   },
   watch: {

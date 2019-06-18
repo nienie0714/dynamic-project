@@ -10,13 +10,14 @@
     <el-main class="page-table-view">
       <div class="page-table-header">
         <div class="page-table-title">查询结果</div>
-        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
+        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleImport="handleImport" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
         <Pagination-view :pageData="pageData" @sizeChange="handleSizeChange" @currentChange="handleCurrentChange"></Pagination-view>
       </div>
       <Table-view :permissions="permissions" :tableData="tableData" ref="basicTable" @handleDetail="handleDetail" @handleEdit="handleEdit" @handleDelete="handleDelete"></Table-view>
     </el-main>
     <Edit-view :formData="formData" @handleAdd="saveAdd" @handleEdit="saveEdit"></Edit-view>
     <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm" @handleClose="handleDeleteClose"></Warning-box-view>
+    <import-dialog :data="importData" @downloadErrorExcel="downloadErrorExcel" @handleRefresh="handleRefresh"></import-dialog>
   </el-container>
 </template>
 
@@ -142,6 +143,12 @@ export default {
           {prop: 'briefE', label: '英文简称', fixed: false, hidden: false},
           {prop: 'aabb', label: '主航空公司', fixed: false, hidden: false} // todo
         ]
+      },
+      importData: {
+        visible: false,
+        uploadUrl: 'airline',
+        fileType: '.xls',
+        fileUrl: '/importExcel/airline'
       }
     }
   },
@@ -180,7 +187,7 @@ export default {
       }
       this.formData.title = '新增'
       this.formData.visible = true
-    }
+    },
     // changeDept (value, callback) {
     //   var data = {
     //     deptId: ''
@@ -218,7 +225,13 @@ export default {
     //       }
     //     }
     //   }
-    // }
+    // },
+    downloadErrorExcel (data) {
+      let titles = ['IATA码', 'ICAO码', '属性', '中文简称', '英文简称', '主航空公司']
+      let arrs = [_.map(data, 'airlineIata'), _.map(data, 'airlineIcao'), _.map(data, 'attr'), _.map(data, 'briefC'), _.map(data, 'briefE'), _.map(data, 'aabb')]
+      let widths = [50, 50, 50, 80, 80, 200]
+      this.downloadError(titles, arrs, widths)
+    }
   }
 }
 </script>

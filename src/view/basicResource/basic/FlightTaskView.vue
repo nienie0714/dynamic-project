@@ -10,13 +10,14 @@
     <el-main class="page-table-view">
       <div class="page-table-header">
         <div class="page-table-title">查询结果</div>
-        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
+        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleImport="handleImport" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
         <Pagination-view :pageData="pageData" @sizeChange="handleSizeChange" @currentChange="handleCurrentChange"></Pagination-view>
       </div>
       <Table-view :permissions="permissions" :tableData="tableData" ref="basicTable" @handleDetail="handleDetail" @handleEdit="handleEdit" @handleDelete="handleDelete"></Table-view>
     </el-main>
     <Edit-view :formData="formData" @handleAdd="saveAdd" @handleEdit="saveEdit"></Edit-view>
     <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm" @handleClose="handleDeleteClose"></Warning-box-view>
+    <import-dialog :data="importData" @downloadErrorExcel="downloadErrorExcel" @handleRefresh="handleRefresh"></import-dialog>
   </el-container>
 </template>
 
@@ -30,6 +31,7 @@ import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
 import {idReg, threeD} from '../../../util/rules.js'
 import {queryAll} from '../../../api/base.js'
+import _ from 'lodash'
 
 // const tableHeight = ''
 
@@ -111,10 +113,22 @@ export default {
           {prop: 'briefC', label: '中文简称', fixed: false, hidden: false},
           {prop: 'briefE', label: '英文简称', fixed: false, hidden: false}
         ]
+      },
+      importData: {
+        visible: false,
+        uploadUrl: 'flightTask',
+        fileType: '.xls',
+        fileUrl: '/importExcel/flightTask'
       }
     }
   },
   methods: {
+    downloadErrorExcel (data) {
+      let titles = ['任务代码', '中文简称', '英文简称']
+      let arrs = [_.map(data, 'taskCode'), _.map(data, 'briefC'), _.map(data, 'briefE')]
+      let widths = [167, 167, 167]
+      this.downloadError(titles, arrs, widths)
+    }
   }
 }
 </script>

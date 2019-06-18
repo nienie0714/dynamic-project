@@ -10,13 +10,14 @@
     <el-main class="page-table-view">
       <div class="page-table-header">
         <div class="page-table-title">查询结果</div>
-        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
+        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleImport="handleImport" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
         <Pagination-view :pageData="pageData" @sizeChange="handleSizeChange" @currentChange="handleCurrentChange"></Pagination-view>
       </div>
       <Table-view :permissions="permissions" :tableData="tableData" @change="tableChange" ref="basicTable" @handleDetail="handleDetail" @handleEdit="handleEdit" @handleDelete="handleDelete"></Table-view>
     </el-main>
     <Edit-view :formData="formData" @handleAdd="saveAdd" @handleEdit="saveEdit"></Edit-view>
     <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm" @handleClose="handleDeleteClose"></Warning-box-view>
+    <import-dialog :data="importData" @downloadErrorExcel="downloadErrorExcel" @handleRefresh="handleRefresh"></import-dialog>
   </el-container>
 </template>
 
@@ -30,6 +31,7 @@ import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
 import {idReg, sevDotTwoDigit, sixDotSixDigit, threeD, degreePos} from '../../../util/rules.js'
 import {queryAll} from '../../../api/base.js'
+import _ from 'lodash'
 
 // const tableHeight = ''
 
@@ -225,6 +227,12 @@ export default {
           {prop: 'standRight', label: '右机位', fixed: false, hidden: false},
           {prop: 'standGate', label: '对应登机口', fixed: false, hidden: false} */
         ]
+      },
+      importData: {
+        visible: false,
+        uploadUrl: 'stand',
+        fileType: '.xls',
+        fileUrl: '/importExcel/stand'
       }
     }
   },
@@ -317,6 +325,12 @@ export default {
           return null
         }
       })
+    },
+    downloadErrorExcel (data) {
+      let titles = ['机位编号', '属性', '机位等级', '航站楼', '机坪区域', '机位类型', '父机位', '是否廊桥', '是否管道加油', '是否可用']
+      let arrs = [_.map(data, 'standNo'), _.map(data, 'attr'), _.map(data, 'rank'), _.map(data, 'terminalName'), _.map(data, 'apronAreaName'), _.map(data, 'standType'), _.map(data, 'standParent'), _.map(data, 'isBridge'), _.map(data, 'isPipeRefuel'), _.map(data, 'isUseable')]
+      let widths = [60, 60, 66, 66, 66, 66, 66, 60, 60, 60]
+      this.downloadError(titles, arrs, widths, null, 'l')
     }
   }
 }

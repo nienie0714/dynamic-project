@@ -10,13 +10,14 @@
     <el-main class="page-table-view">
       <div class="page-table-header">
         <div class="page-table-title">查询结果</div>
-        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
+        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleImport="handleImport" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
         <Pagination-view :pageData="pageData" @sizeChange="handleSizeChange" @currentChange="handleCurrentChange"></Pagination-view>
       </div>
       <Table-view :permissions="permissions" :tableData="tableData" ref="basicTable" @handleDetail="handleDetail" @handleEdit="handleEdit" @handleDelete="handleDelete"></Table-view>
     </el-main>
     <Edit-view :formData="formData" @handleAdd="saveAdd" @handleEdit="saveEdit"></Edit-view>
     <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm" @handleClose="handleDeleteClose"></Warning-box-view>
+    <import-dialog :data="importData" @downloadErrorExcel="downloadErrorExcel" @handleRefresh="handleRefresh"></import-dialog>
   </el-container>
 </template>
 
@@ -30,6 +31,7 @@ import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
 import {idReg, sixNum} from '../../../util/rules.js'
 import {queryAll} from '../../../api/base.js'
+import _ from 'lodash'
 
 // const tableHeight = ''
 
@@ -136,10 +138,22 @@ export default {
           {prop: 'seatsBussiness', label: '商务舱座位数', fixed: false, hidden: false},
           {prop: 'seatsEconomy', label: '经济舱座位数', fixed: false, hidden: false} */
         ]
+      },
+      importData: {
+        visible: false,
+        uploadUrl: 'aircraft',
+        fileType: '.xls',
+        fileUrl: '/importExcel/aircraft'
       }
     }
   },
   methods: {
+    downloadErrorExcel (data) {
+      let titles = ['飞机号', '机型ICAO码', '航空公司', '航空分公司']
+      let arrs = [_.map(data, 'aircraftNo'), _.map(data, 'aircraftIcao'), _.map(data, 'airlineName'), _.map(data, 'airlineSubName')]
+      let widths = [125, 125, 125, 125]
+      this.downloadError(titles, arrs, widths)
+    }
   }
 }
 </script>

@@ -10,13 +10,14 @@
     <el-main class="page-table-view">
       <div class="page-table-header">
         <div class="page-table-title">查询结果</div>
-        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
+        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleImport="handleImport" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
         <Pagination-view :pageData="pageData" @sizeChange="handleSizeChange" @currentChange="handleCurrentChange"></Pagination-view>
       </div>
       <Table-view :permissions="permissions" :tableData="tableData" ref="basicTable" @handleDetail="handleDetail" @handleEdit="handleEdit" @handleDelete="handleDelete"></Table-view>
     </el-main>
     <Edit-view :formData="formData" @handleAdd="saveAdd" @handleEdit="saveEdit"></Edit-view>
     <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm" @handleClose="handleDeleteClose"></Warning-box-view>
+    <import-dialog :data="importData" @downloadErrorExcel="downloadErrorExcel" @handleRefresh="handleRefresh"></import-dialog>
   </el-container>
 </template>
 
@@ -30,6 +31,7 @@ import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
 import {idReg, idNumReg, threeD} from '../../../util/rules.js'
 import {queryAll} from '../../../api/base.js'
+import _ from 'lodash'
 
 // const tableHeight = ''
 
@@ -154,10 +156,22 @@ export default {
           {prop: 'terminalAreaName', label: '航站楼区域', fixed: false, hidden: false},
           {prop: 'isUseable', label: '是否可用', fixed: false, hidden: false, optionKey: 'isYOrN'}
         ]
+      },
+      importData: {
+        visible: false,
+        uploadUrl: 'terminalResource',
+        fileType: '.xls',
+        fileUrl: '/importExcel/terminalResource'
       }
     }
   },
   methods: {
+    downloadErrorExcel (data) {
+      let titles = ['资源编号', '资源类型', '属性', '航站楼', '航站楼区域', '是否可用']
+      let arrs = [_.map(data, 'resourceNo'), _.map(data, 'resourceType'), _.map(data, 'attr'), _.map(data, 'terminalName'), _.map(data, 'terminalAreaName'), _.map(data, 'isUseable')]
+      let widths = [83, 83, 83, 83, 83, 83]
+      this.downloadError(titles, arrs, widths)
+    }
   }
 }
 </script>

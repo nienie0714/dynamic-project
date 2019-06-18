@@ -10,13 +10,14 @@
     <el-main class="page-table-view">
       <div class="page-table-header">
         <div class="page-table-title">查询结果</div>
-        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
+        <Tool-button-view :permissions="permissions" :selectionCount="tableData.multipleSelection.length" @handleImport="handleImport" @handleDownload="handleDownload" @handleAdd="handleAdd" @handleDelete="handleDelete"></Tool-button-view>
         <Pagination-view :pageData="pageData" @sizeChange="handleSizeChange" @currentChange="handleCurrentChange"></Pagination-view>
       </div>
       <Table-view :tableData="tableData" :permissions="permissions" ref="basicTable" @handleDetail="handleDetail" @handleEdit="handleEdit" @handleDelete="handleDelete"></Table-view>
     </el-main>
     <Edit-view :formData="formData" @handleAdd="saveAdd" @handleEdit="saveEdit"></Edit-view>
     <Warning-box-view :data="deleteData" @handleConfirm="handleDeleteConfirm" @handleClose="handleDeleteClose"></Warning-box-view>
+    <import-dialog :data="importData" @downloadErrorExcel="downloadErrorExcel" @handleRefresh="handleRefresh"></import-dialog>
   </el-container>
 </template>
 
@@ -29,7 +30,7 @@ import EditView from '../../../components/common/EditView'
 import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
 import {idReg, sevDotTwoDigit, sixDotSixDigit, threeD, degreePos} from '../../../util/rules.js'
-
+import _ from 'lodash'
 // const tableHeight = ''
 
 export default {
@@ -128,10 +129,22 @@ export default {
           {prop: 'terminalName', label: '航站楼', fixed: false, hidden: false},
           {prop: 'isUseable', label: '是否可用', fixed: false, hidden: false, optionKey: 'isYOrN'}
         ]
+      },
+      importData: {
+        visible: false,
+        uploadUrl: 'apronArea',
+        fileType: '.xls',
+        fileUrl: '/dataImport/downloadExcel/apronArea'
       }
     }
   },
   methods: {
+    downloadErrorExcel (data) {
+      let titles = ['区域编号', '属性', '名称', '航站楼', '是否可用']
+      let arrs = [_.map(data, 'apronAreaNo'), _.map(data, 'attr'), _.map(data, 'name'), _.map(data, 'terminalName'), _.map(data, 'isUseable')]
+      let widths = [100, 115, 100, 100, 95]
+      this.downloadError(titles, arrs, widths)
+    }
   }
 }
 </script>
