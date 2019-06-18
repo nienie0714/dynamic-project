@@ -125,7 +125,7 @@ export default {
         visible: false,
         uploadUrl: 'runway',
         fileType: '.xls',
-        fileUrl: '/importExcel/runway'
+        fileUrl: '/dataImport/downloadExcel/runway'
       }
     }
   },

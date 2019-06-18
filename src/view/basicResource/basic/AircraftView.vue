@@ -143,7 +143,7 @@ export default {
         visible: false,
         uploadUrl: 'aircraft',
         fileType: '.xls',
-        fileUrl: '/importExcel/aircraft'
+        fileUrl: '/dataImport/downloadExcel/aircraft'
       }
     }
   },

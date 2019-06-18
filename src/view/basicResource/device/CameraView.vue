@@ -139,7 +139,7 @@ export default {
         visible: false,
         uploadUrl: 'camera',
         fileType: '.xls',
-        fileUrl: '/importExcel/camera'// todo
+        fileUrl: '/dataImport/downloadExcel/camera'// todo
       }
     }
   },

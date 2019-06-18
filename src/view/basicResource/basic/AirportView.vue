@@ -151,7 +151,7 @@ export default {
         visible: false,
         uploadUrl: 'airport',
         fileType: '.xls',
-        fileUrl: '/importExcel/airport'
+        fileUrl: '/dataImport/downloadExcel/airport'
       }
     }
   },

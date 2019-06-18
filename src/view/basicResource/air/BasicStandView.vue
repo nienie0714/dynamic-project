@@ -232,7 +232,7 @@ export default {
         visible: false,
         uploadUrl: 'stand',
         fileType: '.xls',
-        fileUrl: '/importExcel/stand'
+        fileUrl: '/dataImport/downloadExcel/stand'
       }
     }
   },

@@ -243,6 +243,23 @@ var router = new Router({
               component: r => require.ensure([], () => r(require('@/view/situation/vehiclestat/VehUseView'), 'VehUseView'))
             }
           ]
+        },
+        {
+          path: 'kpistat',
+          name: 'KPI统计',
+          component: Basic,
+          children: [
+            {
+              path: 'dept',
+              name: '部门工作量统计',
+              component: r => require.ensure([], () => r(require('@/view/situation/kpistat/DeptView'), 'EmployeeView'))
+            },
+            {
+              path: 'employee',
+              name: '个人工作量统计',
+              component: r => require.ensure([], () => r(require('@/view/situation/kpistat/EmployeeView'), 'EmployeeView'))
+            }
+          ]
         }
       ]
     },

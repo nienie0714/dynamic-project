@@ -118,7 +118,7 @@ export default {
         visible: false,
         uploadUrl: 'flightTask',
         fileType: '.xls',
-        fileUrl: '/importExcel/flightTask'
+        fileUrl: '/dataImport/downloadExcel/flightTask'
       }
     }
   },

@@ -132,7 +132,7 @@ export default {
         visible: false,
         uploadUrl: 'agency',
         fileType: '.xls',
-        fileUrl: '/importExcel/agency'
+        fileUrl: '/dataImport/downloadExcel/agency'
       }
     }
   },

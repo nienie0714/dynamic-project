@@ -33,7 +33,7 @@ export default {
     // websocket消息
     websocketOnMessage (e) {
       var resData = JSON.parse(e.data)
-      console.log(resData)
+      // console.log(resData)
       this.customWsOnMessage(resData)
     },
     // 关闭websocket

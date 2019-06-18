@@ -161,7 +161,7 @@ export default {
         visible: false,
         uploadUrl: 'terminalResource',
         fileType: '.xls',
-        fileUrl: '/importExcel/terminalResource'
+        fileUrl: '/dataImport/downloadExcel/terminalResource'
       }
     }
   },

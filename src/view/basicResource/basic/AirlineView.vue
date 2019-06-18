@@ -148,7 +148,7 @@ export default {
         visible: false,
         uploadUrl: 'airline',
         fileType: '.xls',
-        fileUrl: '/importExcel/airline'
+        fileUrl: '/dataImport/downloadExcel/airline'
       }
     }
   },

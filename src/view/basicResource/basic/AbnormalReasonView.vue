@@ -135,7 +135,7 @@ export default {
         visible: false,
         uploadUrl: 'abnormalReason',
         fileType: '.xls',
-        fileUrl: '/importExcel/abnormalReason'
+        fileUrl: '/dataImport/downloadExcel/abnormalReason'
       }
     }
   },

@@ -159,7 +159,7 @@ export default {
         visible: false,
         uploadUrl: 'terminal_device',
         fileType: '.xls',
-        fileUrl: '/importExcel/terminalDevice'// todo
+        fileUrl: '/dataImport/downloadExcel/terminalDevice'// todo
       }
     }
   },

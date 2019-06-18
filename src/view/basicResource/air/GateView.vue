@@ -142,7 +142,7 @@ export default {
         visible: false,
         uploadUrl: 'gate',
         fileType: '.xls',
-        fileUrl: '/importExcel/gate'
+        fileUrl: '/dataImport/downloadExcel/gate'
       }
     }
   },

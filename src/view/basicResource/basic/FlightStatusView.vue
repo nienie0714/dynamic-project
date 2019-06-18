@@ -150,7 +150,7 @@ export default {
         visible: false,
         uploadUrl: 'flightStatus',
         fileType: '.xls',
-        fileUrl: '/importExcel/flightStatus'
+        fileUrl: '/dataImport/downloadExcel/flightStatus'
       }
     }
   },

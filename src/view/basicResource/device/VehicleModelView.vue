@@ -121,9 +121,9 @@ export default {
       },
       importData: {
         visible: false,
-        uploadUrl: 'vehicle_type',
+        uploadUrl: 'vehicleType',
         fileType: '.xls',
-        fileUrl: '/importExcel/vehicle_type'
+        fileUrl: '/dataImport/downloadExcel/vehicleType'
       }
     }
   },

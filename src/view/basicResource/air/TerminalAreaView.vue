@@ -147,7 +147,7 @@ export default {
         visible: false,
         uploadUrl: 'terminalArea',
         fileType: '.xls',
-        fileUrl: '/importExcel/terminalArea'
+        fileUrl: '/dataImport/downloadExcel/terminalArea'
       }
     }
   },

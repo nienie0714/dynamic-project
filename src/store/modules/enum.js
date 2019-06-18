@@ -6,6 +6,7 @@ export default {
       {key: 'attr', classify: '属性', options: []},
       {key: 'isYOrN', classify: '是否', options: [{code: 'Y', name: '是'}, {code: 'N', name: '否'}]},
       {key: 'vehicleAlarm', classify: '报警', options: [{code: 1, name: '越界'}, {code: 2, name: '超速'}, {code: 3, name: '超速/越界'}]},
+      {key: 'queryType', classify: '查询', options: [{code: 'day', name: '日度'}, {code: 'month', name: '月度'}]},
       {key: 'aircraftClassify', classify: '机型分类', options: []},
       {key: 'rank', classify: '机位等级', options: []},
       {key: 'airport', classify: '本场', options: []},
