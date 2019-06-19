@@ -57,7 +57,7 @@ export default {
         formData: [
           {key: 'aircraftNo', label: '飞机号', type: 'input', maxlength: 10},
           {key: 'aircraftIcao', label: '机型ICAO码', type: 'select', filterable: true, getOptions: '/basicdata/aircraftType/queryAll', itemKey: 'aircraftIcao', itemLabel: 'aircraftIcao'},
-          {key: 'airline', label: '航空公司', type: 'select', filterable: true, getOptions: '/basicdata/airline/queryAll', itemKey: 'airlineIata', itemLabel: 'briefC'},
+          {key: 'airline', label: '航空公司', type: 'select', filterable: true, getOptions: '/basicdata/airline/queryAll', itemKey: 'airlineIata', itemLabel: 'briefC', change: this.changeNo},
           {key: 'airlineSub', label: '航空分公司', type: 'select', filterable: true, getOptions: '/basicdata/airline/queryAll', itemKey: 'airlineIata', itemLabel: 'briefC'},
           {key: 'seatsFirst', label: '头等舱座位数', type: 'input'},
           {key: 'seatsBussiness', label: '商务舱座位数', type: 'input'},
@@ -148,6 +148,35 @@ export default {
     }
   },
   methods: {
+    changeNo (value, callback) {
+      let mainAirline = {}
+      if (value) {
+        mainAirline.mainAirline = value
+      } else {
+        mainAirline = null
+      }
+      queryAll('/basicdata/airline/queryAll', mainAirline).then(response => {
+        let airlineSub = {
+          key: 'airlineSub',
+          value: null
+        }
+        if (response.data.code == 0) {
+          for (let i = 0; i < this.formData.formData.length; i++) {
+            if (this.formData.formData[i].key == 'airlineSub') {
+              this.$set(this.formData.formData[i], 'options', response.data.data)
+              // if (response.data.data.length > 0) { // 默认回填首个
+              //   airlineSub.value = response.data.data[0].airlineIata
+              // }
+              callback(airlineSub)
+              return
+            }
+          }
+        } else {
+          callback(airlineSub)
+          return null
+        }
+      })
+    },
     downloadErrorExcel (data) {
       let titles = ['飞机号', '机型ICAO码', '航空公司', '航空分公司']
       let arrs = [_.map(data, 'aircraftNo'), _.map(data, 'aircraftIcao'), _.map(data, 'airlineName'), _.map(data, 'airlineSubName')]

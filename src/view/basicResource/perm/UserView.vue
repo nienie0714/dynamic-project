@@ -211,7 +211,10 @@ export default {
     handleReset (row) {
       for (let i = 0; i < this.formData.formData.length; i++) {
         this.$set(this.formData.formData[i], 'value', row[this.formData.formData[i].key])
-        if (this.formData.formData[i].key == 'password' || this.formData.formData[i].key == 'userName') {
+        if (this.formData.formData[i].key == 'password') {
+          this.$set(this.formData.formData[i], 'isHidden', false)
+          this.$set(this.formData.formData[i], 'value', null)
+        } else if (this.formData.formData[i].key == 'userName') {
           this.$set(this.formData.formData[i], 'isHidden', false)
         } else {
           this.$set(this.formData.formData[i], 'isHidden', true)

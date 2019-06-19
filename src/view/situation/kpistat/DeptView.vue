@@ -61,11 +61,7 @@ export default {
         // key: 'vehicleId',
         clearRulesKey: [],
         formData: [
-          {key: 'vehicleNo', label: '车辆牌号', type: 'input', maxlength: 9},
-          {key: 'vehicleTypeName', label: '车辆类型', type: 'input', maxlength: 9},
-          {key: 'statDate', label: '执行日期', type: 'date', format: 'yyyy-MM-dd', valueFormat: 'yyyy-MM-dd'},
-          {key: 'alarmType', label: '报警类型', type: 'tabs', tabsKey: 'vehicleAlarm'},
-          {key: 'alarmNum', label: '报警次数', type: 'number', position: 'right', step: 1}
+          {key: 'unitId', label: '保障部门', type: 'input', maxlength: 9}
         ]
       },
       // 查询条件每行个数
@@ -99,7 +95,6 @@ export default {
         //   filterable: true
         // },
         {
-          // p: '车牌号',
           key: 'deptName',
           value: '',
           type: 'input',
@@ -107,8 +102,7 @@ export default {
           span: 4
         },
         {
-          // p: '车牌号',
-          key: 'taskName',
+          key: 'taskCn',
           value: '',
           type: 'input',
           inputText: '任务名称',
@@ -151,11 +145,14 @@ export default {
         // key: 'vehicleId',
         multipleSelection: [],
         fields: [
-          {prop: 'vehicleNo', label: '车辆牌号', fixed: true, hidden: false},
-          {prop: 'vehicleTypeName', label: '车辆类型', fixed: false, hidden: false},
-          {prop: 'statDate', label: '执行日期', hidden: false, formatter: this.formatterDay},
-          {prop: 'alarmType', label: '报警类型', hidden: false, optionKey: 'vehicleAlarm'},
-          {prop: 'alarmNum', label: '报警次数', hidden: false}
+          {prop: 'deptId', label: '保障部门', fixed: true, hidden: false},
+          {prop: 'statDate', label: '执行日期', fixed: false, hidden: false, formatter: this.formatterDay},
+          {prop: 'taskCn', label: '任务名称', hidden: false},
+          {prop: 'taskTime', label: '任务总时长/分', hidden: false},
+          {prop: 'totalFlight', label: '保障航班总量', hidden: false}, // todo
+          {prop: 'endFlight', label: '保障航班量-停场', hidden: false},
+          {prop: 'startFlight', label: '保障航班量-始发', hidden: false},
+          {prop: 'viaFlight', label: '保障航班量-过站', hidden: false}
         ]
       }
     }

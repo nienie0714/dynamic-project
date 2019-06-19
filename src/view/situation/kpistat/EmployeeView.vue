@@ -142,11 +142,14 @@ export default {
         // key: 'vehicleId',
         multipleSelection: [],
         fields: [
-          {prop: 'vehicleNo', label: '车辆牌号', fixed: true, hidden: false},
-          {prop: 'vehicleTypeName', label: '车辆类型', fixed: false, hidden: false},
-          {prop: 'statDate', label: '执行日期', hidden: false, formatter: this.formatterDay},
-          {prop: 'alarmType', label: '报警类型', hidden: false, optionKey: 'vehicleAlarm'},
-          {prop: 'alarmNum', label: '报警次数', hidden: false}
+          {prop: 'unitId', label: '保障单位（人员/单元）', fixed: true, hidden: false},
+          {prop: 'statDate', label: '执行日期', fixed: false, hidden: false, formatter: this.formatterDay},
+          {prop: 'taskCn', label: '任务名称', hidden: false},
+          {prop: 'taskTime', label: '任务总时长/分', hidden: false},
+          {prop: 'totalFlight', label: '保障航班总量', hidden: false},
+          {prop: 'endFlight', label: '保障航班量-停场', hidden: false},
+          {prop: 'startFlight', label: '保障航班量-始发', hidden: false},
+          {prop: 'viaFlight', label: '保障航班量-过站', hidden: false}
         ]
       }
     }
