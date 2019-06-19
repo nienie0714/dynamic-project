@@ -772,7 +772,11 @@ export default {
                 } else if (this.formData.formData[i].type == 'casc') {
                   if (this.formData.formData[i].hasOwnProperty('saveKey')) {
                     let arr = this.editData[this.formData.formData[i].key]
-                    this.editData[this.formData.formData[i].saveKey] = arr[arr.length - 1]
+                    if (arr.length) {
+                      this.editData[this.formData.formData[i].saveKey] = arr[arr.length - 1]
+                    } else {
+                      this.editData[this.formData.formData[i].saveKey] = null
+                    }
                     // this.$delete(this.editData, this.formData.formData[i].key)
                   }
                 } else if (this.formData.formData[i].type == 'select' && this.formData.formData[i].multiple) {

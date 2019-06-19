@@ -231,7 +231,7 @@ export default {
     downloadErrorExcel (data) {
       let titles = ['ICAO码', 'IATA码', '最小过站时长', '机型分类', '是否靠桥', '中文简称', '英文简称']
       let arrs = [_.map(data, 'aircraftIcao'), _.map(data, 'aircraftIata'), _.map(data, 'reserved2'), _.map(data, 'aircraftClassify'), _.map(data, 'reserved1'), _.map(data, 'briefC'), _.map(data, 'briefE')]
-      let widths = [87, 87, 87, 87, 87, 87, 87]
+      let widths = [70, 87, 104, 87, 87, 87, 87]
       this.downloadError(titles, arrs, widths, null, 'l')
     }
   },

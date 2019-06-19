@@ -72,15 +72,15 @@ export default {
       if (_.map(this.homeRouterData, 'path').includes(this.$route.matched[0].path)) {
         _.forEach(this.homeRouterData, (item) => {
           if (this.$route.matched[0].path == item.path) {
-            let name = localStorage.getItem(item.routerName)
-            if (name) {
-              this.$router.push({name: name})
-            } else {
+            // let name = localStorage.getItem(item.routerName)
+            // if (name) {
+            //   this.$router.push({name: name})
+            // } else {
               this.findActiveIndex(this.asideData)
               this.$router.push(this.activeIndex)
               localStorage.setItem(item.name, this.activeName)
               localStorage.setItem(item.routerName, this.$route.name)
-            }
+            // }
           }
         })
       }

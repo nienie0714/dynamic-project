@@ -30,7 +30,7 @@ import EditView from '../../../components/common/EditView'
 import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
 import {ndENReg, rdEReg, threeD} from '../../../util/rules.js'
-import {queryAll} from '../../../api/base.js'
+import {queryAll, postData} from '../../../api/base.js'
 import _ from 'lodash'
 
 // const tableHeight = ''
@@ -62,7 +62,7 @@ export default {
           {key: 'briefE', label: '英文简称', type: 'input', maxlength: 50},
           {key: 'nameC', label: '中文全称', type: 'input', maxlength: 50},
           {key: 'nameE', label: '英文全称', type: 'input', maxlength: 50},
-          {key: 'aabb', label: '主航空公司', type: 'select', filterable: true, clearable: true, getOptions: '/basicdata/vehicleDeviceRelation/queryVehicleWithoutBindDevice', itemKey: 'vehicleId', itemLabel: 'vehicleNo'}, // todo
+          {key: 'mainAirline', label: '主航空公司', type: 'select', filterable: true, clearable: true, getOptions: 'basicdata/airline/queryAll', itemKey: 'airlineIata', itemLabel: 'briefC'},
           {key: 'sortkey', label: '排序码', type: 'input'},
           {key: 'remark', label: '备注', type: 'textarea', autosize: true, maxlength: 100}
         ],
@@ -78,7 +78,7 @@ export default {
           airlineIcao: [
             {required: true, message: '必填项', trigger: 'blur'},
             {validator: rdEReg, trigger: 'blur'},
-            {validator: this.unique, trigger: 'blur'}
+            {validator: this.uniqueAirType, trigger: 'blur'}
           ],
           briefC: [
             {required: true, message: '必填项', trigger: 'blur'}
@@ -141,9 +141,10 @@ export default {
           {prop: 'attr', label: '属性', fixed: false, hidden: false, optionKey: 'attr'},
           {prop: 'briefC', label: '中文简称', fixed: false, hidden: false},
           {prop: 'briefE', label: '英文简称', fixed: false, hidden: false},
-          {prop: 'aabb', label: '主航空公司', fixed: false, hidden: false} // todo
+          {prop: 'mainAirlineCn', label: '主航空公司', fixed: false, hidden: false} // todo
         ]
       },
+      airlineIcao: '',
       importData: {
         visible: false,
         uploadUrl: 'airline',
@@ -155,82 +156,69 @@ export default {
   methods: {
     // 编辑
     handleEdit (row) {
-      for (let i = 0; i < this.formData.formData.length; i++) {
-        if (['aabb'].includes(this.formData.formData[i].key)) {
-          this.$set(this.formData.formData[i], 'optionsQuery', {'airlineIata': row.airlineIata})
-          this.$set(this.formData.formData[i], 'getOptions', '/organization/employee/queryAllForHandHeldTerminal')
+      this.airlineIcao = row.airlineIcao
+      queryAll('basicdata/airline/queryAll', {}).then(response => {
+        if (response.data.code == 0) {
+          let options = response.data.data
+          let optionsRemove = JSON.parse(JSON.stringify(options))
+          let index = _.findIndex(optionsRemove, ['airlineIata', row.airlineIata])
+          optionsRemove.splice(index, 1)
+          // console.log(_.differenceWith(options, optionsRemove, _.isEqual))
+          for (let i = 0; i < this.formData.formData.length; i++) {
+            this.$set(this.formData.formData[i], 'value', row[this.formData.formData[i].key])
+            if (this.formData.formData[i].key == 'mainAirline') {
+              this.$set(this.formData.formData[i], 'options', optionsRemove)
+            }
+          }
+          this.formData.title = '编辑'
+          this.formData.visible = true
+        } else {
+          this.showError('获取主航空公司信息', '请重新尝试 !')
         }
-        this.$set(this.formData.formData[i], 'value', row[this.formData.formData[i].key])
-      }
-      this.formData.title = '编辑'
-      this.formData.visible = true
+      })
     },
-    // 详情
-    handleDetail (row) {
-      for (let i = 0; i < this.formData.formData.length; i++) {
-        if (['aabb'].includes(this.formData.formData[i].key)) {
-          this.$set(this.formData.formData[i], 'optionsQuery', {'airlineIata': row.airlineIata})
-          this.$set(this.formData.formData[i], 'getOptions', '/organization/employee/queryAllForHandHeldTerminal')
-        }
-        this.$set(this.formData.formData[i], 'value', row[this.formData.formData[i].key])
+    // 唯一性校验
+    uniqueAirType (rule, value, callback) {
+      if (value != '' && value != null) {
+        setTimeout(() => {
+          if (rule.field == 'airlineIcao' && value == this.airlineIcao) {
+            callback()
+          } else {
+            let key = rule.field
+            let data = {}
+            this.$set(data, rule.field, value)
+            postData(this.baseUrl + '/checkExist', data).then(response => {
+              if (response.data.code == 0 && response.data.data.hasOwnProperty('exist')) {
+                if (response.data.data.exist > 0) {
+                  callback(new Error('当前编号已存在'))
+                } else {
+                  callback()
+                }
+              } else {
+                callback(new Error('请求失败'))
+              }
+            })
+          }
+        }, 200)
+      } else {
+        callback()
       }
-      this.formData.title = '详情'
-      this.formData.visible = true
     },
-    // 新增
-    handleAdd () {
-      for (let i = 0; i < this.formData.formData.length; i++) {
-        if (['aabb'].includes(this.formData.formData[i].key)) {
-          this.$set(this.formData.formData[i], 'optionsQuery', {'airlineIata': null})
-          this.$set(this.formData.formData[i], 'getOptions', '/organization/employee/queryAllForHandHeldTerminal')
-        }
-      }
-      this.formData.title = '新增'
-      this.formData.visible = true
-    },
-    // changeDept (value, callback) {
-    //   var data = {
-    //     deptId: ''
-    //   }
-    //   if (!_.isEmpty(value)) {
-    //     data.deptId = _.last(value)
-    //     queryAll('/organization/employee/queryAllForHandHeldTerminal', data).then(response => {
-    //       let emp = {
-    //         key: 'empId',
-    //         value: null
-    //       }
-    //       if (response.data.code == 0) {
-    //         for (let i = 0; i < this.formData.formData.length; i++) {
-    //           if (this.formData.formData[i].key == 'empId') {
-    //             this.$set(this.formData.formData[i], 'options', response.data.data)
-    //             callback(emp)
-    //             return
-    //           }
-    //         }
-    //       } else {
-    //         callback(emp)
-    //         return null
-    //       }
-    //     })
-    //   } else {
-    //     let emp = {
-    //       key: 'empId',
-    //       value: null
-    //     }
-    //     for (let i = 0; i < this.formData.formData.length; i++) {
-    //       if (this.formData.formData[i].key == 'empId') {
-    //         this.$set(this.formData.formData[i], 'options', [])
-    //         callback(emp)
-    //         return null
-    //       }
-    //     }
-    //   }
-    // },
     downloadErrorExcel (data) {
       let titles = ['IATA码', 'ICAO码', '属性', '中文简称', '英文简称', '主航空公司']
-      let arrs = [_.map(data, 'airlineIata'), _.map(data, 'airlineIcao'), _.map(data, 'attr'), _.map(data, 'briefC'), _.map(data, 'briefE'), _.map(data, 'aabb')]
-      let widths = [50, 50, 50, 80, 80, 200]
+      let arrs = [_.map(data, 'airlineIata'), _.map(data, 'airlineIcao'), _.map(data, 'attr'), _.map(data, 'briefC'), _.map(data, 'briefE'), _.map(data, 'mainAirlineCn')]
+      let widths = [83, 83, 83, 83, 83, 83]
       this.downloadError(titles, arrs, widths)
+    }
+  },
+  watch: {
+    'formData.visible': {
+      handler (data) {
+        if (!data) {
+          this.airlineIcao = ''
+        }
+      },
+      immediate: true
     }
   }
 }

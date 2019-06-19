@@ -120,6 +120,7 @@ export default {
         stripe: true,
         height: window.innerHeight,
         highlight: true,
+        isOperat: true,
         headerCellClass: 'tableHeaderCell-Center',
         rowClassName: this.tableRowClassName,
         multipleSelection: [],
