@@ -87,7 +87,7 @@
               <div class="div-left-table_body" :style="divTableBodyStyle" @mousewheel="scrollEvent">
                 <table cellpadding="0" cellspacing="0" class="left-table_body" ref="wholeTable">
                   <tbody>
-                    <tr v-for="(item, index) in tableData.data" :key="index" :id="item.afid" :data-flighta="item.flightNoA" :data-flightd="item.flightNoD"
+                    <tr v-for="(item, index) in tableShowData" :key="index" :id="item.afid" :data-flighta="item.flightNoA" :data-flightd="item.flightNoD"
                     :draggable="(queryData.execDateFlag != -1)&&item.colourType != 1" @dragstart="dragFlight" @drop="dropFlight" @dragenter.stop="(item.colourType != 1) && allowDrop($event)" @dragover.stop="(item.colourType != 1) && allowDrop($event)"
                     :class="[tableRowClassName({'row': item, 'rowIndex': index}), tableClickRowClass[index]?'is-active':'']" @click="clickRow(index)">
                       <div v-for="field in tableData.fields" :key="field.prop" :class="field.hidden?'body-tr-div':'body-tr-div show-field'" :style="!field.hidden && {width: field.width + 'px'}">
@@ -96,7 +96,7 @@
                             <img v-if="item[field.prop]" :src="require('@img/icon_heart_liked.png')" @click.self.stop="queryData.execDateFlag != -1&&cancelMarkFlight(item)"/>
                             <img v-else :src="require('@img/icon_heart_default.png')" @click.self.stop="queryData.execDateFlag != -1&&markFlight(item)"/>
                           </div>
-                          <div v-else-if="field.prop == 'index'" :class="field.childClass">{{ index + 1 }}</div>
+                          <div v-else-if="field.prop == 'index'" :class="field.childClass">{{ require('lodash').findIndex(tableData.data, ['afid', item.afid]) + 1 }}</div>
                           <div v-else-if="field.prop == 'stand' && item[field.prop]" :class="field.childClass">{{ item[field.prop] }}</div>
                           <div v-else-if="field.prop == 'preDepTime'" :class="item['preDepTimeCss']?item['preDepTimeCss']+' time-bg':'time-bg'">{{ item[field.prop] ? item[field.prop] : '—:—' }}</div>
                           <div v-else-if="field.prop == 'arrvTime'" :class="item['arrvTimeCss']?item['arrvTimeCss']+' time-bg':'time-bg'">{{ item[field.prop] ? item[field.prop] : '—:—' }}</div>
@@ -125,7 +125,7 @@
               <div class="div-right-table_body" :style="divTableBodyStyle" @mousewheel="scrollEvent">
                 <table cellpadding="0" cellspacing="0" class="right-table_body_block">
                   <tbody>
-                    <tr v-for="(item, index) in tableData.data" :key="index" :id="item.afid" :data-flighta="item.flightNoA" :data-flightd="item.flightNoD"
+                    <tr v-for="(item, index) in tableShowData" :key="index" :id="item.afid" :data-flighta="item.flightNoA" :data-flightd="item.flightNoD"
                     :draggable="(queryData.execDateFlag != -1)&&(item.colourType != 1)" @dragstart="dragFlight" @drop="dropFlight" @dragenter.stop="(item.colourType != 1) && allowDrop($event)" @dragover.stop="(item.colourType != 1) && allowDrop($event)"
                     :class="tableClickRowClass[index]?'is-active':''" @click="clickRow(index)">
                       <div class="body-tr-div" :style="{width: '100%'}"></div>
@@ -134,8 +134,9 @@
                 </table>
                 <table cellpadding="0" cellspacing="0" class="right-table_body" :style="rightTableWidthStyle">
                   <tbody>
-                    <tr v-for="(item, index) in tableData.data" :key="index" :id="item.afid" :data-flighta="item.flightNoA" :data-flightd="item.flightNoD"
-                    :draggable="(queryData.execDateFlag != -1)&&(item.colourType != 1)" @dragstart="dragFlight" @drop="dropFlight" @dragenter.stop="(item.colourType != 1) && allowDrop($event)" @dragover.stop="(item.colourType != 1) && allowDrop($event)"
+                    <tr v-for="(item, index) in tableShowData" :key="index" :id="item.afid" :data-flighta="item.flightNoA" :data-flightd="item.flightNoD"
+                    :draggable="(queryData.execDateFlag != -1)&&(item.colourType != 1)" @dragstart="dragFlight" @drop="dropFlight"
+                    @dragenter.stop="(item.colourType != 1) && allowDrop($event)" @dragover.stop="(item.colourType != 1) && allowDrop($event)"
                     :class="tableClickRowClass[index]?'is-active':''" @click="clickRow(index)">
                       <div v-show="!taskField.hidden" v-for="(taskField, idx) in tableData.taskFields" :key="taskField.prop"
                       :class="taskField.hidden?'body-tr-div-hidden':((idx >= rightAutoNum) ? 'body-tr-div' : 'body-tr-div-no-task')"
@@ -146,8 +147,12 @@
                         <td v-else-if="!taskField.hidden" :class="taskField.class" :width="taskField.width - 10">
                           <el-popover placement="bottom" width="160" trigger="click" class="popover-bottom"><!--  :ref="`popover-${index}-`" -->
                             <div :name="`el-popover-${index}-${taskField.prop}`" class="task-right-click-tip">
-                              <div :class="queryData.execDateFlag != -1&&(item.taskDataMap[taskField.prop] && (!['NoDistribute', 'NormalFinished', 'OvertimeFinished', 'ExceptionFinished'].includes(item.taskDataMap[taskField.prop].taskDataCss)))?'tip-first':'tip-first div-disabled'"
-                              @click="queryData.execDateFlag != -1&&item.taskDataMap[taskField.prop] && (!['NoDistribute', 'NormalFinished', 'OvertimeFinished', 'ExceptionFinished'].includes(item.taskDataMap[taskField.prop].taskDataCss)) && cancelTaskButtonClick(item.taskDataMap[taskField.prop])">
+                              <div :class="queryData.execDateFlag != -1&&(item.taskDataMap[taskField.prop] && (!['NoDistribute', 'NormalFinished', 'OvertimeFinished', 'ExceptionFinished'].includes(item.taskDataMap[taskField.prop].taskDataCss)))
+                              ?(item.taskDataMap[taskField.prop] && item.taskDataMap[taskField.prop].refuseCss == 'true' ? 'tip-first div-disabled' : 'tip-first')
+                              :'tip-first div-disabled'"
+                              @click="queryData.execDateFlag != -1&&item.taskDataMap[taskField.prop] && (!['NoDistribute', 'NormalFinished', 'OvertimeFinished', 'ExceptionFinished'].includes(item.taskDataMap[taskField.prop].taskDataCss))
+                              && !(item.taskDataMap[taskField.prop] && item.taskDataMap[taskField.prop].refuseCss == 'true')
+                              && cancelTaskButtonClick(item.taskDataMap[taskField.prop])">
                                 <div class="tip-undo"></div>
                                 <div>撤销分配</div>
                               </div>
@@ -490,7 +495,7 @@
                 <div>任务实际开始时间</div>
                 <div>
                   <el-date-picker type="datetime" placeholder="请选择时间" format="yyyy-MM-dd HH:mm" value-format="yyyy-MM-dd HH:mm" size="small"
-                  v-model="taskButtonData.timeData.startTime" :disabled="taskButtonData.data.beginTimeA!=''"></el-date-picker>
+                  v-model="taskButtonData.timeData.startTime" :disabled="taskButtonData.refuse||taskButtonData.data.beginTimeA!=''"></el-date-picker>
                 </div>
               </el-col>
               <el-col :span="12">
@@ -508,10 +513,11 @@
         <div slot="footer" class="dialog-footer">
           <el-button @click="handleTaskButtonClose">取 消</el-button>
           <el-button v-if="taskButtonData.type==1" type="primary" @click="handleTaskButtonSave"
-          :disabled="(taskButtonData.formData.button=='other'&&!taskButtonData.formData.textarea)||taskButtonData.formData.button==''">确 定</el-button>
-          <el-tooltip v-if="taskButtonData.type==2" content="提示：提交时间后任务将切换至完成状态，且不可修改！" placement="top-end" popper-class="tasksched dialog-footer-tooltip">
+          :disabled="(taskButtonData.formData.button=='other'&&!taskButtonData.formData.textarea)||taskButtonData.formData.button==''">{{taskButtonData}}确 定</el-button>
+          <el-tooltip v-if="!taskButtonData.refuse&&taskButtonData.type==2" content="提示：提交时间后任务将切换至完成状态，且不可修改！" placement="top-end" popper-class="tasksched dialog-footer-tooltip">
             <el-button type="primary" @click="handleTaskButtonSave" :loading="taskButtonData.outLoading"
-            :disabled="!((!taskButtonData.data.beginTimeA&&!taskButtonData.data.endTimeA&&taskButtonData.timeData.startTime)||
+            :disabled="
+            !((!taskButtonData.data.beginTimeA&&!taskButtonData.data.endTimeA&&taskButtonData.timeData.startTime)||
             (taskButtonData.data.beginTimeA&&!taskButtonData.data.endTimeA&&taskButtonData.timeData.endTime&&taskButtonData.timeData.startTime<=taskButtonData.timeData.endTime))">{{taskButtonData.outLoading?'确定中':'确 定'}}</el-button>
           </el-tooltip>
         </div>
@@ -814,6 +820,7 @@ export default {
           startTime: '',
           endTime: ''
         },
+        refuse: false,
         visible: false
       },
       // 撤销任务保存URL
@@ -951,7 +958,7 @@ export default {
       showImg: false,
       imgSrc: null,
       // 撤销任务/任务编辑 弹出框控制
-     preButtonData: {
+      preButtonData: {
         editVisible: false,
         loading: false,
         outLoading: false,
@@ -1040,6 +1047,10 @@ export default {
           STAND: [],
           FLIGHTS: []
         }
+      },
+      tableCompData: {
+        index: 0,
+        length: 0
       }
     }
   },
@@ -1074,6 +1085,8 @@ export default {
       let top1 = resizeMain.getBoundingClientRect().top
       this.wholeMounted(top1)
       resizeMain.style.height = window.innerHeight - top1 - 20 + 'px'
+      this.tableCompData.length = Math.ceil(parseInt(this.divTableBodyStyle.height) / 50) + 1
+      this.tableCompData.index = 0
       $('.left-table_header').colResizable(this.resizeConf)
       window.onresize = () => {
         this.$nextTick(() => {
@@ -1082,12 +1095,42 @@ export default {
             resizeMain.style.height = window.innerHeight - top2 - 20 + 'px'
             this.wholeMounted(top1)
             this.taskButtonData.style['max-height'] = window.innerHeight - 590 + 'px'
+            this.tableCompData.length = Math.ceil(parseInt(this.divTableBodyStyle.height) / 50) + 1
           })()
         })
       }
     // })
   },
+  computed: {
+    tableShowData () {
+      return this.tableData.data.slice(this.tableCompData.index, this.tableCompData.index + this.tableCompData.length)
+    }
+  },
   methods: {
+    scrollTable () {
+      var oprTableBody = document.getElementsByClassName('div-opr-table_body')[0]
+      var rightTableBody = document.getElementsByClassName('div-right-table_body')[0]
+      let that = this
+      oprTableBody.onscroll = function () {
+        var oprTableTop = this.scrollTop
+        that.tableCompData.index = Math.floor(oprTableTop / 50)
+        let top = oprTableTop % 50
+        document.getElementsByClassName('div-right-table_body')[0].scrollTop = top
+        document.getElementsByClassName('div-left-table_body')[0].scrollTop = top
+        if (that.showTaskDivId) {
+          let div = document.getElementsByName(that.showTaskDivId)[0].parentElement
+          div.style.display = 'none'
+        }
+      }
+      rightTableBody.onscroll = function () {
+        var rightTableLeft = this.scrollLeft
+        document.getElementsByClassName('div-right-table_header')[0].scrollLeft = rightTableLeft
+        if (that.showTaskDivId) {
+          let div = document.getElementsByName(that.showTaskDivId)[0].parentElement
+          div.style.display = 'none'
+        }
+      }
+    },
     changePreTime (index) {
       if (index == 0) {
         if (this.preData.time[0] >= this.preData.time[1]) {
@@ -1339,10 +1382,8 @@ export default {
       }
     },
     allowDrop (event) {
-      // if (colorType != 1) {
-        event.preventDefault()
-        return false
-      // }
+      event.preventDefault()
+      return false
     },
     clearAllTaskFlightData () {
       this.taskFlightData = {
@@ -1457,14 +1498,18 @@ export default {
     },
     // 修改时间 点击按钮触发事件
     editTaskButtonClick (data) {
-      let _this = this
       queryAll(this.taskButtonUrl, {'dynamicTaskId': data.dynamicTaskId}).then(res => {
         if (res.data.code == 0) {
-          _this.taskButtonData.data = res.data.data
-          _this.taskButtonData.timeData.startTime = _this.taskButtonData.data.beginTimeA
-          _this.taskButtonData.timeData.endTime = _this.taskButtonData.data.endTimeA
-          _this.taskButtonData.editVisible = true
-          _this.taskButtonData.type = 2
+          this.taskButtonData.data = res.data.data
+          this.taskButtonData.timeData.startTime = this.taskButtonData.data.beginTimeA
+          this.taskButtonData.timeData.endTime = this.taskButtonData.data.endTimeA
+          if (data.refuseCss == 'true') {
+            this.taskButtonData.refuse = true
+          } else {
+            this.taskButtonData.refuse = false
+          }
+          this.taskButtonData.editVisible = true
+          this.taskButtonData.type = 2
         }
       })
     },
@@ -1931,8 +1976,8 @@ export default {
     setTaskDivId (index, prop) {
       this.showTaskDivId = `el-popover-${index}-${prop}`
     }
-  },
-  computed: {
+  }
+  // computed: {
     // 'preData.isCheckAll': function (value) {
     //   return
     // }
@@ -1942,7 +1987,7 @@ export default {
     comMessage2: function (value2) {
       return this.message + value2
     } */
-  }
+  // }
 }
 </script>
 
@@ -2465,6 +2510,7 @@ export default {
 .dialog-body-bottom.edit-time-bottom .task-reason-div .task-reason-popover-slot>div {
   width: 30px;
   height: 30px;
+  border-radius: 12px;
 }
 .attachment-gray {
   background-image: url('../../assets/img/list_icon_gray.png');

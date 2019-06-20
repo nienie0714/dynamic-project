@@ -639,12 +639,16 @@ input[type="number"] {
   padding-right: 0;
   overflow: hidden;
   white-space: nowrap;
+  text-overflow: ellipsis;
 }
 /* 列表标注 色点/文字 */
 .dot-font {
   margin-right: 20px;
   height: 60px;
   float: left;
+}
+.critical-contain .dot-font {
+  height: 40px !important;
 }
 .table-header span .dot-font:last-of-type {
   margin-right: 0;
@@ -886,6 +890,87 @@ input[type="number"] {
 .ctrl-f-popover .ctrl-f-close {
   margin: 7px 4px 7px 2px;
 }
+.custom-color-popover {
+  height: fit-content;
+}
+.custom-color-popover header {
+  padding: 20px;
+  color: #89a6b2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.custom-color-popover header>div:first-child {
+  font-size: 16px;
+  line-height: 16px;
+  height: 16px;
+}
+.custom-color-popover header>div:last-child {
+  font-size: 14px;
+  line-height: 14px;
+  height: 14px;
+}
+.custom-color-popover .color-ul>ul {
+  list-style: none;
+  margin: 0 20px;
+  padding: 0;
+}
+.custom-color-popover .color-ul>ul>li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  box-sizing: border-box;
+}
+.custom-color-popover .color-ul>ul>li:not(:last-child) {
+  margin-bottom: 4px;
+}
+.custom-color-popover .color-ul>ul>li>div:first-child {
+  font-size: 16px;
+  line-height: 16px;
+}
+.custom-color-popover .color-ul>ul>li>div:last-child {
+  border-radius: 8px;
+  height: 36px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+.custom-color-popover .color-ul>ul>li.focus>div:last-child {
+  border-radius: 8px;
+  border: 1px solid rgba(61, 166, 204, 0.6);
+  box-shadow: 0 0 10px rgba(61, 166, 204, 0.2);
+  cursor: pointer;
+}
+.custom-color-popover .color-ul>ul>li>div:last-child>div {
+  margin: 3px;
+  font-size: 14px;
+  line-height: 28px;
+  text-align: center;
+  width: 234px;
+  height: 28px;
+  border-radius: 6px;
+}
+.custom-color-popover .color-table {
+  margin: 36px 20px 0 20px;
+}
+.custom-color-popover .color-table>.color-row {
+  display: flex;
+  justify-content: space-between;
+}
+.custom-color-popover .color-table>.color-row:not(:last-child) {
+  margin-bottom: 6px;
+}
+.custom-color-popover .color-table>.color-row>.color-div {
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.custom-color-popover>footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 18px 20px 14px 20px;
+}
 .opr-popover {
   height: 400px;
 }
@@ -1007,12 +1092,12 @@ input[type="number"] {
 }
 .task-reason-popover .el-carousel__container {
   height: 423px;
+  border-radius: 12px;
 }
 .task-reason-popover .el-carousel__container .el-carousel__item {
   height: 423px;
   width: 240px;
   margin: 0;
-  border-radius: 12px;
 }
 .task-reason-popover .el-carousel__container .el-carousel__item img {
   height: 423px;
@@ -2315,6 +2400,9 @@ div.el-upload {
 }
 .statistics-dialog .his-info-arr .his-info-arr-div {
   margin: 0 30px 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 .flight-info-dialog .flight-info-normal.el-row {
   border-bottom: 1px solid rgba(60, 166, 200, 0.1);

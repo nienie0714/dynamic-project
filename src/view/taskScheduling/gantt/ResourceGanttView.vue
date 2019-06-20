@@ -362,14 +362,18 @@ export default {
         if (this.dataZoomData[1]) {
           if (this.dataZoomData[1].hasOwnProperty('start')) {
             this.$set(dataZoomY, 'start', ((this.ganttEl.clientHeight - 50) > (this.yList.length * 50)) ? 0 : this.dataZoomData[1].start)
-            this.$set(dataZoomY, 'end', ((this.ganttEl.clientHeight - 50) > (this.yList.length * 50)) ? 100 : this.dataZoomData[1].end)
+            this.$set(dataZoomY, 'end', ((this.ganttEl.clientHeight - 50) > (this.yList.length * 50)) ? 100 : (this.dataZoomData[1].start + (this.ganttEl.clientHeight - 50) / this.yList.length * 2))
+            // this.dataZoomData[1].end
+            console.log('a =>' + dataZoomY.end)
           } else {
             this.$set(dataZoomY, 'startValue', this.dataZoomData[1].startValue)
-            this.$set(dataZoomY, 'endValue', ((this.ganttEl.clientHeight - 50) > (this.yList.length * 50)) ? this.yList[Math.floor((this.ganttEl.clientHeight - 40) / 50) - 1] : this.dataZoomData[1].endValue)
+            this.$set(dataZoomY, 'endValue', ((this.ganttEl.clientHeight - 50) > (this.yList.length * 50)) ? this.yList[Math.floor((this.ganttEl.clientHeight - 50) / 50) - 1] : this.dataZoomData[1].endValue)
+            console.log('b =>' + dataZoomY.end)
           }
         } else {
-          this.$set(dataZoomY, 'startValue', this.yList[0])
-          this.$set(dataZoomY, 'endValue', this.yList[Math.floor((this.ganttEl.clientHeight - 40) / 50) - 1])
+          this.$set(dataZoomY, 'start', 0)
+          this.$set(dataZoomY, 'end', (this.ganttEl.clientHeight - 50) / this.yList.length * 2)
+          console.log('c =>' + dataZoomY.end)
         }
         var option = {
           tooltip: {
@@ -576,7 +580,7 @@ export default {
           grid: {
             show: false,
             width: 'auto',
-            height: ((this.ganttEl.clientHeight - 50) > (this.yList.length * 50)) ? (this.yList.length * 50) : (this.ganttEl.clientHeight - 40),
+            height: ((this.ganttEl.clientHeight - 50) > (this.yList.length * 50)) ? (this.yList.length * 50) : (this.ganttEl.clientHeight - 50),
             top: 50,
             bottom: 0,
             left: 90,

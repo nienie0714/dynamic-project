@@ -27,6 +27,48 @@
           <div class="ctrl-f-close" @click="handleCtrlFButton()"></div>
           <el-button slot="reference" :class="ctrlFVisible?'open':'close'" type="info" @click="handleCtrlFButton()">定位</el-button>
         </el-popover>
+        <el-popover placement="bottom" trigger="click" v-model="customColor.visible" popper-class="custom-color-popover" width="358">
+          <div class="custom-color-popover">
+            <el-main>
+              <div class="opr-popover-all">
+                <el-header>
+                  <div>航班信息</div>
+                  <div>注：颜色不可重复使用</div>
+                </el-header>
+                <el-main>
+                  <div class="color-ul">
+                    <ul>
+                      <li v-for="item in customColor.fields" :key="item.key" :class="(customColor.focusKey == item.key) ? 'focus' : ''">
+                        <div>{{item.label}}</div>
+                        <div
+                        @click="customColor.focusKey = (customColor.focusKey == item.key) ? '' : item.key">
+                          <div :style="customColor.data[item.key] ? `background-color: ${customColor.data[item.key]}` : ''">点击编辑颜色</div>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="color-table">
+                    <div v-for="(colors, num) in customColor.colors" :key="num" class="color-row">
+                      <div v-for="(color, i) in colors" :key="i"
+                      class="color-div" :style="`background-color: ${color}`"
+                      @click="clickColor(color)"></div>
+                    </div>
+                  </div>
+                </el-main>
+              </div>
+            </el-main>
+            <el-footer>
+              <div class="footer-left">
+                <el-button type="info" plain @click="queryCustomeColor()">恢复默认值</el-button>
+              </div>
+              <div class="footer-right">
+                <el-button type="info" plain @click="handleCustomColorButton()">取消</el-button>
+                <el-button type="primary" @click="saveCustomeColor()">保存</el-button>
+              </div>
+            </el-footer>
+          </div>
+          <el-button slot="reference" :class="ctrlFVisible?'open':'close'" type="info" @click="handleCustomColorButton()">自定义配色</el-button>
+        </el-popover>
         <el-button type="info" @click="exportDynamic()">导出</el-button>
         <el-button type="success" @click="queryDataReq(1)">刷新</el-button>
       </div>
@@ -38,29 +80,10 @@
               <img :src="require('@img/title_deco.png')" />
               <span class="header-title">航班列表</span>
               <span>
-                <div class="dot-font">
-                  <div class="dot-color-4_1"></div>
-                  <span>本站</span>
-                </div>
-                <div class="dot-font">
-                  <div class="dot-color-4_2"></div>
-                  <span>前起</span>
-                </div>
-                <div class="dot-font">
-                  <div class="dot-color-4_3"></div>
-                  <span>计划</span>
-                </div>
-                <div class="dot-font">
-                  <div class="dot-color-2"></div>
-                  <span>延误</span>
-                </div>
-                <div class="dot-font">
-                  <div class="dot-color-3"></div>
-                  <span>取消</span>
-                </div>
-                <div class="dot-font">
-                  <div class="dot-color-1"></div>
-                  <span>起飞</span>
+                <div v-for="item in customColor.fields" :key="item.key" class="dot-font">
+                  <div
+                  :style="customColor.data.hasOwnProperty(item.key) ? `background-color: ${customColor.data[item.key]}` : ''"></div>
+                  <span>{{item.label}}</span>
                 </div>
               </span>
             </div>
@@ -94,6 +117,7 @@
               <table cellpadding="0" cellspacing="0" class="left-table_body" ref="wholeTable">
                 <tbody>
                   <tr v-for="(item, index) in tableData.data" :key="index" :class="[tableRowClassName({'row': item, 'rowIndex': index}), tableClickRowClass[index]?'is-active':'']"
+                  :style="customColor.data.hasOwnProperty(item.colourType) ? `background-color: ${customColor.data[item.colourType]}` : ''"
                   @click="clickRow(index)" @dblclick="showFlightEdit(index)"><!--  @contextmenu.prevent="tableRowContextmenu(item, $event)" -->
                     <div v-for="field in tableData.fields" :key="field.prop" :class="field.hidden?'body-tr-div':'body-tr-div show-field'" :style="!field.hidden && {width: field.width + 'px'}">
                       <td v-if="!field.hidden" :width="field.width" :class="field.class">
@@ -130,6 +154,7 @@
               <table cellpadding="0" cellspacing="0" class="right-table_body_block">
                 <tbody>
                   <tr v-for="(item, index) in tableData.data" :key="index" :class="[tableRowClassName({'row': item, 'rowIndex': index}), tableClickRowClass[index]?'is-active':'']"
+                  :style="customColor.data.hasOwnProperty(item.colourType) ? `background-color: ${customColor.data[item.colourType]}` : ''"
                   @click="clickRow(index)" @dblclick="showFlightEdit(index)">
                     <div class="body-tr-div" :style="{width: '100%'}"></div>
                   </tr>
@@ -138,6 +163,7 @@
               <table cellpadding="0" cellspacing="0" class="right-table_body" :style="rightTableWidthStyle">
                 <tbody>
                   <tr v-for="(item, index) in tableData.data" :key="index" :class="[tableRowClassName({'row': item, 'rowIndex': index}), tableClickRowClass[index]?'is-active':'']"
+                  :style="customColor.data.hasOwnProperty(item.colourType) ? `background-color: ${customColor.data[item.colourType]}` : ''"
                   @click="clickRow(index)" @dblclick="showFlightEdit(index)"><!--  @contextmenu.prevent="tableRowContextmenu(item, $event)" -->
                     <div v-for="other in tableData.otherFields" :key="other.prop" class="body-tr-div" :style="!other.hidden && {width: other.width + 'px'}">
                       <td v-if="!other.hidden" :width="other.width" :class="other.class">
@@ -220,7 +246,7 @@
                   </el-main>
                   <el-footer>
                     <div class="footer-left">
-                      <el-button type="info" plain @click="getDefaultRow()">恢复默认值</el-button>
+                      <el-button type="info" plain @click="queryCustomeColor()">恢复默认值</el-button>
                     </div>
                     <div class="footer-right">
                       <el-button type="info" plain @click="closeDefaultRow()">取消</el-button>
@@ -475,7 +501,9 @@ import wholeTableMixin from '../../components/mixin/flightTableMixin'
 import baseMixin from '../../components/mixin/baseMixin'
 import basicMsgMixin from '../../components/mixin/basicMsgMixin'
 import webSocketMixin from '../../components/mixin/webSocketMixin'
+import {hexify} from '../../util/util.js'
 import {queryAll, postData} from '../../api/base.js'
+import _ from 'lodash'
 
 export default {
   components: {
@@ -681,6 +709,43 @@ export default {
         },
         // 节点详情
         nodeInfo: []
+      },
+      customColor: {
+        visible: false,
+        queryUrl: '/basicdata/sysUserCustom/queryAll',
+        saveUrl: '/basicdata/sysUserCustom/saveAll',
+        focusKey: '',
+        fields: [
+          {key: '4.3', label: '本站'},
+          {key: '4.2', label: '前起'},
+          {key: '4.1', label: '计划'},
+          {key: '2', label: '延误'},
+          {key: '3', label: '取消'},
+          {key: '1', label: '起飞'}
+        ],
+        queryData: {
+          customType: 'DynamicAircraftColor'
+        },
+        colors: [
+            // '3, 191, 153', '61, 166, 204', '136, 147, 255', '230, 103, 187', '230, 80, 105', '253, 145, 72', '253, 207, 83', '94, 133, 149', '223, 253, 121'
+          [
+            '#056D60', '#23617A', '#485793', '#774171', '#773648', '#835638', '#83753D', '#748C50', '#33505E'
+          ],
+          [
+            '#064D49', '#184559', '#2F3F68', '#4B3254', '#4B2B3B', '#523F31', '#525134', '#495F40', '#223B48'
+          ],
+          [
+            '#073237', '#103040', '#1B2D47', '#2C263C', '#292130', '#2F2D2B', '#2F362D', '#2B3D32', '#172B37'
+          ]
+        ],
+        data: {
+          '4.3': '',
+          '4.2': '',
+          '4.1': '',
+          '2': '',
+          '3': '',
+          '1': ''
+        }
       }
     }
   },
@@ -701,6 +766,7 @@ export default {
     this.$store.commit('setOption', 'attr')
     this.options = this.$store.getters.getOption
     const that = this
+    this.queryCustomeColor()
     // this.$nextTick(() => {
       var flightMain = this.$refs['flight-table'].$el.querySelector('.el-main')
       var top1 = flightMain.getBoundingClientRect().top
@@ -721,6 +787,44 @@ export default {
     // document.removeEventListener('click', this.eClick)
   },
   methods: {
+    queryCustomeColor () {
+      queryAll(this.customColor.queryUrl, this.customColor.queryData).then(res => {
+        if (res.data.code == 0) {
+          this.customColor.data = {}
+          res.data.data.forEach(obj => {
+            this.$set(this.customColor.data, obj.confItem, obj.confValue)
+          })
+        } else {
+          this.showError('获取自定义配色', '请重新尝试')
+        }
+      })
+    },
+    saveCustomeColor () {
+      let arr = []
+      for (let key in this.customColor.data) {
+        let data = {}
+        this.$set(data, 'confItem', key)
+        this.$set(data, 'confValue', this.customColor.data[key])
+        this.$set(data, 'customType', this.customColor.queryData.customType)
+        arr.push(data)
+      }
+      postData(this.customColor.saveUrl, arr).then(res => {
+        if (res.data.code == 0) {
+          this.showSuccess('保存自定义配色')
+          this.customColor.visible = false
+        } else {
+          this.showError('保存自定义配色', '请重新尝试')
+        }
+      })
+    },
+    handleCustomColorButton () {
+      this.customColor.visible = !this.customColor.visible
+    },
+    clickColor (color) {
+      if (this.customColor.focusKey) {
+        this.$set(this.customColor.data, this.customColor.focusKey, color)
+      }
+    },
     exportDynamic () {
       switch (this.flightUrlSelect) {
         case 'history': this.exportUrl = 'flight/hisDynamic/exportExcel'

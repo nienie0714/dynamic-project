@@ -187,23 +187,24 @@ export default {
       let arrs = [_.map(data, 'deptId'), _.map(data, 'deptName'), _.map(data, 'deptParentId'), _.map(data, 'phone'), _.map(data, 'remark')]
       let widths = [100, 115, 100, 100, 95]
       this.downloadError(titles, arrs, widths)
+    },
+    handleDeleteConfirm () {
+      this.deleteData.loading = true
+      postData(this.deleteUrl, this.deleteData.data).then(response => {
+        if (response.data.code == 0) {
+          this.showSuccess('删除')
+          this.customMethod()
+          this.queryDataReq(1)
+          this.handleDeleteClose()
+        } else {
+          let msg = response.data.msg ? response.data.msg : '存在约束条件，不可删除'
+          this.showError('删除', msg)
+        }
+        this.deleteData.loading = false
+      }).catch(() => {
+        this.deleteData.loading = false
+      })
     }
-    // handleDeleteConfirm () {
-    //   this.deleteData.loading = true
-    //   postData(this.deleteUrl, this.deleteData.data).then(response => {
-    //     if (response.data.code == 0) {
-    //       this.showSuccess('删除')
-    //       this.customMethod()
-    //       this.queryDataReq(1)
-    //       this.handleDeleteClose()
-    //     } else {
-    //       this.showError('删除', '该部门存在人员')
-    //     }
-    //     this.deleteData.loading = false
-    //   }).catch(() => {
-    //     this.deleteData.loading = false
-    //   })
-    // }
   },
   watch: {
     deptParentId: function (newValue, oldValue) {

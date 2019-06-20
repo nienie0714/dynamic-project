@@ -32,7 +32,30 @@
               <div v-else-if="obj.type == 'arr'">
                 <div class="his-info-title">{{obj.label}}</div>
                 <div class="his-info-cont his-info-arr">
-                  <div v-for="(val, index) in obj.value" :key="index" class="his-info-arr-div">{{val[obj.showKey]}}</div>
+                  <div v-for="(val, index) in obj.value" :key="index" class="his-info-arr-div">
+                    <div>{{val[obj.showKey]}}</div>
+                    <el-popover placement="bottom-start" popper-class="task-reason-popover" :disabled="val[obj.attachments].length <= 0">
+                      <div>
+                        <el-carousel trigger="click" arrow="always" :autoplay="false">
+                          <el-carousel-item v-for="(imgUrl, index) in require('lodash').map(val[obj.attachments], 'attachmentUrl')" :key="index">
+                            <img v-if="imgUrl.split('.')[imgUrl.split('.').length-1] != 'mp4'" :src="dfsUrl + imgUrl" @click="showWinImg(dfsUrl + imgUrl)" style="cursor: pointer;"/>
+                            <video v-else width="240" height="423" controls="controls" autoplay="autoplay">
+                              <source :src="dfsUrl + imgUrl" type="video/mp4" />
+                              <object :data="dfsUrl + imgUrl" width="240" height="423">
+                                <embed width="240" height="423" :src="dfsUrl + imgUrl" />
+                              </object>
+                            </video>
+                          </el-carousel-item>
+                        </el-carousel>
+                        <div v-show="showImg" class="show-img" @click="showImg = false">
+                          <img :src="imgSrc"/>
+                        </div>
+                      </div>
+                      <div class="task-reason-popover-slot" slot="reference">
+                        <div :class="val[obj.attachments].length <= 0 ? 'attachment-gray div-button' : 'attachment-white div-button'"></div>
+                      </div>
+                    </el-popover>
+                  </div>
                 </div>
               </div>
               <div v-else-if="obj.type == 'list'" class="whole-contain">
@@ -131,7 +154,7 @@ export default {
           {key: 'endTimeA', label: '实际结束', type: 'label', formatter: true, span: 6},
           {key: 'costMinute', label: '保障时长/分', type: 'label', span: 6},
           {key: 'alarmFlag', label: '是否超时', type: 'label', span: 6},
-          {key: 'exceptions', label: '异常信息', type: 'arr', showKey: 'exceptionDesc', span: 24},
+          {key: 'exceptions', label: '异常信息', type: 'arr', showKey: 'exceptionDesc', attachments: 'attachments', span: 24},
           {
             key: 'operations',
             label: '详情列表',
@@ -236,7 +259,9 @@ export default {
           {prop: 'alarmFlag', label: '是否超时', fixed: false, hidden: false, optionKey: 'isZOrO', options: [{key: 1, value: '是'}, {key: 0, value: '否'}], width: '85'},
           {prop: 'exception', label: '是否异常', fixed: false, hidden: false, optionKey: 'isTOrF', options: [{key: true, value: '是'}, {key: false, value: '否'}], width: '85'}
         ]
-      }
+      },
+      showImg: false,
+      imgSrc: null
     }
   },
   mounted () {
@@ -250,6 +275,10 @@ export default {
     this.$set(this.queryData, 'end', this.queryList[2].value)
   },
   methods: {
+    showWinImg (src) {
+      this.showImg = true
+      this.imgSrc = src
+    },
     customAfterQuery () {
       this.tableData.data.forEach(item => {
         if (item.teamName) {
@@ -268,9 +297,9 @@ export default {
     handleDetail (row) {
       let that = this
       queryAll('/taskscheduling/hisDynamicTaskRecord/queryTaskDetail', row).then(res => {
-        for (let i = 0; i < this.formData.formData.length; i++) {
-          if (['exceptions', 'operations'].includes(this.formData.formData[i].key)) {
-            this.$set(this.formData.formData[i], 'value', res.data.data[this.formData.formData[i].key])
+        for (let i = 0; i < that.formData.formData.length; i++) {
+          if (['exceptions', 'operations'].includes(that.formData.formData[i].key)) {
+            this.$set(that.formData.formData[i], 'value', res.data.data[that.formData.formData[i].key])
           } else {
             if (['teamName'].includes(that.formData.formData[i].key)) {
               if (res.data.data.task.teamName) {
@@ -313,4 +342,29 @@ export default {
 </script>
 
 <style scope>
+.task-reason-popover-slot {
+  flex-grow: 0;
+  width: 30px;
+  height: 30px;
+  margin-left: 15px;
+  margin-right: 10px;
+}
+.task-reason-popover-slot>div {
+  width: 30px;
+  height: 30px;
+}
+.attachment-gray {
+  background-image: url('../../../assets/img/list_icon_gray.png');
+  width: 30px;
+  height: 30px;
+  padding: 0 !important;
+  cursor: auto;
+}
+.attachment-white {
+  background-image: url('../../../assets/img/list_icon_white.png');
+  width: 30px;
+  height: 30px;
+  padding: 0 !important;
+  cursor: pointer;
+}
 </style>

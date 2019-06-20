@@ -49,6 +49,24 @@ var router = new Router({
       }]
     },
     {
+      path: '/critical-view',
+      component: Home,
+      redirect: to => {
+        return {path: '/critical'}
+      },
+      children: [{
+        path: '/critical',
+        name: '航班放行监控',
+        component: r => require.ensure([], () => r(require('@/view/flight/CriticalFlightView'), 'CriticalFlightView')),
+        beforeEnter: (to, from, next) => {
+          postData('sysconfig/listSysParams', null).then(res => {
+            store.commit('setConfigs', res.data.data)
+            next()
+          })
+        }
+      }]
+    },
+    {
       path: '/tasksched-view',
       component: Home,
       /* redirect: to => {

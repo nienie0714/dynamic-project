@@ -35,7 +35,7 @@
                 <div>{{msgType.type == msgTypeButton[0].key ? item.msgTopic : item.flightNo}}</div>
                 <div v-if="[msgTypeButton[1].key, msgTypeButton[2].key].includes(msgType.type)" class="li-font-task">{{item.taskName}}</div>
                 <div v-if="!item.msgConfirmTime" class="dot-red"></div>
-                <div v-if="msgType.type == msgTypeButton[0].key && ~item.type" class="li-font-show">{{item.type == 0 ? '全部' : (item.type == 1 ? '部门':'科室')}}可见</div>
+                <div v-if="msgType.type == msgTypeButton[0].key && ~item.msgType" class="li-font-show">{{item.msgType == 0 ? '全部' : (item.msgType == 1 ? '部门':'科室')}}可见</div>
               </div>
               <div>
                 <div v-if="msgType.type == msgTypeButton[2].key" class="li-font-gray">{{`来自：${item.empName}`}}</div>
@@ -74,7 +74,7 @@
         <div class="info-flex">
           <div>接收时间：</div>
           <div>{{filterMsgData[msgType.rowSelect].time.substr(0, 16)}}</div>
-          <div v-if="msgType.type == msgTypeButton[0].key && ~filterMsgData[msgType.rowSelect].type" class="li-font-show">{{filterMsgData[msgType.rowSelect].type == 0 ? '全部' : (filterMsgData[msgType.rowSelect].type == 1 ? '部门':'科室')}}可见</div>
+          <div v-if="msgType.type == msgTypeButton[0].key && ~filterMsgData[msgType.rowSelect].msgType" class="li-font-show">{{filterMsgData[msgType.rowSelect].msgType == 0 ? '全部' : (filterMsgData[msgType.rowSelect].msgType == 1 ? '部门':'科室')}}可见</div>
         </div>
         <div class="info-cont">{{filterMsgData[msgType.rowSelect].msgCont}}</div>
       </div>
@@ -1090,7 +1090,8 @@ export default {
                 msgCont: obj['notice_content'],
                 msgSenderName: item.msgSenderName,
                 msgConfirmTime: item.msgConfirmTime,
-                msgUuid: item.msgUuid
+                msgUuid: item.msgUuid,
+                msgType: parseInt(obj['notice_type'])
               }
               break
               case this.msgTypeButton[1].key:

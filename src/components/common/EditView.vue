@@ -24,7 +24,7 @@
             <!-- select下拉框 -->
             <el-select :ref="item.key" v-if="item.type == 'select'" v-model="editData[item.key]" :placeholder="'请选择' + item.label" :disabled="item.disabled" @change="itemChangeHandle(item, item.change)"
             :multiple="item.multiple" :multiple-limit="item.multipleLimit" :filterable="item.filterable" :clearable="item.clearable ? false : true" :default-first-option="item.filterable" :value-key="item.valueKey">
-              <el-option v-for="option in item.options" :key="option.index" :label="typeof(option) != 'object' ? option : option[item.itemLabel]" :value="((typeof(option) != 'object') || item.hasOwnProperty('valueKey')) ? option : (item.hasOwnProperty('itemValue') ? option[item.itemValue] : option[item.itemKey])">
+              <el-option v-for="(option, index) in item.options" :key="index" :label="typeof(option) != 'object' ? option : option[item.itemLabel]" :value="((typeof(option) != 'object') || item.hasOwnProperty('valueKey')) ? option : (item.hasOwnProperty('itemValue') ? option[item.itemValue] : option[item.itemKey])">
                 <span style="float: left">{{ typeof(option) != 'object' ? option : option[item.itemLabel] }}</span>
                 <span v-if="item.hasOwnProperty('itemLabelSpan')" style="float: right; color: #8492a6; font-size: 13px">{{ option[item.itemLabelSpan] }}</span>
               </el-option>

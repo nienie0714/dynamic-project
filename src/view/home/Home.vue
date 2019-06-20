@@ -1,9 +1,9 @@
 <template>
   <div class="body-view">
     <el-container direction="vertical" ref="homeBodyViewContainer">
-      <div class="home-return-main-img" @click="returnMainPage()" v-if="!isMergeView"></div>
+      <div v-if="routerViewName!='航班放行监控'&&!isMergeView" class="home-return-main-img" @click="returnMainPage()"></div>
       <!-- 态势时钟 -->
-      <div class="merge-time-wrapper"  v-if="isMergeView">
+      <div class="merge-time-wrapper" v-if="routerViewName=='航班放行监控' || isMergeView">
         <div class="merge-date">
           <div class="time-rs font-blue">{{latestDate.split('/')[0]}}/{{latestDate.split('/')[1]}}/{{latestDate.split('/')[2]}}</div>
           <div class="time-rs font-blue">星期{{latestWeek}}</div>
@@ -11,7 +11,8 @@
         <div class="merge-time time-st font-blue">{{latestTime}}</div>
       </div>
       <header-view @select="handleHeaderMenu"></header-view>
-      <el-main :class="((routerViewName!='航班查询')&&(routerViewName!='任务调度')&&(routerViewName!='态势分析'))?'home-top-main':''"><!-- ((routerViewName!='态势分析')?'merge-top-main':'') -->
+      <!-- <button v-if="routerViewName!='航班放行监控'" @click="resetRoute()">跳转</button> -->
+      <el-main :class="((routerViewName!='航班查询')&&(routerViewName!='航班放行监控')&&(routerViewName!='任务调度')&&(routerViewName!='态势分析'))?'home-top-main':''"><!-- ((routerViewName!='态势分析')?'merge-top-main':'') -->
         <el-container class="home-container-cent">
           <div v-if="require('lodash').map(this.homeRouterData, 'path').includes(basicPath)" style="display: flex; width: 100%;">
             <Aside-menu-view></Aside-menu-view>
@@ -64,6 +65,9 @@ export default {
     },
     handleHeaderMenu (data) {
       this.$router.push({name: data.key})
+    },
+    resetRoute () {
+      this.$router.push({name: '航班放行监控'})
     }
   },
   watch: {

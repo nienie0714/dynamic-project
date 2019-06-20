@@ -129,6 +129,16 @@ export default {
           } else {
             let data = this.customResBefore(response.data.data)
             this.tableData.data = data
+            // this.customAfterQuery()
+            // setTimeout(() => {
+            //   this.tableData.data = _.sortBy(response.data.data, (value) => {
+            //   if (this.sort.sortData.rule == 'asc') {
+            //     return value[this.sort.sortData.sortKey]
+            //   } else {
+            //     return -value[this.sort.sortData.sortKey]
+            //   }
+            // })
+            // }, 3 * 1000)
           }
         } else {
           this.showError('获取列表数据', '请重新尝试')
@@ -138,6 +148,7 @@ export default {
     customResBefore (data) {
       return data
     },
+    customAfterQuery () {},
     updateTableWidth () {
       var key = this.customOtherFields()
       var otherFieldsWidth = 0
@@ -184,8 +195,10 @@ export default {
       let that = this
       oprTableBody.onscroll = function () {
         var oprTableTop = this.scrollTop
-        document.getElementsByClassName('div-right-table_body')[0].scrollTop = oprTableTop
-        document.getElementsByClassName('div-left-table_body')[0].scrollTop = oprTableTop
+        that.$nextTick(() => {
+          document.getElementsByClassName('div-right-table_body')[0].scrollTop = oprTableTop
+          document.getElementsByClassName('div-left-table_body')[0].scrollTop = oprTableTop
+        })
         if (that.showTaskDivId) {
           let div = document.getElementsByName(that.showTaskDivId)[0].parentElement
           div.style.display = 'none'

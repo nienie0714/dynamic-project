@@ -43,6 +43,7 @@
 
 <script>
 import baseMixin from '../../components/mixin/baseMixin'
+import {flattenDeep} from '@/util/util.js'
 import {queryAll} from '../../api/base.js'
 import _ from 'lodash'
 
@@ -76,7 +77,20 @@ export default {
             // if (name) {
             //   this.$router.push({name: name})
             // } else {
-              this.findActiveIndex(this.asideData)
+              let arr = []
+              flattenDeep(this.asideData, arr)
+              let obj = _.find(arr, ['attributes', this.$route.path])
+              if (obj) {
+                if (obj && obj.hasOwnProperty('children') && obj.children && obj.children.length > 0) {
+                  this.activeIndex = obj.children[0].attributes
+                  this.activeName = obj.children[0].text
+                } else {
+                  this.activeIndex = obj.attributes
+                  this.activeName = obj.text
+                }
+              } else {
+                this.findActiveIndex(this.asideData)
+              }
               this.$router.push(this.activeIndex)
               localStorage.setItem(item.name, this.activeName)
               localStorage.setItem(item.routerName, this.$route.name)
