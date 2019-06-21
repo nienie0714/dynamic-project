@@ -136,7 +136,7 @@ export default {
         key: 'terminalAreaNo',
         multipleSelection: [],
         fields: [
-          {prop: 'terminalAreaNo', label: '区域编号', fixed: false, hidden: false},
+          {prop: 'terminalAreaNo', label: '区域编号', fixed: true, hidden: false},
           {prop: 'category', label: '区域类型', fixed: false, hidden: false, optionKey: 'category'},
           {prop: 'name', label: '区域名称', fixed: false, hidden: false},
           {prop: 'terminalName', label: '航站楼', fixed: false, hidden: false},
@@ -154,7 +154,8 @@ export default {
   methods: {
     downloadErrorExcel (data) {
       let titles = ['区域编号', '区域类型', '区域名称', '航站楼', '是否可用']
-      let arrs = [_.map(data, 'terminalAreaNo'), _.map(data, 'category'), _.map(data, 'name'), _.map(data, 'terminalName'), _.map(data, 'isUseable')]
+      let ynArr = this.retEnumName(_.map(data, 'isUseable'), 'isYOrN')
+      let arrs = [_.map(data, 'terminalAreaNo'), _.map(data, 'category'), _.map(data, 'name'), _.map(data, 'terminalName'), ynArr]
       let widths = [100, 100, 100, 100, 100]
       this.downloadError(titles, arrs, widths)
     }

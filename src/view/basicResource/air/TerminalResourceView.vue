@@ -59,9 +59,9 @@ export default {
         formData: [
           {key: 'resourceId', label: '资源ID', type: 'input', isHidden: true},
           {key: 'resourceNo', label: '资源编号', type: 'input', toUpper: true, maxlength: 20},
-          {key: 'terminalNo', label: '航站楼', type: 'select', filterable: true, getOptions: '/airportResource/terminal/queryAll', itemKey: 'terminalNo', itemLabel: 'name'},
-          {key: 'resourceType', label: '资源类型', type: 'tabs', class: 'auto-width', tabsKey: 'temResourceType'},
           {key: 'attr', label: '属性', type: 'tabs', tabsKey: 'attr'},
+          {key: 'resourceType', label: '资源类型', type: 'tabs', class: 'auto-width', tabsKey: 'temResourceType'},
+          {key: 'terminalNo', label: '航站楼', type: 'select', filterable: true, getOptions: '/airportResource/terminal/queryAll', itemKey: 'terminalNo', itemLabel: 'name', change: this.changeNo},
           {key: 'terminalAreaNo', label: '航站楼区域', type: 'select', getOptions: '/airportResource/terminalArea/queryAll', itemKey: 'terminalAreaNo', itemLabel: 'name'},
           {key: 'sortkey', label: '排序码', type: 'input'},
           {key: 'isUseable', label: '是否可用', type: 'tabs', tabsKey: 'isYOrN'},
@@ -149,10 +149,10 @@ export default {
         key: 'resourceId',
         multipleSelection: [],
         fields: [
-          {prop: 'resourceNo', label: '资源编号', fixed: false, hidden: false},
+          {prop: 'resourceNo', label: '资源编号', fixed: true, hidden: false},
           {prop: 'resourceType', label: '资源类型', fixed: false, hidden: false, optionKey: 'temResourceType'},
-          {prop: 'attr', label: '属性', fixed: false, hidden: false, optionKey: 'attr'},
           {prop: 'terminalName', label: '航站楼', fixed: false, hidden: false},
+          {prop: 'attr', label: '属性', fixed: false, hidden: false, optionKey: 'attr'},
           {prop: 'terminalAreaName', label: '航站楼区域', fixed: false, hidden: false},
           {prop: 'isUseable', label: '是否可用', fixed: false, hidden: false, optionKey: 'isYOrN'}
         ]
@@ -166,9 +166,37 @@ export default {
     }
   },
   methods: {
+    changeNo (value, callback) {
+      let terminalNo = {}
+      if (value) {
+        terminalNo.terminalNo = value
+      } else {
+        terminalNo = null
+      }
+      queryAll('/airportResource/terminalArea/queryAll', terminalNo).then(response => {
+        let terminalAreaNo = {
+          key: 'terminalAreaNo',
+          value: null
+        }
+        if (response.data.code == 0) {
+          for (let i = 0; i < this.formData.formData.length; i++) {
+            if (this.formData.formData[i].key == 'terminalAreaNo') {
+              this.$set(this.formData.formData[i], 'options', response.data.data)
+              callback(terminalAreaNo)
+              return
+            }
+          }
+        } else {
+          callback(terminalAreaNo)
+          return null
+        }
+      })
+    },
     downloadErrorExcel (data) {
       let titles = ['资源编号', '资源类型', '属性', '航站楼', '航站楼区域', '是否可用']
-      let arrs = [_.map(data, 'resourceNo'), _.map(data, 'resourceType'), _.map(data, 'attr'), _.map(data, 'terminalName'), _.map(data, 'terminalAreaName'), _.map(data, 'isUseable')]
+      let attrArr = this.retEnumName(_.map(data, 'attr'), 'attr')
+      let ynArr = this.retEnumName(_.map(data, 'isUseable'), 'isYOrN')
+      let arrs = [_.map(data, 'resourceNo'), _.map(data, 'resourceType'), attrArr, _.map(data, 'terminalName'), _.map(data, 'terminalAreaName'), ynArr]
       let widths = [83, 83, 83, 83, 83, 83]
       this.downloadError(titles, arrs, widths)
     }

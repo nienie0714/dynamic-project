@@ -230,13 +230,44 @@ export default {
       },
       importData: {
         visible: false,
-        uploadUrl: 'stand',
+        uploadUrl: 'aircraftStand',
         fileType: '.xls',
-        fileUrl: '/dataImport/downloadExcel/stand'
+        fileUrl: '/dataImport/downloadExcel/aircraftStand'
       }
     }
   },
   methods: {
+    // 详情
+    handleDetail (row) {
+      for (let i = 0; i < this.formData.formData.length; i++) {
+        if (this.formData.formData[i].type == 'dateRangePicker') {
+          let data = {}
+          this.$set(data, this.formData.formData[i].key1, null)
+          this.$set(data, this.formData.formData[i].key2, null)
+          this.$set(this.formData.formData[i], 'value', data)
+          this.formData.formData[i].value[this.formData.formData[i].key1] = row[this.formData.formData[i].key1]
+          this.formData.formData[i].value[this.formData.formData[i].key2] = row[this.formData.formData[i].key2]
+        } else {
+          if (this.formData.formData[i].key == 'reserved1') {
+            let tmp = []
+            if (row[this.formData.formData[i].key]) {
+              tmp = row[this.formData.formData[i].key].split('')
+            }
+            let arr = []
+            tmp.forEach((value, index) => {
+              if (value == '1') {
+                arr.push(index + 1)
+              }
+            })
+            this.$set(this.formData.formData[i], 'value', arr)
+          } else {
+            this.$set(this.formData.formData[i], 'value', row[this.formData.formData[i].key])
+          }
+        }
+      }
+      this.formData.title = '详情'
+      this.formData.visible = true
+    },
     // 编辑
     handleEdit (row) {
       for (let i = 0; i < this.formData.formData.length; i++) {
@@ -328,8 +359,12 @@ export default {
     },
     downloadErrorExcel (data) {
       let titles = ['机位编号', '属性', '机位等级', '航站楼', '机坪区域', '机位类型', '父机位', '是否廊桥', '是否管道加油', '是否可用']
-      let arrs = [_.map(data, 'standNo'), _.map(data, 'attr'), _.map(data, 'rank'), _.map(data, 'terminalName'), _.map(data, 'apronAreaName'), _.map(data, 'standType'), _.map(data, 'standParent'), _.map(data, 'isBridge'), _.map(data, 'isPipeRefuel'), _.map(data, 'isUseable')]
-      let widths = [60, 60, 66, 66, 66, 66, 66, 60, 60, 60]
+      let attrArr = this.retEnumName(_.map(data, 'attr'), 'attr')
+      let isBridge = this.retEnumName(_.map(data, 'isBridge'), 'isYOrN')
+      let isPipeRefuel = this.retEnumName(_.map(data, 'isPipeRefuel'), 'isYOrN')
+      let isUseable = this.retEnumName(_.map(data, 'isUseable'), 'isYOrN')
+      let arrs = [_.map(data, 'standNo'), attrArr, _.map(data, 'rank'), _.map(data, 'terminalName'), _.map(data, 'apronAreaName'), _.map(data, 'standType'), _.map(data, 'standParent'), isBridge, isPipeRefuel, isUseable]
+      let widths = [80, 60, 66, 95, 95, 66, 66, 70, 70, 70]
       this.downloadError(titles, arrs, widths, null, 'l')
     }
   }

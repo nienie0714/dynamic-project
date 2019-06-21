@@ -139,11 +139,11 @@ export default {
           {prop: 'aircraftTypeId', label: 'id', fixed: true, hidden: true},
           {prop: 'aircraftIcao', label: 'ICAO码', fixed: false, hidden: false},
           {prop: 'aircraftIata', label: 'IATA码', fixed: false, hidden: false},
-          {prop: 'reserved2', label: '最小过站时长/分', fixed: false, hidden: false},
           {prop: 'aircraftClassify', label: '机型分类', fixed: false, hidden: false, optionKey: 'aircraftClassify'},
-          {prop: 'reserved1', label: '是否靠桥', fixed: false, hidden: false, optionKey: 'isYOrN'},
           {prop: 'briefC', label: '中文简称', fixed: false, hidden: false},
-          {prop: 'briefE', label: '英文简称', fixed: false, hidden: false}
+          {prop: 'briefE', label: '英文简称', fixed: false, hidden: false},
+          {prop: 'reserved2', label: '最小过站时长/分', fixed: false, hidden: false},
+          {prop: 'reserved1', label: '是否靠桥', fixed: false, hidden: false, optionKey: 'isYOrN'}
         ]
       },
       airTypeData: {
@@ -230,7 +230,8 @@ export default {
     },
     downloadErrorExcel (data) {
       let titles = ['ICAO码', 'IATA码', '最小过站时长/分', '机型分类', '是否靠桥', '中文简称', '英文简称']
-      let arrs = [_.map(data, 'aircraftIcao'), _.map(data, 'aircraftIata'), _.map(data, 'reserved2'), _.map(data, 'aircraftClassify'), _.map(data, 'reserved1'), _.map(data, 'briefC'), _.map(data, 'briefE')]
+      let ynArr = this.retEnumName(_.map(data, 'reserved1'), 'isYOrN')
+      let arrs = [_.map(data, 'aircraftIcao'), _.map(data, 'aircraftIata'), _.map(data, 'reserved2'), _.map(data, 'aircraftClassify'), ynArr, _.map(data, 'briefC'), _.map(data, 'briefE')]
       let widths = [70, 87, 104, 87, 87, 87, 87]
       this.downloadError(titles, arrs, widths, null, 'l')
     }

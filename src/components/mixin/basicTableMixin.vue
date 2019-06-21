@@ -373,6 +373,24 @@ export default {
     downloadError (titles, arrs, widths, groupSize, direct) {
       exportPDF(null, titles, arrs, widths, this.importData.fileName + '导入失败信息', groupSize || 24, direct)
     },
+    // 导入失败信息:将key改为name
+    retEnumName (oArr, key) {
+      if (oArr.length == 0) {
+        return []
+      }
+      this.$store.commit('setOption', key)
+      let mapArr = this.$store.getters.getOption
+      let nameArr = []
+      _.forEach(oArr, (item, index) => {
+        let i = _.findIndex(mapArr, function (o) { return o.key == item })
+        if (i != -1) {
+          nameArr.push(mapArr[i].value)
+        } else {
+          nameArr.push('')
+        }
+      })
+      return nameArr
+    },
     handleRefresh () {
       this.queryDataReq()
     },

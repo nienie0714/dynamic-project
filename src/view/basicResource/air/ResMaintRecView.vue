@@ -117,8 +117,8 @@ export default {
         key: 'maintenanceId',
         multipleSelection: [],
         fields: [
+          {prop: 'resourceNo', label: '资源编号', fixed: true, hidden: false},
           {prop: 'resourceType', label: '资源类型', fixed: false, hidden: false, optionKey: 'temResourceType'},
-          {prop: 'resourceNo', label: '资源编号', fixed: false, hidden: false},
           {prop: 'startTime', label: '开始时间', fixed: false, hidden: false},
           {prop: 'endTime', label: '结束时间', fixed: false, hidden: false}
         ]

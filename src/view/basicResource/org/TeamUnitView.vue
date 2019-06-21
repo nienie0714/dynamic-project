@@ -72,7 +72,8 @@ export default {
         ],
         rules: {
           unitName: [
-            {required: true, message: '必填项', trigger: 'blur'}
+            {required: true, message: '必填项', trigger: 'blur'},
+            {validator: this.uniqueEdit, trigger: 'blur'}
           ],
           phone: [
             {validator: phoneReg, trigger: 'blur'}

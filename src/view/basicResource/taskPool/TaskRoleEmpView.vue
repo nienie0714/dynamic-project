@@ -124,10 +124,10 @@ export default {
         key: 'empId',
         multipleSelection: [],
         fields: [
+          {prop: 'taskNameStr', label: '任务', fixed: false, hidden: false, overflow: true},
           {prop: 'empName', label: '员工', fixed: true, hidden: false},
           {prop: 'deptName', label: '部门', fixed: true, hidden: false},
-          {prop: 'taskRoleNameStr', label: '任务角色', fixed: true, hidden: false, overflow: true},
-          {prop: 'taskNameStr', label: '任务', fixed: false, hidden: false, overflow: true}
+          {prop: 'taskRoleNameStr', label: '任务角色', fixed: true, hidden: false, overflow: true}
         ]
       }
     }

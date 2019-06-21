@@ -30,7 +30,7 @@ import EditView from '../../../components/common/EditView'
 import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
 import {idReg, sevDotTwoDigit, sixDotSixDigit, threeD, degreePos} from '../../../util/rules.js'
-import {queryAll} from '../../../api/base.js'
+import {queryAll, postData} from '../../../api/base.js'
 import _ from 'lodash'
 
 // const tableHeight = ''
@@ -142,17 +142,35 @@ export default {
       },
       importData: {
         visible: false,
-        uploadUrl: 'airline',
+        uploadUrl: 'terminal',
         fileType: '.xls',
-        fileUrl: '/dataImport/downloadExcel/airline'
+        fileUrl: '/dataImport/downloadExcel/terminal'
       }
     }
   },
   methods: {
+    handleDeleteConfirm () {
+      this.deleteData.loading = true
+      postData(this.deleteUrl, this.deleteData.data).then(response => {
+        if (response.data.code == 0) {
+          this.showSuccess('删除')
+          this.customMethod()
+          this.queryDataReq(1)
+        } else {
+          this.showError('删除', '该航站楼存在关联关系，关联项可能为航站楼区域、航站楼资源、登机口、停机位、机坪区域等')
+        }
+        this.deleteData.visible = false
+        this.deleteData.loading = false
+      }).catch(() => {
+        this.deleteData.loading = false
+      })
+    },
     downloadErrorExcel (data) {
       let titles = ['航站楼编号', '名称', '属性', '是否可用']
-      let arrs = [_.map(data, 'terminalNo'), _.map(data, 'name'), _.map(data, 'attr'), _.map(data, 'isUseable')]
-      let widths = [160, 160, 160, 80]
+      let attrArr = this.retEnumName(_.map(data, 'attr'), 'attr')
+      let ynArr = this.retEnumName(_.map(data, 'isUseable'), 'isYOrN')
+      let arrs = [_.map(data, 'terminalNo'), _.map(data, 'name'), attrArr, ynArr]
+      let widths = [150, 150, 130, 70]
       this.downloadError(titles, arrs, widths)
     }
   }

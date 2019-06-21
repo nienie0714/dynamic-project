@@ -141,7 +141,9 @@ export default {
   methods: {
     downloadErrorExcel (data) {
       let titles = ['区域编号', '属性', '名称', '航站楼', '是否可用']
-      let arrs = [_.map(data, 'apronAreaNo'), _.map(data, 'attr'), _.map(data, 'name'), _.map(data, 'terminalName'), _.map(data, 'isUseable')]
+      let attrArr = this.retEnumName(_.map(data, 'attr'), 'attr')
+      let ynArr = this.retEnumName(_.map(data, 'isUseable'), 'isYOrN')
+      let arrs = [_.map(data, 'apronAreaNo'), attrArr, _.map(data, 'name'), _.map(data, 'terminalName'), ynArr]
       let widths = [100, 115, 100, 100, 95]
       this.downloadError(titles, arrs, widths)
     }

@@ -49,11 +49,13 @@ export default {
         visible: false,
         inline: true,
         className: 'twiceCol',
+        groupEdit: true,
+        groupKey: ['name', 'pids'],
+        groupKeyUrl: 'knowledge/knowledgeTree/checkExist',
         formData: [
           {key: 'ktguid', label: '目录编号', type: 'input', maxlength: 50, isHidden: true},
           {key: 'name', label: '目录名称', type: 'input', maxlength: 100},
           {key: 'pids', label: '父级目录', saveKey: 'pid', type: 'casc', class: 'auto-width', getOptions: '/knowledge/knowledgeTree/queryTree', props: {value: 'id', label: 'text', children: 'children'}},
-          {key: 'sortkey', label: '排序码', type: 'input'},
           {key: 'remark', label: '备注', type: 'textarea', autosize: true, maxlength: 100}
         ],
         rules: {
@@ -62,9 +64,6 @@ export default {
           ],
           pids: [
             {required: true, message: '必填项', trigger: 'change'}
-          ],
-          sortkey: [
-            {validator: threeD, trigger: 'blur'}
           ]
         }
       },
@@ -91,7 +90,7 @@ export default {
         key: 'ktguid',
         multipleSelection: [],
         fields: [
-          {prop: 'name', label: '目录名称', fixed: false, hidden: false},
+          {prop: 'name', label: '目录名称', fixed: true, hidden: false},
           {prop: 'pidName', label: '父级目录', fixed: false, hidden: false}
         ]
       }

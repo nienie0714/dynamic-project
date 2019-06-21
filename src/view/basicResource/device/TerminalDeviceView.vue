@@ -157,7 +157,7 @@ export default {
       },
       importData: {
         visible: false,
-        uploadUrl: 'terminal_device',
+        uploadUrl: 'terminalDevice',
         fileType: '.xls',
         fileUrl: '/dataImport/downloadExcel/terminalDevice'// todo
       }

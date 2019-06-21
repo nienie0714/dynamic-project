@@ -63,10 +63,10 @@ export default {
           {key: 'logSummary', label: '日志类型', type: 'input', maxlength: 50},
           {key: 'logUser', label: '操作用户', type: 'input', maxlength: 10},
           {key: 'logTime', label: '日志时间', type: 'input'},
-          {key: 'logSource', label: '操作来源', type: 'input', maxlength: 100}, // 操作系统名称或客户端地址等
+          {key: 'logSource', label: '日志来源', type: 'input', maxlength: 100}, // 操作系统名称或客户端地址等
           {key: 'createtime', label: '创建时间', type: 'date', format: 'yyyy-MM-dd HH:mm:ss', valueFormat: 'yyyy-MM-dd HH:mm:ss'},
           {key: 'updatetime', label: '修改时间', type: 'date', format: 'yyyy-MM-dd HH:mm:ss', valueFormat: 'yyyy-MM-dd HH:mm:ss'},
-          {key: 'logDetail', label: '日志详细', type: 'textarea', class: 'auto-height', maxlength: 500},
+          {key: 'logDetail', label: '日志详情', type: 'textarea', class: 'auto-height', maxlength: 500},
           {key: 'logSession', label: '登录会话', type: 'textarea', class: 'auto-height', autosize: true, maxlength: 100},
           {key: 'remark', label: '备注', type: 'textarea', class: 'auto-height', autosize: true, maxlength: 100}
         ]
@@ -140,13 +140,12 @@ export default {
         multipleSelection: [],
         fields: [
           {prop: 'logId', label: '日志Id', hidden: true},
-          {prop: 'remark', label: '备注', hidden: false},
-          {prop: 'empName', label: '操作用户', hidden: false},
-          {prop: 'logSummary', label: '日志类型', hidden: false},
-          {prop: 'logSession', label: '登录会话', hidden: false, overflow: true},
-          {prop: 'logSource', label: '操作来源', hidden: false},
-          {prop: 'logDetail', label: '日志详细', hidden: false, width: '350px', overflow: true},
-          {prop: 'logTime', label: '记录时间', hidden: false, formatter: this.formatterDayMin}
+          {prop: 'empName', label: '操作用户', fixed: true, hidden: false},
+          {prop: 'logTime', label: '日志时间', fixed: false, hidden: false, formatter: this.formatterDayMin},
+          {prop: 'logSource', label: '日志来源', fixed: false, hidden: false},
+          {prop: 'logSummary', label: '日志类型', fixed: false, hidden: false},
+          {prop: 'logSession', label: '登录会话', fixed: false, hidden: false, overflow: true},
+          {prop: 'logDetail', label: '日志详情', fixed: false, hidden: false, width: '350px', overflow: true}
         ]
       }
     }

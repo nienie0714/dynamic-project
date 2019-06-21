@@ -30,6 +30,7 @@ import EditView from '../../../components/common/EditView'
 import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
 import {idReg, sevDotTwoDigit, sixDotSixDigit, threeD, degreePos} from '../../../util/rules.js'
+import {queryAll} from '../../../api/base.js'
 import _ from 'lodash'
 // const tableHeight = ''
 
@@ -55,7 +56,7 @@ export default {
         formData: [
           {key: 'gateNo', label: '登机口编号', type: 'input', toUpper: true, maxlength: 20},
           {key: 'attr', label: '属性', type: 'tabs', tabsKey: 'attr', options: []},
-          {key: 'terminalNo', label: '航站楼', type: 'select', filterable: true, getOptions: '/airportResource/terminal/queryAll', itemKey: 'terminalNo', itemLabel: 'name'},
+          {key: 'terminalNo', label: '航站楼', type: 'select', filterable: true, getOptions: '/airportResource/terminal/queryAll', itemKey: 'terminalNo', itemLabel: 'name', change: this.changeNo},
           {key: 'terminalAreaNo', label: '航站楼区域', type: 'select', filterable: true, getOptions: '/airportResource/terminalArea/queryAll', itemKey: 'terminalAreaNo', itemLabel: 'name'},
           {key: 'sortkey', label: '排序码', type: 'input'},
           {key: 'isUseable', label: '是否可用', type: 'tabs', tabsKey: 'isYOrN', options: []},
@@ -147,9 +148,37 @@ export default {
     }
   },
   methods: {
+    changeNo (value, callback) {
+      let terminalNo = {}
+      if (value) {
+        terminalNo.terminalNo = value
+      } else {
+        terminalNo = null
+      }
+      queryAll('/airportResource/terminalArea/queryAll', terminalNo).then(response => {
+        let terminalAreaNo = {
+          key: 'terminalAreaNo',
+          value: null
+        }
+        if (response.data.code == 0) {
+          for (let i = 0; i < this.formData.formData.length; i++) {
+            if (this.formData.formData[i].key == 'terminalAreaNo') {
+              this.$set(this.formData.formData[i], 'options', response.data.data)
+              callback(terminalAreaNo)
+              return
+            }
+          }
+        } else {
+          callback(terminalAreaNo)
+          return null
+        }
+      })
+    },
     downloadErrorExcel (data) {
       let titles = ['登机口编号', '属性', '航站楼', '航站楼区域', '是否可用']
-      let arrs = [_.map(data, 'gateNo'), _.map(data, 'attr'), _.map(data, 'terminalName'), _.map(data, 'terminalAreaName'), _.map(data, 'isUseable')]
+      let attrArr = this.retEnumName(_.map(data, 'attr'), 'attr')
+      let ynArr = this.retEnumName(_.map(data, 'isUseable'), 'isYOrN')
+      let arrs = [_.map(data, 'gateNo'), attrArr, _.map(data, 'terminalName'), _.map(data, 'terminalAreaName'), ynArr]
       let widths = [100, 100, 100, 100, 100]
       this.downloadError(titles, arrs, widths)
     }

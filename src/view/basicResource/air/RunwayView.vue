@@ -116,9 +116,9 @@ export default {
         multipleSelection: [],
         fields: [
           {prop: 'runwayNo', label: '跑道编号', fixed: true, hidden: false},
-          {prop: 'isUseable', label: '是否可用', fixed: false, hidden: false, optionKey: 'isYOrN'},
           {prop: 'nouseSTime', label: '跑道不可用开始时间', fixed: false, hidden: false},
-          {prop: 'nouseETime', label: '跑道不可用结束时间', fixed: false, hidden: false}
+          {prop: 'nouseETime', label: '跑道不可用结束时间', fixed: false, hidden: false},
+          {prop: 'isUseable', label: '是否可用', fixed: false, hidden: false, optionKey: 'isYOrN'}
         ]
       },
       importData: {
@@ -131,9 +131,10 @@ export default {
   },
   methods: {
     downloadErrorExcel (data) {
-      let titles = ['跑道编号', '是否可用', '跑道不可用开始时间', '跑道不可用结束时间']
-      let arrs = [_.map(data, 'runwayNo'), _.map(data, 'isUseable'), _.map(data, 'nouseSTime')]
-      let widths = [125, 125, 125, 125]
+      let titles = ['跑道编号', '是否可用', '不可用开始时间', '不可用结束时间']
+      let ynArr = this.retEnumName(_.map(data, 'isUseable'), 'isYOrN')
+      let arrs = [_.map(data, 'runwayNo'), ynArr, _.map(data, 'nouseSTime'), _.map(data, 'nouseETime')]
+      let widths = [125, 105, 135, 135]
       this.downloadError(titles, arrs, widths)
     }
   }

@@ -56,7 +56,7 @@ export default {
         className: 'twiceCol',
         key: 'cameraNo',
         formData: [
-          {key: 'cameraNo', label: '摄像头编号', type: 'input', maxlength: 30},
+          {key: 'cameraNo', label: '摄像头编号', type: 'input', toUpper: true, maxlength: 30},
           {key: 'cameraCn', label: '摄像头名称', type: 'input', maxlength: 50},
           {key: 'longitude', label: 'X坐标', type: 'input', maxlength: 7},
           {key: 'latitude', label: 'Y坐标', type: 'input', maxlength: 7},

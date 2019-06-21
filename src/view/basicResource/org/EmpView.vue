@@ -68,6 +68,7 @@ export default {
         ], /* {key: 'taskRoleIds', label: '任务角色', type: 'select', multiple: true, class: 'auto-width', getOptions: '/taskbasic/taskRole/queryAll', itemKey: 'taskRoleId', itemLabel: 'name', autosize: true}, */
         rules: {
           reserved2: [
+            {required: true, message: '必填项', trigger: 'blur'},
             {validator: sixNum, trigger: 'blur'},
             {validator: this.uniqueKey, trigger: 'blur'}
           ],
@@ -108,7 +109,7 @@ export default {
           optKey: 'deptId',
           optLabel: 'deptName',
           inputText: '部门',
-          getOptions: '/organization/department/queryAll',
+          getOptions: '/organization/department/queryDeptByEmp',
           span: 4
         }, {
           // 'p': '职务',
@@ -140,11 +141,11 @@ export default {
           {prop: 'empId', label: '员工编号', fixed: true, hidden: true},
           {prop: 'reserved2', label: '员工编号', fixed: false, hidden: false},
           {prop: 'empName', label: '员工姓名', fixed: false, hidden: false},
-          {prop: 'deptName', label: '部门', fixed: false, hidden: false},
-          {prop: 'airportIata', label: '所属机场', fixed: false, hidden: false, optionKey: 'airport'},
-          {prop: 'post', label: '职务', fixed: false, hidden: false, optionKey: 'post'},
           {prop: 'gender', label: '性别', fixed: false, hidden: false, optionKey: 'gender'},
           {prop: 'phone', label: '联系电话', fixed: false, hidden: false},
+          {prop: 'airportIata', label: '所属机场', fixed: false, hidden: false, optionKey: 'airport'},
+          {prop: 'deptName', label: '部门', fixed: false, hidden: false},
+          {prop: 'post', label: '职务', fixed: false, hidden: false, optionKey: 'post'},
           {prop: 'qualification', label: '员工资质', fixed: false, hidden: false}
         ]
       },

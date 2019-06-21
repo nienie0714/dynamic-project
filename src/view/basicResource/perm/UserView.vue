@@ -34,6 +34,7 @@ import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
 import {passwordReg} from '../../../util/rules.js'
 import {postData} from '../../../api/base.js'
+import _ from 'lodash'
 
 // const tableHeight = ''
 
@@ -67,9 +68,10 @@ export default {
         clearRulesKey: ['userName'],
         formData: [
           {key: 'userId', label: '用户ID', isHidden: true},
-          {key: 'userName', label: '用户名称', type: 'input', maxlength: 20},
-          {key: 'empId', label: '员工姓名', type: 'select', filterable: true, getOptions: '/organization/employee/queryUnboundEmp', itemKey: 'empId', itemLabel: 'empName', itemLabelSpan: 'deptName'},
+          {key: 'userName', label: '用户名', type: 'input', maxlength: 20},
+          {key: 'empId', label: '员工姓名', type: 'select', filterable: true, getOptions: '/organization/employee/queryUnboundEmp', itemKey: 'empId', itemLabel: 'empName', itemLabelSpan: 'deptName', change: this.changeEmp},
           {key: 'password', label: '密码', type: 'password', minlength: 6, maxlength: 8},
+          {key: 'deptName', label: '部门', type: 'pInput'},
           {key: 'roleIds', label: '角色', type: 'select', filterable: true, multiple: true, getOptions: '/sys/role/getEnabledAll', itemKey: 'roleId', itemLabel: 'name', autosize: true, class: 'auto-width'}
         ],
         rules: {
@@ -116,7 +118,7 @@ export default {
           filterable: true,
           optKey: 'empId',
           optLabel: 'empName',
-          inputText: '员工',
+          inputText: '员工姓名',
           getOptions: '/organization/employee/queryAll',
           span: 4
         }, {
@@ -234,6 +236,18 @@ export default {
         }
         this.formData.loading = false
       })
+    },
+    changeEmp (value, callback) {
+      let obj = _.find(this.formData.formData[2].options, ['empId', value])
+      let deptName = {
+        key: 'deptName',
+        value: null
+      }
+      if (obj) {
+        deptName.value = obj['deptName']
+      }
+      callback(deptName)
+      return null
     }
   }
 }

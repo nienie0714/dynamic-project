@@ -57,7 +57,6 @@ export default {
           {key: 'code', label: '代码', type: 'textarea', autosize: true, maxlength: 50},
           {key: 'classify', label: '类别', type: 'textarea', autosize: true, maxlength: 50},
           {key: 'name', label: '名称', type: 'textarea', autosize: true, maxlength: 50},
-          {key: 'sortkey', label: '排序码', type: 'input'},
           {key: 'remark', label: '备注', type: 'textarea', class: 'auto-height auto-width', autosize: true, maxlength: 100}
         ],
         rules: {
@@ -69,9 +68,6 @@ export default {
           ],
           name: [
             {required: true, message: '必填项', trigger: 'blur'}
-          ],
-          sortkey: [
-            {validator: threeD, trigger: 'blur'}
           ]
         }
       },

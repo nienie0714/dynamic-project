@@ -34,7 +34,7 @@
               <el-radio-button v-for="option in item.options" :key="option.key" :label="option.key"> {{ option.value }}</el-radio-button>
             </el-radio-group>
             <!-- checkbox复选框 -->
-            <el-checkbox-group v-if="item.type == 'checkbox'" v-model="editData[item.key]">
+            <el-checkbox-group v-if="item.type == 'checkbox'" v-model="editData[item.key]" :disabled="item.disabled">
               <el-checkbox v-for="(option, index) in item.options" :label="typeof(option) != 'object' ? option : option[item.itemKey]" :key="index">{{ typeof(option) != 'object' ? option : option[item.itemLabel] }}</el-checkbox>
             </el-checkbox-group>
             <!-- cascader级联选择器 -->
@@ -337,52 +337,71 @@ export default {
         let count = 0
         let _this = this
         let result = true
-        for (let i = 0; i < _this.formData.groupKey.length; i++) {
-          if (!_this.editData[_this.formData.groupKey[i]]) {
+        let resuleSum = this.formData.groupKey.length
+        for (let i = 0; i < this.formData.groupKey.length; i++) {
+          if (!this.editData[this.formData.groupKey[i]] || this.editData[this.formData.groupKey[i]] == []) {
             result = false
             break
           } else {
-            _this.$set(data, _this.formData.groupKey[i], _this.editData[_this.formData.groupKey[i]])
-            let same = _this.formData.formData.filter((obj) => {
-              return obj.key == _this.formData.groupKey[i]
+            let obj = _.find(this.formData.formData, ['key', this.formData.groupKey[i]])
+            if (obj) {
+              if (_.isEqual(obj.value, this.editData[this.formData.groupKey[i]])) {
+                if (obj.type == 'casc') {
+                  this.$set(data, obj.saveKey || obj.key, this.editData[this.formData.groupKey[i]][this.editData[this.formData.groupKey[i]].length - 1])
+                } else {
+                  this.$set(data, this.formData.groupKey[i], this.editData[this.formData.groupKey[i]])
+                }
+                resuleSum -= 1
+              } else {
+                if (obj.type == 'casc') {
+                  this.$set(data, obj.saveKey || obj.key, this.editData[this.formData.groupKey[i]][this.editData[this.formData.groupKey[i]].length - 1])
+                } else {
+                  this.$set(data, this.formData.groupKey[i], this.editData[this.formData.groupKey[i]])
+                }
+              }
+            }
+            let same = this.formData.formData.filter((obj) => {
+              return obj.key == this.formData.groupKey[i]
             })
-            if (_this.editData[_this.formData.groupKey[i]] != same[0].value) {
+            if (this.editData[this.formData.groupKey[i]] != same[0].value) {
               count++
             }
           }
         }
-        if (count > 0 && result) {
+        if (count > 0 && result && resuleSum) {
           setTimeout(() => {
             queryAll(this.formData.groupKeyUrl, data).then(response => {
               if (response.data.code == 0) {
-                if (response.data.data.length > 0) {
-                  this.formData.groupKey.forEach(item => {
-                    if (item != rule.field) {
-                      for (let x = 0; x < this.$refs['ruleForm'].fields.length; x++) {
-                        if (this.$refs['ruleForm'].$data.fields[x].prop == item) {
-                          this.$refs['ruleForm'].$data.fields[x].validateState = 'error'
-                          this.$refs['ruleForm'].$data.fields[x].validateMessage = '当前组合编号已存在'
-                          break
+                if (response.data.data.hasOwnProperty('exist')) {
+                  if ((response.data.data.hasOwnProperty('exist') && response.data.data.exist > 0) || (!response.data.data.hasOwnProperty('exist') && (response.data.data.length > 0))) {
+                    this.formData.groupKey.forEach(item => {
+                      if (item != rule.field) {
+                        for (let x = 0; x < this.$refs['ruleForm'].fields.length; x++) {
+                          if (this.$refs['ruleForm'].$data.fields[x].prop == item) {
+                            this.$refs['ruleForm'].$data.fields[x].validateState = 'error'
+                            this.$refs['ruleForm'].$data.fields[x].validateMessage = '当前组合编号已存在'
+                            break
+                          }
                         }
                       }
-                    }
-                    /* for (let x = 0; x < this.formData.formData.length; x++) {
-                      if (this.formData.formData[x].key == item) {
-                        this.formData.formData[x].error = '当前组合编号已存在'
-                        break
+                      /* for (let x = 0; x < this.formData.formData.length; x++) {
+                        if (this.formData.formData[x].key == item) {
+                          this.formData.formData[x].error = '当前组合编号已存在'
+                          break
+                        }
+                      } */
+                    })
+                    callback(new Error('当前组合编号已存在'))
+                  } else {
+                    this.formData.groupKey.forEach(item => {
+                      if (item != rule.field) {
+                        this.uniqueCount++
+                        this.$refs['ruleForm'].validateField(item)
                       }
-                    } */
-                  })
-                  callback(new Error('当前组合编号已存在'))
-                } else {
-                  this.formData.groupKey.forEach(item => {
-                    if (item != rule.field) {
-                      this.uniqueCount++
-                      this.$refs['ruleForm'].validateField(item)
-                    }
-                  })
-                  this.uniqueCount = 0
-                  callback()
+                    })
+                    this.uniqueCount = 0
+                    callback()
+                  }
                 }
               } else {
                 callback(new Error('请求失败'))
@@ -646,7 +665,7 @@ export default {
           if (item.key == this.formData.key) {
             this.$set(item, 'disabled', true)
             this.$delete(this.rules, this.formData.key)
-          } else if (this.formData.hasOwnProperty('groupKey')) {
+          } else if (this.formData.hasOwnProperty('groupKey') && !this.formData.hasOwnProperty('groupEdit')) {
             if (this.formData.hasOwnProperty('groupKeyDisabled')) {
               this.formData.groupKeyDisabled.forEach(groupKeyItem => {
                 if (item.key == groupKeyItem) {

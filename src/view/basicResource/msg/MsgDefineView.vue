@@ -62,7 +62,6 @@ export default {
           {key: 'msgTypeSubNo', label: '消息子类型编号', type: 'input', maxlength: 50},
           {key: 'msgTypeSubCn', label: '消息子类型名称', type: 'input', maxlength: 50},
           {key: 'msgPubType', label: '消息发布类型', type: 'tabs', tabsKey: 'msgType', options: []},
-          {key: 'sortkey', label: '排序码', type: 'input'},
           {key: 'remark', label: '备注', type: 'textarea', autosize: true, maxlength: 100}
         ],
         rules: {
@@ -77,9 +76,6 @@ export default {
           ],
           msgTypeSubCn: [
             {required: true, message: '必填项', trigger: 'blur'}
-          ],
-          sortkey: [
-            {validator: threeD, trigger: 'blur'}
           ]
         }
       },

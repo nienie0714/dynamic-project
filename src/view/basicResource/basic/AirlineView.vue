@@ -206,7 +206,8 @@ export default {
     },
     downloadErrorExcel (data) {
       let titles = ['IATA码', 'ICAO码', '属性', '中文简称', '英文简称', '主航空公司']
-      let arrs = [_.map(data, 'airlineIata'), _.map(data, 'airlineIcao'), _.map(data, 'attr'), _.map(data, 'briefC'), _.map(data, 'briefE'), _.map(data, 'mainAirlineCn')]
+      let attrArr = this.retEnumName(_.map(data, 'attr'), 'attr')
+      let arrs = [_.map(data, 'airlineIata'), _.map(data, 'airlineIcao'), attrArr, _.map(data, 'briefC'), _.map(data, 'briefE'), _.map(data, 'mainAirlineCn')]
       let widths = [83, 83, 83, 83, 83, 83]
       this.downloadError(titles, arrs, widths)
     }

@@ -31,6 +31,7 @@ import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
 import {passwordReg} from '../../../util/rules.js'
 import {postData} from '../../../api/base.js'
+import _ from 'lodash'
 
 // const tableHeight = ''
 
@@ -50,9 +51,9 @@ export default {
         export: false
       },
       // 基础路径
-      baseUrl: 'statistics/aomsVehicleStat/queryVehicleAlarmStat',
-      queryUrl: 'statistics/aomsVehicleStat/queryVehicleAlarmStat',
-      exportUrl: '/statistics/aomsVehicleStat/alarmStat/exportExcel',
+      baseUrl: '/statistics/aomsTaskStat/dept',
+      queryUrl: '/statistics/aomsTaskStat/dept',
+      exportUrl: '/statistics/aomsTaskStat/dept/exportExcel',
       formData: {
         title: '详情',
         visible: false,
@@ -72,28 +73,13 @@ export default {
           // 'p': '上线离线',
           key: 'queryType',
           tabsKey: 'queryType',
-          value: null,
+          value: 'day',
           type: 'tabs',
           size: 'medium',
           inputText: '',
-          options: [{
-            key: null,
-            value: '全部'
-          }],
           'valueChange': 'attrChange',
           'span': 5
         },
-        // {
-        //   key: 'vehicleType',
-        //   value: '',
-        //   type: 'select',
-        //   inputText: '车型名称',
-        //   getOptions: '/basicdata/vehicleType/queryAll',
-        //   span: 4,
-        //   optKey: 'vTypeNo',
-        //   optLabel: 'vTypeName',
-        //   filterable: true
-        // },
         {
           key: 'deptName',
           value: '',
@@ -145,8 +131,8 @@ export default {
         // key: 'vehicleId',
         multipleSelection: [],
         fields: [
-          {prop: 'deptId', label: '保障部门', fixed: true, hidden: false},
-          {prop: 'statDate', label: '执行日期', fixed: false, hidden: false, formatter: this.formatterDay},
+          {prop: 'deptName', label: '保障部门', fixed: true, hidden: false},
+          {prop: 'date', label: '执行日期', fixed: false, hidden: false, formatter: this.formatterDay},
           {prop: 'taskCn', label: '任务名称', hidden: false},
           {prop: 'taskTime', label: '任务总时长/分', hidden: false},
           {prop: 'totalFlight', label: '保障航班总量', hidden: false}, // todo
@@ -178,6 +164,32 @@ export default {
       } else {
         return true
       }
+    },
+    customAfterQuery () {
+      this.tableData.data.forEach(item => {
+        let total = 0
+        if (item.endFlight && _.isNumber(item.endFlight)) {
+          total += item.endFlight
+        }
+        if (item.startFlight && _.isNumber(item.endFlight)) {
+          total += item.startFlight
+        }
+        if (item.viaFlight && _.isNumber(item.endFlight)) {
+          total += item.viaFlight
+        }
+        this.$set(item, 'totalFlight', total)
+
+        if (item.statDate) {
+          if (this.queryList[0].value == 'day') {
+           this.$set(item, 'date', item.statDate)
+          }
+        }
+        if (item.statMonth) {
+          if (this.queryList[0].value == 'month') {
+           this.$set(item, 'date', item.statMonth)
+          }
+        }
+      })
     }
   }
 }

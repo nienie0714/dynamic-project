@@ -154,7 +154,10 @@ export default {
   methods: {
     downloadErrorExcel (data) {
       let titles = ['廊桥编号', '登机口编号', '机位编号', '属性', '双桥头标识', '是否可用']
-      let arrs = [_.map(data, 'bridgeNo'), _.map(data, 'gateNo'), _.map(data, 'standNo'), _.map(data, 'attr'), _.map(data, 'isDoubleBridge'), _.map(data, 'isUseable')]
+      let attrArr = this.retEnumName(_.map(data, 'attr'), 'attr')
+      let ynArr = this.retEnumName(_.map(data, 'isUseable'), 'isYOrN')
+      let isDoubleBridge = this.retEnumName(_.map(data, 'isDoubleBridge'), 'isYOrN')
+      let arrs = [_.map(data, 'bridgeNo'), _.map(data, 'gateNo'), _.map(data, 'standNo'), attrArr, isDoubleBridge, ynArr]
       let widths = [82, 82, 82, 82, 82, 82]
       this.downloadError(titles, arrs, widths)
     }

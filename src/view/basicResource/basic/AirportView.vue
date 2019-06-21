@@ -30,7 +30,7 @@ import EditView from '../../../components/common/EditView'
 import basicTableMixin from '../../../components/mixin/basicTableMixin'
 import pageTableMixin from '../../../components/mixin/pageTableMixin'
 import {rdEReg, rthEReg, threeD} from '../../../util/rules.js'
-import {queryAll} from '../../../api/base.js'
+import {queryAll, postData} from '../../../api/base.js'
 import _ from 'lodash'
 
 // const tableHeight = ''
@@ -77,7 +77,8 @@ export default {
           ],
           airportIcao: [
             {required: true, message: '必填项', trigger: 'blur'},
-            {validator: rthEReg, trigger: 'blur'}
+            {validator: rthEReg, trigger: 'blur'},
+            {validator: this.uniqueAirType, trigger: 'blur'}
           ],
           briefC: [
             {required: true, message: '必填项', trigger: 'blur'}
@@ -142,7 +143,8 @@ export default {
           {prop: 'airportIcao', label: '机场ICAO码', fixed: false, hidden: false},
           {prop: 'attr', label: '属性', fixed: false, hidden: false, optionKey: 'attr'},
           {prop: 'briefC', label: '中文简称', fixed: false, hidden: false},
-          {prop: 'briefE', label: '英文简称', fixed: false, hidden: false}/* ,
+          {prop: 'runwayRank', label: '跑道等级', fixed: false, hidden: true}
+          /* {prop: 'briefE', label: '英文简称', fixed: false, hidden: false}
           {prop: 'nameC', label: '中文全称', fixed: false, hidden: false},
           {prop: 'nameE', label: '英文全称', fixed: false, hidden: false} */
         ]
@@ -152,15 +154,62 @@ export default {
         uploadUrl: 'airport',
         fileType: '.xls',
         fileUrl: '/dataImport/downloadExcel/airport'
-      }
+      },
+      airportIcao: ''
     }
   },
   methods: {
+    handleEdit (row) {
+      for (let i = 0; i < this.formData.formData.length; i++) {
+        this.$set(this.formData.formData[i], 'value', row[this.formData.formData[i].key])
+      }
+      this.airportIcao = row.airportIcao
+      this.formData.title = '编辑'
+      this.formData.visible = true
+    },
+    // 唯一性校验
+    uniqueAirType (rule, value, callback) {
+      if (value != '' && value != null) {
+        setTimeout(() => {
+          if (rule.field == 'airportIcao' && value == this.airportIcao) {
+            callback()
+          } else {
+            let key = rule.field
+            let data = {}
+            this.$set(data, rule.field, value)
+            postData(this.baseUrl + '/checkExist', data).then(response => {
+              if (response.data.code == 0 && response.data.data.hasOwnProperty('exist')) {
+                if (response.data.data.exist > 0) {
+                  callback(new Error('当前编号已存在'))
+                } else {
+                  callback()
+                }
+              } else {
+                callback(new Error('请求失败'))
+              }
+            })
+          }
+        }, 200)
+      } else {
+        callback()
+      }
+    },
     downloadErrorExcel (data) {
-      let titles = ['机场IATA码', '机场ICAO码', '属性', '中文简称', '英文简称']
-      let arrs = [_.map(data, 'airportIata'), _.map(data, 'airportIcao'), _.map(data, 'attr'), _.map(data, 'briefC'), _.map(data, 'briefE')]
-      let widths = [100, 100, 100, 100, 100]
+      let titles = ['机场IATA码', '机场ICAO码', '属性', '中文简称', '英文简称', '跑道等级']
+      let attrArr = this.retEnumName(_.map(data, 'attr'), 'attr')
+      let arrs = [_.map(data, 'airportIata'), _.map(data, 'airportIcao'), attrArr, _.map(data, 'briefC'), _.map(data, 'briefE'), _.map(data, 'runwayRank')]
+      let widths = [83, 83, 83, 83, 83, 83]
       this.downloadError(titles, arrs, widths)
+    }
+  },
+  watch: {
+    'formData.visible': {
+      handler (data) {
+        if (!data) {
+          this.airportIcao = ''
+        }
+      },
+      immediate: true
     }
   }
 }

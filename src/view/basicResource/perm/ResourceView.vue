@@ -108,11 +108,11 @@ export default {
         multipleSelection: [],
         fields: [
           {prop: 'name', label: '资源名称', fixed: true, hidden: false},
-          {prop: 'url', label: '资源连接地址', fixed: false, hidden: false},
-          {prop: 'icon', label: '资源图标', fixed: false, hidden: false},
           {prop: 'resourceType', label: '资源类型', fixed: false, hidden: false, optionKey: 'resourceType'},
+          {prop: 'icon', label: '资源图标', fixed: false, hidden: false},
           {prop: 'status', label: '是否启用', fixed: false, hidden: false, optionKey: 'isYOrN'},
-          {prop: 'parentName', label: '父级资源', fixed: false, hidden: false, overflow: true}
+          {prop: 'parentName', label: '父级资源', fixed: false, hidden: false, overflow: true},
+          {prop: 'url', label: '资源连接地址', fixed: false, hidden: false}
         ]
       }
     }

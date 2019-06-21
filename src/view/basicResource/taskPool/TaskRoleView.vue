@@ -117,8 +117,8 @@ export default {
         multipleSelection: [],
         fields: [
           {prop: 'name', label: '任务角色名称', fixed: true, hidden: false},
-          {prop: 'permission', label: '任务角色权限', fixed: true, hidden: false, optionKey: 'taskRolePerm'},
-          {prop: 'taskNameStr', label: '任务', fixed: false, hidden: false, overflow: true}
+          {prop: 'taskNameStr', label: '任务', fixed: false, hidden: false, overflow: true},
+          {prop: 'permission', label: '任务角色权限', fixed: false, hidden: false, optionKey: 'taskRolePerm'}
         ]
       }
     }

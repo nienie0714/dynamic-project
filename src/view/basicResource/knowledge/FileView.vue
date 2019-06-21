@@ -54,6 +54,9 @@ export default {
         visible: false,
         inline: true,
         className: 'twiceCol',
+        groupEdit: true,
+        groupKey: ['name', 'pids'],
+        groupKeyUrl: 'knowledge/knowledgearticle/checkExist',
         formData: [
           {key: 'kaguid', label: '文件编号', type: 'input', maxlength: 50, isHidden: true},
           {key: 'name', label: '文件名称', type: 'input', maxlength: 100},
@@ -101,7 +104,7 @@ export default {
         key: 'kaguid',
         multipleSelection: [],
         fields: [
-          {prop: 'name', label: '文件名称', fixed: false, hidden: false},
+          {prop: 'name', label: '文件名称', fixed: true, hidden: false},
           {prop: 'keywords', label: '关键字', fixed: false, hidden: false},
           {prop: 'pidName', label: '所属目录', fixed: false, hidden: false},
           {prop: 'path', label: '下载文件', type: 'file', fixed: false, hidden: false, name: 'name'}

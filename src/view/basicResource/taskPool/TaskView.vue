@@ -116,7 +116,6 @@ export default {
           {key: 'taskNo', label: '任务编号', type: 'input', maxlength: 20},
           {key: 'taskType', label: '任务类型', type: 'tabs', tabsKey: 'taskType'},
           {key: 'taskCn', label: '任务名称', type: 'input', maxlength: 50},
-          {key: 'sortkey', label: '排序码', type: 'input'},
           {
             key: 'operations',
             label: '',
@@ -158,9 +157,6 @@ export default {
           ],
           taskType: [
             {required: true, message: '必填项', trigger: 'blur'}
-          ],
-          sortkey: [
-            {validator: threeD, trigger: 'blur'}
           ]
         }
       },
@@ -349,11 +345,11 @@ export default {
     },
     // 新增
     handleAdd () {
-      this.$store.commit('setOption', this.formData.formData[4].tabelFields[2].optionKey)
+      this.$store.commit('setOption', this.formData.formData[3].tabelFields[2].optionKey)
       let temp = this.$store.getters.getOption
-      this.$set(this.formData.formData[4].tabelFields[2], 'options', temp)
-      this.$set(this.formData.formData[4], 'isHidden', true)
-      this.formData.formData[4].editIndex = null
+      this.$set(this.formData.formData[3].tabelFields[2], 'options', temp)
+      this.$set(this.formData.formData[3], 'isHidden', true)
+      this.formData.formData[3].editIndex = null
       this.formData.title = '新增'
       this.formData.visible = true
     },
