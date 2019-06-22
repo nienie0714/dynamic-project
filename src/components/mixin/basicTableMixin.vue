@@ -356,17 +356,24 @@ export default {
     // 下载
     handleDownload (total) {
       if (!_.isEmpty(total)) {
-        download(this.exportUrl, this.queryData, total).then(response => {
-          this.showSuccess('导出')
-          this.downFile(response, this.fileName)
-        })
+        if (total) {
+          download(this.exportUrl, this.queryData, total).then(response => {
+            this.showSuccess('导出')
+            this.downFile(response, this.fileName)
+          })
+        } else {
+          this.showError('导出', '当前导出结果为空')
+        }
       } else {
-        console.time('测试导出时间: ')
-        download(this.exportUrl, this.queryData, this.pageData ? this.pageData.total : 1).then(response => {
-          this.showSuccess('导出')
-          this.downFile(response, this.fileName)
-        })
-        console.timeEnd('测试导出时间: ')
+        let sum = this.pageData ? this.pageData.total : 1
+        if (sum) {
+          download(this.exportUrl, this.queryData, sum).then(response => {
+            this.showSuccess('导出')
+            this.downFile(response, this.fileName)
+          })
+        } else {
+          this.showError('导出', '当前导出结果为空')
+        }
       }
     },
     handleImport () {

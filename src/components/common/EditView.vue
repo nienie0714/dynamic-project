@@ -192,7 +192,7 @@ export default {
         typeObj = _this.formData.formData.filter(function (obj) {
           return obj.key == item
         })
-        if (typeObj[0].type == 'select' || typeObj[0].type == 'tabs' || typeObj[0].type == 'casc') {
+        if (typeObj[0].type == 'select' || typeObj[0].type == 'tabs' || typeObj[0].type == 'casc' || typeObj[0].type == 'dateRangePicker') {
           ruleEvent[item] = 'change'
         } else {
           ruleEvent[item] = 'blur'
@@ -345,18 +345,67 @@ export default {
           } else {
             let obj = _.find(this.formData.formData, ['key', this.formData.groupKey[i]])
             if (obj) {
-              if (_.isEqual(obj.value, this.editData[this.formData.groupKey[i]])) {
-                if (obj.type == 'casc') {
-                  this.$set(data, obj.saveKey || obj.key, this.editData[this.formData.groupKey[i]][this.editData[this.formData.groupKey[i]].length - 1])
+              if (obj.type == 'dateRangePicker') {
+                if (obj.required == 1) {
+                  if (this.editData[obj.key1]) {
+                    if (obj.hasOwnProperty('value') && _.isEqual(obj.value[obj.key1], this.editData[obj.key1])) {
+                      this.$set(data, obj.key1, this.editData[obj.key1])
+                      this.$set(data, obj.key2, this.editData[obj.key2])
+                      resuleSum -= 1
+                    } else {
+                      this.$set(data, obj.key1, this.editData[obj.key1])
+                      this.$set(data, obj.key2, this.editData[obj.key2])
+                    }
+                  } else {
+                    result = false
+                    break
+                  }
+                } else if (obj.required == 2) {
+                  if (this.editData[obj.key2]) {
+                    if (obj.hasOwnProperty('value') && _.isEqual(obj.value[obj.key2], this.editData[obj.key2])) {
+                      this.$set(data, obj.key1, this.editData[obj.key1])
+                      this.$set(data, obj.key2, this.editData[obj.key2])
+                      resuleSum -= 1
+                    } else {
+                      this.$set(data, obj.key1, this.editData[obj.key1])
+                      this.$set(data, obj.key2, this.editData[obj.key2])
+                    }
+                  } else {
+                    result = false
+                    break
+                  }
+                } else if (obj.required == 3) {
+                  if (this.editData[obj.key1] && this.editData[obj.key2]) {
+                    if (obj.hasOwnProperty('value') && _.isEqual(obj.value, this.editData[obj.key])) {
+                      this.$set(data, obj.key1, this.editData[obj.key1])
+                      this.$set(data, obj.key2, this.editData[obj.key2])
+                      resuleSum -= 1
+                    } else {
+                      this.$set(data, obj.key1, this.editData[obj.key1])
+                      this.$set(data, obj.key2, this.editData[obj.key2])
+                    }
+                  } else {
+                    result = false
+                    break
+                  }
                 } else {
-                  this.$set(data, this.formData.groupKey[i], this.editData[this.formData.groupKey[i]])
+                  this.$set(data, obj.key1, this.editData[obj.key1])
+                  this.$set(data, obj.key2, this.editData[obj.key2])
                 }
-                resuleSum -= 1
               } else {
-                if (obj.type == 'casc') {
-                  this.$set(data, obj.saveKey || obj.key, this.editData[this.formData.groupKey[i]][this.editData[this.formData.groupKey[i]].length - 1])
+                if (_.isEqual(obj.value, this.editData[this.formData.groupKey[i]])) {
+                  if (obj.type == 'casc') {
+                    this.$set(data, obj.saveKey || obj.key, this.editData[this.formData.groupKey[i]][this.editData[this.formData.groupKey[i]].length - 1])
+                  } else {
+                    this.$set(data, this.formData.groupKey[i], this.editData[this.formData.groupKey[i]])
+                  }
+                  resuleSum -= 1
                 } else {
-                  this.$set(data, this.formData.groupKey[i], this.editData[this.formData.groupKey[i]])
+                  if (obj.type == 'casc') {
+                    this.$set(data, obj.saveKey || obj.key, this.editData[this.formData.groupKey[i]][this.editData[this.formData.groupKey[i]].length - 1])
+                  } else {
+                    this.$set(data, this.formData.groupKey[i], this.editData[this.formData.groupKey[i]])
+                  }
                 }
               }
             }
@@ -505,6 +554,9 @@ export default {
         }
       })
       this.formData.formData.forEach((item, index) => {
+        if (title == '新增') {
+          this.$delete(item, 'value')
+        }
         if (item.type == 'upload' || item.type == 'uploadFile') {
           this.fileItem = JSON.parse(JSON.stringify(item))
           if (this.fileItem.hasOwnProperty('required') && this.fileItem.required) {
