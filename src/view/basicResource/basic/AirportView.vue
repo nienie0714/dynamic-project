@@ -199,7 +199,8 @@ export default {
       let attrArr = this.retEnumName(_.map(data, 'attr'), 'attr')
       let arrs = [_.map(data, 'airportIata'), _.map(data, 'airportIcao'), attrArr, _.map(data, 'briefC'), _.map(data, 'briefE'), _.map(data, 'runwayRank')]
       let widths = [83, 83, 83, 83, 83, 83]
-      this.downloadError(titles, arrs, widths)
+      let newArrs = this.arrExcelFill(arrs)
+      this.downloadError(titles, newArrs, widths)
     }
   },
   watch: {

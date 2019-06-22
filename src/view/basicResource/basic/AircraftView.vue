@@ -181,7 +181,8 @@ export default {
       let titles = ['飞机号', '机型ICAO码', '航空公司', '航空分公司']
       let arrs = [_.map(data, 'aircraftNo'), _.map(data, 'aircraftIcao'), _.map(data, 'airlineName'), _.map(data, 'airlineSubName')]
       let widths = [125, 125, 125, 125]
-      this.downloadError(titles, arrs, widths)
+      let newArrs = this.arrExcelFill(arrs)
+      this.downloadError(titles, newArrs, widths)
     }
   }
 }

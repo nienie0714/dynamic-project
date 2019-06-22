@@ -161,7 +161,8 @@ export default {
       let titles = ['车型名称', '车型简称']
       let arrs = [_.map(data, 'vTypeName'), _.map(data, 'vTypeBrief')]
       let widths = [250, 250]
-      this.downloadError(titles, arrs, widths)
+      let newArrs = this.arrExcelFill(arrs)
+      this.downloadError(titles, newArrs, widths)
     }
   }
 }

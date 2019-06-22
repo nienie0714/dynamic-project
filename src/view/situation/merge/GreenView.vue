@@ -10,7 +10,7 @@
           <div id="greenRate" class="circle"></div>
           <div class="text margin">
             <div class="font-st font-white">当日放行正常率</div>
-            <div class="num-st font-white">{{ data.toRate }}<span class="num-rd">%</span></div>
+            <div class="num-st font-white">{{ data.toRate }}<span class="num-rd">{{data.toRate == '--.--' ? '': '%'}}</span></div>
             <div class="absolute-tag font-rd" v-if="data.toRate != '--.--'" :class="data.toRate >= pecBase ? 'bg-green' : 'bg-yellow'">{{data.toRate  >= pecBase ? '正常' : '偏低'}}</div>
           </div>
         </div>
@@ -133,17 +133,29 @@ export default {
             that.data.tmonTotalRlsFlight = Number.isInteger(tmp.tmonTotalRlsFlight) ? tmp.tmonTotalRlsFlight : '-'
 
             if (Number.isInteger(that.data.tdayRlsFlight) && Number.isInteger(that.data.tdayTotalRlsFlight)) {
-              this.$set(that.data, 'toRate', (that.data.tdayRlsFlight / that.data.tdayTotalRlsFlight * 100).toFixed(2))
+              if (that.data.tdayTotalRlsFlight == 0) {
+                this.$set(that.data, 'toRate', '--.--')
+              } else {
+                this.$set(that.data, 'toRate', (that.data.tdayRlsFlight / that.data.tdayTotalRlsFlight * 100).toFixed(2))
+              }
             } else {
               this.$set(that.data, 'toRate', '--.--')
             }
             if (Number.isInteger(that.data.tmonRlsFlight) && Number.isInteger(that.data.tmonTotalRlsFlight)) {
-              this.$set(that.data, 'ydayRate', (that.data.ydayRlsFlight / that.data.ydayTotalRlsFlight * 100).toFixed(2))
+              if (that.data.ydayTotalRlsFlight == 0) {
+                this.$set(that.data, 'ydayRate', '--.--')
+              } else {
+               this.$set(that.data, 'ydayRate', (that.data.ydayRlsFlight / that.data.ydayTotalRlsFlight * 100).toFixed(2))
+              }
             } else {
               this.$set(that.data, 'ydayRate', '--.--')
             }
             if (Number.isInteger(that.data.tmonRlsFlight) && Number.isInteger(that.data.tmonTotalRlsFlight)) {
-              this.$set(that.data, 'tmonRate', (that.data.tmonRlsFlight / that.data.tmonTotalRlsFlight * 100).toFixed(2))
+              if (that.data.tmonTotalRlsFlight == 0) {
+                this.$set(that.data, 'tmonRate', '--.--')
+              } else {
+                this.$set(that.data, 'tmonRate', (that.data.tmonRlsFlight / that.data.tmonTotalRlsFlight * 100).toFixed(2))
+              }
             } else {
               this.$set(that.data, 'tmonRate', '--.--')
             }

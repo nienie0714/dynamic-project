@@ -159,7 +159,8 @@ export default {
       let isDoubleBridge = this.retEnumName(_.map(data, 'isDoubleBridge'), 'isYOrN')
       let arrs = [_.map(data, 'bridgeNo'), _.map(data, 'gateNo'), _.map(data, 'standNo'), attrArr, isDoubleBridge, ynArr]
       let widths = [82, 82, 82, 82, 82, 82]
-      this.downloadError(titles, arrs, widths)
+      let newArrs = this.arrExcelFill(arrs)
+      this.downloadError(titles, newArrs, widths)
     }
   }
 }

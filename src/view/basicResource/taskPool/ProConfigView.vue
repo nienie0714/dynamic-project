@@ -163,6 +163,7 @@
                             <td v-for="field in scopeTemp.item.tabelFields" :key="field.prop" class="cont-tr-div" :width="field.width">
                               <div v-if="field.prop=='taskTimeType'">{{item[field.prop]=='B'?'开始':(item[field.prop]=='E'?'结束':'无')}}</div>
                               <div v-else-if="field.prop=='reserved1'">{{item[field.prop]=='0'?'无':(item[field.prop]=='1'?'绑定':'解绑')}}</div>
+                              <div v-else-if="field.prop=='refTimeOffset'">{{item[field.prop]}}</div>
                               <div v-else>{{item[field.prop]?item[field.prop]:' '}}</div>
                             </td>
                             <td class="cont-tr-div table-opt-col">

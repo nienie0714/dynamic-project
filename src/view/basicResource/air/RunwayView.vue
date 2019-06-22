@@ -135,7 +135,8 @@ export default {
       let ynArr = this.retEnumName(_.map(data, 'isUseable'), 'isYOrN')
       let arrs = [_.map(data, 'runwayNo'), ynArr, _.map(data, 'nouseSTime'), _.map(data, 'nouseETime')]
       let widths = [125, 105, 135, 135]
-      this.downloadError(titles, arrs, widths)
+      let newArrs = this.arrExcelFill(arrs)
+      this.downloadError(titles, newArrs, widths)
     }
   }
 }

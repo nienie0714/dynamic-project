@@ -365,7 +365,8 @@ export default {
       let isUseable = this.retEnumName(_.map(data, 'isUseable'), 'isYOrN')
       let arrs = [_.map(data, 'standNo'), attrArr, _.map(data, 'rank'), _.map(data, 'terminalName'), _.map(data, 'apronAreaName'), _.map(data, 'standType'), _.map(data, 'standParent'), isBridge, isPipeRefuel, isUseable]
       let widths = [80, 60, 66, 95, 95, 66, 66, 70, 70, 70]
-      this.downloadError(titles, arrs, widths, null, 'l')
+      let newArrs = this.arrExcelFill(arrs)
+      this.downloadError(titles, newArrs, widths, null, 'l')
     }
   }
 }

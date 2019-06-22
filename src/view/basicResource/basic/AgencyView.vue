@@ -58,7 +58,7 @@ export default {
           {key: 'code', label: '代理代码', type: 'input', toUpper: true, maxlength: 10},
           {key: 'briefC', label: '代理中文', type: 'input', maxlength: 20},
           {key: 'briefE', label: '代理英文', type: 'input', maxlength: 20},
-          {key: 'airline', saveKey: 'airline', label: '代理航空公司', type: 'select', filterable: true, multiple: true, getOptions: '/basicdata/airline/queryAll', itemKey: 'airlineIata', itemLabel: 'briefC'},
+          {key: 'airlines', saveKey: 'airline', label: '代理航空公司', type: 'select', filterable: true, multiple: true, getOptions: '/basicdata/airline/queryAll', itemKey: 'airlineIata', itemLabel: 'briefC'},
           {key: 'sortkey', label: '排序码', type: 'input'},
           {key: 'remark', label: '备注', type: 'textarea', autosize: true, maxlength: 100}
         ],
@@ -125,7 +125,7 @@ export default {
           {prop: 'code', label: '代理代码', fixed: true, hidden: false},
           {prop: 'briefC', label: '代理中文', fixed: false, hidden: false},
           {prop: 'briefE', label: '代理英文', fixed: false, hidden: false},
-          {prop: 'airline', label: '代理航空公司', fixed: false, hidden: false} // todo
+          {prop: 'airlineCn', label: '代理航空公司', fixed: false, hidden: false} // todo
         ]
       },
       importData: {
@@ -139,9 +139,10 @@ export default {
   methods: {
     downloadErrorExcel (data) {
       let titles = ['代理代码', '代理中文', '代理英文', '代理航空公司']
-      let arrs = [_.map(data, 'code'), _.map(data, 'briefC'), _.map(data, 'briefE'), _.map(data, 'airline')]
+      let arrs = [_.map(data, 'code'), _.map(data, 'briefC'), _.map(data, 'briefE'), _.map(data, 'airlineCn')]
       let widths = [80, 80, 80, 260]
-      this.downloadError(titles, arrs, widths)
+      let newArrs = this.arrExcelFill(arrs)
+      this.downloadError(titles, newArrs, widths)
     }
   }
 }

@@ -159,7 +159,8 @@ export default {
       let titles = ['状态代码', '状态分类', '中文名称', '英文名称']
       let arrs = [_.map(data, 'statusCode'), _.map(data, 'abnormalFlag'), _.map(data, 'nameC'), _.map(data, 'nameE')]
       let widths = [125, 125, 125, 125]
-      this.downloadError(titles, arrs, widths)
+      let newArrs = this.arrExcelFill(arrs)
+      this.downloadError(titles, newArrs, widths)
     }
   }
 }

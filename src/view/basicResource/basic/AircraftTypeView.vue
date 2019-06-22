@@ -233,7 +233,8 @@ export default {
       let ynArr = this.retEnumName(_.map(data, 'reserved1'), 'isYOrN')
       let arrs = [_.map(data, 'aircraftIcao'), _.map(data, 'aircraftIata'), _.map(data, 'reserved2'), _.map(data, 'aircraftClassify'), ynArr, _.map(data, 'briefC'), _.map(data, 'briefE')]
       let widths = [70, 87, 104, 87, 87, 87, 87]
-      this.downloadError(titles, arrs, widths, null, 'l')
+      let newArrs = this.arrExcelFill(arrs)
+      this.downloadError(titles, newArrs, widths, null, 'l')
     }
   },
   watch: {

@@ -252,8 +252,9 @@ export default {
     downloadErrorExcel (data) {
       let titles = ['车牌号', '车辆类型', '车辆型号', '投运日期', '年审日期', '所属单位', '使用区域', '驾驶资质', '管理状态', '行驶里程(KM)', '加油量(L)', '是否在线']
       let arrs = [_.map(data, 'vehicleNo'), _.map(data, 'vTypeName'), _.map(data, 'vehicleModel'), _.map(data, 'useTime'), _.map(data, 'reviewTime'), _.map(data, 'deptName'), _.map(data, 'permissionArea'), _.map(data, 'licenseType'), _.map(data, 'status'), _.map(data, 'vehicleMileage'), _.map(data, 'fuelAmount'), _.map(data, 'isOnline')]
-      let widths = [60, 35, 55, 60, 60, 66, 45, 45, 66, 55, 55, 45]
-      this.downloadError(titles, arrs, widths, null, 'l')
+      let widths = [60, 50, 55, 60, 60, 66, 45, 45, 66, 55, 55, 45]
+      let newArrs = this.arrExcelFill(arrs)
+      this.downloadError(titles, newArrs, widths, null, 'l')
     }
   }
 }

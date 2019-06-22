@@ -257,7 +257,8 @@ export default {
       let titles = ['设备编号', '设备型号', '设备类型', '生产日期', '配发日期', '版本号', '配发单位', '责任人', '手机号', 'SIM卡序列号(KM)']
       let arrs = [_.map(data, 'deviceNo'), _.map(data, 'deviceModel'), _.map(data, 'deviceType'), _.map(data, 'productionTime'), _.map(data, 'distributionTime'), _.map(data, 'versionNumber'), _.map(data, 'deptName'), _.map(data, 'empName'), _.map(data, 'phoneNumber'), _.map(data, 'simSerialNumber')]
       let widths = [100, 55, 55, 60, 60, 66, 45, 45, 66, 100]
-      this.downloadError(titles, arrs, widths, null, 'l')
+      let newArrs = this.arrExcelFill(arrs)
+      this.downloadError(titles, newArrs, widths, null, 'l')
     }
   }
 }

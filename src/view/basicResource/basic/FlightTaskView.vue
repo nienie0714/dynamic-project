@@ -127,7 +127,8 @@ export default {
       let titles = ['任务代码', '中文简称', '英文简称']
       let arrs = [_.map(data, 'taskCode'), _.map(data, 'briefC'), _.map(data, 'briefE')]
       let widths = [167, 167, 167]
-      this.downloadError(titles, arrs, widths)
+      let newArrs = this.arrExcelFill(arrs)
+      this.downloadError(titles, newArrs, widths)
     }
   }
 }

@@ -148,7 +148,8 @@ export default {
       let titles = ['摄像头编号', '摄像头名称', 'X坐标', 'Y坐标', 'IP地址', '端口', '用户名', '密码']
       let arrs = [_.map(data, 'cameraNo'), _.map(data, 'cameraCn'), _.map(data, 'longitude'), _.map(data, 'latitude'), _.map(data, 'ip'), _.map(data, 'port'), _.map(data, 'username'), _.map(data, 'password')]
       let widths = [160, 65, 55, 60, 60, 66, 60, 60]
-      this.downloadError(titles, arrs, widths, null, 'l')
+      let newArrs = this.arrExcelFill(arrs)
+      this.downloadError(titles, newArrs, widths, null, 'l')
     }
   }
 }

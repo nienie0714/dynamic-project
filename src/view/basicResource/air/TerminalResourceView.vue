@@ -198,7 +198,8 @@ export default {
       let ynArr = this.retEnumName(_.map(data, 'isUseable'), 'isYOrN')
       let arrs = [_.map(data, 'resourceNo'), _.map(data, 'resourceType'), attrArr, _.map(data, 'terminalName'), _.map(data, 'terminalAreaName'), ynArr]
       let widths = [83, 83, 83, 83, 83, 83]
-      this.downloadError(titles, arrs, widths)
+      let newArrs = this.arrExcelFill(arrs)
+      this.downloadError(titles, newArrs, widths)
     }
   }
 }

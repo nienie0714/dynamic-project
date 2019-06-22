@@ -391,6 +391,16 @@ export default {
       })
       return nameArr
     },
+    arrExcelFill (arr) {
+      for (let i = 0; i < arr.length; i++) {
+        for (let j = 0; j < arr[i].length; j++) {
+          if (_.isNull(arr[i][j]) || _.isUndefined(arr[i][j])) {
+            arr[i][j] = ''
+          }
+        }
+      }
+      return arr
+    },
     handleRefresh () {
       this.queryDataReq()
     },

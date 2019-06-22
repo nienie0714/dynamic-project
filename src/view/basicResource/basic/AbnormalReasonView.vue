@@ -144,7 +144,8 @@ export default {
       let titles = ['原因代码', '中文描述', '英文描述', '原因分类']
       let arrs = [_.map(data, 'reasonCode'), _.map(data, 'nameC'), _.map(data, 'nameE'), _.map(data, 'classify')]
       let widths = [125, 125, 125, 125]
-      this.downloadError(titles, arrs, widths)
+      let newArrs = this.arrExcelFill(arrs)
+      this.downloadError(titles, newArrs, widths)
     }
   }
 }
