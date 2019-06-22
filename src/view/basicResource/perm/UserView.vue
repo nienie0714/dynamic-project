@@ -129,6 +129,7 @@ export default {
           filterable: true,
           optKey: 'deptId',
           optLabel: 'deptName',
+          optLabelSpan: 'deptParentName',
           inputText: '部门',
           getOptions: '/organization/department/queryAll',
           span: 4

@@ -248,6 +248,9 @@ export default {
           this.formData.formData[i].value[this.formData.formData[i].key1] = row[this.formData.formData[i].key1]
           this.formData.formData[i].value[this.formData.formData[i].key2] = row[this.formData.formData[i].key2]
         } else {
+          // if (['standLeft', 'standRight', 'standParent'].includes(this.formData.formData[i].key)) {
+          //   this.$set(this.formData.formData[i], 'optionsQuery', {'standNo': row[this.formData.formData[i].key]})
+          // }
           if (this.formData.formData[i].key == 'reserved1') {
             let tmp = []
             if (row[this.formData.formData[i].key]) {
@@ -279,6 +282,9 @@ export default {
           this.formData.formData[i].value[this.formData.formData[i].key1] = row[this.formData.formData[i].key1]
           this.formData.formData[i].value[this.formData.formData[i].key2] = row[this.formData.formData[i].key2]
         } else {
+          // if (['standLeft', 'standRight', 'standParent'].includes(this.formData.formData[i].key)) {
+          //   this.$set(this.formData.formData[i], 'optionsQuery', {'standNo': row[this.formData.formData[i].key]})
+          // }
           if (this.formData.formData[i].key == 'reserved1') {
             let tmp = []
             if (row[this.formData.formData[i].key]) {

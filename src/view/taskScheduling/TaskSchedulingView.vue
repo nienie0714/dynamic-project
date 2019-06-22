@@ -513,7 +513,7 @@
         <div slot="footer" class="dialog-footer">
           <el-button @click="handleTaskButtonClose">取 消</el-button>
           <el-button v-if="taskButtonData.type==1" type="primary" @click="handleTaskButtonSave"
-          :disabled="(taskButtonData.formData.button=='other'&&!taskButtonData.formData.textarea)||taskButtonData.formData.button==''">{{taskButtonData}}确 定</el-button>
+          :disabled="(taskButtonData.formData.button=='other'&&!taskButtonData.formData.textarea)||taskButtonData.formData.button==''">确 定</el-button>
           <el-tooltip v-if="!taskButtonData.refuse&&taskButtonData.type==2" content="提示：提交时间后任务将切换至完成状态，且不可修改！" placement="top-end" popper-class="tasksched dialog-footer-tooltip">
             <el-button type="primary" @click="handleTaskButtonSave" :loading="taskButtonData.outLoading"
             :disabled="

@@ -114,6 +114,7 @@ export default {
           filterable: true,
           optKey: 'deptId',
           optLabel: 'deptName',
+          optLabelSpan: 'deptParentName',
           inputText: '配发单位',
           getOptions: '/organization/department/queryAll',
           span: 4

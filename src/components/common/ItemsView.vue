@@ -16,6 +16,8 @@
         :key="data.optKey?item[data.optKey]:item"
         :label="data.optLabel?item[data.optLabel]:item"
         :value="data.optKey?item[data.optKey]:item">
+          <span style="float: left">{{ typeof(item) != 'object' ? item : item[data.optLabel] }}</span>
+          <span v-if="data.hasOwnProperty('optLabelSpan')" style="float: right; color: #8492a6; font-size: 13px">{{ item[data.optLabelSpan] }}</span>
         </el-option>
       </el-select>
       <!-- 标签按钮 -->

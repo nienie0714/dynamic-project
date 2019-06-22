@@ -361,10 +361,12 @@ export default {
           this.downFile(response, this.fileName)
         })
       } else {
+        console.time('测试导出时间: ')
         download(this.exportUrl, this.queryData, this.pageData ? this.pageData.total : 1).then(response => {
           this.showSuccess('导出')
           this.downFile(response, this.fileName)
         })
+        console.timeEnd('测试导出时间: ')
       }
     },
     handleImport () {
