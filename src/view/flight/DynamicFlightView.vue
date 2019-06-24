@@ -27,7 +27,7 @@
           <div class="ctrl-f-close" @click="handleCtrlFButton()"></div>
           <el-button slot="reference" :class="ctrlFVisible?'open':'close'" type="info" @click="handleCtrlFButton()">定位</el-button>
         </el-popover>
-        <el-popover placement="bottom" trigger="click" v-model="customColor.visible" popper-class="custom-color-popover" width="358">
+        <el-popover v-if="permissions.color" placement="bottom" trigger="click" v-model="customColor.visible" popper-class="custom-color-popover" width="358">
           <div class="custom-color-popover">
             <el-main>
               <div class="opr-popover-all">
@@ -69,7 +69,7 @@
           </div>
           <el-button slot="reference" :class="ctrlFVisible?'open':'close'" type="info" @click="handleCustomColorButton()">自定义配色</el-button>
         </el-popover>
-        <el-button type="info" @click="exportDynamic()">导出</el-button>
+        <el-button v-if="permissions.export" type="info" @click="exportDynamic()">导出</el-button>
         <el-button type="success" @click="queryDataReq(1)">刷新</el-button>
       </div>
     </el-header>
@@ -82,7 +82,7 @@
               <span>
                 <div v-for="item in customColor.fields" :key="item.key" class="dot-font">
                   <div
-                  :style="customColor.data.hasOwnProperty(item.key) ? `background-color: ${customColor.data[item.key]}` : ''"></div>
+                  :style="customColor.data.hasOwnProperty(item.key) ? `background-color: ${customColor.data[item.key]}` : (item.key == 4.3 ? '#3A4879' : (item.key == 4.2 ? '#185D7A' : (item.key == 4.1 ? '#055950' : (item.key == 3 ? '#602D3D' : (item.key == 2 ? '#696034' : '#354852')))))"></div>
                   <span>{{item.label}}</span>
                 </div>
               </span>
@@ -710,6 +710,10 @@ export default {
         // 节点详情
         nodeInfo: []
       },
+      permissions: {
+        export: false,
+        color: false
+      },
       customColor: {
         visible: false,
         queryUrl: '/basicdata/sysUserCustom/queryAll',
@@ -767,21 +771,22 @@ export default {
     this.options = this.$store.getters.getOption
     const that = this
     this.queryCustomeColor()
-    // this.$nextTick(() => {
-      var flightMain = this.$refs['flight-table'].$el.querySelector('.el-main')
-      var top1 = flightMain.getBoundingClientRect().top
-      flightMain.style.height = window.innerHeight - top1 - 20 + 'px'
-      this.wholeMounted(top1)
-      window.onresize = () => {
-        this.$nextTick(() => {
-          return (() => {
-            var top2 = flightMain.getBoundingClientRect().top
-            flightMain.style.height = window.innerHeight - top2 - 20 + 'px'
-            this.wholeMounted(top1)
-          })()
-        })
-      }
-    // })
+    var flightMain = this.$refs['flight-table'].$el.querySelector('.el-main')
+    var top1 = flightMain.getBoundingClientRect().top
+    flightMain.style.height = window.innerHeight - top1 - 20 + 'px'
+    this.wholeMounted(top1)
+    window.onresize = () => {
+      this.$nextTick(() => {
+        return (() => {
+          var top2 = flightMain.getBoundingClientRect().top
+          flightMain.style.height = window.innerHeight - top2 - 20 + 'px'
+          this.wholeMounted(top1)
+        })()
+      })
+    }
+    this.$nextTick(() => {
+      this.queryResourcePerm('/flight-view')
+    })
   },
   destroyed () {
     // document.removeEventListener('click', this.eClick)

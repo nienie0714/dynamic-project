@@ -60,7 +60,7 @@ export default {
           {key: 'rank', label: '机位等级', type: 'tabs', tabsKey: 'rank'},
           {key: 'terminalNo', label: '航站楼', type: 'select', filterable: true, getOptions: '/airportResource/terminal/queryAll', itemKey: 'terminalNo', itemLabel: 'name'},
           {key: 'apronAreaNo', label: '机坪区域', type: 'select', filterable: true, getOptions: '/airportResource/apronArea/queryAll', itemKey: 'apronAreaNo', itemLabel: 'name'},
-          {key: 'standParent', label: '父机位', type: 'select', filterable: true, getOptions: '/airportResource/aircraftStand/queryAllForLeftRightStand', itemKey: 'standNo', itemLabel: 'standNo'},
+          {key: 'standParent', label: '父机位', type: 'select', filterable: true, getOptions: '/airportResource/aircraftStand/queryAll', itemKey: 'standNo', itemLabel: 'standNo', optionsQuery: {}},
           {key: 'standType', label: '机位类型', type: 'tabs', tabsKey: 'standType', class: 'auto-width'},
           {key: 'isBridge', label: '是否廊桥', type: 'tabs', tabsKey: 'isYOrN'},
           {key: 'isPipeRefuel', label: '是否管道加油', type: 'tabs', tabsKey: 'isYOrN'},
@@ -233,6 +233,22 @@ export default {
         uploadUrl: 'aircraftStand',
         fileType: '.xls',
         fileUrl: '/dataImport/downloadExcel/aircraftStand'
+      }
+    }
+  },
+  mounted () {
+    // optionsQuery: {standType: 'P'}
+    this.$store.commit('setOption', 'standType')
+    let arr = this.$store.getters.getOption
+    let standFather = ''
+    _.forEach(arr, item => {
+      if (item.value == '组合父机位') {
+        standFather = item.key
+      }
+    })
+    for (let i = 0; i < this.formData.formData.length; i++) {
+      if (this.formData.formData[i].key == 'standParent') {
+        this.$set(this.formData.formData[i], 'optionsQuery', {standType: standFather})
       }
     }
   },

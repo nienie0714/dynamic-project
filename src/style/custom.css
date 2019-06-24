@@ -419,7 +419,7 @@ input[type="number"] {
   float: left;
 }
 .flight-contain .query-contain .left {
-  width: calc(100% - 660px);
+  width: calc(100% - 765px);
 }
 .tasksched-contain .query-contain .left {
   width: calc(100% - 684px);

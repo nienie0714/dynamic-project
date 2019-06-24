@@ -183,7 +183,7 @@
                 </span>
               </div>
               <div class="table-header-button">
-                <div class="ctrl-f-query" @click="resetMarkLine"></div>
+                <div class="ctrl-f-query" v-if="flightGanttSelect == 'gantt'" @click="resetMarkLine"></div>
                 <el-radio-group v-model="flightGanttSelect" size="small" @change="changeFlightGanttSelect">
                   <el-radio-button label="gantt">保障甘特图</el-radio-button>
                   <el-radio-button label="table">任务列表</el-radio-button>

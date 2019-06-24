@@ -1883,25 +1883,29 @@ export default {
       }
       postData(this.taskMsg.applyUrl, data).then(res => {
         if (res.data.code == 0) {
-          if (index == this.taskMsg.data.length - 1) {
-            if (index > 0) {
-              this.taskMsg.index -= 1
-            }
-          }
-          this.taskMsg.data.splice(index, 1)
         } else {
-          this.showError('任务申请处理', '请重新尝试 !')
+          this.showError('任务申请处理', res.data.msg)
         }
+        if (index == this.taskMsg.data.length - 1) {
+          if (index > 0) {
+            this.taskMsg.index -= 1
+          }
+        }
+        this.taskMsg.data.splice(index, 1)
+      }).catch(() => {
+        this.showError('任务申请处理', '请求异常')
       })
     },
     msgTaskApplyAll (flag) {
       postData(this.taskMsg.applyAllUrl, {}).then(res => {
         if (res.data.code == 0) {
-          this.taskMsg.index = 0
-          this.taskMsg.data.splice(0, this.taskMsg.data.length)
         } else {
           this.showError('任务申请全部拒绝', '请重新尝试 !')
         }
+        this.taskMsg.index = 0
+        this.taskMsg.data.splice(0, this.taskMsg.data.length)
+      }).catch(() => {
+        this.showError('任务申请处理', '请求异常')
       })
     }
   },

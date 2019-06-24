@@ -58,9 +58,8 @@ export default {
           {key: 'code', label: '代理代码', type: 'input', toUpper: true, maxlength: 10},
           {key: 'briefC', label: '代理中文', type: 'input', maxlength: 20},
           {key: 'briefE', label: '代理英文', type: 'input', maxlength: 20},
-          {key: 'airlines', saveKey: 'airline', label: '代理航空公司', type: 'select', filterable: true, multiple: true, getOptions: '/basicdata/airline/queryAll', itemKey: 'airlineIata', itemLabel: 'briefC'},
-          {key: 'sortkey', label: '排序码', type: 'input'},
-          {key: 'remark', label: '备注', type: 'textarea', autosize: true, maxlength: 100}
+          {key: 'remark', label: '备注', type: 'textarea', autosize: true, maxlength: 100},
+          {key: 'airlines', saveKey: 'airline', label: '代理航空公司', type: 'select', filterable: true, multiple: true, getOptions: '/basicdata/airline/queryAll', itemKey: 'airlineIata', itemLabel: 'briefC'}
         ],
         rules: {
           code: [
@@ -70,9 +69,6 @@ export default {
           ],
           briefC: [
             {required: true, message: '必填项', trigger: 'blur'}
-          ],
-          sortkey: [
-            {validator: threeD, trigger: 'blur'}
           ]
         }
       },

@@ -74,7 +74,8 @@
               <el-button slot="trigger" type="primary">选取图标</el-button>
               <div class="file-content">
                 <img v-if="fileList.length>0" :src="fileList[fileList.length-1].url">
-                <img v-else :src="dfsUrl + editData[item.key]">
+                <!-- <img v-else :src="dfsUrl + editData[item.key]"> -->
+                <img v-if="fileList.length<=0 && formData.title=='编辑'" :src="dfsUrl + editData[item.key]">
               </div>
               <el-progress v-if="showProgress" :percentage="progress"></el-progress>
             </el-upload>
@@ -662,6 +663,10 @@ export default {
                 }
               }
             })
+          } else {
+            if (item.options && (item.options.length > 0) && item.default) {
+              this.editData[item.key] = item.hasOwnProperty('itemKey') ? item.options[0][item.itemKey] : item.options[0]
+            }
           }
         } else if (item.type == 'dateRangePicker') {
           switch (title) {

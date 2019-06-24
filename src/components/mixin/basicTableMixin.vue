@@ -95,9 +95,12 @@ export default {
     // 自定义追加查询条件（按钮查询事件）
     customQueryMethod () {},
     // 获取按钮权限
-    queryResourcePerm () {
+    queryResourcePerm (path) {
       let data = {
         keyPath: this.$route.path
+      }
+      if (path) {
+        data.keyPath = path
       }
       let _this = this
       queryAll(this.getResourcePerm, data).then(res => {

@@ -61,7 +61,7 @@ export default {
           {key: 'gender', label: '性别', type: 'tabs', tabsKey: 'gender'},
           {key: 'phone', label: '联系电话', type: 'input', maxlength: 15},
           {key: 'parentDeptIds', label: '部门', saveKey: 'deptId', type: 'casc', class: 'auto-width', getOptions: '/organization/department/queryDeptTreeByUserId', props: {value: 'id', label: 'text', children: 'children'}, options: []},
-          {key: 'airportIata', label: '所属机场', type: 'select', filterable: true, tabsKey: 'airport', itemKey: 'key', itemLabel: 'value'},
+          {key: 'airportIata', label: '所属机场', type: 'select', filterable: true, tabsKey: 'airport', itemKey: 'key', itemLabel: 'value', default: true},
           {key: 'post', label: '职务', type: 'select', filterable: true, tabsKey: 'post', itemKey: 'key', itemLabel: 'value'},
           {key: 'qualification', label: '员工资质', type: 'textarea', autosize: true, maxlength: 50},
           {key: 'remark', label: '备注', type: 'textarea', autosize: true, maxlength: 100}
