@@ -507,7 +507,7 @@ export default {
               }
             },
             data: [
-              {value: this.data.pUsed, name: '预占用', itemStyle: {color: '#03A786', borderColor: '#071622', borderWidth: 2}}
+              {value: this.data.pUsed, name: '预占用', itemStyle: {color: '#03A786', borderColor: '#071622', borderWidth: 0}}
             ]
           }
         ]
