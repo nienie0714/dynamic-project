@@ -167,6 +167,34 @@ export default {
         callback()
       }
     },
+    // 唯一性校验名称
+    uniqueName (rule, value, callback) {
+      if (value != '' && value != null) {
+        var index = _.findIndex(this.formData.formData, ['key', rule.field])
+        if (this.formData.formData[index].hasOwnProperty('value') && this.formData.formData[index].value != value) {
+          let key = rule.field
+          let data = {}
+          this.$set(data, rule.field, value)
+          postData(this.baseUrl + '/checkExist', data).then(response => {
+            if (response.data.code == 0 && response.data.data.hasOwnProperty('exist')) {
+              if (response.data.data.exist > 0) {
+                callback(new Error('当前名称已存在'))
+              } else {
+                callback()
+              }
+            } else {
+              callback(new Error('请求失败'))
+            }
+          })
+        } else if (!this.formData.formData[index].hasOwnProperty('value')) {
+          this.unique(rule, value, callback)
+        } else {
+          callback()
+        }
+      } else {
+        callback()
+      }
+    },
     // 唯一性校验
     uniqueKey (rule, value, callback) {
       if (value != '' && value != null) {
@@ -361,7 +389,6 @@ export default {
       if (!_.isEmpty(total)) {
         if (total) {
           download(this.exportUrl, this.queryData, total).then(response => {
-            this.showSuccess('导出')
             this.downFile(response, this.fileName)
           })
         } else {
@@ -371,7 +398,6 @@ export default {
         let sum = this.pageData ? this.pageData.total : 1
         if (sum) {
           download(this.exportUrl, this.queryData, sum).then(response => {
-            this.showSuccess('导出')
             this.downFile(response, this.fileName)
           })
         } else {
@@ -465,7 +491,7 @@ export default {
       if (fileType) {
         type = fileType
       } else {
-        type = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        type = 'application/vnd.ms-excel'
       }
       var blob = new Blob([data], { type: type })
       var objectUrl = URL.createObjectURL(blob)

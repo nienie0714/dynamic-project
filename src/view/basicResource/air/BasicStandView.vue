@@ -60,7 +60,7 @@ export default {
           {key: 'rank', label: '机位等级', type: 'tabs', tabsKey: 'rank'},
           {key: 'terminalNo', label: '航站楼', type: 'select', filterable: true, getOptions: '/airportResource/terminal/queryAll', itemKey: 'terminalNo', itemLabel: 'name'},
           {key: 'apronAreaNo', label: '机坪区域', type: 'select', filterable: true, getOptions: '/airportResource/apronArea/queryAll', itemKey: 'apronAreaNo', itemLabel: 'name'},
-          {key: 'standParent', label: '父机位', type: 'select', filterable: true, getOptions: '/airportResource/aircraftStand/queryAll', itemKey: 'standNo', itemLabel: 'standNo', optionsQuery: {}},
+          {key: 'standParent', label: '父机位', type: 'select', filterable: true, getOptions: '/airportResource/aircraftStand/queryParentStand', itemKey: 'standNo', itemLabel: 'standNo', optionsQuery: {}},
           {key: 'standType', label: '机位类型', type: 'tabs', tabsKey: 'standType', class: 'auto-width'},
           {key: 'isBridge', label: '是否廊桥', type: 'tabs', tabsKey: 'isYOrN'},
           {key: 'isPipeRefuel', label: '是否管道加油', type: 'tabs', tabsKey: 'isYOrN'},
@@ -233,6 +233,9 @@ export default {
         uploadUrl: 'aircraftStand',
         fileType: '.xls',
         fileUrl: '/dataImport/downloadExcel/aircraftStand'
+      },
+      optionsQuery: {
+        standType: null
       }
     }
   },
@@ -240,15 +243,14 @@ export default {
     // optionsQuery: {standType: 'P'}
     this.$store.commit('setOption', 'standType')
     let arr = this.$store.getters.getOption
-    let standFather = ''
     _.forEach(arr, item => {
       if (item.value == '组合父机位') {
-        standFather = item.key
+        this.optionsQuery.standType = item.key
       }
     })
     for (let i = 0; i < this.formData.formData.length; i++) {
       if (this.formData.formData[i].key == 'standParent') {
-        this.$set(this.formData.formData[i], 'optionsQuery', {standType: standFather})
+        this.$set(this.formData.formData[i], 'optionsQuery', this.optionsQuery)
       }
     }
   },
@@ -333,8 +335,10 @@ export default {
     tableChange (data) {
       if (data.currentRow) {
         for (let i = 0; i < this.formData.formData.length; i++) {
-          if (['standLeft', 'standRight', 'standParent'].includes(this.formData.formData[i].key)) {
+          if (['standLeft', 'standRight'].includes(this.formData.formData[i].key)) {
             this.$set(this.formData.formData[i], 'optionsQuery', {'standNo': data.currentRow.standNo})
+          } else if (['standParent'].includes(this.formData.formData[i].key)) {
+            this.$set(this.formData.formData[i], 'optionsQuery', {'standNo': data.currentRow.standNo, 'standType': this.optionsQuery.standType})
           }
         }
       }
@@ -345,6 +349,8 @@ export default {
         if (['standLeft', 'standRight'].includes(this.formData.formData[i].key)) {
           let data = {}
           this.$set(this.formData.formData[i], 'optionsQuery', data)
+        } else if (['standParent'].includes(this.formData.formData[i].key)) {
+          this.$set(this.formData.formData[i], 'optionsQuery', this.optionsQuery)
         }
       }
       this.formData.title = '新增'
@@ -363,9 +369,10 @@ export default {
           queryAll('/airportResource/aircraftStand/queryAllForLeftRightStand', {'standNo': value}).then(res => {
             if (res.data.code == 0) {
               for (let i = 0; i < this.formData.formData.length; i++) {
-                if (this.formData.formData[i].key == 'standParent') {
-                  this.$set(this.formData.formData[i], 'options', response.data.data)
-                } else if (['standLeft', 'standRight'].includes(this.formData.formData[i].key)) {
+                // if (this.formData.formData[i].key == 'standParent') {
+                //   this.$set(this.formData.formData[i], 'options', response.data.data)
+                // } else
+                if (['standLeft', 'standRight'].includes(this.formData.formData[i].key)) {
                   this.$set(this.formData.formData[i], 'options', res.data.data)
                 }
               }

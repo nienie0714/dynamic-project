@@ -42,7 +42,8 @@
                         <div>{{item.label}}</div>
                         <div
                         @click="customColor.focusKey = (customColor.focusKey == item.key) ? '' : item.key">
-                          <div :style="customColor.data[item.key] ? `background-color: ${customColor.data[item.key]}` : ''">点击编辑颜色</div>
+                          <div
+                          :style="`background-color: ${customColor.data.hasOwnProperty(item.key) ? customColor.data[item.key] : ((item.key == '4.3') ? '#3A4879' : ((item.key == '4.2') ? '#185D7A' : ((item.key == '4.1') ? '#055950' : ((item.key == '3') ? '#602D3D' : ((item.key == '2') ? '#696034' : '#354852')))))}`">点击编辑颜色</div>
                         </div>
                       </li>
                     </ul>
@@ -82,7 +83,7 @@
               <span>
                 <div v-for="item in customColor.fields" :key="item.key" class="dot-font">
                   <div
-                  :style="customColor.data.hasOwnProperty(item.key) ? `background-color: ${customColor.data[item.key]}` : (item.key == 4.3 ? '#3A4879' : (item.key == 4.2 ? '#185D7A' : (item.key == 4.1 ? '#055950' : (item.key == 3 ? '#602D3D' : (item.key == 2 ? '#696034' : '#354852')))))"></div>
+                  :style="`background-color: ${customColor.data.hasOwnProperty(item.key) ? customColor.data[item.key] : ((item.key == '4.3') ? '#3A4879' : ((item.key == '4.2') ? '#185D7A' : ((item.key == '4.1') ? '#055950' : ((item.key == '3') ? '#602D3D' : ((item.key == '2') ? '#696034' : '#354852')))))}`"></div>
                   <span>{{item.label}}</span>
                 </div>
               </span>
@@ -151,7 +152,7 @@
               </div>
             </div>
             <div class="div-right-table_body" :style="divTableBodyStyle" @mousewheel="scrollEvent">
-              <table cellpadding="0" cellspacing="0" class="right-table_body_block">
+              <table cellpadding="0" cellspacing="0" class="right-table_body_block" :style="rightTableBlockWidthStyle">
                 <tbody>
                   <tr v-for="(item, index) in tableData.data" :key="index" :class="[tableRowClassName({'row': item, 'rowIndex': index}), tableClickRowClass[index]?'is-active':'']"
                   :style="customColor.data.hasOwnProperty(item.colourType) ? `background-color: ${customColor.data[item.colourType]}` : ''"
@@ -593,7 +594,7 @@ export default {
           value: '全部'
         }],
         'valueChange': 'attrChange',
-        'span': 6
+        'span': 7
       }, {
         // 'span': '日期',
         key: 'execDateFlag',

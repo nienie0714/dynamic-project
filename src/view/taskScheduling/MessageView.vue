@@ -650,6 +650,7 @@ export default {
       taskMsg: {
         applyUrl: '/taskscheduling/taskApply/save',
         applyAllUrl: '/taskscheduling/taskApply/saveAll',
+        queryUrl: '/taskscheduling/taskApply/queryApplyTaskVO',
         type: 'apply',
         subtype: 'apply.feedback.',
         index: 0,
@@ -672,6 +673,22 @@ export default {
           this.basicData.basicRooter = res.data.data
         }
       })
+    })
+    postData(this.taskMsg.queryUrl, {}).then(res => {
+      if (res.data.code == 0) {
+        if (res.data.data && res.data.data.length > 0) {
+          res.data.data.forEach(msg => {
+            let temp = {
+              // time: `${this.latestDate.replace(/\//g, '-')} ${this.latestTime}`,
+              dynamicTaskApplyId: msg.dynamicTaskApplyId,
+              flightNo: msg.flightNo,
+              taskCn: msg.taskCn,
+              empName: msg.empName
+            }
+            this.taskMsg.data.push(temp)
+          })
+        }
+      }
     })
     this.styleCenter('contTalkStyle', 600, 500)
     this.styleCenter('contTaskStyle', 600, 250)
@@ -743,7 +760,7 @@ export default {
               time: `${this.latestDate.replace(/\//g, '-')} ${this.latestTime}`,
               msgTopic: msg['notice_topic'],
               msgCont: msg['notice_content'],
-              type: msg['notice_type'],
+              msgType: msg['notice_type'],
               msgConfirmTime: null,
               msgUuid: data['msg_id']
             }

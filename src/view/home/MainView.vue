@@ -287,4 +287,7 @@ export default {
 .card-user {
   background: url('../../assets/img/icon_usr_photo.png');
 }
+.card-situat {
+  background: url('../../assets/img/icon_entrance_analysis.png');
+}
 </style>

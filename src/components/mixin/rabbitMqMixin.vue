@@ -32,7 +32,7 @@ export default {
       this.client = Stomp.over(ws)
       this.client.heartbeat.outgoing = 20000
       this.client.heartbeat.incoming = 0
-      this.client.debug = null
+      // this.client.debug = null
       this.client.connect('aoms', 'aoms', this.onConnect, this.onError, '/aoms')
     },
     onConnect (x) {

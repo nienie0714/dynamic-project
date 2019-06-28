@@ -35,7 +35,8 @@ export default {
         width: '0px'
       },
       rightTableBlockWidthStyle: {
-        width: '0px'
+        width: '100%',
+        left: '0'
       },
       // table的body样式
       divTableBodyStyle: {
@@ -114,13 +115,14 @@ export default {
       if (status != 1) {
         this.getQueryData()
       }
+      let qdata = this.customQueryBefore(this.queryData)
       this.customQueryMethod()
       this.axiosArr.push({
         url: this.queryUrl,
         method: 'post',
-        data: this.queryData
+        data: qdata
       })
-      postData(this.queryUrl, this.queryData).then(response => {
+      postData(this.queryUrl, qdata).then(response => {
         this.tableData.loading = false
         if (response.data.code == 0) {
           if (response.data.data.hasOwnProperty('rows')) {
@@ -145,6 +147,9 @@ export default {
         }
       })
     },
+    customQueryBefore (data) {
+      return data
+    },
     customResBefore (data) {
       return data
     },
@@ -158,6 +163,8 @@ export default {
         }
       })
       this.rightTableWidthStyle.width = otherFieldsWidth + 'px'
+      this.rightTableBlockWidthStyle.width = 'calc(100% - ' + otherFieldsWidth + 'px)'
+      this.rightTableBlockWidthStyle.left = otherFieldsWidth + 'px'
       let leftWidth = 0
       this.tableData.fields.forEach(item => {
         if (!item.hidden) {
@@ -501,6 +508,8 @@ export default {
           }
         })
         this.rightTableWidthStyle.width = otherFieldsWidth + 'px'
+        this.rightTableBlockWidthStyle.left = otherFieldsWidth + 'px'
+        this.rightTableBlockWidthStyle.width = 'calc(100% - ' + otherFieldsWidth + 'px)'
       }
       this.oprPopoverDirect = sign
       this.oprPopoverIndex = index
@@ -534,7 +543,7 @@ export default {
         this.tableData.fields.splice(this.leftAutoNum, 0, field)
         this.oprPopoverIndex = this.leftAutoNum
       } else if (sign == 'right' && index > 0) {
-        if (this.rightAutoNum && (index > this.rightAutoNum)) {
+        if (this.rightAutoNum && (index >= this.rightAutoNum)) {
           let key = this.customOtherFields()
           this.tableData[key].splice(index, 1)
           this.tableData[key].splice(this.rightAutoNum, 0, field)

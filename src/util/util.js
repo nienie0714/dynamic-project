@@ -128,3 +128,12 @@ export function hexify (color) {
     ('0' + g.toString(16)).slice(-2) +
     ('0' + b.toString(16)).slice(-2)
 }
+
+export function objKeySort (arys) {
+  var newkey = Object.keys(arys).sort()
+  var newObj = {}
+  for (var i = 0; i < newkey.length; i++) {
+      newObj[newkey[i]] = arys[newkey[i]]
+  }
+  return newObj
+}

@@ -60,7 +60,7 @@ export default {
         rules: {
           name: [
             {required: true, message: '必填项', trigger: 'blur'},
-            {validator: this.uniqueEdit, trigger: 'blur'}
+            {validator: this.uniqueName, trigger: 'blur'}
           ],
           description: [
             {required: true, message: '必填项', trigger: 'blur'}

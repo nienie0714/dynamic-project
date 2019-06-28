@@ -123,7 +123,7 @@
                 </div>
               </div>
               <div class="div-right-table_body" :style="divTableBodyStyle" @mousewheel="scrollEvent">
-                <table cellpadding="0" cellspacing="0" class="right-table_body_block">
+                <table cellpadding="0" cellspacing="0" class="right-table_body_block" :style="rightTableBlockWidthStyle">
                   <tbody>
                     <tr v-for="(item, index) in tableShowData" :key="index" :id="item.afid" :data-flighta="item.flightNoA" :data-flightd="item.flightNoD"
                     :draggable="(queryData.execDateFlag != -1)&&(item.colourType != 1)" @dragstart="dragFlight" @drop="dropFlight" @dragenter.stop="(item.colourType != 1) && allowDrop($event)" @dragover.stop="(item.colourType != 1) && allowDrop($event)"
@@ -890,7 +890,7 @@ export default {
       flightType: 'all',
       // 任务类型过滤条件
       taskType: 'normal',
-      rightAutoNum: 12,
+      rightAutoNum: 13,
       // 列表设置
       tableData: {
         data: [],
@@ -918,6 +918,7 @@ export default {
           {prop: 'atd', label: '实际起飞', width: '80', minWidth: '80', fixed: false, hidden: true, formatter: this.formatterMin},
           {prop: 'gate', label: '登机口', width: '90', minWidth: '90', fixed: false, hidden: false},
           {prop: 'belt', label: '转盘', width: '80', minWidth: '80', fixed: false, hidden: false},
+          {prop: 'routeCn', label: '航线', width: '300', minWidth: '300', fixed: true, hidden: false},
           {prop: 'progressStatusNameCA', label: '进港状态', width: '100', minWidth: '100', fixed: false, hidden: false},
           {prop: 'abnormalStatusNameCA', label: '进港异常', width: '120', minWidth: '120', fixed: false, hidden: false},
           {prop: 'progressStatusNameCD', label: '出港状态', width: '100', minWidth: '100', fixed: false, hidden: false},
@@ -1475,7 +1476,7 @@ export default {
           }
         })
       }
-      this.rightDrag = _.orderBy(this.rightDrag, ['taskCount'], sort)
+      this.rightDrag = _.orderBy(this.rightDrag, ['online', 'taskCount'], ['desc', sort])
       // this.rightDrag.sort(compareSort('taskCount', sort))
     },
     // 筛选任务在线状态
@@ -1647,7 +1648,6 @@ export default {
               obj = item
             }
           })
-          // this.preData.preFilterArr = _.filter(this.preData.preGetArr, [obj.key, this.preData.filterValue])
           this.preData.preFilterArr = _.filter(this.preData.preGetArr, (item) => {
             return ~item[obj.name].indexOf(this.preData.filterValue)
           })

@@ -95,15 +95,19 @@ export default {
           getOptions: '/organization/employee/queryAll',
           optKey: 'empId',
           optLabel: 'empName',
+          optLabelSpan: 'deptName',
           span: 3
         }, {
           // 'p': '部门',
-          key: 'deptName',
+          key: 'deptId',
           value: null,
           type: 'select',
           filterable: true,
+          optKey: 'deptId',
+          optLabel: 'deptName',
+          optLabelSpan: 'deptParentName',
           inputText: '部门',
-          getOptions: '/organization/department/queryRecursionAll',
+          getOptions: '/organization/department/queryDeptByEmp',
           span: 3
         }, {
           // 'p': '已绑消息',

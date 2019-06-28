@@ -780,7 +780,6 @@ input[type="number"] {
 .div-right-table_body .right-table_body_block {
   position: absolute;
   top: 0;
-  width: 100%;
 }
 .body-tr-div {
   height: 48px;
@@ -2690,7 +2689,7 @@ tr.tr-single {
 .import-dialog .dialog-body>div:not(:first-of-type):not(.tip-font)>div:first-of-type {
   width: calc(100% - 116px);
 }
-/* 导入弹框样式结束 */
+/* 导入弹框样式结束  */
 .drop-rect {
   position: absolute;
   z-index: 99;

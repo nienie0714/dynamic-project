@@ -85,7 +85,7 @@
               </div>
             </div>
             <div class="div-right-table_body" :style="divTableBodyStyle" @mousewheel="scrollEvent">
-              <table cellpadding="0" cellspacing="0" class="right-table_body_block">
+              <table cellpadding="0" cellspacing="0" class="right-table_body_block" :style="rightTableBlockWidthStyle">
                 <tbody>
                   <tr v-for="(item, index) in tableData.data" :key="index" :class="[tableRowClassName({'row': item, 'rowIndex': index}), tableClickRowClass[index]?'is-active':'']"
                   @click="clickRow(index)" @dblclick="changeEditable(index, item)">
@@ -140,7 +140,7 @@ import basicTableMixin from '../../components/mixin/basicTableMixin'
 import wholeTableMixin from '../../components/mixin/flightTableMixin'
 import baseMixin from '../../components/mixin/baseMixin'
 import basicMsgMixin from '../../components/mixin/basicMsgMixin'
-import {queryAll, postData} from '../../api/base.js'
+import {queryAll, postData, download} from '../../api/base.js'
 import _ from 'lodash'
 
 export default {
@@ -163,7 +163,7 @@ export default {
         time: ''
       },
       // 下载文件名
-      fileName: '航班查询.xls',
+      fileName: '航班放行监控.xls',
       // 右键菜单显示状态 true-显示; false-隐藏
       // cardShow: false,
       // 右键菜单定位 top 和 left 值
@@ -301,6 +301,18 @@ export default {
     document.removeEventListener('keyup', this.initEditable)
   },
   methods: {
+    // 下载
+    handleDownload () {
+      let sum = this.pageData ? this.pageData.total : 1
+      let data = {...this.queryData, execDateFlag: 0, type: 'critical'}
+      if (sum) {
+        download(this.exportUrl, data, sum).then(response => {
+          this.downFile(response, this.fileName)
+        })
+      } else {
+        this.showError('导出', '当前导出结果为空')
+      }
+    },
     customResBefore (data) {
       data = _.sortBy(data, (value) => {
         if (this.sort.sortData.rule == 'asc') {
@@ -424,6 +436,10 @@ export default {
     },
     queryDataRefresh () {
       this.queryDataReq(1)
+    },
+    customQueryBefore (data) {
+      let temp = {...data, execDateFlag: 0}
+      return temp
     },
     changeEditable (index, item) {
       if (item) {

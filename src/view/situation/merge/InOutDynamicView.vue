@@ -279,8 +279,8 @@ export default {
             //     return table
             //   }
             // },
-            restore: {},
-            saveAsImage: {}
+            restore: {}
+            // saveAsImage: {}
           }
         },
         tooltip: {
@@ -500,13 +500,13 @@ export default {
             if (res.data.data[key]) {
               for (let name in this.data[key]) {
                 if (name == 'normalPec') {
-                  if (res.data.data[key]['totalExecFlight'] && (res.data.data[key]['execFlight'] != null)) {
-                    this.$set(this.data[key], 'normalPec', Math.floor(res.data.data[key]['execFlight'] / res.data.data[key]['totalExecFlight'] * 100))
+                  if (res.data.data[key]['totalExecFlight'] && (res.data.data[key]['dlyFlight'] != null) && (res.data.data[key]['canFlight'] != null)) {
+                    this.$set(this.data[key], 'normalPec', Math.floor((res.data.data[key]['totalExecFlight'] - res.data.data[key]['dlyFlight'] - res.data.data[key]['canFlight']) / res.data.data[key]['totalExecFlight'] * 100))
                   } else {
                     this.$set(this.data[key], 'normalPec', '--')
                   }
                 } else {
-                    this.$set(this.data[key], name, (res.data.data[key].hasOwnProperty(name)) ? res.data.data[key][name] : '-')
+                  this.$set(this.data[key], name, (res.data.data[key].hasOwnProperty(name)) ? res.data.data[key][name] : '-')
                 }
               }
             }
