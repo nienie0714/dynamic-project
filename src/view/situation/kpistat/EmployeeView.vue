@@ -131,7 +131,7 @@ export default {
         multipleSelection: [],
         fields: [
           {prop: 'unitName', label: '保障单位（人员/单元）', fixed: true, hidden: false},
-          {prop: 'date', label: '执行日期', fixed: false, hidden: false, formatter: this.formatterDay},
+          {prop: 'date', label: '执行日期', fixed: false, hidden: false},
           {prop: 'taskCn', label: '任务名称', hidden: false},
           {prop: 'taskTime', label: '任务总时长/分', hidden: false},
           {prop: 'totalFlight', label: '保障航班总量', hidden: false},
@@ -179,12 +179,12 @@ export default {
         this.$set(item, 'totalFlight', total)
 
         if (item.statDate) {
-          if (this.queryList[0].value == 'day') {
+          if (this.queryData.queryType == 'day') {
            this.$set(item, 'date', item.statDate)
           }
         }
         if (item.statMonth) {
-          if (this.queryList[0].value == 'month') {
+          if (this.queryData.queryType == 'month') {
            this.$set(item, 'date', item.statMonth)
           }
         }

@@ -65,12 +65,13 @@ export default {
         grid: {
           left: 50,
           right: 25,
-          top: 50,
+          top: 90,
           bottom: 90,
           containLabel: false
         },
         toolbox: {
           right: 20,
+          top: 40,
           itemSize: 18, // this.fontSizeRs,
           iconStyle: {
             borderColor: '#7a939e'

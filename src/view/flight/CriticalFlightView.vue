@@ -314,13 +314,14 @@ export default {
       }
     },
     customResBefore (data) {
-      data = _.sortBy(data, (value) => {
+      data = _.orderBy(data, [this.sort.sortData.sortKey], [this.sort.sortData.rule])
+      /* data = _.sortBy(data, (value) => {
         if (this.sort.sortData.rule == 'asc') {
           return value[this.sort.sortData.sortKey]
         } else {
           return -value[this.sort.sortData.sortKey]
         }
-      })
+      }) */
       return data
     },
     getSortData () {

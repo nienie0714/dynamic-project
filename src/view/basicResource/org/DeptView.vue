@@ -62,6 +62,7 @@ export default {
           {key: 'phone', label: '联系电话', type: 'input', maxlength: 15},
           {key: 'deptName', label: '部门名称', type: 'textarea', autosize: true, maxlength: 50},
           {key: 'remark', label: '备注', type: 'textarea', autosize: true, maxlength: 100},
+          {key: 'pDeptName', label: '上级部门', type: 'pInput'},
           {key: 'parentIds', label: '上级部门', type: 'casc', class: 'auto-width', saveKey: 'deptParentId', getOptions: '/organization/department/queryDeptTreeByUserId', props: {value: 'id', label: 'text', children: 'children'}}
         ],
         rules: {
@@ -159,6 +160,9 @@ export default {
         if (this.formData.formData[i].key == 'parentIds') {
           let data = {}
           this.$set(this.formData.formData[i], 'optionsQuery', data)
+          this.$delete(this.formData.formData[i], 'isHidden')
+        } else if (this.formData.formData[i].key == 'pDeptName') {
+          this.$set(this.formData.formData[i], 'isHidden', true)
         }
       }
       this.formData.title = '新增'
@@ -177,6 +181,50 @@ export default {
           }
         }
       }
+    },
+    // 编辑
+    handleEdit (row) {
+      for (let i = 0; i < this.formData.formData.length; i++) {
+        if (this.formData.formData[i].type == 'dateRangePicker') {
+          let data = {}
+          this.$set(data, this.formData.formData[i].key1, null)
+          this.$set(data, this.formData.formData[i].key2, null)
+          this.$set(this.formData.formData[i], 'value', data)
+          this.formData.formData[i].value[this.formData.formData[i].key1] = row[this.formData.formData[i].key1]
+          this.formData.formData[i].value[this.formData.formData[i].key2] = row[this.formData.formData[i].key2]
+        } else {
+          this.$set(this.formData.formData[i], 'value', row[this.formData.formData[i].key])
+        }
+        if (this.formData.formData[i].key == 'pDeptName') {
+          this.$set(this.formData.formData[i], 'isHidden', true)
+        } else if (this.formData.formData[i].key == 'parentIds') {
+          this.$delete(this.formData.formData[i], 'isHidden')
+        }
+      }
+      this.formData.title = '编辑'
+      this.formData.visible = true
+    },
+    // 详情
+    handleDetail (row) {
+      for (let i = 0; i < this.formData.formData.length; i++) {
+        if (this.formData.formData[i].type == 'dateRangePicker') {
+          let data = {}
+          this.$set(data, this.formData.formData[i].key1, null)
+          this.$set(data, this.formData.formData[i].key2, null)
+          this.$set(this.formData.formData[i], 'value', data)
+          this.formData.formData[i].value[this.formData.formData[i].key1] = row[this.formData.formData[i].key1]
+          this.formData.formData[i].value[this.formData.formData[i].key2] = row[this.formData.formData[i].key2]
+        } else {
+          this.$set(this.formData.formData[i], 'value', row[this.formData.formData[i].key])
+        }
+        if (this.formData.formData[i].key == 'pDeptName') {
+          this.$delete(this.formData.formData[i], 'isHidden')
+        } else if (this.formData.formData[i].key == 'parentIds') {
+          this.$set(this.formData.formData[i], 'isHidden', true)
+        }
+      }
+      this.formData.title = '详情'
+      this.formData.visible = true
     },
     // 自定义方法：保存成功后重新获取树
     customMethod () {

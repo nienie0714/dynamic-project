@@ -66,12 +66,13 @@ export default {
         grid: {
           left: 60,
           right: 25,
-          top: 50,
+          top: 90,
           bottom: 70,
           containLabel: false
         },
         toolbox: {
           right: 20,
+          top: 40,
           itemSize: 18, // this.fontSizeRs,
           iconStyle: {
             borderColor: '#7a939e'
@@ -184,7 +185,7 @@ export default {
               symbolSize: 10,
               symbolOffset: [0, -2],
               data: [
-                {type: 'max', name: '最大值', label: {position: 'end'}}
+                {type: 'max', name: '最大值', label: {show: false}}
               ],
               lineStyle: {
                 color: 'rgba(60, 166, 200, 0.3)'

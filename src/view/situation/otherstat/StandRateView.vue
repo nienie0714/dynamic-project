@@ -59,12 +59,13 @@ export default {
         grid: {
           left: 50,
           right: 25,
-          top: 50,
+          top: 90,
           bottom: 90,
           containLabel: false
         },
         toolbox: {
           right: 20,
+          top: 40,
           itemSize: 18, // this.fontSizeRs,
           iconStyle: {
             borderColor: '#7a939e'
@@ -133,7 +134,7 @@ export default {
           min: '0',
           max: 'dataMax',
           nameLocation: 'start',
-          padding: [0, 0, 0, 55],
+          padding: [0, 0, 0, 30],
           splitLine: {
             lineStyle: {
               color: 'rgba(60, 166, 200, 0.3)'
@@ -146,13 +147,13 @@ export default {
             show: false
           },
           axisLabel: {
-            margin: 15,
+            margin: 10,
             color: '#7a939e',
             fontSize: 18,
             fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
           },
           nameTextStyle: {
-            padding: [0, 0, 0, -60],
+            padding: [0, 0, 0, -50],
             color: '#7a939e'
           }
         },
@@ -178,10 +179,10 @@ export default {
             },
             markLine: {
               symbol: ['arrow', 'arrow'],
-              symbolSize: 10,
+              symbolSize: 8,
               symbolOffset: [0, -2],
               data: [
-                {type: 'max', name: '最大值', label: {position: 'end'}}
+                {type: 'max', name: '最大值', label: {show: false}}
               ],
               lineStyle: {
                 color: 'rgba(60, 166, 200, 0.3)'

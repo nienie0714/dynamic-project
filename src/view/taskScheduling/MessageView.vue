@@ -395,7 +395,8 @@
       <span class="header-title">任务申请</span>
       <div class="unread-red-count">{{taskMsg.data.length}}</div>
       <div>
-        <div class="div-button-usabled" @click="msgTaskApplyAll('N')">全部拒绝</div>
+        <!-- <div class="div-button-usabled" @click="msgTaskApplyAll('N')">全部拒绝</div> -->
+        <div class="div-button-usabled" @click="msgTaskIgnore()">忽略全部</div>
       </div>
     </div>
     <div class="msg-cont-cont msg-type-cont">
@@ -653,6 +654,7 @@ export default {
         queryUrl: '/taskscheduling/taskApply/queryApplyTaskVO',
         type: 'apply',
         subtype: 'apply.feedback.',
+        precessSubtype: 'apply.process',
         index: 0,
         data: []
       }
@@ -687,6 +689,7 @@ export default {
             }
             this.taskMsg.data.push(temp)
           })
+          this.taskMsg.data = _.orderBy(this.taskMsg.data, ['dynamicTaskApplyId'], ['asc'])
         }
       }
     })
@@ -835,7 +838,7 @@ export default {
         this.msgData[obj.key].count += 1
       } else if (data['msg_type'] == this.talk.type && JSON.parse(data['msg_sender']) != this.empId) {
         msg = JSON.parse(data['msg_content'])
-        var index = _.findIndex(this.talk.talkData.arr, ['id', msg.hasOwnProperty('im_group_id') ? JSON.parse(msg['im_group_id']) : JSON.parse(msg['im_sender_id'])])
+        let index = _.findIndex(this.talk.talkData.arr, ['id', msg.hasOwnProperty('im_group_id') ? JSON.parse(msg['im_group_id']) : JSON.parse(msg['im_sender_id'])])
         if (~index) {
           if ([4, 5].includes(JSON.parse(msg['im_type']))) {
             if (JSON.parse(msg['im_type']) == 4) {
@@ -923,7 +926,19 @@ export default {
           taskCn: msg.taskCn,
           empName: msg.empName
         }
-        this.taskMsg.data.push(temp)
+        let obj = _.find(this.taskMsg.data, ['dynamicTaskApplyId', msg.dynamicTaskApplyId])
+        if (!obj) {
+          this.taskMsg.data.push(temp)
+        }
+      } else if (data['msg_type'] == this.taskMsg.type && _.startsWith(data['msg_subtype'], this.taskMsg.precessSubtype)) {
+        msg = JSON.parse(data['msg_content'])
+        let idx = _.findIndex(this.taskMsg.data, ['dynamicTaskApplyId', msg.dynamicTaskApplyId])
+        if (~idx) {
+          if ((idx < this.taskMsg.index) || ((idx == this.taskMsg.index) && (idx == this.taskMsg.data.length - 1))) {
+            this.taskMsg.index -= 1
+          }
+          this.taskMsg.data.splice(idx, 1)
+        }
       }
     },
     scrollRecord (index, sign, newRecordSign) {
@@ -1894,24 +1909,35 @@ export default {
       this.taskMsg.index += sum
     },
     msgTaskApply (index, flag) {
-      var data = {
+      let data = {
         dynamicTaskApplyId: this.taskMsg.data[index].dynamicTaskApplyId,
         confirmFlag: flag
       }
       postData(this.taskMsg.applyUrl, data).then(res => {
         if (res.data.code == 0) {
+          let msgData = {
+            msg_content: JSON.stringify(data),
+            msg_subtype: 'apply.process',
+            msg_type: 'apply',
+            msg_sender: this.empId
+          }
+          postDataNone(this.sendMsgUrl, JSON.stringify(msgData)).then(res => {
+          })
         } else {
           this.showError('任务申请处理', res.data.msg)
         }
-        if (index == this.taskMsg.data.length - 1) {
+        /* if (index == this.taskMsg.data.length - 1) {
           if (index > 0) {
             this.taskMsg.index -= 1
           }
-        }
-        this.taskMsg.data.splice(index, 1)
+        } */
+        // this.taskMsg.data.splice(index, 1)
       }).catch(() => {
         this.showError('任务申请处理', '请求异常')
       })
+    },
+    msgTaskIgnore () {
+      this.$set(this.taskMsg, 'data', [])
     },
     msgTaskApplyAll (flag) {
       postData(this.taskMsg.applyAllUrl, {}).then(res => {

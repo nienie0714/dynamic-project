@@ -66,12 +66,13 @@ export default {
         grid: {
           left: 60,
           right: 50,
-          top: 60,
+          top: 90,
           bottom: 70,
           containLabel: false
         },
         toolbox: {
           right: 20,
+          top: 40,
           itemSize: 18, // this.fontSizeRs,
           iconStyle: {
             borderColor: '#7a939e'
@@ -213,7 +214,7 @@ export default {
               show: true,
               position: 'top',
               color: '#fff',
-              distance: 15
+              distance: 5
             },
             lineStyle: {
               opacity: 0
@@ -267,7 +268,7 @@ export default {
             label: {
               show: true,
               position: 'top',
-              distance: 15,
+              distance: 5,
               // formatter: '{c}%',
               color: 'rgba(8, 167, 130, 1)'
             },

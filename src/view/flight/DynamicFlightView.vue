@@ -250,7 +250,7 @@
                       <el-button type="info" plain @click="queryCustomeColor()">恢复默认值</el-button>
                     </div>
                     <div class="footer-right">
-                      <el-button type="info" plain @click="closeDefaultRow()">取消</el-button>
+                      <el-button type="info" plain @click="closeDefaultRow()">关闭</el-button>
                       <el-button type="primary" @click="saveDefaultRow()">保存</el-button>
                     </div>
                   </el-footer>
@@ -563,7 +563,7 @@ export default {
         value: '',
         type: 'input',
         toUpper: true,
-        inputText: '航站/IATA码',
+        inputText: '航线/IATA码',
         span: 3
       }, {
         // span: '航班号',

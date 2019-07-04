@@ -180,12 +180,12 @@ export default {
         this.$set(item, 'totalFlight', total)
 
         if (item.statDate) {
-          if (this.queryList[0].value == 'day') {
+          if (this.queryData.queryType == 'day') {
            this.$set(item, 'date', item.statDate)
           }
         }
         if (item.statMonth) {
-          if (this.queryList[0].value == 'month') {
+          if (this.queryData.queryType == 'month') {
            this.$set(item, 'date', item.statMonth)
           }
         }

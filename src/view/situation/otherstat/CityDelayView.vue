@@ -59,12 +59,13 @@ export default {
         grid: {
           left: 60,
           right: 25,
-          top: 50,
+          top: 90,
           bottom: 90,
           containLabel: false
         },
         toolbox: {
           right: 20,
+          top: 40,
           itemSize: 18, // this.fontSizeRs,
           iconStyle: {
             borderColor: '#7a939e'
@@ -179,9 +180,9 @@ export default {
             markLine: {
               symbol: ['arrow', 'arrow'],
               symbolSize: 10,
-              symbolOffset: [0, -2],
+              symbolOffset: [0, 0],
               data: [
-                {type: 'max', name: '最大值', label: {position: 'end'}}
+                {type: 'max', name: '最大值', label: {show: false}}
               ],
               lineStyle: {
                 color: 'rgba(60, 166, 200, 0.3)'

@@ -349,7 +349,8 @@ export default {
               if (obj.type == 'dateRangePicker') {
                 if (obj.required == 1) {
                   if (this.editData[obj.key1]) {
-                    if (obj.hasOwnProperty('value') && _.isEqual(obj.value[obj.key1], this.editData[obj.key1])) {
+                    if (obj.hasOwnProperty('value') && _.isEqual(obj.value, this.editData[obj.key])) {
+                    // _.isEqual(obj.value[obj.key1], this.editData[obj.key1]) && _.isEqual(obj.value[obj.key2], this.editData[obj.key2])) {
                       this.$set(data, obj.key1, this.editData[obj.key1])
                       this.$set(data, obj.key2, this.editData[obj.key2])
                       resuleSum -= 1
@@ -363,7 +364,8 @@ export default {
                   }
                 } else if (obj.required == 2) {
                   if (this.editData[obj.key2]) {
-                    if (obj.hasOwnProperty('value') && _.isEqual(obj.value[obj.key2], this.editData[obj.key2])) {
+                    if (obj.hasOwnProperty('value') && _.isEqual(obj.value, this.editData[obj.key])) {
+                    // _.isEqual(obj.value[obj.key2], this.editData[obj.key2]) && _.isEqual(obj.value[obj.key1], this.editData[obj.key1])) {
                       this.$set(data, obj.key1, this.editData[obj.key1])
                       this.$set(data, obj.key2, this.editData[obj.key2])
                       resuleSum -= 1
@@ -422,36 +424,34 @@ export default {
           setTimeout(() => {
             queryAll(this.formData.groupKeyUrl, data).then(response => {
               if (response.data.code == 0) {
-                if (response.data.data.hasOwnProperty('exist')) {
-                  if ((response.data.data.hasOwnProperty('exist') && response.data.data.exist > 0) || (!response.data.data.hasOwnProperty('exist') && (response.data.data.length > 0))) {
-                    this.formData.groupKey.forEach(item => {
-                      if (item != rule.field) {
-                        for (let x = 0; x < this.$refs['ruleForm'].fields.length; x++) {
-                          if (this.$refs['ruleForm'].$data.fields[x].prop == item) {
-                            this.$refs['ruleForm'].$data.fields[x].validateState = 'error'
-                            this.$refs['ruleForm'].$data.fields[x].validateMessage = '当前组合编号已存在'
-                            break
-                          }
-                        }
-                      }
-                      /* for (let x = 0; x < this.formData.formData.length; x++) {
-                        if (this.formData.formData[x].key == item) {
-                          this.formData.formData[x].error = '当前组合编号已存在'
+                if ((response.data.data.hasOwnProperty('exist') && response.data.data.exist > 0) || (!response.data.data.hasOwnProperty('exist') && (response.data.data.length > 0))) {
+                  this.formData.groupKey.forEach(item => {
+                    if (item != rule.field) {
+                      for (let x = 0; x < this.$refs['ruleForm'].fields.length; x++) {
+                        if (this.$refs['ruleForm'].$data.fields[x].prop == item) {
+                          this.$refs['ruleForm'].$data.fields[x].validateState = 'error'
+                          this.$refs['ruleForm'].$data.fields[x].validateMessage = '当前组合编号已存在'
                           break
                         }
-                      } */
-                    })
-                    callback(new Error('当前组合编号已存在'))
-                  } else {
-                    this.formData.groupKey.forEach(item => {
-                      if (item != rule.field) {
-                        this.uniqueCount++
-                        this.$refs['ruleForm'].validateField(item)
                       }
-                    })
-                    this.uniqueCount = 0
-                    callback()
-                  }
+                    }
+                    /* for (let x = 0; x < this.formData.formData.length; x++) {
+                      if (this.formData.formData[x].key == item) {
+                        this.formData.formData[x].error = '当前组合编号已存在'
+                        break
+                      }
+                    } */
+                  })
+                  callback(new Error('当前组合编号已存在'))
+                } else {
+                  this.formData.groupKey.forEach(item => {
+                    if (item != rule.field) {
+                      this.uniqueCount++
+                      this.$refs['ruleForm'].validateField(item)
+                    }
+                  })
+                  this.uniqueCount = 0
+                  callback()
                 }
               } else {
                 callback(new Error('请求失败'))
