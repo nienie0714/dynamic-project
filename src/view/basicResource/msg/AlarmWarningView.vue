@@ -98,15 +98,19 @@ export default {
       queryList: [
         {
           // 'p': '任务'
-          key: 'taskNo',
+          key: 'taskCn',
           value: '',
-          type: 'select',
-          filterable: true,
+          type: 'input',
           inputText: '任务',
-          getOptions: '/message/aomsOperationWarning/queryWarningTask',
-          optKey: 'taskNo',
-          optLabel: 'taskCn',
           span: 4
+          // value: '',
+          // type: 'select',
+          // filterable: true,
+          // inputText: '任务',
+          // getOptions: '/message/aomsOperationWarning/queryWarningTask',
+          // optKey: 'taskNo',
+          // optLabel: 'taskCn',
+          // span: 4
         }
       ],
       // 列表设置

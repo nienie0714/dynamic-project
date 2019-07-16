@@ -379,7 +379,7 @@ export default {
       // 目标起飞时间>离港延误时间+20 => ttot>depDelayTime+20 => color-critical-warn-row
       // 计划过站时长<最小过站时长 => schedViaMin<minViaMin => color-critical-tip-row
       let color = 'color-cretical-default'
-      if (row.ttot && row.depDelayTime && (new Date(row.ttot) > new Date(row.depDelayTime + 20))) {
+      if (row.ttot && row.depDelayTime && (new Date(row.ttot) > new Date(new Date(row.depDelayTime).getTime() + 20 * 60 * 1000))) {
         color = 'color-critical-warn-row'
       } else {
         let schedViaMin = parseFloat(row.schedViaMin)

@@ -94,21 +94,25 @@ export default {
         }, {
           // 'p': '原因分类',
           key: 'classify',
-          tabsKey: 'abnormalReason',
-          value: null,
-          type: 'select',
-          filterable: true,
-          optKey: 'key',
-          optLabel: 'value',
+          value: '',
+          type: 'input',
           inputText: '原因分类',
-          'valueChange': 'attrChange',
-          'span': 4
+          span: 4
+          // tabsKey: 'abnormalReason',
+          // value: null,
+          // type: 'select',
+          // filterable: true,
+          // optKey: 'key',
+          // optLabel: 'value',
+          // inputText: '原因分类',
+          // 'valueChange': 'attrChange',
+          // 'span': 4
         }, {
           // 'p': '原因描述',
           key: 'nameC',
           value: '',
           type: 'input',
-          inputText: '原因描述',
+          inputText: '中文描述',
           span: 5
         }
       ],

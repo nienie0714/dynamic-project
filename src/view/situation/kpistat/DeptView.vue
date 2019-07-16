@@ -95,27 +95,23 @@ export default {
           span: 4
         },
         {
-          // 'p': '开始时间',
-          key: 'start',
+          // 'p': '时间区间',
+          key: 'date',
           value: null,
-          type: 'date',
+          type: 'daterange',
           editable: false,
           clearable: true,
-          inputText: '开始时间',
+          rangeSeparator: '至',
+          inputText: '时间范围',
           valueFormat: 'yyyy-MM-dd',
           format: 'yyyy-MM-dd',
-          span: 4
-        }, {
-          // 'p': '结束时间',
-          key: 'end',
-          value: null,
-          type: 'date',
-          editable: false,
-          clearable: true,
-          inputText: '结束时间',
-          valueFormat: 'yyyy-MM-dd',
-          format: 'yyyy-MM-dd',
-          span: 4
+          pickerOpt: {
+            disabledDate: (time) => {
+              let maxDate = new Date(this.latestDate)
+              return time.getTime() > maxDate
+            }
+          },
+          span: 6
         }
       ],
       // 列表设置
@@ -145,10 +141,8 @@ export default {
   },
   mounted () {
     // 页面起始修改发送参数的初始值为当日
-    this.$set(this.queryList[3], 'value', this.formatterNewtimeOfYMD())
-    this.$set(this.queryList[4], 'value', this.formatterNewtimeOfYMD())
-    this.$set(this.queryData, 'start', this.queryList[3].value)
-    this.$set(this.queryData, 'end', this.queryList[4].value)
+    this.$set(this.queryList[3], 'value', [this.formatterNewtimeOfYMD(), this.formatterNewtimeOfYMD()])
+    this.$set(this.queryData, 'date', this.queryList[3].value)
   },
   methods: {
     customBeforeQuery () {

@@ -65,12 +65,84 @@
                   <el-radio-button label="mark">关注航班</el-radio-button>
                 </el-radio-group>
               </div>
-              <div>
+              <!-- <div>
                 <el-radio-group v-model="taskType" size="small" @change="queryDataReq()">
                   <el-radio-button label="normal">常用任务</el-radio-button>
                   <el-radio-button label="special">特车任务</el-radio-button>
                 </el-radio-group>
-              </div>
+              </div> -->
+              <el-popover placement="bottom" width="450" trigger="click">
+                <div class="legend-popover">
+                  <div class="font">任务颜色图例说明</div>
+                  <div class="task-info">
+                    <div>
+                      <div>
+                        <div :class="['task-div', 'NoDistribute']"></div>
+                        <div class="task-status">未派发</div>
+                        <div class="yellow-spot"></div>
+                      </div>
+                      <div>
+                        <div :class="['task-div', 'Distributed']"></div>
+                        <div class="task-status">已派发未接收</div>
+                      </div>
+                      <div>
+                        <div :class="['task-div', 'NoDistribute']"></div>
+                        <div class="task-status">已派发被拒绝</div>
+                        <div class="refuse-spot"></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div>
+                        <div :class="['task-div', 'Accepted']"></div>
+                        <div class="task-status">正常<br/>已接受未开始</div>
+                      </div>
+                      <div>
+                        <div :class="['task-div', 'AcceptedOvertime']"></div>
+                        <div class="task-status">超时<br/>已接受未开始</div>
+                      </div>
+                      <div>
+                        <div :class="['task-div', 'AcceptedException']"></div>
+                        <div class="task-status">异常<br/>已接受未开始</div>
+                      </div>
+                    </div>
+                    <div>
+                      <div>
+                        <div :class="['task-div', 'Ensuring']">
+                          <div class="task-doing-animation"></div>
+                        </div>
+                        <div class="task-status">正常(动态)<br/>已开始保障</div>
+                      </div>
+                      <div>
+                        <div :class="['task-div', 'EnsureOvertime']">
+                          <div class="task-doing-animation"></div>
+                        </div>
+                        <div class="task-status">超时(动态)<br/>已开始保障</div>
+                      </div>
+                      <div>
+                        <div :class="['task-div', 'EnsureException']">
+                          <div class="task-doing-animation"></div>
+                        </div>
+                        <div class="task-status">异常(动态)<br/>已开始保障</div>
+                      </div>
+                    </div>
+                    <div>
+                      <div>
+                        <div :class="['task-div', 'NormalFinished']"></div>
+                        <div class="task-status">正常<br/>已完成保障</div>
+                      </div>
+                      <div>
+                        <div :class="['task-div', 'OvertimeFinished']"></div>
+                        <div class="task-status">超时<br/>已完成保障</div>
+                      </div>
+                      <div>
+                        <div :class="['task-div', 'ExceptionFinished']"></div>
+                        <div class="task-status">异常<br/>已完成保障</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="legend" slot="reference" title="图例说明">?</div>
+              </el-popover>
             </div>
           </el-header>
           <el-main class="tasksched-table-1 whole-table-main">
@@ -87,9 +159,8 @@
               <div class="div-left-table_body" :style="divTableBodyStyle" @mousewheel="scrollEvent">
                 <table cellpadding="0" cellspacing="0" class="left-table_body" ref="wholeTable">
                   <tbody>
-                    <tr v-for="(item, index) in tableShowData" :key="index" :id="item.afid" :data-flighta="item.flightNoA" :data-flightd="item.flightNoD"
-                    :draggable="(queryData.execDateFlag != -1)&&item.colourType != 1" @dragstart="dragFlight" @drop="dropFlight" @dragenter.stop="(item.colourType != 1) && allowDrop($event)" @dragover.stop="(item.colourType != 1) && allowDrop($event)"
-                    :class="[tableRowClassName({'row': item, 'rowIndex': index}), tableClickRowClass[index]?'is-active':'']" @click="clickRow(index)">
+                    <tr v-for="(item, index) in tableShowData" :key="index"
+                    :class="[tableRowClassName({'row': item, 'rowIndex': index}), tableClickRowClass[require('lodash').findIndex(tableData.data, ['afid', item.afid])]?'is-active':'']" @click="clickRow(require('lodash').findIndex(tableData.data, ['afid', item.afid]))">
                       <div v-for="field in tableData.fields" :key="field.prop" :class="field.hidden?'body-tr-div':'body-tr-div show-field'" :style="!field.hidden && {width: field.width + 'px'}">
                         <td v-if="!field.hidden" :width="field.width" :class="field.class">
                           <div v-if="field.prop == 'mark'" class="first-col-color">
@@ -125,26 +196,26 @@
               <div class="div-right-table_body" :style="divTableBodyStyle" @mousewheel="scrollEvent">
                 <table cellpadding="0" cellspacing="0" class="right-table_body_block" :style="rightTableBlockWidthStyle">
                   <tbody>
-                    <tr v-for="(item, index) in tableShowData" :key="index" :id="item.afid" :data-flighta="item.flightNoA" :data-flightd="item.flightNoD"
-                    :draggable="(queryData.execDateFlag != -1)&&(item.colourType != 1)" @dragstart="dragFlight" @drop="dropFlight" @dragenter.stop="(item.colourType != 1) && allowDrop($event)" @dragover.stop="(item.colourType != 1) && allowDrop($event)"
-                    :class="tableClickRowClass[index]?'is-active':''" @click="clickRow(index)">
+                    <tr v-for="(item, index) in tableShowData" :key="index"
+                    :class="tableClickRowClass[require('lodash').findIndex(tableData.data, ['afid', item.afid])]?'is-active':''" @click="clickRow(require('lodash').findIndex(tableData.data, ['afid', item.afid]))">
                       <div class="body-tr-div" :style="{width: '100%'}"></div>
                     </tr>
                   </tbody>
                 </table>
                 <table cellpadding="0" cellspacing="0" class="right-table_body" :style="rightTableWidthStyle">
                   <tbody>
-                    <tr v-for="(item, index) in tableShowData" :key="index" :id="item.afid" :data-flighta="item.flightNoA" :data-flightd="item.flightNoD"
-                    :draggable="(queryData.execDateFlag != -1)&&(item.colourType != 1)" @dragstart="dragFlight" @drop="dropFlight"
-                    @dragenter.stop="(item.colourType != 1) && allowDrop($event)" @dragover.stop="(item.colourType != 1) && allowDrop($event)"
-                    :class="tableClickRowClass[index]?'is-active':''" @click="clickRow(index)">
+                    <tr v-for="(item, index) in tableShowData" :key="index"
+                    :class="tableClickRowClass[require('lodash').findIndex(tableData.data, ['afid', item.afid])]?'is-active':''" @click="clickRow(require('lodash').findIndex(tableData.data, ['afid', item.afid]))">
                       <div v-show="!taskField.hidden" v-for="(taskField, idx) in tableData.taskFields" :key="taskField.prop"
                       :class="taskField.hidden?'body-tr-div-hidden':((idx >= rightAutoNum) ? 'body-tr-div' : 'body-tr-div-no-task')"
                       :style="(idx >= rightAutoNum) ? {width: 'calc(' + taskField.width + 'px - 10px'} : {width: taskField.width + 'px', minWidth: taskField.minWidth + 'px'}">
                         <td v-if="!taskField.hidden && (idx < rightAutoNum)" :width="taskField.width" :class="taskField.class">
                           <div>{{ item[taskField.prop] }}</div>
                         </td>
-                        <td v-else-if="!taskField.hidden" :class="taskField.class" :width="taskField.width - 10">
+                        <td v-else-if="!taskField.hidden" :class="taskField.class" :width="taskField.width - 10" :id="item.afid" :data-flighta="item.flightNoA" :data-flightd="item.flightNoD"
+                        :data-task="taskField.prop" :data-taskname="taskField.label"
+                        :draggable="(queryData.execDateFlag != -1)&&(item.colourType != 1)" @dragstart="dragFlight" @drop="dropFlight"
+                        @dragenter.stop="(item.colourType != 1) && allowDrop($event)" @dragover.stop="(item.colourType != 1) && allowDrop($event)">
                           <el-popover placement="bottom" width="160" trigger="click" class="popover-bottom"><!--  :ref="`popover-${index}-`" -->
                             <div :name="`el-popover-${index}-${taskField.prop}`" class="task-right-click-tip">
                               <div :class="queryData.execDateFlag != -1&&(item.taskDataMap[taskField.prop] && (!['NoDistribute', 'NormalFinished', 'OvertimeFinished', 'ExceptionFinished'].includes(item.taskDataMap[taskField.prop].taskDataCss)))
@@ -169,20 +240,8 @@
                               </div>
                             </div>
                           </el-popover>
-                          <!-- <div v-if="item.taskDataMap[taskField.prop]" :class="item.taskDataMap[taskField.prop].taskDataCss + ' task-field-div'">
-                            <span :class="item.taskDataMap[taskField.prop].beginTimeCss">{{ item.taskDataMap[taskField.prop].beginTime ? item.taskDataMap[taskField.prop].beginTime : '—:—' }}
-                            </span>-<span :class="item.taskDataMap[taskField.prop].endTimeCss">
-                              {{ item.taskDataMap[taskField.prop].endTime ? item.taskDataMap[taskField.prop].endTime : '—:—' }}
-                            </span>
-                          </div>
-                          <div v-if="item.taskDataMap[taskField.prop] && item.taskDataMap[taskField.prop].taskDataCss == 'NoDistribute'" class="yellow-spot"></div> -->
-                          <!-- <span v-if="item.taskDataMap[taskField.prop]">
-                            <span :class="item.taskDataMap[taskField.prop].beginTimeCss">{{ item.taskDataMap[taskField.prop].beginTime ? item.taskDataMap[taskField.prop].beginTime : '—:—' }}
-                            </span>-<span :class="item.taskDataMap[taskField.prop].endTimeCss">
-                              {{ item.taskDataMap[taskField.prop].endTime ? item.taskDataMap[taskField.prop].endTime : '—:—' }}
-                            </span>
-                          </span> -->
                         </td>
+                        <div v-if="item.taskDataMap[taskField.prop]" class="task-emp-name-div" :title="item.taskDataMap[taskField.prop].unit">{{item.taskDataMap[taskField.prop].unit}}</div>
                         <div v-if="!taskField.hidden && item.taskDataMap[taskField.prop] && item.taskDataMap[taskField.prop].taskDataCss == 'NoDistribute'" class="yellow-spot"></div>
                         <div v-if="!taskField.hidden && item.taskDataMap[taskField.prop] && item.taskDataMap[taskField.prop].refuseCss == 'true'" class="refuse-spot"></div>
                       </div>
@@ -246,7 +305,7 @@
                         <el-button type="info" plain @click="getDefaultRow()">恢复默认值</el-button>
                       </div>
                       <div class="footer-right">
-                        <el-button type="info" plain @click="closeDefaultRow()">取消</el-button>
+                        <el-button type="info" plain @click="closeDefaultRow()">关闭</el-button>
                         <el-button type="primary" @click="saveDefaultRow()">保存</el-button>
                       </div>
                     </el-footer>
@@ -257,14 +316,13 @@
               <div class="div-opr-table_body" :style="[divOprTableStyle, divTableBodyStyle]">
                 <table cellpadding="0" cellspacing="0">
                   <tbody>
-                    <tr v-for="(item, index) in tableData.data" :key="index" :id="item.afid" :data-flighta="item.flightNoA" :data-flightd="item.flightNoD"
-                    :draggable="(queryData.execDateFlag != -1)&&(item.colourType != 1)" @dragstart="dragFlight" @drop="dropFlight" @dragenter.stop="(item.colourType != 1) && allowDrop($event)" @dragover.stop="(item.colourType != 1) && allowDrop($event)"
+                    <tr v-for="(item, index) in tableData.data" :key="index"
                     :class="tableClickRowClass[index]?'is-active':''" @click="clickRow(index)">
                       <td width="90">
                         <div class="div-opr-i">
                           <div>
-                            <div class="icon_list_add" @click.self.stop="addSpecialTask(item)"></div>
-                            <div class="icon_list_gantt" @click.self.stop="skipToFlightGantt(item)"></div>
+                            <div class="icon_list_add" @click.self.stop="addSpecialTask(item)" title="新增任务"></div>
+                            <div class="icon_list_gantt" @click.self.stop="skipToFlightGantt(item)" title="航班保障详情"></div>
                           </div>
                           <!-- <a class="icon_list_task"/> -->
                         </div>
@@ -288,65 +346,93 @@
           </el-header>
           <el-main>
             <el-header class="tasksched-task-header">
-              <el-input placeholder="请输入保障单元或人员" v-model.trim="rightQueryData.name" clearable style="width: 90%; margin: 0 5% 10px 5%;" @keyup.enter.native="handleQueryTeam('change')">
+              <el-input placeholder="请输入保障单元或人员" v-model.trim="rightQueryData.name" clearable style="width: 90%; margin: 0 5% 10px 5%;"><!--  @keyup.enter.native="handleQueryTeam('change')" -->
                 <i slot="prefix" class="el-input__icon el-icon-search"></i>
               </el-input>
-              <el-select v-model="rightQueryData.taskNo" :filterable="true" placeholder="请选择任务" :default-first-option="true" @change="handleQueryTeam('change')"
-              style="width: 90%; margin: 0 5% 10px 5%;">
-                <el-option v-for="task in taskArr" :key="task.index" :label="task.label" :value="task.key"></el-option>
-              </el-select>
+              <div>
+                <div class="left-task">
+                  <div v-for="(task, tIndex) in taskShowArr" :key="tIndex" :class="rightQueryData.taskNo == task.key?'div-button-select div-button':'div-button'"
+                  @click="clickMoreTask(task)">{{ task.label }}</div>
+                  <!-- <div :class="rightQueryData.taskNo == ''?'div-button-select div-button':'div-button'" @click="clickMoreTask()">所有人员</div> -->
+                </div>
+                <div class="right-task">
+                  <el-popover v-if="taskShowArr.length !== taskArr.length" placement="bottom" width="520" trigger="click" v-model="moreTask">
+                    <div class="task-popover">
+                      <div v-for="(arr, key) in taskEnArr" :key="key">
+                        <div>{{key}}</div>
+                        <div>
+                          <div v-for="task in arr" :key="task.index" :class="rightQueryData.taskNo == task.key?'div-button-select div-button':'div-button'"
+                          @click="clickMoreTask(task)">{{ task.label }}</div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="div-button" slot="reference">更多</div>
+                  </el-popover>
+                  <div v-if="!require('lodash').find(taskShowArr, ['key', rightQueryData.taskNo])" :class="'div-button-select div-button'">{{require('lodash').find(taskArr, ['key', rightQueryData.taskNo]).label}}</div>
+                </div>
+              </div>
             </el-header>
             <el-main class="tasksched-task-body">
               <div class="task-body-ul">
                 <ul>
-                  <li v-for="item in rightDrag" :key="item.index" :id="item.id" :data-type="item.type" :data-task="item.taskNo" :data-taskname="item.taskName" :data-name="item.name"
+                  <li v-for="item in filterRightDrag" :key="item.index" :id="item.id" :data-type="item.type" :data-name="item.name"
                   :draggable="queryData.execDateFlag != -1" @dragstart="dragData" @drop="dropData" @dragenter.stop="allowDrop($event)" @dragover.stop="allowDrop($event)">
-                    <div v-if="((!taskOnline) && (!taskFree)) || (taskOnline && item.online && (!taskFree)) || (taskFree && (!item.taskCount) && !taskOnline) || (taskFree && (!item.taskCount) && taskOnline && item.online)" class="task-list-li">
-                      <div class="li-head">
-                        <div :class="`${item.online?'':'head-no-online '}${item.type}`"></div>
-                      </div>
-                      <div class="li-font">
-                        <div class="li-font-name">
-                          <div :class="item.online?'font-online':'font-no-online'">{{ item.online?'[在线]':'[离线]' }}</div>
-                          <div class="font-name">
-                            {{ substrValue(item.name, 7) }}</div>
-                        </div>
-                        <div class="li-font-task-flight">
-                          <div class="font-label">任务航班：</div>
-                          <div v-if="item.flightNos" class="font-flight-div">
-                            <div class="font-flight"><p>{{ item.flightNos }}</p></div>
+                    <div v-if="((!taskOnline) && (!taskFree)) || (taskOnline && item.online && (!taskFree)) || (taskFree && (!item.taskReceivedUnFinishCount) && !taskOnline) || (taskFree && (!item.taskReceivedUnFinishCount) && taskOnline && item.online)" class="task-list-li">
+                      <div class="li-info">
+                        <div class="li-name">
+                          <div class="name-name">
+                            <div class="name-font" :title="item.name">{{item.name}}</div>
+                            <div :class="['name-online', item.online?'online':'offline']" :title="item.online?'在线':'离线'"></div>
                           </div>
+                          <div class="name-count">
+                            <div class="count-all">
+                              <div>全</div>
+                              <div>{{item.taskAllCount}}</div>
+                            </div>
+                            <div class="count-fin">
+                              <div>完</div>
+                              <div>{{item.taskReceivedFinishedCount}}</div>
+                            </div>
+                            <div class="count-unf">
+                              <div>未</div>
+                              <div>{{item.taskReceivedUnFinishCount}}</div>
+                            </div>
+                            <div class="count-ref">
+                              <div>拒</div>
+                              <div>{{item.taskRefusedCount}}</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div v-if="item.flightTaskDistributed" class="li-task">
+                          <div v-for="(task, index) in (item.show ? item.flightTaskDistributed : item.flightTaskDistributed.slice(0, 3))" :key="index" class="task-div">
+                            <div class="task-flt">{{task.flightNo}}</div>
+                            <div class="task-task">{{task.taskCn}}</div>
+                            <div v-if="task.operationTime" class="task-opr">
+                              <div class="opr-cur">{{task.currState}}:</div>
+                              <div class="opr-time">{{formatterTimeHHMM(task.operationTime)}}</div>
+                            </div>
+                          </div>
+                          <div v-if="item.flightTaskDistributed.length > 3" :class="['task-arrow', item.show ? 'task-hidn-arrow' : 'task-show-arrow']"
+                          @click="item.show = !item.show"></div>
                         </div>
                       </div>
                       <div class="li-img">
-                        <div :class="item.taskCss + ' img-flag'"></div>
-                        <div :class="item.taskCss + ' img-font'">{{ item.taskCount }}</div>
-                        <el-popover v-if="item.type != 'Personal'" placement="left" width="398" trigger="hover">
+                        <!-- <div :class="item.taskCss + ' img-flag'"></div>
+                        <div :class="item.taskCss + ' img-font'">{{ item.taskCount }}</div> -->
+                        <el-popover v-if="item.type != 'Personal'" placement="left" width="200" trigger="hover">
                           <div class="li-img-popover">
                             <el-header>{{ item.name }}</el-header>
                             <el-main>
                               <ul>
                                 <li v-for="emp in teamEmpArr" :key="emp.teamEmpId">
                                   <div class="task-list-li">
-                                    <div class="li-head">
-                                      <div :class="`${emp.online?'':'head-no-online '}Personal`"></div>
-                                    </div>
-                                    <div class="li-font">
-                                      <div class="li-font-name">
-                                        <div :class="emp.online?'font-online':'font-no-online'">{{ emp.online?'[在线]':'[离线]' }}</div>
-                                        <div class="font-name">
-                                          {{ substrValue(emp.name, 7) }}</div>
-                                      </div>
-                                      <div class="li-font-task-flight">
-                                        <div class="font-label">任务航班：</div>
-                                        <div v-if="emp.flightNos" class="font-flight-div">
-                                          <div class="font-flight"><p>{{ emp.flightNos }}</p></div>
+                                    <div class="li-info">
+                                      <div class="li-name">
+                                        <div class="name-name">
+                                          <div class="name-font" :title="emp.name">{{emp.name}}</div>
+                                          <div :class="['name-online', emp.online?'online':'offline']"></div>
                                         </div>
                                       </div>
-                                    </div>
-                                    <div class="li-img">
-                                      <div :class="emp.taskCss + ' img-flag'"></div>
-                                      <div :class="emp.taskCss + ' img-font'">{{ emp.taskCount }}</div>
                                     </div>
                                   </div>
                                 </li>
@@ -754,8 +840,9 @@ import wholeTableMixin from '../../components/mixin/flightTableMixin'
 import basicMsgMixin from '../../components/mixin/basicMsgMixin'
 import webSocketMixin from '../../components/mixin/webSocketMixin'
 import {postDataOther, queryAll, postData, getQueryAll} from '../../api/base.js'
-import {compareSort} from '../../util/util.js'
+import {compareSort, objKeySort} from '../../util/util.js'
 import colResizable1 from '../../../static/colResizable-1.6.js'
+import {helper} from '@/util/helper.js'
 import _ from 'lodash'
 
 export default {
@@ -767,7 +854,7 @@ export default {
   mixins: [baseMixin, basicTableMixin, basicMsgMixin, wholeTableMixin, webSocketMixin],
   data () {
     return {
-      onlineStatusIntervalTime: 10 * 1000,
+      onlineStatusIntervalTime: 30 * 1000, // 修改
       resGanttOpenWin: null,
       flightGanttOpenWin: null,
       // 操作table宽度
@@ -941,6 +1028,9 @@ export default {
       },
       // 右侧任务下拉框数据
       taskArr: [],
+      taskShowArr: [],
+      taskEnArr: {},
+      moreTask: false,
       // 右侧班组人员列表
       rightDrag: [],
       // 根据班组Id获取人员路径
@@ -1052,7 +1142,8 @@ export default {
       tableCompData: {
         index: 0,
         length: 0
-      }
+      },
+      teamTimer: null
     }
   },
   watch: {
@@ -1075,7 +1166,7 @@ export default {
     this.preAuthority()
   },
   mounted () {
-    this.timer = setInterval(this.handleQueryTeam, this.onlineStatusIntervalTime)
+    this.teamTimer = setInterval(this.handleQueryTeam, this.onlineStatusIntervalTime)
     window.name = this.$route.name
     this.deptName = localStorage.getItem('deptName')
     const that = this
@@ -1105,6 +1196,17 @@ export default {
   computed: {
     tableShowData () {
       return this.tableData.data.slice(this.tableCompData.index, this.tableCompData.index + this.tableCompData.length)
+    },
+    filterRightDrag () {
+      let arr = []
+      if (this.rightQueryData.name) {
+        arr = _.filter(this.rightDrag, (o) => {
+          return o.name.includes(this.rightQueryData.name)
+        })
+      } else {
+        arr = this.rightDrag
+      }
+      return arr
     }
   },
   methods: {
@@ -1114,8 +1216,8 @@ export default {
       let that = this
       oprTableBody.onscroll = function () {
         var oprTableTop = this.scrollTop
-        that.tableCompData.index = Math.floor(oprTableTop / 50)
-        let top = oprTableTop % 50
+        that.tableCompData.index = Math.floor(oprTableTop / 68)
+        let top = oprTableTop % 68
         document.getElementsByClassName('div-right-table_body')[0].scrollTop = top
         document.getElementsByClassName('div-left-table_body')[0].scrollTop = top
         if (that.showTaskDivId) {
@@ -1238,10 +1340,10 @@ export default {
       this.clickTaskDiv = true
       this.setTaskDivId(index, prop)
     },
-    queryAllData (flag, status) {
+    queryAllData: _.throttle(function (flag, status) {
       this.queryDataReq(status)
       this.handleQueryTeam(flag)
-    },
+    }, 3000),
     customUpdateTableWidth (otherFieldsWidth) {
       $('.right-table_header').colResizable(this.resizeConf, otherFieldsWidth)
     },
@@ -1277,7 +1379,7 @@ export default {
     setRowIndex ({row, rowIndex}) {
       row.index = rowIndex
     },
-    handleQueryTeam (flag) {
+    handleQueryTeam: _.debounce(function (flag) {
       localStorage.setItem('resGanttTaskNo', this.rightQueryData.taskNo)
       queryAll(this.rightUrl, this.rightQueryData).then(response => {
         if (response.data.code == 0) {
@@ -1292,21 +1394,58 @@ export default {
               }
             })
           }
+          this.rightDrag.forEach(item => {
+            if (item.show) {
+              let index = _.findIndex(response.data.data, ['id', item.id])
+              response.data.data[index].show = true
+            }
+          })
           this.rightDrag = response.data.data
           this.selectTaskSort(null, flag)
-         /*  this.taskArr = response.data.data
+        /*  this.taskArr = response.data.data
           if (this.taskArr.length > 0) {
             this.rightQueryData.taskNo = this.taskArr[0]
           } */
         }
       })
-    },
+    }, 1000),
     getTaskSelectOptions () {
       this.taskArr = this.$store.getters.getTaskColOption
       if (this.taskArr.length > 0) {
-        this.rightQueryData.taskNo = this.taskArr[0].key
+        for (let i = 0; i < this.taskArr.length - 1; i++) {
+          if (['N', 'V'].includes(this.taskArr[i].type)) {
+            this.taskShowArr.push(this.taskArr[i])
+            if (this.taskShowArr.length >= 3) {
+              break
+            }
+          }
+        }
+        this.rightQueryData.taskNo = (this.taskShowArr.length > 0) ? this.taskShowArr[0].key : this.taskArr[0].key
+        this.taskArr.forEach(task => {
+          if (!_.find(this.taskShowArr, ['key', task.key])) {
+            let firstEn = window.pinyinUtil.getFirstLetter(task.label.charAt(0))
+            if (!this.taskEnArr[firstEn]) {
+              this.$set(this.taskEnArr, firstEn, [])
+            }
+            this.taskEnArr[firstEn].push(task)
+          }
+        })
+        this.taskEnArr = objKeySort(this.taskEnArr)
         this.handleQueryTeam()
       }
+    },
+    clickMoreTask (task) {
+      if (task) {
+        this.onlineStatusIntervalTime = 10 * 1000
+        this.rightQueryData.taskNo = task.key
+        this.moreTask = false
+      } else {
+        this.onlineStatusIntervalTime = 30 * 1000
+        this.rightQueryData.taskNo = ''
+      }
+      clearInterval(this.teamTimer)
+      this.teamTimer = setInterval(this.handleQueryTeam, this.onlineStatusIntervalTime)
+      this.handleQueryTeam('change')
     },
     getTaskCol () {
       let options = this.$store.getters.getTaskColOption
@@ -1318,15 +1457,15 @@ export default {
     // 拖拽触发事件相关
     dragFlight (event) {
       event.dataTransfer.setData('afid', event.target.id)
+      event.dataTransfer.setData('task', event.target.dataset.task)
       this.$set(this.taskFlightData.data, 'flightNoA', event.target.dataset.flighta)
       this.$set(this.taskFlightData.data, 'flightNoD', event.target.dataset.flightd)
+      this.$set(this.taskFlightData.data, 'taskName', event.target.dataset.taskname)
     },
     dragData (event) {
       event.dataTransfer.setData('dataId', event.target.id)
       event.dataTransfer.setData('type', event.target.dataset.type)
-      event.dataTransfer.setData('task', event.target.dataset.task)
       this.$set(this.taskFlightData.data, 'name', event.target.dataset.name)
-      this.$set(this.taskFlightData.data, 'taskName', event.target.dataset.taskname)
     },
     dropFlight (event) {
       event.preventDefault()
@@ -1334,8 +1473,9 @@ export default {
       if (dataId) {
         this.$set(this.taskFlightData.data, 'flightNoA', event.currentTarget.dataset.flighta)
         this.$set(this.taskFlightData.data, 'flightNoD', event.currentTarget.dataset.flightd)
+        this.$set(this.taskFlightData.data, 'taskName', event.currentTarget.dataset.taskname)
         let type = event.dataTransfer.getData('type')
-        let taskNo = event.dataTransfer.getData('task')
+        let taskNo = event.currentTarget.dataset.task
         let afid = event.currentTarget.id
         let item = null
         item = _.find(this.tableData.data, ['afid', afid])
@@ -1358,12 +1498,11 @@ export default {
     dropData (event) {
       event.preventDefault()
       let afid = event.dataTransfer.getData('afid')
+      let taskNo = event.dataTransfer.getData('task')
       if (afid) {
         let target = this.getTargetLi(event.target)
         this.$set(this.taskFlightData.data, 'name', target.dataset.name)
-        this.$set(this.taskFlightData.data, 'taskName', target.dataset.taskname)
         let dataId = target.id
-        let taskNo = target.dataset.task
         let type = target.dataset.type
         let item = null
         item = _.find(this.tableData.data, ['afid', afid])
@@ -1476,7 +1615,7 @@ export default {
           }
         })
       }
-      this.rightDrag = _.orderBy(this.rightDrag, ['online', 'taskCount'], ['desc', sort])
+      this.rightDrag = _.orderBy(this.rightDrag, ['online', 'taskAllCount'], ['desc', sort])
       // this.rightDrag.sort(compareSort('taskCount', sort))
     },
     // 筛选任务在线状态
@@ -1648,6 +1787,7 @@ export default {
               obj = item
             }
           })
+          // this.preData.preFilterArr = _.filter(this.preData.preGetArr, [obj.key, this.preData.filterValue])
           this.preData.preFilterArr = _.filter(this.preData.preGetArr, (item) => {
             return ~item[obj.name].indexOf(this.preData.filterValue)
           })
@@ -1949,7 +2089,7 @@ export default {
           TEAM_EMPS: [],
           STAND: [],
           FLIGHTS: []
-    }
+      }
       this.getPreTask()
     },
     // 清空全部数据
@@ -1975,6 +2115,10 @@ export default {
     },
     setTaskDivId (index, prop) {
       this.showTaskDivId = `el-popover-${index}-${prop}`
+    },
+    // 格式化 HH:MM
+    formatterTimeHHMM (time) {
+      return time ? time.substr(11, 5) : '--:--'
     }
   }
   // computed: {
@@ -2009,10 +2153,10 @@ export default {
 /* ****************航班列表/班组列表 宽高begin**************** */
 .tasksched-table-container1 {
   margin-right: 16px;
-  width: calc(100% - 430px);
+  width: calc(100% - 460px);
 }
 .tasksched-table-container2 {
-  width: 410px;
+  width: 440px;
 }
 /* ****************航班列表/班组列表 宽高end**************** */
 /* **********************任务table字体样式开始********************** */
@@ -2032,12 +2176,12 @@ export default {
 }
 /* *******任务table背景颜色开始******** */
 .right-table_body tr>div:not(.body-tr-div-no-task) {
-  height: 30px !important;
-  padding: 9px 5px;
+  height: 52px !important;
+  padding: 8px 5px 6px 5px;
 }
 .right-table_body tr>.body-tr-div-no-task,
 .right-table_body tr>.body-tr-div-no-task>td>div {
-  height: 48px !important;
+  height: 66px !important;
 }
 .right-table_body .body-tr-div-hidden {
   padding: 0;
@@ -2050,6 +2194,15 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.right-table_body .body-tr-div .task-emp-name-div {
+  width: 100%;
+  height: 16px;
+  line-height: 16px;
+  font-size: 16px;
+  color: #73c7e6;
+  text-align: left;
+  margin-top: 3px;
 }
 .right-table_body .body-tr-div .task-field-div:hover {
   color: #fff;
@@ -2092,74 +2245,6 @@ export default {
 .tip-edit {
   background: url('./../../assets/img/icon_menu_edit.png');
 }
-/* 正常完成 */
-.tasksched-table-container1 .right-table_body .NormalFinished {
-  background-color: #03a786;
-}
-/* 超时完成 */
-.tasksched-table-container1 .right-table_body .OvertimeFinished {
-  background-color: #e65069;
-}
-/* 保障异常 */
-.tasksched-table-container1 .right-table_body .ExceptionFinished {
-  background-color: #fdcf53;
-}
-/* 正在保障(动态) */
-.tasksched-table-container1 .right-table_body .Ensuring {
-  background-color: #03a786;
-}
-/* 正在保障超时(动态) */
-.tasksched-table-container1 .right-table_body .EnsureOvertime {
-  background-color: #e65069;
-}
-/* 正在保障异常(动态) */
-.tasksched-table-container1 .right-table_body .EnsureException {
-  background-color: #fdcf53;
-}
-/* 黄点 */
-.yellow-spot {
-  width: 8px;
-  height: 8px !important;
-  background: #fdcf53;
-  border-radius: 50%;
-  position: relative;
-  float: right;
-  right: -4px;
-  top: -38px;
-}
-/* 拒绝戳 */
-.refuse-spot {
-  width: 24px;
-  height: 24px !important;
-  position: relative;
-  float: right;
-  right: -12px;
-  top: -45px;
-  background-image: url('../../assets/img/tg_reject.png');
-  z-index: 50;
-}
-/* 未分配(黄点) */
-.tasksched-table-container1 .right-table_body .NoDistribute {
-  background-color: #45738f;
-}
-/* 已分配未接受 */
-.tasksched-table-container1 .right-table_body .Distributed {
-  background-color: #45738f;
-}
-/* 已接受未执行 */
-.tasksched-table-container1 .right-table_body .Accepted {
-  background-color: #7eb3d6;
-}
-/* 已接受未开始异常 */
-.tasksched-table-container1 .right-table_body .AcceptedException {
-  background-color: #7eb3d6;
-  border: 2px solid #fdcf53;
-}
-/* 已接受未开始超时 */
-.tasksched-table-container1 .right-table_body .AcceptedOvertime {
-  background-color: #7eb3d6;
-  border: 2px solid #e65069;
-}
 /* ****任务table背景颜色结束**** */
 /* **********************任务table字体样式结束********************** */
 /* *************************右侧班组列表开始************************** */
@@ -2170,10 +2255,70 @@ export default {
   height: 80px !important;
   line-height: 0 !important;
 }
-.tasksched-task-header div {
+.tasksched-task-header>div:first-child {
   height: 32px;
   margin: 5px 0 !important;
   width: 100% !important;
+}
+.tasksched-task-header>div:last-child {
+  margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+}
+.tasksched-task-header div:last-child>div {
+  width: fit-content;
+}
+.tasksched-task-header .left-task>div,
+.tasksched-task-header .right-task>div,
+.tasksched-task-header .right-task>span>div {
+  padding: 0 5px;
+}
+.tasksched-task-header .left-task>div {
+  margin-right: 5px;
+  max-width: 60px;
+  font-size: 14px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.tasksched-task-header .right-task>div {
+  font-size: 14px;
+  max-width: 96px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.tasksched-task-header .right-task>div:not(:first-child) {
+  margin-right: 12px;
+}
+.tasksched-task-header .left-task {
+  /* margin-right: 40px; */
+  display: flex;
+}
+.tasksched-task-header .right-task {
+  display: flex;
+  flex-direction: row-reverse;
+}
+.task-popover {
+  margin: 20px 10px 10px 20px;
+  flex-wrap: wrap;
+  height: 400px;
+  overflow-x: hidden;
+}
+.task-popover>div>div:first-child {
+  color: #7a939e;
+  font-size: 16px;
+}
+.task-popover>div>div {
+  display: flex;
+}
+.task-popover>div>div>div {
+  padding-left: 10px;
+  padding-right: 10px;
+  flex-grow: 0;
+  margin-bottom: 10px;
+  margin-right: 10px;
 }
 /* body */
 .tasksched-table-container2>.el-main {
@@ -2197,16 +2342,169 @@ export default {
   overflow-y: scroll;
 }
 .task-list-li {
-  height: 60px;
+  /* height: 60px; */
   background: rgba(54, 140, 180, 0.4);
   border-radius: 8px;
   margin: 0 0 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .task-list-li:hover {
   background: rgba(54, 140, 180, .6);
 }
 .task-list-li div {
   float: left;
+}
+/* 左侧 */
+.li-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: calc(100% - 40px);
+}
+/* 头部 */
+.li-name {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.li-name .name-name {
+  display: flex;
+  align-items: center;
+  margin: 12px 0 15px 10px;
+  width: calc(100% - 210px);
+}
+.li-name .name-name .name-font {
+  color: #fff;
+  font-size: 16px;
+  line-height: 16px;
+  height: 16px;
+  margin-right: 6px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: calc(100% - 36px);
+  overflow: hidden;
+}
+.li-img-popover .li-info {
+  width: calc(100% - 12px);
+}
+.li-img-popover .li-name .name-name {
+  width: calc(100%);
+  justify-content: space-between;
+}
+.li-img-popover .li-name .name-name .name-font {
+  width: calc(100% - 36px);
+  overflow: hidden;
+}
+.li-name .name-name .name-online {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.name-online.online {
+  background-color: #03BF99;
+}
+.name-online.offline {
+  background-color: #768F9A;
+}
+.li-name .name-count {
+  display: flex;
+  margin: 12px 0 15px 0;
+}
+.li-name .name-count>div {
+  display: flex;
+}
+.li-name .name-count>div>div:first-child {
+  font-size: 14px;
+  line-height: 16px;
+  height: 16px;
+  margin-right: 6px;
+  font-weight:400;
+}
+.li-name .name-count>div>div:last-child {
+  font-size: 18px;
+  line-height: 16px;
+  height: 16px;
+  font-weight: 400;
+  margin-right: 10px;
+  width: 20px;
+}
+.li-name .name-count .count-all {
+  color: #03bf99;
+}
+.li-name .name-count .count-fin {
+  color: #32AAFF;
+}
+.li-name .name-count .count-unf {
+  color: #10B5CE;
+}
+.li-name .name-count .count-ref {
+  color: #F2536D;
+}
+/* 任务 */
+.li-task {
+  display: flex;
+  flex-direction: column;
+}
+.li-task .task-div {
+  display: flex;
+  font-size: 14px;
+  line-height: 14px;
+  font-weight: bold;
+  margin: 0 0 8px 12px;
+}
+.li-task .task-arrow {
+  height: 16px;
+  position: relative;
+}
+.li-task .task-arrow:before,
+.li-task .task-arrow:after {
+  content: '';
+  display: block;
+  background: #3DA6CC;
+  position: absolute;
+  border-radius: 6px;
+  width: 2px;
+  height: 9px;
+}
+.li-task .task-show-arrow:before {
+  transform: rotate(-45deg);
+  left: calc(50% + 20px - 3px);
+}
+.li-task .task-show-arrow:after {
+  transform: rotate(45deg);
+  left: calc(50% + 20px + 3px);
+}
+.li-task .task-hidn-arrow:before {
+  transform: rotate(45deg);
+  left: calc(50% + 20px - 3px);
+}
+.li-task .task-hidn-arrow:after {
+  transform: rotate(-45deg);
+  left: calc(50% + 20px + 3px);
+}
+.li-task .task-div>div {
+  border-radius: 4px;
+}
+.li-task .task-div>div:not(:last-child) {
+  margin-right: 6px;
+}
+.li-task .task-div .task-flt,
+.li-task .task-div .task-task {
+  color: #060d14;
+  background-color: #fdcf53;
+  padding: 2px 6px;
+}
+.li-task .task-div .task-opr {
+  display: inline-flex;
+  color: #fff;
+  background-color: #51A7C7;
+  padding: 2px 5px;
+}
+.li-task .task-div .task-opr>div:first-child {
+  margin-right: 6px;
 }
 /* 头像 */
 .li-head {
@@ -2288,9 +2586,9 @@ export default {
 }
 /* 标志&按钮 */
 .li-img {
-  width: 90px;
+  width: 30px;
   height: 30px;
-  margin: 15px 5px;
+  margin: 0 5px;
   float: right !important;
 }
 .li-img .li-img-img {
@@ -2834,6 +3132,87 @@ export default {
 /* **************************弹出框设置结束************************** */
 </style>
 <style>
+/* 任务块背景颜色开始 */
+/* 正常完成 */
+.tasksched-table-container1 .right-table_body .NormalFinished,
+.legend-popover .NormalFinished {
+  background-color: #03a786;
+}
+/* 超时完成 */
+.tasksched-table-container1 .right-table_body .OvertimeFinished,
+.legend-popover .OvertimeFinished {
+  background-color: #e65069;
+}
+/* 保障异常 */
+.tasksched-table-container1 .right-table_body .ExceptionFinished,
+.legend-popover .ExceptionFinished {
+  background-color: #fdcf53;
+}
+/* 正在保障(动态) */
+.tasksched-table-container1 .right-table_body .Ensuring,
+.legend-popover .Ensuring {
+  background-color: #03a786;
+}
+/* 正在保障超时(动态) */
+.tasksched-table-container1 .right-table_body .EnsureOvertime,
+.legend-popover .EnsureOvertime {
+  background-color: #e65069;
+}
+/* 正在保障异常(动态) */
+.tasksched-table-container1 .right-table_body .EnsureException,
+.legend-popover .EnsureException {
+  background-color: #fdcf53;
+}
+/* 黄点 */
+.yellow-spot {
+  width: 8px;
+  height: 8px !important;
+  background: #fdcf53;
+  border-radius: 50%;
+  position: relative;
+  float: right;
+  left: calc(100% - 4px);
+  top: -56px;
+}
+/* 拒绝戳 */
+.refuse-spot {
+  width: 24px;
+  height: 24px !important;
+  position: relative;
+  float: right;
+  left: calc(100% - 14px);
+  top: -64px;
+  background-image: url('../../assets/img/tg_reject.png');
+  z-index: 50;
+}
+/* 未分配(黄点) */
+.tasksched-table-container1 .right-table_body .NoDistribute,
+.legend-popover .NoDistribute {
+  background-color: #45738f;
+}
+/* 已分配未接受 */
+.tasksched-table-container1 .right-table_body .Distributed,
+.legend-popover .Distributed {
+  background-color: #45738f;
+}
+/* 已接受未执行 */
+.tasksched-table-container1 .right-table_body .Accepted,
+.legend-popover .Accepted {
+  background-color: #7eb3d6;
+}
+/* 已接受未开始异常 */
+.tasksched-table-container1 .right-table_body .AcceptedException,
+.legend-popover .AcceptedException {
+  background-color: #7eb3d6;
+  border: 2px solid #fdcf53;
+}
+/* 已接受未开始超时 */
+.tasksched-table-container1 .right-table_body .AcceptedOvertime,
+.legend-popover .AcceptedOvertime {
+  background-color: #7eb3d6;
+  border: 2px solid #e65069;
+}
+/* 任务块背景颜色结束 */
 .task-pre-dialog .el-timepicker>.el-input>.el-input__inner {
   height: 32px !important;
   text-align: left;
@@ -2855,5 +3234,56 @@ export default {
 }
 .el-time-range-picker__body {
   border: 1px solid rgba(60, 166, 200, 0.6) !important;
+}
+/* 图例 */
+.legend-popover {
+  padding: 20px;
+}
+.legend-popover>.font {
+  color: #7a939e;
+  font-size: 16px;
+  height: 16px;
+  text-align: center;
+}
+.legend-popover>.task-info>div:first-child {
+  height: 96px;
+}
+.legend-popover>.task-info>div:not(:last-child) {
+  border-bottom: 1px solid rgba(122, 147, 158, .3);
+}
+.legend-popover>.task-info>div {
+  display: flex;
+  justify-content: space-around;
+}
+.legend-popover>.task-info>div>div {
+  width: 33%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  text-align: center;
+  color: #fff;
+  padding: 20px 0;
+  position: relative;
+  height: fit-content;
+}
+.legend-popover>.task-info .task-div {
+  width: 50px;
+  height: 24px;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 12px;
+}
+.legend-popover>.task-info .task-status {
+  height: fit-content;
+}
+.legend-popover>.task-info .yellow-spot {
+  left: 24px;
+  top: -57px;
+}
+.legend-popover>.task-info .refuse-spot {
+  left: 24px;
+  top: -64px;
 }
 </style>

@@ -62,7 +62,7 @@ export default {
           {key: 'briefE', label: '英文简称', type: 'input', maxlength: 50},
           {key: 'nameC', label: '中文全称', type: 'input', maxlength: 50},
           {key: 'nameE', label: '英文全称', type: 'input', maxlength: 50},
-          {key: 'mainAirline', label: '主航空公司', type: 'select', filterable: true, clearable: true, getOptions: 'basicdata/airline/queryAll', itemKey: 'airlineIata', itemLabel: 'briefC'},
+          {key: 'mainAirline', label: '主航空公司', type: 'select', filterable: true, getOptions: 'basicdata/airline/queryAll', itemKey: 'airlineIata', itemLabel: 'briefC'},
           {key: 'sortkey', label: '排序码', type: 'input'},
           {key: 'remark', label: '备注', type: 'textarea', autosize: true, maxlength: 100}
         ],

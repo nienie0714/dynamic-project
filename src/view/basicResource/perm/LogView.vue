@@ -77,15 +77,19 @@ export default {
       queryList: [
         {
           // 'p': '用户名',
-          key: 'logType',
+          key: 'logSummary',
           value: '',
-          type: 'select',
-          filterable: true,
-          optKey: 'logType',
-          optLabel: 'logSummary',
+          type: 'input',
           inputText: '日志类型',
-          getOptions: '/basicdata/sysLog/queryLogType',
           span: 4
+          // value: '',
+          // type: 'select',
+          // filterable: true,
+          // optKey: 'logType',
+          // optLabel: 'logSummary',
+          // inputText: '日志类型',
+          // getOptions: '/basicdata/sysLog/queryLogType',
+          // span: 4
         },
         {
           // 'p': '用户名',

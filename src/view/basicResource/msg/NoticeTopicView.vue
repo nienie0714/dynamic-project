@@ -71,12 +71,16 @@ export default {
         {
           // 'p': '通告主题',
           key: 'topic',
-          value: null,
-          type: 'select',
-          filterable: true,
+          value: '',
+          type: 'input',
           inputText: '通告主题',
-          getOptions: '/message/noticeTopic/queryNoRepeatTopic',
-          span: 3
+          span: 4
+          // value: null,
+          // type: 'select',
+          // filterable: true,
+          // inputText: '通告主题',
+          // getOptions: '/message/noticeTopic/queryNoRepeatTopic',
+          // span: 3
         }
       ],
       // 列表设置

@@ -92,16 +92,20 @@ export default {
           span: 4
         }, {
           // p: '所在班组',
-          key: 'unitId',
+          key: 'unitName',
           value: '',
-          type: 'select',
-          filterable: true,
+          type: 'input',
           inputText: '所在班组',
-          getOptions: '/organization/teamUnit/queryAll',
-          optKey: 'unitId',
-          optLabel: 'unitName',
-          filterKeys: ['unitId', 'unitName'],
           span: 4
+          // value: '',
+          // type: 'select',
+          // filterable: true,
+          // inputText: '所在班组',
+          // getOptions: '/organization/teamUnit/queryAll',
+          // optKey: 'unitId',
+          // optLabel: 'unitName',
+          // filterKeys: ['unitId', 'unitName'],
+          // span: 4
         }
       ],
       // 列表设置

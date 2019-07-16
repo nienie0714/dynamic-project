@@ -81,13 +81,18 @@ export default {
           // 'p': '资源编号',
           key: 'resourceNo',
           value: '',
-          type: 'select',
-          filterable: true,
-          // optKey: 'resourceNo',
-          // optLabel: 'resourceNo',
+          type: 'input',
           inputText: '资源编号',
-          getOptions: '/airportResource/terminalResource/queryAllWithoutRepeat',
+          toUpper: true,
           span: 4
+          // value: '',
+          // type: 'select',
+          // filterable: true,
+          // // optKey: 'resourceNo',
+          // // optLabel: 'resourceNo',
+          // inputText: '资源编号',
+          // getOptions: '/airportResource/terminalResource/queryAllWithoutRepeat',
+          // span: 4
         }, {
           // 'p': '资源类型',
           key: 'resourceType',

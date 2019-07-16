@@ -82,32 +82,44 @@ export default {
         {
           key: 'exceptionName',
           value: '',
-          type: 'select',
+          type: 'input',
           inputText: '模板名称',
-          getOptions: '/taskbasic/taskExceptions/queryExceptionName',
-          span: 4,
-          filterable: true
+          span: 4
+          // value: '',
+          // type: 'select',
+          // inputText: '模板名称',
+          // getOptions: '/taskbasic/taskExceptions/queryExceptionName',
+          // span: 4,
+          // filterable: true
         }, {
           // 'p': '模板类型',
           key: 'classify',
-          tabsKey: 'exceptionClassify',
-          value: null,
-          type: 'select',
-          inputText: '模板类型',
-          span: 4,
-          optKey: 'key',
-          optLabel: 'value',
-          filterable: true
-        }, {
-          key: 'taskNo',
           value: '',
-          type: 'select',
+          type: 'input',
+          inputText: '模板类型',
+          span: 4
+          // tabsKey: 'exceptionClassify',
+          // value: null,
+          // type: 'select',
+          // inputText: '模板类型',
+          // span: 4,
+          // optKey: 'key',
+          // optLabel: 'value',
+          // filterable: true
+        }, {
+          key: 'taskName',
+          value: '',
+          type: 'input',
           inputText: '任务',
-          getOptions: 'taskbasic/tasks/queryAll',
-          span: 4,
-          optKey: 'taskNo',
-          optLabel: 'taskCn',
-          filterable: true
+          span: 4
+          // value: '',
+          // type: 'select',
+          // inputText: '任务',
+          // getOptions: 'taskbasic/tasks/queryAll',
+          // span: 4,
+          // optKey: 'taskNo',
+          // optLabel: 'taskCn',
+          // filterable: true
         }
       ],
       // 列表设置

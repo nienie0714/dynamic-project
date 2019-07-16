@@ -106,7 +106,7 @@ export default {
       wholeWidth.style.width = window.innerWidth - 20 + 'px'
     },
     // 发送查询请求
-    queryDataReq (status) {
+    queryDataReq: _.throttle(function (status) {
       /* this.tableData.loading = true */
       this.axiosArr.forEach(ever => {
         this.removePending(ever)
@@ -146,7 +146,7 @@ export default {
           this.showError('获取列表数据', '请重新尝试')
         }
       })
-    },
+    }, 3000),
     customQueryBefore (data) {
       return data
     },
@@ -348,7 +348,7 @@ export default {
         if (response.data.code == 0) {
           var result = 0
           var showflightfields = []
-          let hiddenflightfields = this.tableData.fields.slice(this.leftAutoNum)
+          let hiddenflightfields = _this.tableData.fields.slice(_this.leftAutoNum)
           response.data.data.flightFields.forEach(item => {
             result = -1
             for (let i = 0; i < hiddenflightfields.length; i++) {
@@ -365,13 +365,13 @@ export default {
           hiddenflightfields.forEach(item => {
             item.hidden = true
           })
-          this.tableData.fields.splice(this.leftAutoNum, this.tableData.fields.length - this.leftAutoNum)
-          this.tableData.fields = this.tableData.fields.concat(showflightfields, hiddenflightfields)
+          _this.tableData.fields.splice(_this.leftAutoNum, _this.tableData.fields.length - _this.leftAutoNum)
+          _this.tableData.fields = _this.tableData.fields.concat(showflightfields, hiddenflightfields)
 
-          if (this.rightAutoNum) {
-            let key = this.customOtherFields()
+          if (_this.rightAutoNum) {
+            let key = _this.customOtherFields()
             let showFlightOtherFields = []
-            let hiddenFlightOtherfields = this.tableData[key].slice(0, this.rightAutoNum)
+            let hiddenFlightOtherfields = _this.tableData[key].slice(0, _this.rightAutoNum)
 
             response.data.data[key].forEach(item => {
               result = -1
@@ -389,10 +389,10 @@ export default {
             hiddenFlightOtherfields.forEach(item => {
               item.hidden = true
             })
-            this.tableData[key].splice(0, this.rightAutoNum, ...showFlightOtherFields, ...hiddenFlightOtherfields)
+            _this.tableData[key].splice(0, _this.rightAutoNum, ...showFlightOtherFields, ...hiddenFlightOtherfields)
 
             let showotherFields = []
-            let hiddenotherFields = this.tableData[key].slice(this.rightAutoNum)
+            let hiddenotherFields = _this.tableData[key].slice(_this.rightAutoNum)
             response.data.data[key].forEach(item => {
               result = -1
               for (let i = 0; i < hiddenotherFields.length; i++) {
@@ -409,11 +409,11 @@ export default {
             hiddenotherFields.forEach(item => {
               item.hidden = true
             })
-            this.tableData[key].splice(this.rightAutoNum, this.tableData[key].length - this.rightAutoNum, ...showotherFields, ...hiddenotherFields)
+            _this.tableData[key].splice(_this.rightAutoNum, _this.tableData[key].length - _this.rightAutoNum, ...showotherFields, ...hiddenotherFields)
           } else {
-            let key = this.customOtherFields()
+            let key = _this.customOtherFields()
             let showotherFields = []
-            let hiddenotherFields = this.tableData[key]
+            let hiddenotherFields = _this.tableData[key]
             response.data.data[key].forEach(item => {
               result = -1
               for (let i = 0; i < hiddenotherFields.length; i++) {
@@ -430,7 +430,7 @@ export default {
             hiddenotherFields.forEach(item => {
               item.hidden = true
             })
-            this.tableData[key] = showotherFields.concat(hiddenotherFields)
+            _this.tableData[key] = showotherFields.concat(hiddenotherFields)
           }
           /* var showtaskfields = []
           var hiddentaskfields = _this.tableData.taskFields

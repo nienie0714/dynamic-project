@@ -13,7 +13,7 @@ export default {
       intervalTime: 1000
     }
   },
-  mounted () {
+  created () {
     var _this = this
     getQueryAll('/', null).then(res => {
       this.newTime = new Date(res.headers.date)

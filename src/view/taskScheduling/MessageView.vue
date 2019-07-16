@@ -425,6 +425,52 @@
       <div :class="taskMsg.data.length - taskMsg.index - 1 > 0 ? 'div-button-usabled' : 'div-button div-disabled'" @click="taskMsg.data.length - taskMsg.index - 1 > 0 && changeMsgTaskIndex(1)">下一条({{taskMsg.data.length - taskMsg.index - 1}})</div>
     </div>
   </div>
+  <div class="msg-cont-div message-info-dialog msg-task-cont-div msg-task-trans-cont-div" v-if="taskTransMsg.data.length > 0" :style="contTaskTransStyle">
+    <div class="msg-cont-header table-header" :draggable="true" @dragstart="msgContDown($event, 'contTaskTransStyle')" @drop="msgContUp($event)" @dragover="allowDrop($event)">
+      <img :src="require('@img/title_deco.png')" />
+      <span class="header-title">任务转派申请</span>
+      <div class="unread-red-count">{{taskTransMsg.data.length}}</div>
+      <div>
+        <!-- <div class="div-button-usabled" @click="msgTaskApplyAll('N')">全部拒绝</div> -->
+        <div class="div-button-usabled" @click="msgTaskTransIgnore()">忽略全部</div>
+      </div>
+    </div>
+    <div class="msg-cont-cont msg-type-cont">
+      <div></div>
+      <div class="msg-cont-task-font">
+        <div>
+          <div>目标航班</div>
+          <div>{{taskTransMsg.data[taskTransMsg.index].flightNo}}</div>
+        </div>
+        <div>
+          <div>转派任务</div>
+          <div>{{taskTransMsg.data[taskTransMsg.index].taskCn}}</div>
+        </div>
+        <div>
+          <div>转派开始节点</div>
+          <div>{{taskTransMsg.data[taskTransMsg.index].dynamicTaskOperationCn}}</div>
+        </div>
+      </div>
+    </div>
+    <div class="msg-type-cont-nd">
+      <div>
+        <div>申请人：</div>
+        <div>{{taskTransMsg.data[taskTransMsg.index].before}}</div>
+      </div>
+      <div>
+        <div>被转派人：</div>
+        <div>{{taskTransMsg.data[taskTransMsg.index].after}}</div>
+      </div>
+    </div>
+    <div class="msg-cont-footer">
+      <div :class="taskTransMsg.index > 0 ? 'div-button-usabled' : 'div-button div-disabled'" @click="taskTransMsg.index > 0 && changeMsgTaskTransIndex(-1)">上一条({{taskTransMsg.index}})</div>
+      <div>
+        <el-button type="danger" @click="msgTaskTransApply(taskTransMsg.index, 'N')">拒绝</el-button>
+        <el-button type="primary" @click="msgTaskTransApply(taskTransMsg.index, 'Y')">同意</el-button>
+      </div>
+      <div :class="taskTransMsg.data.length - taskTransMsg.index - 1 > 0 ? 'div-button-usabled' : 'div-button div-disabled'" @click="taskTransMsg.data.length - taskTransMsg.index - 1 > 0 && changeMsgTaskTransIndex(1)">下一条({{taskTransMsg.data.length - taskTransMsg.index - 1}})</div>
+    </div>
+  </div>
 </div>
 </template>
 
@@ -648,13 +694,34 @@ export default {
         height: '250px',
         width: '600px'
       },
+      contTaskTransStyle: {
+        left: '0px',
+        right: window.innerWidth - 600 + 'px',
+        x: window.screenX + (window.outerWidth - window.innerWidth) / 2,
+        top: '0px',
+        bottom: '0px',
+        y: window.screenY + window.outerHeight - window.innerHeight,
+        height: '300px',
+        width: '600px'
+      },
       taskMsg: {
+        id: 'dynamicTaskApplyId',
         applyUrl: '/taskscheduling/taskApply/save',
         applyAllUrl: '/taskscheduling/taskApply/saveAll',
         queryUrl: '/taskscheduling/taskApply/queryApplyTaskVO',
         type: 'apply',
         subtype: 'apply.feedback.',
         precessSubtype: 'apply.process',
+        index: 0,
+        data: []
+      },
+      taskTransMsg: {
+        id: 'dynamicTransferId',
+        applyUrl: '/taskscheduling/dynamicTaskTransfer/confirm',
+        queryUrl: '/taskscheduling/dynamicTaskTransfer/queryApplyTask',
+        type: 'transfer',
+        subtype: 'transfer.feedback.',
+        precessSubtype: 'transfer.process',
         index: 0,
         data: []
       }
@@ -682,35 +749,58 @@ export default {
           res.data.data.forEach(msg => {
             let temp = {
               // time: `${this.latestDate.replace(/\//g, '-')} ${this.latestTime}`,
-              dynamicTaskApplyId: msg.dynamicTaskApplyId,
+              // dynamicTaskApplyId: msg.dynamicTaskApplyId,
               flightNo: msg.flightNo,
               taskCn: msg.taskCn,
               empName: msg.empName
             }
+            this.$set(temp, this.taskMsg.id, msg[this.taskMsg.id])
             this.taskMsg.data.push(temp)
           })
-          this.taskMsg.data = _.orderBy(this.taskMsg.data, ['dynamicTaskApplyId'], ['asc'])
+          this.taskMsg.data = _.orderBy(this.taskMsg.data, [this.taskMsg.id], ['asc'])
+        }
+      }
+    })
+    postData(this.taskTransMsg.queryUrl, {}).then(res => {
+      if (res.data.code == 0) {
+        if (res.data.data && res.data.data.length > 0) {
+          res.data.data.forEach(msg => {
+            let temp = {
+              // time: `${this.latestDate.replace(/\//g, '-')} ${this.latestTime}`,
+              // dynamicTaskTransferId: msg.dynamicTaskTransferId,
+              flightNo: msg.flightNo,
+              taskCn: msg.taskCn,
+              dynamicTaskOperationCn: msg.dynamicTaskOperationCn,
+              before: msg.before,
+              after: msg.after
+            }
+            this.$set(temp, this.taskTransMsg.id, msg[this.taskTransMsg.id])
+            this.taskTransMsg.data.push(temp)
+          })
+          this.taskTransMsg.data = _.orderBy(this.taskTransMsg.data, [this.taskTransMsg.id], ['asc'])
         }
       }
     })
     this.styleCenter('contTalkStyle', 600, 500)
     this.styleCenter('contTaskStyle', 600, 250)
+    this.styleCenter('contTaskTransStyle', 600, 300, 40)
     window.addEventListener('resize', () => {
       this.$nextTick(() => {
         return (() => {
           this.resizeStyle('contStyle')
           this.resizeStyle('contTalkStyle')
           this.resizeStyle('contTaskStyle')
+          this.resizeStyle('contTaskTransStyle')
         })()
       })
     })
   },
   methods: {
-    styleCenter (style, width, height) {
-      this[style].left = (window.innerWidth - width) / 2 + 'px'
-      this[style].right = (window.innerWidth - width) / 2 + 'px'
-      this[style].top = (window.innerHeight - height) / 2 + 'px'
-      this[style].bottom = (window.innerHeight - height) / 2 + 'px'
+    styleCenter (style, width, height, offset) {
+      this[style].left = (window.innerWidth - width) / 2 + (offset || 0) + 'px'
+      this[style].right = (window.innerWidth - width) / 2 - (offset || 0) + 'px'
+      this[style].top = (window.innerHeight - height) / 2 + (offset || 0) + 'px'
+      this[style].bottom = (window.innerHeight - height) / 2 - (offset || 0) + 'px'
     },
     resizeStyle (style) {
       var x = this[style].x
@@ -921,23 +1011,55 @@ export default {
         msg = JSON.parse(data['msg_content'])
         let temp = {
           time: `${this.latestDate.replace(/\//g, '-')} ${this.latestTime}`,
-          dynamicTaskApplyId: msg.dynamicTaskApplyId,
+          // dynamicTaskApplyId: msg.dynamicTaskApplyId,
           flightNo: msg.flightNo,
           taskCn: msg.taskCn,
           empName: msg.empName
         }
-        let obj = _.find(this.taskMsg.data, ['dynamicTaskApplyId', msg.dynamicTaskApplyId])
+        this.$set(temp, this.taskMsg.id, msg[this.taskMsg.id])
+        let obj = _.find(this.taskMsg.data, [this.taskMsg.id, msg[this.taskMsg.id]])
         if (!obj) {
           this.taskMsg.data.push(temp)
+          if (this.taskMsg.index < 0) {
+            this.taskMsg.index = 0
+          }
         }
       } else if (data['msg_type'] == this.taskMsg.type && _.startsWith(data['msg_subtype'], this.taskMsg.precessSubtype)) {
         msg = JSON.parse(data['msg_content'])
-        let idx = _.findIndex(this.taskMsg.data, ['dynamicTaskApplyId', msg.dynamicTaskApplyId])
+        let idx = _.findIndex(this.taskMsg.data, [this.taskMsg.id, msg[this.taskMsg.id]])
         if (~idx) {
           if ((idx < this.taskMsg.index) || ((idx == this.taskMsg.index) && (idx == this.taskMsg.data.length - 1))) {
             this.taskMsg.index -= 1
           }
           this.taskMsg.data.splice(idx, 1)
+        }
+      } else if (data['msg_type'] == this.taskTransMsg.type && _.startsWith(data['msg_subtype'], this.taskTransMsg.subtype)) {
+        msg = JSON.parse(data['msg_content'])
+        let temp = {
+          time: `${this.latestDate.replace(/\//g, '-')} ${this.latestTime}`,
+          // dynamicTaskTransferId: msg.dynamicTaskTransferId,
+          flightNo: msg.flightNo,
+          taskCn: msg.taskCn,
+          dynamicTaskOperationCn: msg.dynamicTaskOperationCn,
+          before: msg.before,
+          after: msg.after
+        }
+        this.$set(temp, this.taskTransMsg.id, msg[this.taskTransMsg.id])
+        let obj = _.find(this.taskTransMsg.data, [this.taskTransMsg.id, msg[this.taskTransMsg.id]])
+        if (!obj) {
+          this.taskTransMsg.data.push(temp)
+          if (this.taskTransMsg.index < 0) {
+            this.taskTransMsg.index = 0
+          }
+        }
+      } else if (data['msg_type'] == this.taskTransMsg.type && _.startsWith(data['msg_subtype'], this.taskTransMsg.precessSubtype)) {
+        msg = JSON.parse(data['msg_content'])
+        let idx = _.findIndex(this.taskTransMsg.data, [this.taskTransMsg.id, msg[this.taskTransMsg.id]])
+        if (~idx) {
+          if ((idx < this.taskTransMsg.index) || ((idx == this.taskTransMsg.index) && (idx == this.taskTransMsg.data.length - 1))) {
+            this.taskTransMsg.index -= 1
+          }
+          this.taskTransMsg.data.splice(idx, 1)
         }
       }
     },
@@ -1908,23 +2030,35 @@ export default {
     changeMsgTaskIndex (sum) {
       this.taskMsg.index += sum
     },
+    changeMsgTaskTransIndex (sum) {
+      this.taskTransMsg.index += sum
+    },
     msgTaskApply (index, flag) {
       let data = {
-        dynamicTaskApplyId: this.taskMsg.data[index].dynamicTaskApplyId,
+        // dynamicTaskApplyId: this.taskMsg.data[index].dynamicTaskApplyId,
         confirmFlag: flag
       }
+      this.$set(data, this.taskMsg.id, this.taskMsg.data[index][this.taskMsg.id])
       postData(this.taskMsg.applyUrl, data).then(res => {
         if (res.data.code == 0) {
           let msgData = {
             msg_content: JSON.stringify(data),
-            msg_subtype: 'apply.process',
-            msg_type: 'apply',
+            msg_subtype: this.taskMsg.precessSubtype,
+            msg_type: this.taskMsg.type,
             msg_sender: this.empId
           }
           postDataNone(this.sendMsgUrl, JSON.stringify(msgData)).then(res => {
           })
         } else {
           this.showError('任务申请处理', res.data.msg)
+          if (res.data.msg == '此任务申请已处理') {
+            if (index == this.taskMsg.data.length - 1) {
+              if (index > 0) {
+                this.taskMsg.index -= 1
+              }
+            }
+            this.taskMsg.data.splice(index, 1)
+          }
         }
         /* if (index == this.taskMsg.data.length - 1) {
           if (index > 0) {
@@ -1936,8 +2070,48 @@ export default {
         this.showError('任务申请处理', '请求异常')
       })
     },
+    msgTaskTransApply (index, flag) {
+      let data = {
+        // dynamicTaskTransferId: this.taskTransMsg.data[index].dynamicTaskTransferId,
+        confirmFlag: flag
+      }
+      this.$set(data, this.taskTransMsg.id, this.taskTransMsg.data[index][this.taskTransMsg.id])
+      postData(this.taskTransMsg.applyUrl, data).then(res => {
+        if (res.data.code == 0) {
+          let msgData = {
+            msg_content: JSON.stringify(data),
+            msg_subtype: this.taskTransMsg.precessSubtype,
+            msg_type: this.taskTransMsg.type,
+            msg_sender: this.empId
+          }
+          postDataNone(this.sendMsgUrl, JSON.stringify(msgData)).then(res => {
+          })
+        } else {
+          this.showError('任务转派申请处理', res.data.msg)
+          if (res.data.msg == '此任务已完成') {
+            if (index == this.taskTransMsg.data.length - 1) {
+              if (index > 0) {
+                this.taskTransMsg.index -= 1
+              }
+            }
+            this.taskTransMsg.data.splice(index, 1)
+          }
+        }
+        /* if (index == this.taskMsg.data.length - 1) {
+          if (index > 0) {
+            this.taskMsg.index -= 1
+          }
+        } */
+        // this.taskMsg.data.splice(index, 1)
+      }).catch(() => {
+        this.showError('任务转派申请处理', '请求异常')
+      })
+    },
     msgTaskIgnore () {
       this.$set(this.taskMsg, 'data', [])
+    },
+    msgTaskTransIgnore () {
+      this.$set(this.taskTransMsg, 'data', [])
     },
     msgTaskApplyAll (flag) {
       postData(this.taskMsg.applyAllUrl, {}).then(res => {
@@ -2147,36 +2321,51 @@ export default {
   flex-direction: row;
   align-items: flex-start;
 }
+.msg-task-trans-cont-div .msg-type-cont-nd {
+  margin: 0 0 16px 0;
+  display: flex;
+}
+.msg-task-trans-cont-div .msg-type-cont-nd>div {
+  display: flex;
+  width: 50%;
+  justify-content: center;
+  align-items: center;
+}
 .msg-task-cont-div .msg-type-cont>div:first-child {
   width: 124px;
   height: 124px;
   margin: 12px 0 0 24px;
+  border-radius: 50%;
   background-image: url('../../assets/img/im/animate.gif');
 }
-.msg-task-cont-div .msg-type-cont>.msg-cont-task-font {
+.msg-task-cont-div .msg-type-cont .msg-cont-task-font {
   margin: 50px 0 0 0;
   height: 46px;
   width: calc(100% - 150px);
   display: flex;
 }
-.msg-task-cont-div .msg-type-cont>.msg-cont-task-font>div {
+.msg-task-cont-div .msg-type-cont .msg-cont-task-font>div {
   width: calc(100% / 3);
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-.msg-task-cont-div .msg-type-cont>.msg-cont-task-font>div:not(:first-of-type):not(:last-of-type) {
+.msg-task-cont-div .msg-type-cont .msg-cont-task-font>div:not(:first-of-type):not(:last-of-type) {
   border-left: 1px solid rgba(60, 166, 200, 0.4);
   border-right: 1px solid rgba(60, 166, 200, 0.4);
 }
-.msg-task-cont-div .msg-type-cont>.msg-cont-task-font>div>div:first-of-type {
+.msg-task-trans-cont-div .msg-type-cont-nd>div>div:first-child,
+.msg-task-cont-div .msg-type-cont .msg-cont-task-font>div>div:first-of-type {
   color: #7a939e;
   font-size: 16px;
   line-height: 16px;
   height: 16px;
+}
+.msg-task-cont-div .msg-type-cont .msg-cont-task-font>div>div:first-of-type {
   margin-bottom: 12px;
 }
-.msg-task-cont-div .msg-type-cont>.msg-cont-task-font>div>div:last-of-type {
+.msg-task-trans-cont-div .msg-type-cont-nd>div>div:last-child,
+.msg-task-cont-div .msg-type-cont .msg-cont-task-font>div>div:last-of-type {
   color: #fff;
   font-size: 18px;
   line-height: 18px;

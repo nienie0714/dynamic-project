@@ -70,47 +70,59 @@ export default {
       queryList: [
         {
           // 'p': '接收者',
-          key: 'msgReceiver',
-          value: null,
-          type: 'select',
-          filterable: true,
+          key: 'msgReceiverName',
+          value: '',
+          type: 'input',
           inputText: '接收者',
-          getOptions: '/organization/employee/queryAllByEmpId',
-          optKey: 'empId',
-          optLabel: 'empName',
-          span: 3
+          span: 4
+          // value: null,
+          // type: 'select',
+          // filterable: true,
+          // inputText: '接收者',
+          // getOptions: '/organization/employee/queryAllByEmpId',
+          // optKey: 'empId',
+          // optLabel: 'empName',
+          // span: 3
         }, {
           // 'p': '发送者',
-          key: 'msgSender',
-          value: null,
-          type: 'select',
-          filterable: true,
+          key: 'msgSenderName',
+          value: '',
+          type: 'input',
           inputText: '发送者',
-          getOptions: '/organization/employee/queryAllByEmpId',
-          optKey: 'empId',
-          optLabel: 'empName',
-          options: [
-            {
-              empId: -1,
-              empName: 'AOMS'
-            },
-            {
-              empId: -2,
-              empName: 'FIMS'
-            }
-          ],
-          span: 3
+          span: 4
+          // value: null,
+          // type: 'select',
+          // filterable: true,
+          // inputText: '发送者',
+          // getOptions: '/organization/employee/queryAllByEmpId',
+          // optKey: 'empId',
+          // optLabel: 'empName',
+          // options: [
+          //   {
+          //     empId: -1,
+          //     empName: 'AOMS'
+          //   },
+          //   {
+          //     empId: -2,
+          //     empName: 'FIMS'
+          //   }
+          // ],
+          // span: 3
         }, {
           // 'p': '群组',
-          key: 'chatGroupId',
-          value: null,
-          type: 'select',
-          filterable: true,
-          inputText: '群组',
-          getOptions: '/message/aomsChatGroup/queryAll',
-          optKey: 'chatGroupId',
-          optLabel: 'chatGroupCn',
-          span: 3
+          key: 'msgTypeSubCn',
+          value: '',
+          type: 'input',
+          inputText: '消息子类型',
+          span: 4
+          // value: null,
+          // type: 'select',
+          // filterable: true,
+          // inputText: '群组',
+          // getOptions: '/message/aomsChatGroup/queryAll',
+          // optKey: 'chatGroupId',
+          // optLabel: 'chatGroupCn',
+          // span: 3
         }, {
           // 'p': '发送时间',
           key: 'msgSendTime',

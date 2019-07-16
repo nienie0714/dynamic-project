@@ -136,26 +136,34 @@ export default {
       queryList: [
         {
           // 'p': '车牌号',
-          key: 'vehicleId',
-          value: null,
-          type: 'select',
-          filterable: true,
+          key: 'vehicleNo',
+          value: '',
+          type: 'input',
           inputText: '车牌号',
-          getOptions: '/basicdata/vehicle/queryAll',
-          optKey: 'vehicleId',
-          optLabel: 'vehicleNo',
-          span: 3
+          span: 4
+          // value: null,
+          // type: 'select',
+          // filterable: true,
+          // inputText: '车牌号',
+          // getOptions: '/basicdata/vehicle/queryAll',
+          // optKey: 'vehicleId',
+          // optLabel: 'vehicleNo',
+          // span: 3
         }, {
           // 'p': '车辆类型',
-          key: 'vTypeNo',
-          value: null,
-          type: 'select',
-          filterable: true,
-          optKey: 'vTypeNo',
-          optLabel: 'vTypeName',
+          key: 'vehicleType',
+          value: '',
+          type: 'input',
           inputText: '车辆类型',
-          getOptions: '/basicdata/vehicleType/queryAll',
-          span: 3
+          span: 4
+          // value: null,
+          // type: 'select',
+          // filterable: true,
+          // optKey: 'vTypeNo',
+          // optLabel: 'vTypeName',
+          // inputText: '车辆类型',
+          // getOptions: '/basicdata/vehicleType/queryAll',
+          // span: 3
         }, {
           // 'p': '管理状态',
           key: 'status',
@@ -172,16 +180,20 @@ export default {
           'span': 4
         }, {
           // 'p': '所属单位',
-          key: 'deptId',
-          value: null,
-          type: 'select',
-          filterable: true,
-          optKey: 'deptId',
-          optLabel: 'deptName',
-          optLabelSpan: 'deptParentName',
+          key: 'deptName',
+          value: '',
+          type: 'input',
           inputText: '所属单位',
-          getOptions: '/organization/department/queryAll',
           span: 4
+          // value: null,
+          // type: 'select',
+          // filterable: true,
+          // optKey: 'deptId',
+          // optLabel: 'deptName',
+          // optLabelSpan: 'deptParentName',
+          // inputText: '所属单位',
+          // getOptions: '/organization/department/queryAll',
+          // span: 4
         }, {
           // 'p': '使用区域',
           key: 'permissionArea',

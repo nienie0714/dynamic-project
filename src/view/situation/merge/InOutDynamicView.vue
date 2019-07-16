@@ -112,7 +112,7 @@ export default {
       inCircle: null,
       lineZoomEl: null,
       lineZoom: null,
-      fontSizeSt: 0,
+      fontSizeNd: 0,
       fontSizeRs: 0,
       pecBase: 50,
       queryUrl: '/basicdata/flightInOutStat/queryFlightStat',
@@ -207,7 +207,7 @@ export default {
           textStyle: {
             color: '#fff',
             fontWeight: 'normal',
-            fontSize: 0, // this.fontSizeSt,
+            fontSize: 0, // this.fontSizeNd,
             fontFamily: `'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif`
           }
         },
@@ -225,8 +225,8 @@ export default {
         grid: {
           left: 100 / 1065 * 40 + '%',
           right: 100 / 1065 * 45 + '%',
-          top: 100 / 224 * 40 + '%',
-          bottom: 100 / 224 * 10 + '%',
+          top: 100 / 224 * 50 + '%',
+          bottom: 100 / 224 * 2 + '%',
           containLabel: true
         },
         toolbox: {
@@ -471,7 +471,7 @@ export default {
         width: this.inCircleEl.clientHeight
       }
       this.inCircle.resize(inOpts)
-      this.fontSizeSt = this.$store.getters.getFontSizeSt([this.lineZoomEl.clientWidth, 1060])
+      this.fontSizeNd = this.$store.getters.getFontSizeNd([this.lineZoomEl.clientWidth, 1060])
       this.fontSizeRs = this.$store.getters.getFontSizeRs([this.lineZoomEl.clientWidth, 1060])
       setTimeout(() => this.lineZoom.setOption(this.lineOptions, true), 100)
     })
@@ -488,7 +488,7 @@ export default {
         width: this.inCircleEl.clientHeight
       }
       this.inCircle.resize(inOpts2)
-      this.fontSizeSt = this.$store.getters.getFontSizeSt([this.lineZoomEl.clientWidth, 1060])
+      this.fontSizeNd = this.$store.getters.getFontSizeSt([this.lineZoomEl.clientWidth, 1060])
       this.fontSizeRs = this.$store.getters.getFontSizeRs([this.lineZoomEl.clientWidth, 1060])
       this.lineZoom.resize()
       setTimeout(() => this.lineZoom.setOption(this.lineOptions, true), 100)
@@ -576,7 +576,7 @@ export default {
         this.updateData()
       }
     },
-    fontSizeSt: {
+    fontSizeNd: {
       handler (value) {
         this.lineOptions.title.textStyle.fontSize = value
       }

@@ -80,7 +80,7 @@ export default {
       wholeWidth.style.width = window.innerWidth - 20 + 'px'
     },
     // 发送查询请求
-    queryDataReq (status) {
+    queryDataReq: _.throttle(function (status) {
       if (status != 1) {
         this.getQueryData()
         this.tableData.data = []
@@ -106,7 +106,7 @@ export default {
           this.showError('获取列表数据', '请重新尝试')
         }
       })
-    },
+    }, 1000),
     customAfterQuery () {
     },
     setLastUpdateTime () {

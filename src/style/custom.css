@@ -136,8 +136,15 @@ input[type="number"] {
 .el-button.is-disabled {
   opacity: 0.4;
 }
+button.is-disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
 .el-button.is-disabled:hover {
   opacity: 0.4;
+}
+button.is-disabled:hover {
+  opacity: 0.4 !important;
 }
 .el-button:hover {
   opacity: 0.8;
@@ -180,7 +187,7 @@ input[type="number"] {
 .tool-div-button:hover {
   opacity: 0.8;
 }
-.tool-button-view .tool-div-button, .table-opt-col .tool-div-button {
+.tool-button-view .tool-div-button, .table-opt-col .tool-div-button, ul>li .tool-div-button {
   width: 30px;
   height: 30px !important;
   float: left;
@@ -532,6 +539,9 @@ input[type="number"] {
   display: inline-block;
   color: rgb(175, 172, 172)
 }
+.tasksched-contain td {
+  line-height: 68px !important;
+}
 .whole-contain td {
   display: inline-block;
   color: #fff;
@@ -546,14 +556,21 @@ input[type="number"] {
 .div-left-table_body td {
   height: 48px;
 }
+.tasksched-table-container .div-left-table_body td {
+  height: 66px;
+}
 .tasksched-table-container .div-right-table_body tr>div:not(.body-tr-div-no-task)>td {
   padding: 9px 5px 9px 5px;
 }
 .div-right-table_body td {
   box-sizing: border-box;
 }
-.whole-contain .div-opr-table_body td {
-  padding: 9px 0 9px 0;
+.tasksched-table-container .div-opr-table_body td {
+  padding: 18px 0;
+  height: 30px;
+}
+.flight-table-container .div-opr-table_body td {
+  padding: 9px 0;
   height: 30px;
 }
 .whole-contain .div-opr-table_body tr {
@@ -579,9 +596,22 @@ input[type="number"] {
   padding: 0 15px !important;
 }
 .tasksched-table-header-right>div,
+.tasksched-table-header-right>span,
 .flight-table-header-right>div {
   float: left;
   margin-right: 20px;
+}
+.tasksched-table-header-right .legend {
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  border: 1px solid rgba(61, 166, 204, .7);
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(61, 166, 204, .4) inset;
+  background-color: rgba(0, 13, 33, .2);
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
 }
 /* 列表标题img */
 .tasksched-header {
@@ -745,9 +775,12 @@ input[type="number"] {
 .tasksched-table-container1 table {
   border-collapse: collapse;
 }
-.flight-table-container table tbody tr,
-.tasksched-table-container1 table tbody tr {
+.flight-table-container table tbody tr {
   height: 48px;
+  border-top: 2px solid #081a25;
+}
+.tasksched-table-container1 table tbody tr {
+  height: 68px;
   border-top: 2px solid #081a25;
 }
 .critical-contain .flight-table-container table tbody tr {
@@ -784,6 +817,9 @@ input[type="number"] {
 .body-tr-div {
   height: 48px;
 }
+.tasksched-table-container1 .body-tr-div {
+  height: 66px;
+}
 .critical-contain .flight-table-container .body-tr-div,
 .critical-contain .flight-table-container .body-tr-div div:not(.el-input) {
   height: 32px;
@@ -791,7 +827,8 @@ input[type="number"] {
 }
 .task-doing-animation {
   width: calc(50%) !important;
-  height: 30px;
+  margin-top: -1px;
+  height: 32px;
   position: absolute;
   background:linear-gradient(to left, rgba(255,255,255, 0.7), rgba(255,255,255, 0));
   animation-name: taskingmove;
@@ -807,8 +844,8 @@ input[type="number"] {
 }
 /* 任务正在进行中的动态效果 */
 @keyframes taskingmove{
-  from{left: calc(-50% + 10px);}
-  to{left: 100%; /* calc(100% - 5px) */;}
+  from{left: calc(-50%);}
+  to{left: 90%; /* calc(100% - 5px) */;}
 }
 @keyframes taskingmoveGantt{
   from{left: calc(-50%);}
@@ -909,6 +946,9 @@ input[type="number"] {
   line-height: 14px;
   height: 14px;
 }
+ul {
+  list-style: none;
+}
 .custom-color-popover .color-ul>ul {
   list-style: none;
   margin: 0 20px;
@@ -965,6 +1005,12 @@ input[type="number"] {
   border-radius: 6px;
   cursor: pointer;
 }
+.custom-color-popover .color-table>.color-row>.color-div.disabled {
+  pointer-events: none;
+  background-image: url(~@img/icon_forbidden.png);
+  background-position: center center;
+  background-repeat: no-repeat;
+}
 .custom-color-popover>footer {
   display: flex;
   justify-content: space-between;
@@ -990,7 +1036,7 @@ input[type="number"] {
   color: #fff;
 }
 .opr-popover>main {
-  height: calc(100% - 66px);
+  height: calc(100% - 48px);
   font-size: 16px;
 }
 .opr-popover>footer {
@@ -1301,8 +1347,13 @@ input[type="number"] {
   height: 24px !important;
   min-height: 24px !important;
 }
+.el-range-editor .el-range__icon,
+.el-range-editor .el-range__close-icon {
+  line-height: 16px;
+}
 *:not(.el-select):not(.login-div-main)>.el-input-number:first-child>.el-input>.el-input__inner,
 *:not(.el-select):not(.login-div-main):not(span)>.el-input:not(.el-pagination__editor):first-child>.el-input__inner,
+.el-range-editor,
 .el-select>.el-input:first-child>.el-input__inner,
 .el-form-item:not(.auto-height) .el-textarea .el-textarea__inner {
   height: 32px;
@@ -1311,14 +1362,25 @@ input[type="number"] {
 *:not(.el-select):not(.login-div-main)>.el-input-number:first-child {
   width: 100%;
 }
+.el-range-editor .el-range-input {
+  border: none;
+  background: transparent;
+}
+.el-input__inner, .el-textarea__inner {
+  border: 1px solid rgba(60, 166, 200, 0.7) !important;
+  background-color: rgba(0, 0, 0, 0.2) !important;
+  box-shadow: 0 0 10px rgba(60, 166, 200, 0.3) !important;
+}
+.el-date-editor .el-range-separator {
+  color: #7a939e;
+  line-height: 24px;
+}
+.el-range-editor .el-range-input,
 .el-input__inner, .el-textarea__inner {
   min-height: 32px !important;
   padding-top: 0;
   padding-bottom: 0;
   color: #fff;
-  background-color: rgba(0, 0, 0, 0.2) !important;
-  border: 1px solid rgba(60, 166, 200, 0.7) !important;
-  box-shadow: 0 0 10px rgba(60, 166, 200, 0.3) !important;
   font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 微软雅黑, Arial, sans-serif;
 }
 .el-input__inner {
@@ -1676,6 +1738,12 @@ input[type="number"] {
   border-radius: 8px;
 	background-color: rgb(2, 5, 8);
 }
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+.el-custom-time-panel ::-webkit-scrollbar-track-piece {
+	background-color: transparent;
+}
 div.el-upload {
   text-align: initial;
 }
@@ -1711,10 +1779,19 @@ div.el-upload {
   color: #fff !important;
   background: rgba(60,166,200,0.4) !important;
 }
+.el-date-table td.in-range div, .el-date-table td.in-range div:hover, .el-date-table.is-week-mode .el-date-table__row.current div, .el-date-table.is-week-mode .el-date-table__row:hover div {
+  background-color: rgba(60,166,200,0.4) !important;
+}
+.el-date-table td.end-date span, .el-date-table td.start-date span {
+  background-color: #1bf5c956;
+}
 .el-popover, .el-popper:not(.el-cascader-menus), .el-transfer-panel, .el-cascader-menus .el-cascader-menu {
   padding: 0;
   background-color: rgba(8, 25, 38, 0.93);
   box-shadow: 0 0 30px rgba(60, 166, 200, 0.4) inset, 0 8px 20px rgba(6, 13, 20, 0.9);
+}
+.el-date-range-picker__content.is-left {
+  border-right: 1px solid rgba(60, 166, 200, 0.7);
 }
 .el-popover, .el-popper:not(.el-cascader-menus), .el-transfer-panel {
   border-radius: 12px;
@@ -1739,6 +1816,7 @@ div.el-upload {
 .el-picker-panel__icon-btn {
   color: #7a939e;
 }
+.el-date-range-picker__header div,
 .el-date-picker__header>span {
   color: #fff;
 }
@@ -2264,6 +2342,7 @@ div.el-upload {
   width: 16px;
   padding-left: 5px;
   padding-top: 9px;
+  height: calc(100% - 9px);
 }
 .first-col-color img {
   width: 30px !important;
@@ -2275,13 +2354,16 @@ div.el-upload {
 }
 /* *****首列关注航班结束***** */
 /* *****机位列开始***** */
+.tasksched-contain .standClass {
+  margin: 23px auto;
+}
 .standClass {
   color: #060d14;
   font-weight: bold;
   background-color: #fdcf53;
+  border-radius: 6px;
   height: 20px;
   line-height: 22px;
-  border-radius: 6px;
   width: 30px;
   width: calc(100% - 35px) !important;
   text-align: center;
@@ -2689,7 +2771,7 @@ tr.tr-single {
 .import-dialog .dialog-body>div:not(:first-of-type):not(.tip-font)>div:first-of-type {
   width: calc(100% - 116px);
 }
-/* 导入弹框样式结束  */
+/* 导入弹框样式结束 */
 .drop-rect {
   position: absolute;
   z-index: 99;

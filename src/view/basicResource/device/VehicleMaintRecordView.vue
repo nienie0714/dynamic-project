@@ -94,11 +94,16 @@ export default {
           // p: '车牌号',
           key: 'vehicleNo',
           value: '',
-          type: 'select',
-          filterable: true,
+          type: 'input',
           inputText: '车牌号',
-          getOptions: '/basicdata/VehicleMaintenanceRecord/getVehicleNo',
-          span: 3
+          toUpper: true,
+          span: 4
+          // value: '',
+          // type: 'select',
+          // filterable: true,
+          // inputText: '车牌号',
+          // getOptions: '/basicdata/VehicleMaintenanceRecord/getVehicleNo',
+          // span: 3
         }, {
           // 'p': '维护类型',
           key: 'maintenanceType',

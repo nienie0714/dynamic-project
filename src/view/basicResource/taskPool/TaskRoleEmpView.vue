@@ -78,37 +78,49 @@ export default {
       queryList: [
         {
           // 'p': '员工',
-          key: 'empId',
+          key: 'empName',
           value: '',
-          type: 'select',
-          filterable: true,
-          optKey: 'empId',
-          optLabel: 'empName',
+          type: 'input',
           inputText: '员工',
-          getOptions: '/organization/employee/queryAll',
           span: 4
+          // value: '',
+          // type: 'select',
+          // filterable: true,
+          // optKey: 'empId',
+          // optLabel: 'empName',
+          // inputText: '员工',
+          // getOptions: '/organization/employee/queryAll',
+          // span: 4
         }, {
           // 'p': '任务角色',
-          key: 'taskRoleId',
+          key: 'taskRoleName',
           value: '',
-          type: 'select',
-          filterable: true,
-          optKey: 'taskRoleId',
-          optLabel: 'name',
+          type: 'input',
           inputText: '任务角色',
-          getOptions: 'permission/taskbasic/taskRole/queryAll',
           span: 4
+          // value: '',
+          // type: 'select',
+          // filterable: true,
+          // optKey: 'taskRoleId',
+          // optLabel: 'name',
+          // inputText: '任务角色',
+          // getOptions: 'permission/taskbasic/taskRole/queryAll',
+          // span: 4
         }, {
           // 'p': '任务',
-          key: 'taskNo',
+          key: 'taskName',
           value: '',
-          type: 'select',
-          filterable: true,
-          optKey: 'taskNo',
-          optLabel: 'taskCn',
+          type: 'input',
           inputText: '任务',
-          getOptions: 'taskbasic/tasks/queryAll',
           span: 4
+          // value: '',
+          // type: 'select',
+          // filterable: true,
+          // optKey: 'taskNo',
+          // optLabel: 'taskCn',
+          // inputText: '任务',
+          // getOptions: 'taskbasic/tasks/queryAll',
+          // span: 4
         }
       ],
       // 列表设置

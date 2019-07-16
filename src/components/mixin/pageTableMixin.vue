@@ -58,7 +58,7 @@ export default {
       return true
     },
     // 发送分页查询请求
-    queryDataReq (status) {
+    queryDataReq: _.throttle(function (status) {
       if (status != 1) {
         this.getQueryData()
         this.pageData.currentPage = 1
@@ -86,7 +86,7 @@ export default {
           }
         })
       }
-    },
+    }, 1000),
     customAfterQuery () {}
     // },
     // setLastUpdateTime () {

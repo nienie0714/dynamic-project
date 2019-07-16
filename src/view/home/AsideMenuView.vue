@@ -217,7 +217,7 @@ export default {
 }
 /* 展开样式 */
 .aside-el-menu:not(.el-menu--collapse) {
-  width: 240px;
+  width: 250px;
 }
 /* 折叠样式 */
 .aside-el-menu.el-menu--collapse {

@@ -10,13 +10,13 @@
         <div class="table-header">
           <img :src="require('@img/title_deco.png')" />
           <span class="header-title">{{ routerViewName }}</span>
-          <div class="header-update-div">
+          <!-- <div class="header-update-div">
             <div>最后更新时间：</div>
             <div>{{lastUpdateTime}}</div>
             <div class="header-refrush">
               <div class="img-refrush" @click="handleLetUpdate"></div>
               </div>
-          </div>
+          </div> -->
         </div>
       </el-header>
       <el-main style="overflow: hidden;">

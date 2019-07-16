@@ -101,39 +101,51 @@ export default {
           span: 4
         }, {
           // 'p': '角色',
-          key: 'roleId',
-          value: '',
-          type: 'select',
-          filterable: true,
-          optKey: 'roleId',
-          optLabel: 'name',
-          inputText: '角色',
-          getOptions: '/sys/role/getEnabledAll',
-          span: 4
-        }, {
+        //   key: 'roleId',
+        //   value: '',
+        //   type: 'select',
+        //   filterable: true,
+        //   optKey: 'roleId',
+        //   optLabel: 'name',
+        //   inputText: '角色',
+        //   getOptions: '/sys/role/getEnabledAll',
+        //   span: 4
+        // }, {
           // 'p': '员工',
-          key: 'empId',
+          key: 'empName',
           value: '',
-          type: 'select',
-          filterable: true,
-          optKey: 'empId',
-          optLabel: 'empName',
+          type: 'input',
           inputText: '员工姓名',
-          getOptions: '/organization/employee/queryAll',
           span: 4
         }, {
+        //   key: 'empId',
+        //   value: '',
+        //   type: 'select',
+        //   filterable: true,
+        //   optKey: 'empId',
+        //   optLabel: 'empName',
+        //   inputText: '员工姓名',
+        //   getOptions: '/organization/employee/queryAll',
+        //   span: 4
+        // }, {
           // 'p': '部门',
-          key: 'deptId',
-          value: null,
-          type: 'select',
-          filterable: true,
-          optKey: 'deptId',
-          optLabel: 'deptName',
-          optLabelSpan: 'deptParentName',
+          key: 'deptName',
+          value: '',
+          type: 'input',
           inputText: '部门',
-          getOptions: '/organization/department/queryAll',
           span: 4
         }
+        //   key: 'deptId',
+        //   value: null,
+        //   type: 'select',
+        //   filterable: true,
+        //   optKey: 'deptId',
+        //   optLabel: 'deptName',
+        //   optLabelSpan: 'deptParentName',
+        //   inputText: '部门',
+        //   getOptions: '/organization/department/queryAll',
+        //   span: 4
+        // }
       ],
       // 列表设置
       tableData: {

@@ -31,22 +31,22 @@
             <div>
               <div class="time-icon icon-1"></div>
               <div class="font-rs font-gray">&lt;45min</div>
-              <div class="num-rd color-1">-</div>
+              <div class="num-rd color-1">{{data.waitTime.D.LESS_45_NUM}}</div>
             </div>
             <div>
               <div class="time-icon icon-2"></div>
               <div class="font-rs font-gray">45~90min</div>
-              <div class="num-rd color-2">-</div>
+              <div class="num-rd color-2">{{data.waitTime.D.BETWEEN_45_90_NUM}}</div>
             </div>
             <div>
               <div class="time-icon icon-3"></div>
               <div class="font-rs font-gray">90~150min</div>
-              <div class="num-rd color-3">-</div>
+              <div class="num-rd color-3">{{data.waitTime.D.BETWEEN_90_150_NUM}}</div>
             </div>
             <div>
               <div class="time-icon icon-4"></div>
               <div class="font-rs font-gray">&gt;150min</div>
-              <div class="num-rd color-4">-</div>
+              <div class="num-rd color-4">{{data.waitTime.D.MORE_150_NUM}}</div>
             </div>
           </div>
         </div>
@@ -73,22 +73,22 @@
             <div>
               <div class="time-icon icon-1"></div>
               <div class="font-rs font-gray">&lt;45min</div>
-              <div class="num-rd color-1">-</div>
+              <div class="num-rd color-1">{{data.waitTime.A.LESS_45_NUM}}</div>
             </div>
             <div>
               <div class="time-icon icon-2"></div>
               <div class="font-rs font-gray">45~90min</div>
-              <div class="num-rd color-2">-</div>
+              <div class="num-rd color-2">{{data.waitTime.A.BETWEEN_45_90_NUM}}</div>
             </div>
             <div>
               <div class="time-icon icon-3"></div>
               <div class="font-rs font-gray">90~150min</div>
-              <div class="num-rd color-3">-</div>
+              <div class="num-rd color-3">{{data.waitTime.A.BETWEEN_90_150_NUM}}</div>
             </div>
             <div>
               <div class="time-icon icon-4"></div>
               <div class="font-rs font-gray">&gt;150min</div>
-              <div class="num-rd color-4">-</div>
+              <div class="num-rd color-4">{{data.waitTime.A.MORE_150_NUM}}</div>
             </div>
           </div>
         </div>
@@ -110,7 +110,21 @@ export default {
         boardNum: '--',
         isolationNum: '--',
         planArrivalNum: '--',
-        actArrivalNum: '--'
+        actArrivalNum: '--',
+        waitTime: {
+          A: {
+            LESS_45_NUM: '-',
+            BETWEEN_45_90_NUM: '-',
+            BETWEEN_90_150_NUM: '-',
+            MORE_150_NUM: '-'
+          },
+          D: {
+            LESS_45_NUM: '-',
+            BETWEEN_45_90_NUM: '-',
+            BETWEEN_90_150_NUM: '-',
+            MORE_150_NUM: '-'
+          }
+        }
       }
     }
   },
@@ -123,7 +137,13 @@ export default {
         if (res.data.code == 0) {
           if (res.data.data) {
             for (let key in this.data) {
-              this.data[key] = (res.data.data[key] != null) ? res.data.data[key] : '--'
+              if (key == 'waitTime') {
+                res.data.data[key].forEach(item => {
+                  this.data[key][item['IN_OUT_FLAG']] = item
+                })
+              } else {
+                this.data[key] = (res.data.data[key] != null) ? res.data.data[key] : '--'
+              }
             }
           } else {
             this.restoreData()
@@ -137,7 +157,21 @@ export default {
         boardNum: '--',
         isolationNum: '--',
         planArrivalNum: '--',
-        actArrivalNum: '--'
+        actArrivalNum: '--',
+        waitTime: {
+          A: {
+            LESS_45_NUM: '-',
+            BETWEEN_45_90_NUM: '-',
+            BETWEEN_90_150_NUM: '-',
+            MORE_150_NUM: '-'
+          },
+          D: {
+            LESS_45_NUM: '-',
+            BETWEEN_45_90_NUM: '-',
+            BETWEEN_90_150_NUM: '-',
+            MORE_150_NUM: '-'
+          }
+        }
       }
     }
   },

@@ -77,8 +77,9 @@ export default {
     taskColOptions: [],
     widthMap: [3840, 3640, 3552, 3264, 3072, 2560, 2304, 2048, 1920, 1600, 0],
     fontSizeSt: [40, 38, 36, 34, 32, 28, 26, 22, 20, 28, 16],
-    fontSizeRs: [34, 32, 30, 28, 26, 22, 20, 16, 14, 22, 10],
-    fontSizeTh: [22, 21, 20, 19, 18, 16, 15, 13, 12, 14, 6]
+    fontSizeNd: [38, 36, 34, 32, 30, 26, 24, 20, 18, 26, 14],
+    fontSizeTh: [22, 21, 20, 19, 18, 16, 15, 13, 12, 14, 6],
+    fontSizeRs: [34, 32, 30, 28, 26, 22, 20, 16, 14, 22, 10]
   },
   getters: {
     getClassifyType: state => {
@@ -99,6 +100,17 @@ export default {
       for (let i = 0; i < state.widthMap.length - 1; i++) {
         if (w > state.widthMap[i]) {
           size = state.fontSizeSt[i]
+          break
+        }
+      }
+      return size
+    },
+    getFontSizeNd: (state) => (width) => {
+      let size
+      let w = width[0] / width[1] * 1920
+      for (let i = 0; i < state.widthMap.length - 1; i++) {
+        if (w > state.widthMap[i]) {
+          size = state.fontSizeNd[i]
           break
         }
       }
@@ -174,7 +186,7 @@ export default {
     setTaskColOption (state, arr) {
       var temp = []
       arr.forEach(item => {
-        temp.push({key: item.taskNo, label: item.taskCn})
+        temp.push({key: item.taskNo, label: item.taskCn, type: item.taskType})
       })
       state.taskColOptions = temp
     }

@@ -185,7 +185,26 @@ export default {
           optKey: 'vTypeNo',
           optLabel: 'vTypeName',
           filterable: true
-        }, {
+        },
+        {
+          // 'p': '时间区间',
+          key: 'date',
+          value: null,
+          type: 'daterange',
+          editable: false,
+          clearable: true,
+          rangeSeparator: '至',
+          inputText: '时间范围',
+          valueFormat: 'yyyy-MM-dd',
+          format: 'yyyy-MM-dd',
+          pickerOpt: {
+            disabledDate: (time) => {
+              let maxDate = new Date(this.latestDate)
+              return time.getTime() > maxDate
+            }
+          },
+          span: 6
+        }, /*  {
           // 'p': '开始时间',
           key: 'start',
           value: null,
@@ -207,7 +226,8 @@ export default {
           valueFormat: 'yyyy-MM-dd',
           format: 'yyyy-MM-dd',
           span: 3
-        }, {
+        },  */
+        {
           key: 'empName',
           value: '',
           type: 'input',
@@ -247,10 +267,8 @@ export default {
     this.dfsUrl = this.$store.getters.getConfigValue
 
     // 页面起始修改发送参数的初始值为当日
-    this.$set(this.queryList[3], 'value', this.formatterNewtimeOfYMD())
-    this.$set(this.queryList[4], 'value', this.formatterNewtimeOfYMD())
-    this.$set(this.queryData, 'start', this.queryList[3].value)
-    this.$set(this.queryData, 'end', this.queryList[4].value)
+    this.$set(this.queryList[3], 'value', [this.formatterNewtimeOfYMD(), this.formatterNewtimeOfYMD()])
+    this.$set(this.queryData, 'date', this.queryList[3].value)
   },
   methods: {
     customAfterQuery () {

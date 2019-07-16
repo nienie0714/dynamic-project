@@ -1,14 +1,14 @@
 <template>
 <div class="whole-contain flight-contain">
   <div class="flight-url-select-div">
-    <el-radio-group v-model="flightUrlSelect" size="small" @change="queryDataReq()">
+    <el-radio-group v-model="flightUrlSelect" size="small" @change="getExecDate">
       <el-radio-button label="real">实时航班查询</el-radio-button>
       <el-radio-button label="history">历史航班查询</el-radio-button>
     </el-radio-group>
   </div>
   <div v-if="flightUrlSelect == 'history'" class="flight-url-his-date-div">
     <el-date-picker type="date" v-model="execDate" placeholder="航班日期" format="yyyy-MM-dd" value-format="yyyy-MM-dd" size="small"
-    :default-value="maxDate" :picker-options="pickerOptionsMethod" :clearable="false" @change="queryDataReq()"
+    :picker-options="pickerOptionsMethod" :clearable="false" @change="queryDataReq()"
     :editable="false" @keyup.enter.native="queryDataReq()"></el-date-picker>
   </div>
   <div class="latest-bg task-latest-bg">
@@ -51,7 +51,7 @@
                   <div class="color-table">
                     <div v-for="(colors, num) in customColor.colors" :key="num" class="color-row">
                       <div v-for="(color, i) in colors" :key="i"
-                      class="color-div" :style="`background-color: ${color}`"
+                      :class="['color-div', ~require('lodash').values(customColor.data).indexOf(color) ? 'disabled': '']" :style="`background-color: ${color}`"
                       @click="clickColor(color)"></div>
                     </div>
                   </div>
@@ -63,7 +63,7 @@
                 <el-button type="info" plain @click="queryCustomeColor()">恢复默认值</el-button>
               </div>
               <div class="footer-right">
-                <el-button type="info" plain @click="handleCustomColorButton()">取消</el-button>
+                <el-button type="info" plain @click="handleCustomColorButton()">关闭</el-button>
                 <el-button type="primary" @click="saveCustomeColor()">保存</el-button>
               </div>
             </el-footer>
@@ -122,7 +122,7 @@
                   @click="clickRow(index)" @dblclick="showFlightEdit(index)"><!--  @contextmenu.prevent="tableRowContextmenu(item, $event)" -->
                     <div v-for="field in tableData.fields" :key="field.prop" :class="field.hidden?'body-tr-div':'body-tr-div show-field'" :style="!field.hidden && {width: field.width + 'px'}">
                       <td v-if="!field.hidden" :width="field.width" :class="field.class">
-                        <div v-if="field.prop == 'mark'" class="first-col-color">
+                        <div v-if="field.prop == 'mark'" class="first-col-color" title="关注">
                           <img v-if="item[field.prop]" :src="require('@img/icon_heart_liked.png')" @click.self.stop="cancelMarkFlight(item)" @dblclick="eventStop($event)"/>
                           <img v-else :src="require('@img/icon_heart_default.png')" @click.self.stop="markFlight(item)" @dblclick="eventStop($event)"/>
                         </div>
@@ -210,23 +210,6 @@
               <el-popover placement="bottom" width="310" trigger="click" v-model="defaultRow">
                 <div class="opr-popover">
                   <el-main>
-                    <!-- <div class="opr-popover-left">
-                      <el-header>航班信息</el-header>
-                      <el-main>
-                        <ul>
-                          <div v-for="(field, index) in tableData.fields" :key="field.prop">
-                            <li v-if="index > 7">
-                              <div class="opr-popover-li-left">{{ field.label }}</div>
-                              <div class="opr-popover-li-right">
-                                <div :class="field.hidden?'close':'show'" @click="handleEye(field, 'left')"></div>
-                                <div class="up" @click="handleUp(field, index, 'left')"></div>
-                                <div class="top" @click="handleTop(field, index, 'left')"></div>
-                              </div>
-                            </li>
-                          </div>
-                        </ul>
-                      </el-main>
-                    </div> -->
                     <div class="opr-popover-all">
                       <el-header>航班信息</el-header>
                       <el-main>
@@ -247,7 +230,7 @@
                   </el-main>
                   <el-footer>
                     <div class="footer-left">
-                      <el-button type="info" plain @click="queryCustomeColor()">恢复默认值</el-button>
+                      <el-button type="info" plain @click="getDefaultRow()">恢复默认值</el-button>
                     </div>
                     <div class="footer-right">
                       <el-button type="info" plain @click="closeDefaultRow()">关闭</el-button>
@@ -270,7 +253,7 @@
                           <div class="opr-edit-cancel" @click.self.stop="initEditable(index)"></div>
                         </div>
                         <div v-else>
-                          <div v-if="flightUrlSelect != 'history'" class="icon_list_input" @click.self.stop="changeEditable(index)"></div>
+                          <div v-if="flightUrlSelect != 'history'" class="icon_list_input" @click.self.stop="changeEditable(index)" title="编辑"></div>
                           <div class="icon_list_info" @click.self.stop="showFlightEdit(index)" title="航班详情"></div>
                           <div class="icon_list_point" @click.self.stop="showNodeEdit(index)" title="节点详情"></div>
                         </div>
@@ -548,10 +531,11 @@ export default {
       flightType: 'S',
       // 历史航班查询中航班日期
       execDate: '',
+      execChangeCount: 0,
       maxDate: '',
       pickerOptionsMethod: {
-        disabledDate (time) {
-          var maxDate = new Date()
+        disabledDate: (time) => {
+          let maxDate = new Date(this.latestDate)
           maxDate.setDate(maxDate.getDate() - 2)
           return time.getTime() > maxDate
         }
@@ -563,7 +547,7 @@ export default {
         value: '',
         type: 'input',
         toUpper: true,
-        inputText: '航线/IATA码',
+        inputText: '航站/IATA码',
         span: 3
       }, {
         // span: '航班号',
@@ -721,9 +705,9 @@ export default {
         saveUrl: '/basicdata/sysUserCustom/saveAll',
         focusKey: '',
         fields: [
-          {key: '4.3', label: '本站'},
+          {key: '4.1', label: '本站'},
           {key: '4.2', label: '前起'},
-          {key: '4.1', label: '计划'},
+          {key: '4.3', label: '计划'},
           {key: '2', label: '延误'},
           {key: '3', label: '取消'},
           {key: '1', label: '起飞'}
@@ -767,7 +751,7 @@ export default {
   },
   mounted () {
     window.name = this.$route.name
-    this.getExecDate()
+    // this.getExecDate()
     this.$store.commit('setOption', 'attr')
     this.options = this.$store.getters.getOption
     const that = this
@@ -841,16 +825,20 @@ export default {
       }
       this.handleDownload('1')
     },
-    getExecDate () {
-      var today = new Date()
-      today.setDate(today.getDate() - 2)
-      var year = today.getFullYear()
-      var month = today.getMonth() + 1
-      var day = today.getDate()
-      if (day < 10) {
-        day = '0' + day
+    getExecDate (value) {
+      if (value == 'history' && this.execChangeCount === 0) {
+        var today = new Date(this.newTime)
+        today.setDate(today.getDate() - 2)
+        var year = today.getFullYear()
+        var month = today.getMonth() + 1
+        var day = today.getDate()
+        if (day < 10) {
+          day = '0' + day
+        }
+        this.execDate = year + '-' + month + '-' + day
+        this.execChangeCount += 1
       }
-      this.execDate = year + '-' + month + '-' + day
+      this.queryDataReq()
     },
     // 格式化 YYYY-MM-DD
     spliteMin (value) {

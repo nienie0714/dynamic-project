@@ -3,7 +3,7 @@
     <div class="tool-bar">
       <div class="left-button">
         <el-col :span="3">
-          <el-date-picker v-model="time.statDate" type="date" placeholder="请选择日期" :editable="false" :clearable="false" :default-value="time.statDate" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
+          <el-date-picker v-model="time.statDate" type="date" placeholder="请选择日期" :editable="false" :clearable="false" format="yyyy-MM-dd" value-format="yyyy-MM-dd"></el-date-picker>
         </el-col>
       </div>
     </div>
@@ -211,7 +211,6 @@ export default {
   },
   methods: {
     queryDataReq () {
-      this.time.statDate = this.time.statDate == '2019-05-16' ? '2019-05-14' : this.time.statDate
       queryAllStat(this.queryUrl, this.time).then(res => {
         if (res.data.code == 0) {
           this.restore(res.data.data)
@@ -295,7 +294,10 @@ export default {
   watch: {
     latestDate: {
       handler (value) {
-        this.time.statDate = value.replace(/\//g, '-')
+        let date = new Date(value.replace(/\//g, '-'))
+        date = date.setDate(date.getDate() - 1)
+        date = new Date(date)
+        this.time.statDate = `${date.getFullYear()}-${this.addZero(date.getMonth() + 1)}-${this.addZero(date.getDate())}`
       },
       immediate: false
     },

@@ -89,15 +89,19 @@ export default {
       queryList: [
         {
           // 'p': '车型名称',
-          key: 'vTypeNo',
-          value: null,
-          type: 'select',
-          filterable: true,
-          optKey: 'vTypeNo',
-          optLabel: 'vTypeName',
+          key: 'vTypeName',
+          value: '',
+          type: 'input',
           inputText: '车型名称',
-          getOptions: '/basicdata/vehicleType/queryAll',
           span: 4
+          // value: null,
+          // type: 'select',
+          // filterable: true,
+          // optKey: 'vTypeNo',
+          // optLabel: 'vTypeName',
+          // inputText: '车型名称',
+          // getOptions: '/basicdata/vehicleType/queryAll',
+          // span: 4
         }
       ],
       // 列表设置

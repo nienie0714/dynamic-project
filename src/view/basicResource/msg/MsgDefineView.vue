@@ -84,25 +84,33 @@ export default {
         {
           // 'p': '消息类型',
           key: 'msgTypeCn',
-          value: null,
-          type: 'select',
-          filterable: true,
+          value: '',
+          type: 'input',
           inputText: '消息类型',
-          getOptions: '/message/aomsMsgDef/getMsgType',
-          optKey: 'msgTypeCn',
-          optLabel: 'msgTypeCn',
-          span: 3
+          span: 4
+          // value: null,
+          // type: 'select',
+          // filterable: true,
+          // inputText: '消息类型',
+          // getOptions: '/message/aomsMsgDef/getMsgType',
+          // optKey: 'msgTypeCn',
+          // optLabel: 'msgTypeCn',
+          // span: 3
         }, {
           // 'p': '消息子类型',
           key: 'msgTypeSubCn',
-          value: null,
-          type: 'select',
-          filterable: true,
+          value: '',
+          type: 'input',
           inputText: '消息子类型',
-          getOptions: '/message/aomsMsgDef/getMsgTypeSub',
-          optKey: 'msgTypeSubCn',
-          optLabel: 'msgTypeSubCn',
-          span: 3
+          span: 4
+          // value: null,
+          // type: 'select',
+          // filterable: true,
+          // inputText: '消息子类型',
+          // getOptions: '/message/aomsMsgDef/getMsgTypeSub',
+          // optKey: 'msgTypeSubCn',
+          // optLabel: 'msgTypeSubCn',
+          // span: 3
         }
       ],
       // 列表设置

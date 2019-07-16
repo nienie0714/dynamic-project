@@ -670,6 +670,22 @@ var router = new Router({
               props: true
             }
           ]
+        },
+        {
+          path: 'scheduling',
+          name: '排班管理',
+          component: Basic,
+          children: [{
+            path: 'shiftSetting',
+            name: '班次设置',
+            component: r => require.ensure([], () => r(require('@/view/basicResource/scheduling/ShiftSettingView'), 'ShiftSettingView')),
+            props: true
+          }, {
+            path: 'schedulingPlan',
+            name: '排班管理',
+            component: r => require.ensure([], () => r(require('@/view/basicResource/scheduling/SchedulingPlanView'), 'SchedulingPlanView')),
+            props: true
+          }]
         }
       ]
     }
@@ -680,6 +696,16 @@ router.beforeEach((to, from, next) => {
   if (to.path != '/') {
     var token = localStorage.getItem('token')
     if (token && token != '') {
+      let names = localStorage.getItem('winNames')
+      let winNames = names ? JSON.parse(names) : []
+      let index = winNames.indexOf(from.name)
+      if (~index) {
+        winNames.splice(index, 1)
+      }
+      if (to.name !== '主页面') {
+        winNames.push(to.name)
+        localStorage.setItem('winNames', JSON.stringify(winNames))
+      }
       if (store.getters.getFirstTime) {
         var type = []
         var all = []
@@ -700,6 +726,16 @@ router.beforeEach((to, from, next) => {
       next(false)
     }
   } else {
+    let names = localStorage.getItem('winNames')
+    let winNames = names ? JSON.parse(names) : []
+    winNames.forEach(name => {
+      let {href} = router.resolve({ name: name })
+      let win = window.open(href, name)
+      if (win) {
+        win.close()
+      }
+    })
+    localStorage.setItem('winNames', '')
     next()
   }
 })

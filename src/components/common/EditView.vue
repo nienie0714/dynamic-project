@@ -600,6 +600,8 @@ export default {
           if (title == '新增' || ((title == '编辑' || title == '详情') && !item.value)) {
             if (item.type == 'select' && !item.hasOwnProperty('multiple')) {
               this.$set(this.editData, item.key, item.defaultValue ? item.defaultValue : null)
+            } else if (item.hasOwnProperty('valueType') && item.valueType == 'string') {
+              this.$set(this.editData, item.key, '')
             } else {
               this.$set(this.editData, item.key, [])
             }

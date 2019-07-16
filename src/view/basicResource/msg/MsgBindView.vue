@@ -87,39 +87,51 @@ export default {
       queryList: [
         {
           // 'p': '员工',
-          key: 'empId',
-          value: null,
-          type: 'select',
-          filterable: true,
+          key: 'empName',
+          value: '',
+          type: 'input',
           inputText: '员工',
-          getOptions: '/organization/employee/queryAll',
-          optKey: 'empId',
-          optLabel: 'empName',
-          optLabelSpan: 'deptName',
-          span: 3
+          span: 4
+          // value: null,
+          // type: 'select',
+          // filterable: true,
+          // inputText: '员工',
+          // getOptions: '/organization/employee/queryAll',
+          // optKey: 'empId',
+          // optLabel: 'empName',
+          // optLabelSpan: 'deptName',
+          // span: 3
         }, {
           // 'p': '部门',
-          key: 'deptId',
-          value: null,
-          type: 'select',
-          filterable: true,
-          optKey: 'deptId',
-          optLabel: 'deptName',
-          optLabelSpan: 'deptParentName',
+          key: 'deptName',
+          value: '',
+          type: 'input',
           inputText: '部门',
-          getOptions: '/organization/department/queryDeptByEmp',
-          span: 3
+          span: 4
+          // value: null,
+          // type: 'select',
+          // filterable: true,
+          // optKey: 'deptId',
+          // optLabel: 'deptName',
+          // optLabelSpan: 'deptParentName',
+          // inputText: '部门',
+          // getOptions: '/organization/department/queryDeptByEmp',
+          // span: 3
         }, {
           // 'p': '已绑消息',
-          key: 'msgTypeSubNo',
-          value: null,
-          type: 'select',
-          filterable: true,
+          key: 'msgTypeSubCn',
+          value: '',
+          type: 'input',
           inputText: '已绑消息',
-          getOptions: '/message/aomsMsgDef/getMsgTypeSub',
-          optKey: 'msgTypeSubNo',
-          optLabel: 'msgTypeSubCn',
-          span: 3
+          span: 4
+          // value: null,
+          // type: 'select',
+          // filterable: true,
+          // inputText: '已绑消息',
+          // getOptions: '/message/aomsMsgDef/getMsgTypeSub',
+          // optKey: 'msgTypeSubNo',
+          // optLabel: 'msgTypeSubCn',
+          // span: 3
         }
       ],
       // 列表设置

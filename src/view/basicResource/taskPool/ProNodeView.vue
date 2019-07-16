@@ -172,26 +172,34 @@ export default {
       queryList: [
         {
           // 'p': '航班流程',
-          key: 'processNo',
+          key: 'processCn',
           value: '',
-          type: 'select',
-          filterable: true,
-          optKey: 'processNo',
-          optLabel: 'processCn',
+          type: 'input',
           inputText: '航班流程',
-          getOptions: 'taskbasic/processDef/queryAll',
           span: 4
+          // value: '',
+          // type: 'select',
+          // filterable: true,
+          // optKey: 'processNo',
+          // optLabel: 'processCn',
+          // inputText: '航班流程',
+          // getOptions: 'taskbasic/processDef/queryAll',
+          // span: 4
         }, {
           // 'p': '节点',
-          key: 'nodeNo',
+          key: 'nodeCn',
           value: '',
-          type: 'select',
-          filterable: true,
-          optKey: 'nodeNo',
-          optLabel: 'nodeCn',
+          type: 'input',
           inputText: '节点',
-          getOptions: 'taskbasic/nodes/queryAll',
           span: 4
+          // value: '',
+          // type: 'select',
+          // filterable: true,
+          // optKey: 'nodeNo',
+          // optLabel: 'nodeCn',
+          // inputText: '节点',
+          // getOptions: 'taskbasic/nodes/queryAll',
+          // span: 4
         }
       ],
       // 列表设置

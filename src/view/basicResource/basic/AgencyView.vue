@@ -94,15 +94,20 @@ export default {
         },
         {
           // 'p': '代理航空公司', // todo
-          key: 'airline',
-          value: null,
-          type: 'select',
-          filterable: true,
-          optKey: 'airlineIata',
-          optLabel: 'briefC',
+          key: 'airlineCn',
+          value: '',
+          type: 'input',
           inputText: '代理航空公司',
-          getOptions: '/basicdata/airline/queryAll',
+          toUpper: true,
           span: 4
+          // value: null,
+          // type: 'select',
+          // filterable: true,
+          // optKey: 'airlineIata',
+          // optLabel: 'briefC',
+          // inputText: '代理航空公司',
+          // getOptions: '/basicdata/airline/queryAll',
+          // span: 4
         }
       ],
       // 列表设置

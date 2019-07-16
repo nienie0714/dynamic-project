@@ -102,28 +102,36 @@ export default {
           span: 4
         }, {
           // 'p': '部门',
-          key: 'deptId',
-          value: null,
-          type: 'select',
-          filterable: true,
-          optKey: 'deptId',
-          optLabel: 'deptName',
-          optLabelSpan: 'deptParentName',
+          key: 'deptName',
+          value: '',
+          type: 'input',
           inputText: '部门',
-          getOptions: '/organization/department/queryDeptByEmp',
           span: 4
+          // value: null,
+          // type: 'select',
+          // filterable: true,
+          // optKey: 'deptId',
+          // optLabel: 'deptName',
+          // optLabelSpan: 'deptParentName',
+          // inputText: '部门',
+          // getOptions: '/organization/department/queryDeptByEmp',
+          // span: 4
         }, {
           // 'p': '职务',
           key: 'post',
-          tabsKey: 'post',
-          value: null,
-          type: 'select',
-          filterable: true,
-          optKey: 'key',
-          optLabel: 'value',
+          value: '',
+          type: 'input',
           inputText: '职务',
-          'valueChange': 'attrChange',
-          'span': 4
+          span: 4
+          // tabsKey: 'post',
+          // value: null,
+          // type: 'select',
+          // filterable: true,
+          // optKey: 'key',
+          // optLabel: 'value',
+          // inputText: '职务',
+          // 'valueChange': 'attrChange',
+          // 'span': 4
         }
       ],
       // 列表设置

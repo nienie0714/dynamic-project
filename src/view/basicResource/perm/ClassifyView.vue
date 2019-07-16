@@ -78,11 +78,15 @@ export default {
         // p: '类别',
         key: 'classify',
         value: '',
-        type: 'select',
-        filterable: true,
+        type: 'input',
         inputText: '类别',
-        getOptions: '/basicdata/classifyCode/queryAllClassify',
         span: 4
+        // value: '',
+        // type: 'select',
+        // filterable: true,
+        // inputText: '类别',
+        // getOptions: '/basicdata/classifyCode/queryAllClassify',
+        // span: 4
       }],
       // 列表设置
       tableData: {
